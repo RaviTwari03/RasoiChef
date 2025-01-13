@@ -17,11 +17,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sun.rain" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Czf-4l-RMX">
-                                <rect key="frame" x="91" y="173" width="240" height="235"/>
+                                <rect key="frame" x="76" y="93.333333333333371" width="240" height="235"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="badge.plus.radiowaves.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pl6-0h-ezz">
-                                <rect key="frame" x="67" y="526" width="240" height="128"/>
+                                <rect key="frame" x="76" y="590" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sun.rain" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pd3-Fj-4Wf">
+                                <rect key="frame" x="76" y="327.33333333333337" width="240" height="235"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
