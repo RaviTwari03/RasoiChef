@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ESf-EO-cLD">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
@@ -41,7 +41,55 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-89" y="4"/>
+            <point key="canvasLocation" x="-2473" y="-970"/>
+        </scene>
+        <!--My Orders-->
+        <scene sceneID="O74-Yy-zbg">
+            <objects>
+                <viewController id="PGd-HJ-QzC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QbZ-qI-8lL">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Fbf-Ke-DVv">
+                                <rect key="frame" x="10" y="165" width="373" height="32"/>
+                                <segments>
+                                    <segment title="Orders"/>
+                                    <segment title="Subscribed Plans"/>
+                                </segments>
+                            </segmentedControl>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9jl-YG-SdF"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" constant="10" id="AxU-z7-cFT"/>
+                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="top" secondItem="9jl-YG-SdF" secondAttribute="top" constant="10" id="hSJ-QN-0nP"/>
+                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="Fbf-Ke-DVv" secondAttribute="trailing" constant="10" id="vTH-C7-3DH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="My Orders" id="Rrf-Zx-cwv"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x17-5q-9OE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1547.3282442748091" y="-188.02816901408451"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ybi-mH-up8">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ESf-EO-cLD" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="lZO-3q-ifp">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="PGd-HJ-QzC" kind="relationship" relationship="rootViewController" id="S1U-MP-Sxn"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MTo-DY-8sS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2474.0458015267172" y="-188.02816901408451"/>
         </scene>
     </scenes>
     <resources>
