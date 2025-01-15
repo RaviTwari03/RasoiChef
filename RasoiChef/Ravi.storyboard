@@ -28,15 +28,6 @@
                                 <rect key="frame" x="76" y="327.33333333333337" width="240" height="235"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DhI-Lm-Wsj">
-                                <rect key="frame" x="148" y="759" width="97" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Shubham"/>
-                                <connections>
-                                    <segue destination="L1p-y0-V5o" kind="show" id="Jce-if-Uoo"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -46,16 +37,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1991.6030534351144" y="-2.1126760563380285"/>
-        </scene>
-        <!--Shubham-->
-        <scene sceneID="YlH-gb-QNg">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Shubham" id="L1p-y0-V5o" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="RZV-0A-6S6"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XMc-v2-mof" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2704.5801526717555" y="-19.014084507042256"/>
         </scene>
     </scenes>
     <resources>
