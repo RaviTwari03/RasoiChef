@@ -46,7 +46,7 @@
         <!--My Orders-->
         <scene sceneID="O74-Yy-zbg">
             <objects>
-                <viewController id="PGd-HJ-QzC" sceneMemberID="viewController">
+                <viewController id="PGd-HJ-QzC" customClass="MyOrdersViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QbZ-qI-8lL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -58,25 +58,47 @@
                                     <segment title="Subscribed Plans"/>
                                 </segments>
                             </segmentedControl>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="0Br-s5-7Yv">
+                                <rect key="frame" x="0.0" y="201" width="393" height="617"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MyOrderTableViewCell" id="XNd-jH-8Sc">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XNd-jH-8Sc" id="hsx-3Q-W2S">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9jl-YG-SdF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Fbf-Ke-DVv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" constant="10" id="AxU-z7-cFT"/>
+                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="0Br-s5-7Yv" secondAttribute="trailing" id="WqU-ZJ-7zy"/>
+                            <constraint firstItem="0Br-s5-7Yv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" id="XCd-q9-7tm"/>
                             <constraint firstItem="Fbf-Ke-DVv" firstAttribute="top" secondItem="9jl-YG-SdF" secondAttribute="top" constant="10" id="hSJ-QN-0nP"/>
+                            <constraint firstItem="0Br-s5-7Yv" firstAttribute="top" secondItem="Fbf-Ke-DVv" secondAttribute="bottom" constant="5" id="mmt-h0-Ej1"/>
                             <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="Fbf-Ke-DVv" secondAttribute="trailing" constant="10" id="vTH-C7-3DH"/>
+                            <constraint firstItem="9jl-YG-SdF" firstAttribute="bottom" secondItem="0Br-s5-7Yv" secondAttribute="bottom" id="zt2-sW-3N2"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Orders" id="Rrf-Zx-cwv"/>
+                    <connections>
+                        <outlet property="tableView" destination="0Br-s5-7Yv" id="EYN-zK-Yhc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x17-5q-9OE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1547.3282442748091" y="-188.02816901408451"/>
+            <point key="canvasLocation" x="-620.61068702290072" y="-188.02816901408451"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--My Orders-->
         <scene sceneID="ybi-mH-up8">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ESf-EO-cLD" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="My Orders" image="pencil.circle" catalog="system" selectedImage="pencil.circle.fill" id="wJ0-hb-olg"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="lZO-3q-ifp">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
@@ -89,11 +111,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MTo-DY-8sS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2474.0458015267172" y="-188.02816901408451"/>
+            <point key="canvasLocation" x="-1547.3282442748091" y="-188.02816901408451"/>
         </scene>
     </scenes>
     <resources>
         <image name="paperplane.fill" catalog="system" width="128" height="119"/>
+        <image name="pencil.circle" catalog="system" width="128" height="123"/>
+        <image name="pencil.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
