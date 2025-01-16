@@ -7,3 +7,8 @@
 
 import Foundation
 //Shubham jaiuswal
+
+
+class Myclass {
+    var di:String?
+}
