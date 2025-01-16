@@ -1,22 +1,17 @@
 //
-//  MyOrdersTableViewCell.swift
+//  pastOrderTableViewCell.swift
 //  RasoiChef
 //
-//  Created by Batch - 1 on 15/01/25.
+//  Created by Batch - 1 on 16/01/25.
 //
 
 import UIKit
 
-class MyOrdersTableViewCell: UITableViewCell {
-    
-    
+class pastOrderTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
-
-        
-        contentView.layer.cornerRadius = 10
         // Initialization code
     }
 
@@ -24,7 +19,6 @@ class MyOrdersTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-//        
     }
     private func applyCardStyle() {
             // Round the corners of the content view to make it appear as a card
