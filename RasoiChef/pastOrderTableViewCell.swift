@@ -8,7 +8,10 @@
 import UIKit
 
 class pastOrderTableViewCell: UITableViewCell {
-
+    
+    
+    @IBOutlet weak var pastOrderViewCell: UIView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
@@ -22,21 +25,21 @@ class pastOrderTableViewCell: UITableViewCell {
     }
     private func applyCardStyle() {
             // Round the corners of the content view to make it appear as a card
-            contentView.layer.cornerRadius = 16
-            contentView.layer.masksToBounds = true
+        pastOrderViewCell.layer.cornerRadius = 16
+        pastOrderViewCell.layer.masksToBounds = true
 
             // Add shadow to create a card-like appearance
-            contentView.layer.shadowColor = UIColor.black.cgColor
-            contentView.layer.shadowOffset = CGSize(width: 0, height: 2)
-            contentView.layer.shadowRadius = 5
-            contentView.layer.shadowOpacity = 0.1
-            contentView.layer.masksToBounds = false
+        pastOrderViewCell.layer.shadowColor = UIColor.black.cgColor
+        pastOrderViewCell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        pastOrderViewCell.layer.shadowRadius = 5
+        pastOrderViewCell.layer.shadowOpacity = 0.3
+        pastOrderViewCell.layer.masksToBounds = false
             
             // Add padding by adjusting the content insets
-            contentView.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        pastOrderViewCell.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
             
             // Optionally, you can add a background color for the card
-        contentView.backgroundColor = .white
+        pastOrderViewCell.backgroundColor = .white
         }
     
 }

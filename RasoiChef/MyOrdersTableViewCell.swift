@@ -10,7 +10,8 @@ import UIKit
 class MyOrdersTableViewCell: UITableViewCell {
     
     
-
+    @IBOutlet weak var cardView: UIView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
@@ -28,21 +29,21 @@ class MyOrdersTableViewCell: UITableViewCell {
     }
     private func applyCardStyle() {
             // Round the corners of the content view to make it appear as a card
-            contentView.layer.cornerRadius = 16
-            contentView.layer.masksToBounds = true
+        cardView.layer.cornerRadius = 16
+        cardView.layer.masksToBounds = true
 
             // Add shadow to create a card-like appearance
-            contentView.layer.shadowColor = UIColor.black.cgColor
-            contentView.layer.shadowOffset = CGSize(width: 0, height: 2)
-            contentView.layer.shadowRadius = 5
-            contentView.layer.shadowOpacity = 0.1
-            contentView.layer.masksToBounds = false
+        cardView.layer.shadowColor = UIColor.black.cgColor
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cardView.layer.shadowRadius = 5
+        cardView.layer.shadowOpacity = 0.3
+        cardView.layer.masksToBounds = false
             
             // Add padding by adjusting the content insets
-            contentView.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        cardView.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
             
             // Optionally, you can add a background color for the card
-        contentView.backgroundColor = .white
+        cardView.backgroundColor = .white
         }
     
 }
