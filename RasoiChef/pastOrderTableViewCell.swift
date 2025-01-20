@@ -11,10 +11,24 @@ class pastOrderTableViewCell: UITableViewCell {
     
     
     @IBOutlet weak var pastOrderViewCell: UIView!
+    @IBOutlet weak var orderIDLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+
+     @IBOutlet weak var kitchenName: UILabel!
+     @IBOutlet weak var locationLabel: UILabel!
+
+    @IBOutlet weak var itemsLabel: UILabel!
+    
+    @IBOutlet weak var paymentDetailsButton: UIButton!
+    @IBOutlet weak var trackButton: UIButton!
+
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
+        
         // Initialization code
     }
 
@@ -41,5 +55,33 @@ class pastOrderTableViewCell: UITableViewCell {
             // Optionally, you can add a background color for the card
         pastOrderViewCell.backgroundColor = .white
         }
+    
+    func configure(order: Order) {
+        orderIDLabel.text = "Order ID - \(order.orderID)"
+        dateLabel.text = formatDate(order.deliveryDate)
+        locationLabel.text = order.deliveryAddress
+        kitchenName.text = order.kitchenID
+        
+        let numberedItems = order.items.enumerated().map { index, item in
+               return "\(index + 1). \(item.menuItemID)"
+           }.joined(separator: "\n")
+           
+           itemsLabel.text = numberedItems
+        
+//            itemsLabel.text = order.items.map { $0.menuItemID }.joined(separator: ", ")
+    }
+    
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    var onInfoButtonTapped: (() -> Void)?
+
+    @IBAction func infoButtonTapped(_ sender: UIButton) {
+        onInfoButtonTapped?()
+    }
+
     
 }

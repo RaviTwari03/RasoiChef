@@ -14,11 +14,11 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="179" id="KGk-i7-Jjw" customClass="pastOrderTableViewCell" customModule="RasoiChef" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="358" height="179"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="358" height="179"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JnB-qU-nAM">
+                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JnB-qU-nAM">
                         <rect key="frame" x="5" y="8" width="355" height="163"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Order ID -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BcY-IK-77S">
@@ -61,9 +61,12 @@
                                 <rect key="frame" x="141" y="127" width="50" height="35"/>
                                 <color key="tintColor" name="AccentColor"/>
                                 <buttonConfiguration key="configuration" style="plain"/>
+                                <connections>
+                                    <action selector="infoButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vbm-Ba-EIc"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9wO-Q7-pqb">
-                                <rect key="frame" x="282" y="126" width="66" height="35"/>
+                                <rect key="frame" x="282" y="126" width="70" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="2Qt-7J-uAt"/>
                                     <constraint firstAttribute="height" constant="35" id="510-nS-APO"/>
@@ -99,7 +102,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="snj-iA-jid">
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="snj-iA-jid">
                                 <rect key="frame" x="5" y="122" width="326" height="1"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -144,6 +147,11 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
+                <outlet property="dateLabel" destination="pLj-xY-ACy" id="URi-U4-HSY"/>
+                <outlet property="itemsLabel" destination="oRv-AZ-4Dr" id="8Ho-NC-Eeu"/>
+                <outlet property="kitchenName" destination="pgi-Y8-bht" id="NZW-cN-K1B"/>
+                <outlet property="locationLabel" destination="Zsl-KF-Gdq" id="vfE-yw-55o"/>
+                <outlet property="orderIDLabel" destination="BcY-IK-77S" id="7jc-mh-fxH"/>
                 <outlet property="pastOrderViewCell" destination="JnB-qU-nAM" id="Xdt-ZG-kTg"/>
             </connections>
             <point key="canvasLocation" x="71.755725190839698" y="19.366197183098592"/>

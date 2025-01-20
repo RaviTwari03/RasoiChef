@@ -11,6 +11,11 @@ class MyOrdersViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
+        var currentOrders: [Order] = []  // Orders still in progress
+        var pastOrders: [Order] = []     // Delivered orders
+        var displayedOrders: [Order] = [] // Orders shown based on the selected segment
+        static var shared = MyOrdersViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -24,9 +29,22 @@ class MyOrdersViewController: UIViewController {
         let pastOrderNib = UINib(nibName: "pastOrderTableViewCell", bundle: nil)
         tableView.register(pastOrderNib, forCellReuseIdentifier: "pastOrderTableViewCell")
         
-       
+        loadData()
         
     }
+    func loadData() {
+            let allOrders = OrderDataController.shared.getOrders()
+            currentOrders = allOrders.filter { $0.status != .delivered }
+            pastOrders = allOrders.filter { $0.status == .delivered }
+            tableView.reloadData()
+        }
+    
+    func showPricePopup(for order: Order) {
+        let popup = PricePopupView(frame: self.view.bounds)
+        popup.configure(getPrice: "\(order.totalAmount)", grandTotal: "\(order.totalAmount)")
+        self.view.addSubview(popup)
+    }
+
     
 
 }
@@ -42,9 +60,9 @@ extension MyOrdersViewController:UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if section == 0 {
-            return OrderDataController.shared.getOrderCount()
+            return currentOrders.count
         } else {
-            return OrderDataController.shared.getPastOrderCount()
+            return pastOrders.count
         }
     }
     
@@ -74,14 +92,32 @@ extension MyOrdersViewController:UITableViewDataSource {
         
         if indexPath.section == 0 {
                    // Current Order Cell
-                   let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as! MyOrdersTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as! MyOrdersTableViewCell
+             let order = currentOrders[indexPath.row]
+                        cell.configure(order: order)
+            cell.onInfoButtonTapped = { [weak self] in
+                       guard let self = self else { return }
+                       self.showPricePopup(for: order)
+                   }
+                        return cell
 
-                   return cell
-               } else {
+               }
+        
+        else {
                    // Past Order Cell
                    let cell = tableView.dequeueReusableCell(withIdentifier: "pastOrderTableViewCell", for: indexPath) as! pastOrderTableViewCell
+                   
+                        let order = pastOrders[indexPath.row]
+                        cell.configure(order: order)
+            cell.onInfoButtonTapped = { [weak self] in
+                guard let self = self else { return }
+                self.showPricePopup(for: order)
+            }
+                    
+                               // Configure the past order cell (adjust as needed)
+                               return cell
 
-                   return cell
+                  
                }
         
       
@@ -94,7 +130,7 @@ extension MyOrdersViewController:UITableViewDataSource {
 extension MyOrdersViewController:UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 179
+        return 230
     }
    
 }

@@ -9,12 +9,28 @@ import UIKit
 
 class MyOrdersTableViewCell: UITableViewCell {
     
+   
+        @IBOutlet weak var orderIDLabel: UILabel!
+        @IBOutlet weak var dateLabel: UILabel!
+    
+         @IBOutlet weak var kitchenName: UILabel!
+         @IBOutlet weak var locationLabel: UILabel!
+    
+        @IBOutlet weak var itemsLabel: UILabel!
+        @IBOutlet weak var paymentDetailsButton: UIButton!
+        @IBOutlet weak var trackButton: UIButton!
+
+      
+    
+
+    
     
     @IBOutlet weak var cardView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
+        
 
         
         contentView.layer.cornerRadius = 10
@@ -36,14 +52,44 @@ class MyOrdersTableViewCell: UITableViewCell {
         cardView.layer.shadowColor = UIColor.black.cgColor
         cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
         cardView.layer.shadowRadius = 5
-        cardView.layer.shadowOpacity = 0.3
+        cardView.layer.shadowOpacity = 0.2
         cardView.layer.masksToBounds = false
             
             // Add padding by adjusting the content insets
-        cardView.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        cardView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
             
             // Optionally, you can add a background color for the card
         cardView.backgroundColor = .white
         }
+    
+    
+    
+    func configure(order: Order) {
+        orderIDLabel.text = "Order ID - \(order.orderID)"
+        dateLabel.text = formatDate(order.deliveryDate)
+        locationLabel.text = order.deliveryAddress
+        kitchenName.text = order.kitchenID
+        
+        let numberedItems = order.items.enumerated().map { index, item in
+               return "\(index + 1). \(item.menuItemID)"
+           }.joined(separator: "\n")
+           
+           itemsLabel.text = numberedItems
+        
+//            itemsLabel.text = order.items.map { $0.menuItemID }.joined(separator: ", ")
+    }
+    
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    var onInfoButtonTapped: (() -> Void)?
+
+    @IBAction func infoButtonTapped(_ sender: UIButton) {
+        onInfoButtonTapped?()
+    }
+
     
 }
