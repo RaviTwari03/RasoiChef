@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate {
+class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout {
 
     
     @IBOutlet var collectionView1: UICollectionView!
@@ -57,11 +57,48 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                return 0
            }
        }
+//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//        if kind == UICollectionView.elementKindSectionHeader {
+//            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
+//            
+//            // Switch case for section headers
+//            switch indexPath.section {
+//            case 0:
+//                header.headerLabel.text = ""
+//            case 1:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[0]
+//            case 2:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[1]
+//            case 3:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
+//            default:
+//                header.headerLabel.text = "Section \(indexPath.section)" // Default case to prevent out of range error
+//            }
+//            if header.headerLabel.text == "" {
+//                header.actionButton.isHidden = true
+//                header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
+//            } else {
+//                header.actionButton.isHidden = false
+//                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+//            }
+//            
+//            header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+//            header.actionButton.setTitle("See All", for: .normal)
+//
+//        header.actionButton.tag = indexPath.section
+//        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
+//             
+//            
+//            return header
+//        }
+//        print("Supplementary View Not Found")
+//        return UICollectionReusableView()
+//    }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
-            
-            // Switch case for section headers
+
+            // Set header titles dynamically
             switch indexPath.section {
             case 0:
                 header.headerLabel.text = ""
@@ -72,28 +109,44 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             case 3:
                 header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
             default:
-                header.headerLabel.text = "Section \(indexPath.section)" // Default case to prevent out of range error
+                header.headerLabel.text = "Section \(indexPath.section)" // Default case
             }
-            if header.headerLabel.text == "" {
+
+            // Adjust visibility and font
+            if header.headerLabel.text?.isEmpty == true {
                 header.actionButton.isHidden = true
-                header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
             } else {
                 header.actionButton.isHidden = false
                 header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
             }
-            
-            header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-            header.actionButton.setTitle("See All", for: .normal)
 
-        header.actionButton.tag = indexPath.section
-        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
-             
-            
+            header.actionButton.setTitle("See All", for: .normal)
+            header.actionButton.tag = indexPath.section
+            header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
             return header
         }
         print("Supplementary View Not Found")
         return UICollectionReusableView()
     }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        switch section {
+        case 0:
+            return CGSize(width: collectionView.bounds.width, height: 0) // No header
+        case 1:
+            let title = KitchenDataController.sectionHeaderNames[0]
+            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+        case 2:
+            let title = KitchenDataController.sectionHeaderNames[1]
+            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+        case 3:
+            let title = KitchenDataController.sectionHeaderNames[2]
+            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+        default:
+            return CGSize(width: collectionView.bounds.width, height: 50) // Default header size
+        }
+    }
+
 
        // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

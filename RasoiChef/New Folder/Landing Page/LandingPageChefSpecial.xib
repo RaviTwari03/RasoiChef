@@ -55,7 +55,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-BO-h3n">
-                        <rect key="frame" x="167" y="99" width="62.666666666666657" height="36"/>
+                        <rect key="frame" x="167" y="99" width="83" height="36"/>
                         <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <state key="normal" title="Button"/>
@@ -77,7 +77,7 @@
                     <constraint firstItem="QTp-yw-7P0" firstAttribute="top" secondItem="Tik-QF-MYS" secondAttribute="bottom" constant="3" id="GyV-90-ufP"/>
                     <constraint firstItem="Z6n-BO-h3n" firstAttribute="leading" secondItem="bZB-fA-Ybm" secondAttribute="trailing" constant="42" id="LHe-my-5On"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rNt-QS-WUL" secondAttribute="trailing" constant="5" id="Qhs-Vy-Nkq"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Z6n-BO-h3n" secondAttribute="trailing" constant="40" id="Z5A-dN-354"/>
+                    <constraint firstAttribute="trailing" secondItem="Z6n-BO-h3n" secondAttribute="trailing" constant="30" id="Z5A-dN-354"/>
                     <constraint firstItem="Qrk-DI-RUB" firstAttribute="trailing" secondItem="QTp-yw-7P0" secondAttribute="trailing" id="coH-dV-HOu"/>
                     <constraint firstItem="Tik-QF-MYS" firstAttribute="top" secondItem="kqk-yI-e9x" secondAttribute="top" constant="5" id="d9s-U1-caY"/>
                     <constraint firstItem="RQk-N1-kET" firstAttribute="leading" secondItem="Qrk-DI-RUB" secondAttribute="leading" id="jeY-vo-kCg"/>
