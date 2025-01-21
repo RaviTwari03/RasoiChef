@@ -223,6 +223,7 @@ class KitchenDataController {
         "Meal Subscription Plans"
     ]
     static var sectionHeaderLandingNames:[String] = [
+        "Meal Categories",
         "Chef's Speciality Dishes",
         "Nearest Kitchens"
     ]

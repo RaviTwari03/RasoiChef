@@ -61,11 +61,11 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             // Switch case for section headers
             switch indexPath.section {
             case 0:
-                header.headerLabel.text = ""
-            case 1:
                 header.headerLabel.text = KitchenDataController.sectionHeaderLandingNames[0]
-            case 2:
+            case 1:
                 header.headerLabel.text = KitchenDataController.sectionHeaderLandingNames[1]
+            case 2:
+                header.headerLabel.text = KitchenDataController.sectionHeaderLandingNames[2]
            
             default:
                 header.headerLabel.text = "Section \(indexPath.section)" // Default case to prevent out of range error
