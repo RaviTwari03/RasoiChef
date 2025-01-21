@@ -59,7 +59,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     }
     
     func presentAddItemModally(selectedItem: MenuItem) {
-        let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
             addItemVC.selectedItem = selectedItem // Pass the selected item here
             self.present(addItemVC, animated: true, completion: nil)

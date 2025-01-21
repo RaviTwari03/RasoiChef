@@ -237,7 +237,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let selectedItem = KitchenDataController.menuItems[indexPath.row]
         print("Add button tapped for meal: \(selectedItem.name)")
 
-        let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
             detailVC.selectedItem = selectedItem
             present(detailVC, animated: true, completion: nil)
@@ -252,7 +252,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     @objc func sectionButtonTapped(_ sender: UIButton) {
         switch sender.tag {
         case 1:
-            let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenMenuListViewController") as? KitchenMenuListViewController {
                 self.navigationController?.pushViewController(firstScreenVC, animated: true)
             } else {
@@ -260,7 +260,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             }
 
         case 2:
-            let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let secondScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenChefSpecialViewController") as? KitchenChefSpecialViewController {
                 self.navigationController?.pushViewController(secondScreenVC, animated: true)
             } else {

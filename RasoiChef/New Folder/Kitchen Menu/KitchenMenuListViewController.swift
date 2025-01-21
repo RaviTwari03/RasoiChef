@@ -16,7 +16,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         let selectedItem = KitchenDataController.menuItems[indexPath.row]
         print("Add button tapped for meal: \(selectedItem.name)")
 
-        let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
             detailVC.selectedItem = selectedItem
             present(detailVC, animated: true, completion: nil)
@@ -173,7 +173,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             let selectedItem = KitchenDataController.menuItems[indexPath.row]
             print("Add button tapped for meal: \(selectedItem.name)")
     
-            let storyboard = UIStoryboard(name: "Dashboard", bundle: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
                 detailVC.selectedItem = selectedItem
                 present(detailVC, animated: true, completion: nil)

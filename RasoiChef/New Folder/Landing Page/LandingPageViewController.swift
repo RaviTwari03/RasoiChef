@@ -75,10 +75,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
             } else {
                 header.actionButton.isHidden = false
-                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+                header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
             }
             
-            header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+            header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
             header.actionButton.setTitle("See All", for: .normal)
 
         header.actionButton.tag = indexPath.section
@@ -186,12 +186,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
            
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(100))
+           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .absolute(100))
            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
            group.interItemSpacing = .fixed(5) // Space between items within the section
            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
            let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 0, trailing: 20) // Minimize insets
+           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20) // Minimize insets
            section.orthogonalScrollingBehavior = .groupPaging
            return section
        }
@@ -203,12 +203,14 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(150))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(145))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5) // Space between items within the section
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 10.0, bottom: 0, trailing: 8.0)
+//        let section = NSCollectionLayoutSection(group: group)
+//        section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 0, trailing: 10) // Minimize insets
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
@@ -223,8 +225,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
            group.interItemSpacing = .fixed(5)
            group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 12.0, bottom: 8.0, trailing: 8.0)
+           
+//           let section = NSCollectionLayoutSection(group: group)
+//           section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
+////           section.orthogonalScrollingBehavior = .groupPaging
            let section = NSCollectionLayoutSection(group: group)
-//           section.orthogonalScrollingBehavior = .groupPaging
+           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20)
            return section
 
        }
