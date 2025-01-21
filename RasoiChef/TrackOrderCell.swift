@@ -23,12 +23,13 @@ class TrackOrderCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func setupUI() {
         // Configure views
         statusLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = .darkGray
+        descriptionLabel.numberOfLines = 0 // Allow multiline descriptions
         timeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         timeLabel.textColor = .gray
 
@@ -51,33 +52,60 @@ class TrackOrderCell: UITableViewCell {
 
         // Add constraints
         NSLayoutConstraint.activate([
+            // Status Indicator
             statusIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            statusIndicator.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
-            statusIndicator.widthAnchor.constraint(equalToConstant: 10),
-            statusIndicator.heightAnchor.constraint(equalToConstant: 10),
+            statusIndicator.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            statusIndicator.widthAnchor.constraint(equalToConstant: 12),
+            statusIndicator.heightAnchor.constraint(equalToConstant: 12),
 
+            // Line View
             lineView.centerXAnchor.constraint(equalTo: statusIndicator.centerXAnchor),
             lineView.topAnchor.constraint(equalTo: statusIndicator.bottomAnchor),
-            lineView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            lineView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             lineView.widthAnchor.constraint(equalToConstant: 2),
 
+            // Status Label
             statusLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: 20),
-            statusLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            statusLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            statusLabel.trailingAnchor.constraint(lessThanOrEqualTo: timeLabel.leadingAnchor, constant: -10),
 
-            descriptionLabel.leadingAnchor.constraint(equalTo: statusLabel.leadingAnchor),
-            descriptionLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5),
-
+            // Time Label
             timeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            timeLabel.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor)
+            timeLabel.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
+
+            // Description Label
+            descriptionLabel.leadingAnchor.constraint(equalTo: statusLabel.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            descriptionLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5),
+            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -10)
         ])
     }
+
 
     func configure(status: String, description: String, time: String, isCompleted: Bool) {
         statusLabel.text = status
         descriptionLabel.text = description
         timeLabel.text = time
 
+        // Change the color of the status indicator based on completion
         statusIndicator.backgroundColor = isCompleted ? .systemGreen : .systemOrange
-        lineView.isHidden = status == "Delivered"
+
+        // Adjust the visibility of the line based on the status
+        if isCompleted {
+            lineView.backgroundColor = .systemGreen
+            lineView.isHidden = false
+        } else {
+            lineView.backgroundColor = .lightGray
+            lineView.isHidden = true
+        }
     }
+
+//    func configure(status: String, description: String, time: String, isCompleted: Bool) {
+//        statusLabel.text = status
+//        descriptionLabel.text = description
+//        timeLabel.text = time
+//
+//        statusIndicator.backgroundColor = isCompleted ? .systemGreen : .systemOrange
+//        lineView.isHidden = status == "Delivered"
+//    }
 }

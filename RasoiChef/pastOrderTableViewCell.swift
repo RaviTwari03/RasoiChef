@@ -68,7 +68,7 @@ class pastOrderTableViewCell: UITableViewCell {
            
            itemsLabel.text = numberedItems
         
-//            itemsLabel.text = order.items.map { $0.menuItemID }.joined(separator: ", ")
+
     }
     
 
