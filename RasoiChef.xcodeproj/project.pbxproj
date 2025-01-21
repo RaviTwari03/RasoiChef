@@ -6,15 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		C49D928B2D3E515700433B3A /* pricePopupview.xib in Resources */ = {isa = PBXBuildFile; fileRef = C49D928A2D3E515700433B3A /* pricePopupview.xib */; };
-		C49D92952D3E5A5700433B3A /* pricePopupview.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49D92942D3E5A5700433B3A /* pricePopupview.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		0599B1462D35112A00F8CEE0 /* RasoiChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RasoiChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C49D928A2D3E515700433B3A /* pricePopupview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = pricePopupview.xib; sourceTree = "<group>"; };
-		C49D92942D3E5A5700433B3A /* pricePopupview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pricePopupview.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,8 +45,6 @@
 		0599B13D2D35112A00F8CEE0 = {
 			isa = PBXGroup;
 			children = (
-				C49D928A2D3E515700433B3A /* pricePopupview.xib */,
-				C49D92942D3E5A5700433B3A /* pricePopupview.swift */,
 				0599B1482D35112A00F8CEE0 /* RasoiChef */,
 				0599B1472D35112A00F8CEE0 /* Products */,
 			);
@@ -131,7 +122,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C49D928B2D3E515700433B3A /* pricePopupview.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +132,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C49D92952D3E5A5700433B3A /* pricePopupview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

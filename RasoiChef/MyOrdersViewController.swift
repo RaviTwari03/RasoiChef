@@ -41,7 +41,8 @@ class MyOrdersViewController: UIViewController {
     
     func showPricePopup(for order: Order) {
         let popup = PricePopupView(frame: self.view.bounds)
-        popup.configure(getPrice: "\(order.totalAmount)", grandTotal: "\(order.totalAmount)")
+        popup.configure(price: "\(order.totalAmount)", gst: "0", discount: "0", grandTotal: "\(order.totalAmount)")
+//        popup.configure(getPrice: "\(order.totalAmount)", grandTotal: "\(order.totalAmount)")
         self.view.addSubview(popup)
     }
 
@@ -56,7 +57,6 @@ extension MyOrdersViewController:UITableViewDataSource {
         return 2
     }
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if section == 0 {
@@ -68,38 +68,40 @@ extension MyOrdersViewController:UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Current Orders"
-        } else {
-            return "Past Orders"
-        }
+            if section == 0 {
+                    return "Current Orders"
+            } else {
+                    return "Past Orders"
+            }
     }
     
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
-               header.textLabel?.textColor = .black
-               header.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: header.frame.height)
+             if let header = view as? UITableViewHeaderFooterView {
+                    header.textLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
+                    header.textLabel?.textColor = .black
+                    header.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: header.frame.height)
               
-           }
+                    }
     }
    
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-  
-        
-        if indexPath.section == 0 {
+   
+            if indexPath.section == 0 {
                    // Current Order Cell
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as! MyOrdersTableViewCell
-             let order = currentOrders[indexPath.row]
-                        cell.configure(order: order)
-            cell.onInfoButtonTapped = { [weak self] in
-                       guard let self = self else { return }
-                       self.showPricePopup(for: order)
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as!                   MyOrdersTableViewCell
+                    let order = currentOrders[indexPath.row]
+                                cell.configure(order: order)
+            
+                    cell.delegate = self
+                    cell.onInfoButtonTapped = { [weak self] in
+                    guard let self = self else { return }
+                    self.showPricePopup(for: order)
                    }
-                        return cell
+                    return cell
+              
 
                }
         
@@ -109,13 +111,13 @@ extension MyOrdersViewController:UITableViewDataSource {
                    
                         let order = pastOrders[indexPath.row]
                         cell.configure(order: order)
-            cell.onInfoButtonTapped = { [weak self] in
-                guard let self = self else { return }
-                self.showPricePopup(for: order)
+                        cell.onInfoButtonTapped = { [weak self] in
+                        guard let self = self else { return }
+                        self.showPricePopup(for: order)
             }
                     
                                // Configure the past order cell (adjust as needed)
-                               return cell
+                            return cell
 
                   
                }
@@ -132,5 +134,18 @@ extension MyOrdersViewController:UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 230
     }
+    
+    
+       
    
+}
+
+extension MyOrdersViewController: MyOrderTableViewCellDelegate {
+    func didTapTrackButton(forOrder order: Order) {
+        let trackVC = TrackOrderViewController()
+        trackVC.order = order  // Pass the order object to TrackOrderViewController
+        navigationController?.pushViewController(trackVC, animated: true)
+    }
+    
+    
 }

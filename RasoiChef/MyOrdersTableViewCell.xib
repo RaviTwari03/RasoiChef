@@ -63,10 +63,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1. item 1" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7N-n4-Gmj">
-                                <rect key="frame" x="5" y="98" width="100" height="68"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1. item 1" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7N-n4-Gmj">
+                                <rect key="frame" x="5" y="98" width="239" height="68"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="AKk-qD-GWX"/>
+                                    <constraint firstAttribute="width" constant="128" id="AKk-qD-GWX"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
@@ -89,9 +89,9 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWp-2n-UKf">
-                                <rect key="frame" x="282" y="173" width="70" height="35"/>
+                                <rect key="frame" x="238" y="173" width="100" height="35"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="Ghg-BF-Q7r"/>
+                                    <constraint firstAttribute="width" constant="100" id="Ghg-BF-Q7r"/>
                                     <constraint firstAttribute="height" constant="35" id="hNb-0Z-qBK"/>
                                 </constraints>
                                 <state key="normal" title="Button"/>
@@ -101,6 +101,10 @@
                                     </backgroundConfiguration>
                                     <color key="baseForegroundColor" systemColor="systemBlueColor"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="trackButtonTapped:" destination="-1" eventType="touchUpInside" id="Ywd-du-xDg"/>
+                                    <action selector="trackButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="sx3-DW-oIP"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hI8-cZ-BUj">
                                 <rect key="frame" x="8" y="169" width="337" height="1"/>
@@ -115,7 +119,7 @@
                         <constraints>
                             <constraint firstItem="d7q-X0-VjG" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="0Fm-0V-Ccm"/>
                             <constraint firstAttribute="trailing" secondItem="vWp-2n-UKf" secondAttribute="trailing" constant="5" id="17F-7K-CaV"/>
-                            <constraint firstItem="vWp-2n-UKf" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="282" id="64A-oj-k3d"/>
+                            <constraint firstItem="vWp-2n-UKf" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="238" id="64A-oj-k3d"/>
                             <constraint firstItem="Ls0-Hj-Y3C" firstAttribute="top" secondItem="nHO-Pb-2Be" secondAttribute="bottom" constant="4" id="9DV-f7-Qxr"/>
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="BcL-H2-jHv"/>
                             <constraint firstItem="dHB-uZ-cc1" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="49" id="GAX-VN-StS"/>
@@ -163,8 +167,9 @@
                 <outlet property="kitchenName" destination="Ls0-Hj-Y3C" id="3xl-KL-E6u"/>
                 <outlet property="locationLabel" destination="dHB-uZ-cc1" id="aQb-Xm-V96"/>
                 <outlet property="orderIDLabel" destination="nHO-Pb-2Be" id="0wF-oJ-Trv"/>
+                <outlet property="trackButton" destination="vWp-2n-UKf" id="23G-fI-9Ln"/>
             </connections>
-            <point key="canvasLocation" x="-196.18320610687022" y="-19.366197183098592"/>
+            <point key="canvasLocation" x="-196.18320610687022" y="-19.718309859154932"/>
         </tableViewCell>
     </objects>
     <resources>
