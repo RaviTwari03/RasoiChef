@@ -15,20 +15,6 @@
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sun.rain" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Czf-4l-RMX">
-                                <rect key="frame" x="76" y="93.333333333333371" width="240" height="235"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="badge.plus.radiowaves.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pl6-0h-ezz">
-                                <rect key="frame" x="76" y="590" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sun.rain" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pd3-Fj-4Wf">
-                                <rect key="frame" x="76" y="327.33333333333337" width="240" height="235"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -40,10 +26,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="badge.plus.radiowaves.right" catalog="system" width="128" height="102"/>
         <image name="rainbow" catalog="system" width="128" height="71"/>
         <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
-        <image name="sun.rain" catalog="system" width="128" height="118"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
