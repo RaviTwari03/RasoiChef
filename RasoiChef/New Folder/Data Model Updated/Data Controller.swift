@@ -287,7 +287,7 @@ class KitchenDataController {
              subtitle: "Order Before 5 pm",
              deliveryTime: "Delivery expected by 6 pm",
              timer: "15 min",
-             icon: "SnackIcon"
+             icon: "SnacksIcon"
          ),
          MealBanner(
              title: "Delightful Dinner",

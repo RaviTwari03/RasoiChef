@@ -54,6 +54,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                return 0
            }
        }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeaderLanding", for: indexPath) as! SectionHeaderLandingCollectionReusableView
@@ -97,43 +98,24 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
             cell.updateBannerDetails(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
-               cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.cornerRadius = 15.0    // Rounded corners
+            cell.layer.borderColor = UIColor.black.cgColor
+            cell.layer.borderWidth = 1.0
             return cell
+            
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
-//            cell.delegate = self
-            cell.updateSpecialDishDetails(for : indexPath)// Pass indexPath insteadofindexPath.section
-            
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
-               cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.cornerRadius = 15.0    // Rounded corners
+            cell.layer.borderWidth = 1.0       // Border width
+            cell.layer.borderColor = UIColor.black.cgColor
             return cell
+            
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchen", for: indexPath) as! LandingPageKitchenCollectionViewCell
             cell.updateLandingPageKitchen(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-               cell.layer.shadowOpacity = 0.2    // Shadow opacity
-               cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.cornerRadius = 15.0    // Rounded corners
+            cell.layer.borderWidth = 1.0       // Border width
+            cell.layer.borderColor = UIColor.black.cgColor  // Border color
             return cell
         
         default:
@@ -170,19 +152,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
 //       // Layout for Kitchen Details Section
        func generateBannerSectionLayout() -> NSCollectionLayoutSection {
-//           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1/2))
-//           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//           
-//           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(200))
-//           let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//          
-//           group.interItemSpacing = .fixed(5)
-//           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
-//          let section = NSCollectionLayoutSection(group: group)
-//           section.orthogonalScrollingBehavior = .groupPaging
-//           section.interGroupSpacing = 0
-//           return section
-//           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
            
@@ -191,7 +161,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            group.interItemSpacing = .fixed(5) // Space between items within the section
            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
            let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20) // Minimize insets
+           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20) // Minimize insets
            section.orthogonalScrollingBehavior = .groupPaging
            return section
        }
@@ -218,21 +188,36 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
        // Layout for Chef's Special Section
        func generateLandingPageKitchenSectionLayout() -> NSCollectionLayoutSection {
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-           
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
-           let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-           group.interItemSpacing = .fixed(5)
-           group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 12.0, bottom: 8.0, trailing: 8.0)
-           
+//           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//           let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//           
+//           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
+//           let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+//           group.interItemSpacing = .fixed(5)
+//           group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 12.0, bottom: 8.0, trailing: 8.0)
+//           
+////           let section = NSCollectionLayoutSection(group: group)
+////           section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
+//////           section.orthogonalScrollingBehavior = .groupPaging
 //           let section = NSCollectionLayoutSection(group: group)
-//           section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
-////           section.orthogonalScrollingBehavior = .groupPaging
-           let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20)
-           return section
+//           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20)
+//           return section
+           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+               let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
+               // Define group size and layout
+               let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
+               let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+
+               // Add content insets to the group
+               group.interItemSpacing = .fixed(5)
+               group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 0.0, bottom: 8.0, trailing: 0.0) // No insets on the left/right
+
+               // Create the section
+               let section = NSCollectionLayoutSection(group: group)
+               section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+
+           return section
        }
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
