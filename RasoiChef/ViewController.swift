@@ -321,8 +321,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             }
         case 3:
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let secondScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(secondScreenVC, animated: true)
+            if let thirdScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+                self.navigationController?.pushViewController(thirdScreenVC, animated: true)
             } else {
                 print("Error: Could not instantiate KitchenChefSpecialViewController")
             }

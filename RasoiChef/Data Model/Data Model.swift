@@ -75,13 +75,10 @@ struct ChefSpecialtyDish {
 
 // Cart Item
 struct CartItem {
-    var userAdress : String
-    let cartItemID: String
-//    let userID: String // Foreign Key to User
-    let menuItemID: String // Foreign Key to MenuItem
+    var userAdress: String
     var quantity: Int
     var specialRequest: String?
-    var menuItem: MenuItem
+    var menuItem: MenuItem // Include MenuItem to access dish details
 }
 
 // Order

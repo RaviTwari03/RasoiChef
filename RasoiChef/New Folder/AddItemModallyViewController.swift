@@ -9,12 +9,18 @@ import UIKit
 
 protocol AddItemDelegate: AnyObject {
     func didAddItemToCart(_ item: CartItem)
+   
 }
 
 class AddItemModallyViewController: UIViewController, UIViewControllerTransitioningDelegate {
-    var cartItems: [CartItem] = []
-
     weak var delegate: AddItemDelegate?
+    
+    
+    var selectedItem: MenuItem?
+    var menuItems: [MenuItem] = []
+    
+    
+    
     
     
     @IBOutlet var AddDishNameLabel: UILabel!
@@ -28,10 +34,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBOutlet var AddDishItemCounterLabel: UILabel!
     @IBOutlet var AddIncreaseDishButton: UIStepper!
     
-    
-    var selectedItem: MenuItem? // Replace MenuItem with the actual type of your menu item
-    var menuItems: [MenuItem] = []
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureModalSize()
@@ -44,14 +47,12 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         AddDishPriceLabel.text = "₹\(item.price)"
         DishDescriptionLabel.text = item.description
         
-        // Set default values for other fields
+       
         AddDishRequestTextField.text = ""
         AddDishItemCounterLabel.text = "1"
-        AddIncreaseDishButton.value = 1 // Default stepper value
-        // Use selectedItem as needed
-        if selectedItem != nil {
-            //                print("Received item: \(item.name)") // Adjust for your MenuItem structure
-        }
+        AddIncreaseDishButton.value = 1
+    
+       
     }
     private func configureModalSize() {
         // Set the modal presentation style
@@ -78,33 +79,86 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     
     
     //    MARK: - For cart
-    
+  
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
         guard let item = selectedItem else { return }
-            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-            let specialRequest = AddDishRequestTextField.text ?? ""
+        let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
+        let specialRequest = AddDishRequestTextField.text ?? ""
+
+     
+        let cartItem = CartItem(
+            userAdress: "Galgotias University", // Replace "nil" with an actual address if needed
             
-            // Create a new CartItem instance
-            let cartItem = CartItem(
-                userAdress: "nil", // Replace "nil" with an actual address if needed
-                cartItemID: UUID().uuidString,
-                menuItemID: item.kitchenID, // Ensure `MenuItem` has a `kitchenID` property
-                quantity: quantity,
-                specialRequest: specialRequest,
-                menuItem: item
-            )
+           
+            quantity: quantity,
+            specialRequest: specialRequest,
+            menuItem: MenuItem(
+                itemID: "item001",
+                kitchenID: "kitchen001",
+                name: "Vegetable Poha",
+                description: "A light, nutritious dish made with flattened rice, salted veggies, and flavorful spices.",
+                price: 70.0,
+                rating: 4.1,
+                availableMealTypes: [.breakfast],
+                portionSize: "250 gm",
+                intakeLimit: 20,
+                imageURL: "VegetablePoha",
+                orderDeadline: "Order Before 6 am."
+            ),
+            MenuItem(
+                itemID: "item002",
+                kitchenID: "kitchen001",
+                name: "Veg Thali",
+                description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
+                price: 130.0,
+                rating: 4.4,
+                availableMealTypes: [.lunch],
+                portionSize: "500 gm",
+                intakeLimit: 15,
+                imageURL: "VegThali",
+                orderDeadline: "Order Before 11 am."
+                
+            ),
+            MenuItem(
+                itemID: "item003",
+                kitchenID: "kitchen001",
+                name: "Spring Roll",
+                description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
+                price: 50.0,
+                rating: 4.3,
+                availableMealTypes: [.snacks],
+                portionSize: "6 pieces",
+                intakeLimit: 10,
+                imageURL: "SpringRoll",
+                orderDeadline: "Order Before 3 pm."
+            ),
+            MenuItem(
+                itemID: "item004",
+                kitchenID: "kitchen002",
+                name: "Masala Dosa",
+                description: "A crispy rice pancake filled with spiced potato filling, served with chutneys and sambar.",
+                price: 120.0,
+                rating: 4.5,
+                availableMealTypes: [.dinner],
+                portionSize: "1 piece",
+                intakeLimit: 25,
+                imageURL: "MasalaDosa",
+                orderDeadline: "Order Before 7 pm."
+            ))
+        KitchenDataController.cartItems.append(cartItem)
+            print("Item added to cart: \(cartItem)")  // Log the added item
+//            CartItem.reloadData()  // Refresh the table view
             
-            // Pass the cartItem to the CartViewController via delegate
-            delegate?.didAddItemToCart(cartItem)
-            
-            // Dismiss the modal
+
+       
+        CartViewController.cartItems.append(cartItem)
+        if self.presentingViewController != nil {
             self.dismiss(animated: true, completion: nil)
         }
-        
-       
+    }
+
         
     }
 
 
-    
 

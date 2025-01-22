@@ -15,9 +15,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     
     @IBOutlet var CartItem: UITableView!
-//    static var cartItems: [CartItem] = []
-//    
+
     static var cartItems: [CartItem] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,12 +29,15 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.register(UINib(nibName: "CartDelivery", bundle: nil), forCellReuseIdentifier: "CartDelivery")
         CartItem.register(UINib(nibName: "CartBill", bundle: nil), forCellReuseIdentifier: "CartBill")
         CartItem.register(UINib(nibName: "AddItemInCart", bundle: nil), forCellReuseIdentifier: "AddItemInCart")
-        
+        CartItem.register(UITableViewCell.self, forCellReuseIdentifier: "EmptyCartPlaceholder")
+
         CartItem.delegate = self
         CartItem.dataSource = self
+        CartItem.reloadData()
+
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5 // Four sections: Address, Cart Items, Bill, and Payment
+        return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -42,12 +45,10 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return 1 // Address Section (1 row)
         case 1:
-            return 1/* CartViewController.cartItems.count*/ // Cart Items Section
+            return CartViewController.cartItems.isEmpty ? 1 : CartViewController.cartItems.count
         case 2:
-            return 1
-        case 3:
             return 1 // Bill Section (1 row)
-        case 4:
+        case 3:
             return 1 // Payment Section (1 row)
         default:
             return 0
@@ -62,31 +63,30 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             // cell.updateUserAddress(for: indexPath) // Assuming you have a configure method in the cell
             return cell
         case 1:
-            // Cart Items Section
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as! CartItemTableViewCell
-            //let cartItem = CartViewController.cartItems[indexPath.row]
-//            cell.updateCartItem(for: indexPath) // Assuming a configure method for cart items
-            return cell
+            if CartViewController.cartItems.isEmpty {
+                       // Placeholder cell for an empty cart
+                       let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
+                       cell.textLabel?.text = "Your cart is empty. Add some items!"
+                       cell.textLabel?.textAlignment = .center
+                       cell.textLabel?.textColor = .gray
+                       return cell
+                   } else {
+                       // Cart Items Section
+                       let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as! CartItemTableViewCell
+                       let cartItem = CartViewController.cartItems[indexPath.row]
+                       cell.updateCartItem(for: indexPath)
+                       return cell
+                   }
         case 2:
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "CartDelivery", for: indexPath) as? CartDeliveryTableViewCell {
-                return cell
-            } else {
-                // Handle the error gracefully by returning a default UITableViewCell or logging an issue
-                print("Error: CartDelivery cell could not be dequeued")
-                return UITableViewCell() // Default cell, could log or handle better
-            }
-        case 3:
             // Bill Section
             let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as! CartBillTableViewCell
             //                et totalAmount = calculateTotalAmount()
             //                cell.configure(with: totalAmount) // Assuming a configure method for the bill
             return cell
-            
-        case 4:
+        case 3:
             // Payment Section
             let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as! CartPayTableViewCell
             return cell
-        
         default:
             return UITableViewCell()
         }
@@ -99,11 +99,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 1:
             return 150 // Cart Item Section Height
         case 2:
-            return 100 // Bill Section Height
+            return 300 // Bill Section Height
         case 3:
             return 100 // Payment Section Height
-        case 4:
-            return 80
         default:
             return 44
         }
@@ -114,13 +112,11 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return "Delivery Address"
         case 1:
-            return "Items"
+            return "Cart Items"
         case 2:
             return "Bill Summary"
         case 3:
             return "Payment"
-        case 4:
-            return "Delivery Options"
         default:
             return nil
         }
@@ -142,12 +138,16 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         //        }
     }
 //    extension CartViewController: AddItemDelegate {
-        func didAddItemToCart(_ item: CartItem) {
-            CartViewController.cartItems.append(item) // Add item to the cart array
-            CartItem.reloadData() // Refresh table view to reflect the changes
+    func didAddItemToCart(_ item: CartItem) {
+        KitchenDataController.cartItems.append(item)
+        if KitchenDataController.cartItems.isEmpty {
+            print("No items to display in the cart.")
+        } else {
+            print("Items added to cart. Current count: \(KitchenDataController.cartItems.count)")
         }
-    
-        
+        CartItem.reloadData()  // Refresh table view
+    }
+
         
     }
 

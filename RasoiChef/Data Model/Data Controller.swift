@@ -184,15 +184,15 @@ class KitchenDataController {
     }
 
     
-    static func updateCartItem(_ updatedCartItem: CartItem) {
-        if let index = cartItems.firstIndex(where: { $0.cartItemID == updatedCartItem.cartItemID }) {
-            cartItems[index] = updatedCartItem
-        }
-    }
-
-    static func deleteCartItem(byID cartItemID: String) {
-        cartItems.removeAll { $0.cartItemID == cartItemID }
-    }
+//    static func updateCartItem(_ updatedCartItem: CartItem) {
+//        if let index = cartItems.firstIndex(where: { $0.cartItemID == updatedCartItem.cartItemID }) {
+//            cartItems[index] = updatedCartItem
+//        }
+//    }
+//
+//    static func deleteCartItem(byID cartItemID: String) {
+//        cartItems.removeAll { $0.cartItemID == cartItemID }
+//    }
 
     // Orders Management
     static func addOrder(_ order: Order) {
