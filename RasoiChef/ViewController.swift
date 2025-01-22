@@ -319,6 +319,13 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             } else {
                 print("Error: Could not instantiate KitchenChefSpecialViewController")
             }
+        case 3:
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let secondScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+                self.navigationController?.pushViewController(secondScreenVC, animated: true)
+            } else {
+                print("Error: Could not instantiate KitchenChefSpecialViewController")
+            }
         default:
             break
         }

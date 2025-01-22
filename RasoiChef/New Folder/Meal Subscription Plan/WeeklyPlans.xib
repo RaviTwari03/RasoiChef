@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="WeeklyPlans" rowHeight="194" id="gMx-ug-Osd" customClass="WeeklyPlansTableViewCell" customModule="RasoiChef" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="194"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gMx-ug-Osd" id="uyD-RN-DB9">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="194"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weekly Plans" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Wv-fw-rmv">
+                        <rect key="frame" x="20" y="12" width="124" height="22"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mas-BW-xxp">
+                        <rect key="frame" x="20" y="42" width="64" height="16"/>
+                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Range" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rcx-6d-Rl7">
+                        <rect key="frame" x="20" y="115" width="124" height="16"/>
+                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0uu-pt-jG3">
+                        <rect key="frame" x="284" y="41" width="57" height="15.666666666666664"/>
+                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="V7h-8o-aNd">
+                        <rect key="frame" x="250" y="66" width="124" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="124" id="2fv-LS-OOS"/>
+                            <constraint firstAttribute="height" constant="29" id="5t0-6Q-3m8"/>
+                        </constraints>
+                    </datePicker>
+                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="pdt-4C-pWs">
+                        <rect key="frame" x="20" y="66" width="124" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="29" id="4m4-st-RNh"/>
+                            <constraint firstAttribute="width" constant="124" id="Vo0-qh-fCJ"/>
+                        </constraints>
+                    </datePicker>
+                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="OJz-lo-IzV">
+                        <rect key="frame" x="20" y="139" width="124" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="124" id="8xc-MF-Lno"/>
+                            <constraint firstAttribute="height" constant="29" id="wjs-cY-bZ1"/>
+                        </constraints>
+                    </datePicker>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="V7h-8o-aNd" secondAttribute="bottom" constant="99" id="4ft-pE-txu"/>
+                    <constraint firstItem="V7h-8o-aNd" firstAttribute="leading" secondItem="pdt-4C-pWs" secondAttribute="trailing" constant="106" id="8DP-lI-5ju"/>
+                    <constraint firstItem="Rcx-6d-Rl7" firstAttribute="top" secondItem="pdt-4C-pWs" secondAttribute="bottom" constant="20" id="9oa-hY-a3R"/>
+                    <constraint firstItem="V7h-8o-aNd" firstAttribute="top" secondItem="0uu-pt-jG3" secondAttribute="bottom" constant="9.3300000000000001" id="B6g-tI-Dhp"/>
+                    <constraint firstItem="pdt-4C-pWs" firstAttribute="leading" secondItem="Mas-BW-xxp" secondAttribute="leading" id="Gqr-uJ-xFx"/>
+                    <constraint firstItem="Mas-BW-xxp" firstAttribute="leading" secondItem="4Wv-fw-rmv" secondAttribute="leading" id="LN5-1Y-sOH"/>
+                    <constraint firstItem="4Wv-fw-rmv" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leading" constant="20" id="P6j-j4-KLh"/>
+                    <constraint firstItem="OJz-lo-IzV" firstAttribute="leading" secondItem="Rcx-6d-Rl7" secondAttribute="leading" id="Pxq-iT-Jy8"/>
+                    <constraint firstItem="OJz-lo-IzV" firstAttribute="trailing" secondItem="Rcx-6d-Rl7" secondAttribute="trailing" id="RpU-Vd-Yws"/>
+                    <constraint firstItem="4Wv-fw-rmv" firstAttribute="top" secondItem="uyD-RN-DB9" secondAttribute="top" constant="12" id="SUe-fA-Dm8"/>
+                    <constraint firstItem="0uu-pt-jG3" firstAttribute="top" secondItem="uyD-RN-DB9" secondAttribute="top" constant="41" id="VFd-6g-S1e"/>
+                    <constraint firstItem="pdt-4C-pWs" firstAttribute="top" secondItem="Mas-BW-xxp" secondAttribute="bottom" constant="8" symbolic="YES" id="aLB-9M-Xt1"/>
+                    <constraint firstAttribute="trailing" secondItem="0uu-pt-jG3" secondAttribute="trailing" constant="52" id="drq-h1-SVM"/>
+                    <constraint firstItem="Rcx-6d-Rl7" firstAttribute="trailing" secondItem="4Wv-fw-rmv" secondAttribute="trailing" id="fef-pY-Kro"/>
+                    <constraint firstItem="0uu-pt-jG3" firstAttribute="leading" secondItem="Mas-BW-xxp" secondAttribute="trailing" constant="200" id="lws-1y-Jln"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4Wv-fw-rmv" secondAttribute="trailing" constant="30" id="pd2-E7-cCn"/>
+                    <constraint firstItem="Mas-BW-xxp" firstAttribute="top" secondItem="4Wv-fw-rmv" secondAttribute="bottom" constant="8" symbolic="YES" id="rSh-iV-Wph"/>
+                    <constraint firstAttribute="trailing" secondItem="V7h-8o-aNd" secondAttribute="trailing" constant="19" id="vZD-BW-4iX"/>
+                    <constraint firstItem="OJz-lo-IzV" firstAttribute="top" secondItem="Rcx-6d-Rl7" secondAttribute="bottom" constant="8" symbolic="YES" id="wET-yb-YKX"/>
+                    <constraint firstItem="Rcx-6d-Rl7" firstAttribute="leading" secondItem="4Wv-fw-rmv" secondAttribute="leading" id="wh7-aL-6Jp"/>
+                </constraints>
+            </tableViewCellContentView>
+            <point key="canvasLocation" x="301.52671755725191" y="37.323943661971832"/>
+        </tableViewCell>
+    </objects>
+</document>

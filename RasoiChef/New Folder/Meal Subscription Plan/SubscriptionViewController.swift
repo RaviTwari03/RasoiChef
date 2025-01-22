@@ -1,0 +1,90 @@
+//
+//  SubscriptionViewController.swift
+//  RasoiChef
+//
+//  Created by Ravi Tiwari on 22/01/25.
+//
+
+import UIKit
+
+class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
+
+    
+    
+    @IBOutlet var MealSubscriptionPlan: UITableView!
+    
+
+    override func viewDidLoad() {
+           super.viewDidLoad()
+           self.title = "Meal Subscription Plan"
+           // Register custom cells
+           MealSubscriptionPlan.register(UINib(nibName: "WeeklyPlans", bundle: nil), forCellReuseIdentifier: "WeeklyPlans")
+           MealSubscriptionPlan.register(UINib(nibName: "CustomiseTable", bundle: nil), forCellReuseIdentifier: "CustomiseTable")
+           
+           // Set the dataSource and delegate
+           MealSubscriptionPlan.dataSource = self
+           MealSubscriptionPlan.delegate = self
+       }
+
+       // Number of sections
+       func numberOfSections(in tableView: UITableView) -> Int {
+           return 2 // Weekly Plans and Customize Table
+       }
+
+       // Number of rows in each section
+       func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+           return 1/*section == 1*/ /*0 ? 1 */ // 1 row for Weekly Plans, 7 rows for days in Customize Table
+       }
+
+       // Configure cells
+       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+           if indexPath.section == 0 {
+               // Weekly Plans Section
+               let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as! WeeklyPlansTableViewCell
+               // Configure start date, end date, and selected range
+               return cell
+           } else {
+               // Customize Table Section
+               let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable", for: indexPath) as! CustomiseTableTableViewCell
+               // Configure day and meal icons for indexPath.row
+//               cell.configureForDay(day: getDayForIndex(index: indexPath.row))
+               return cell
+           }
+       }
+
+       // Helper to return the day name based on row index
+       func getDayForIndex(index: Int) -> String {
+           let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+           return days[index]
+       }
+
+       // Section Footer for Payment Button
+       func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+           if section == 1 {
+               let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
+               
+               // Add "Pay ₹1400" label
+               let payLabel = UILabel(frame: CGRect(x: 16, y: 10, width: 150, height: 40))
+               payLabel.text = "Pay ₹1400"
+               payLabel.font = UIFont.boldSystemFont(ofSize: 18)
+               footerView.addSubview(payLabel)
+               
+               // Add "Subscribe Plan" button
+               let button = UIButton(frame: CGRect(x: tableView.frame.width - 160, y: 10, width: 140, height: 40))
+               button.setTitle("Subscribe Plan", for: .normal)
+               button.backgroundColor = .orange
+               button.setTitleColor(.white, for: .normal)
+               button.layer.cornerRadius = 10
+               footerView.addSubview(button)
+               
+               return footerView
+           }
+           return nil
+       }
+
+       func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+           return section == 1 ? 60 : 0
+       }
+   }
+
+
