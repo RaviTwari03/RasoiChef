@@ -21,15 +21,33 @@ class CartItemTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+//    let cartItem = KitchenDataController.cartItems
+//
+//    override func setSelected(_ selected: Bool, animated: Bool) {
+//        super.setSelected(selected, animated: animated)
+//
+//        // Configure the view for the selected state
+//    }
+//    static var totalCartItems: Int {
+//        return cartItem.count
+//    }
+//
+//    static func addItemToCart(_ item: CartItem) {
+//        cartItem.append(item)
+//    }
+//
+//    static func removeItemFromCart(at index: Int) {
+//        guard index < cartItem.count else { return }
+//        cartItem.remove(at: index)
+//    }
+//
+//    static func clearCart() {
+//        cartItem.removeAll()
+//    }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
 //    func updateCartItem(for indexpathe : IndexPath) {
-//        let cartItem = KitchenDataController.cartItems[indexpathe.row]
+       
 //            CartDishLabel.text = cartItem.menuItem.name
 //            CartDishDescription.text = cartItem.menuItem.description
 //            CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"

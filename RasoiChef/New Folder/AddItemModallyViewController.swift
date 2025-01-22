@@ -12,7 +12,8 @@ protocol AddItemDelegate: AnyObject {
 }
 
 class AddItemModallyViewController: UIViewController, UIViewControllerTransitioningDelegate {
-    
+    var cartItems: [CartItem] = []
+
     weak var delegate: AddItemDelegate?
     
     
@@ -77,63 +78,33 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     
     
     //    MARK: - For cart
-    //    protocol AddItemDelegate: AnyObject {
-    //        func didAddItemToCart(item: MenuItem, quantity: Int)
-    //    }
-    //    // Existing properties...
-    //    @IBAction func addDishToCart(_ sender: UIButton) {
-    //        guard let item = selectedItem else { return }
-    //        let quantity = Int(AddIncreaseDishButton.value) // Get the quantity
-    //        delegate?.didAddItemToCart(item: item, quantity: quantity) // Pass data to the delegate
-    //        self.dismiss(animated: true, completion: nil)
-    //    }
-    //    func presentCartAddItemModally(selectedItem: MenuItem) {
-    //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    //        if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-    //            addItemVC.selectedItem = selectedItem
-    //            addItemVC.delegate = self // Set delegate
-    //            self.present(addItemVC, animated: true, completion: nil)
-    //        }
+    
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
         guard let item = selectedItem else { return }
-        let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-        let specialRequest = AddDishRequestTextField.text ?? ""
+            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
+            let specialRequest = AddDishRequestTextField.text ?? ""
+            
+            // Create a new CartItem instance
+            let cartItem = CartItem(
+                userAdress: "nil", // Replace "nil" with an actual address if needed
+                cartItemID: UUID().uuidString,
+                menuItemID: item.kitchenID, // Ensure `MenuItem` has a `kitchenID` property
+                quantity: quantity,
+                specialRequest: specialRequest,
+                menuItem: item
+            )
+            
+            // Pass the cartItem to the CartViewController via delegate
+            delegate?.didAddItemToCart(cartItem)
+            
+            // Dismiss the modal
+            self.dismiss(animated: true, completion: nil)
+        }
         
-        // Create a new CartItem instance
-        let cartItem = CartItem(
-            userAdress: "nil", // Replace "nil" with an actual address if needed
-            cartItemID: UUID().uuidString,
-            menuItemID: item.kitchenID, // Ensure `MenuItem` has a `kitchenID` property
-            quantity: quantity,
-            specialRequest: specialRequest,
-            menuItem: item
-        )
-        
-        // Add the item to the shared cart data source
-        //        CartViewController.cartItems.append(cartItem)
-        //
-        //        // Use the shared tab bar controller to switch tabs
-        //        if let tabBarController = (UIApplication.shared.delegate as? AppDelegate)?.sharedTabBarController {
-        //            // Find the Cart tab
-        //            if let viewControllers = tabBarController.viewControllers {
-        //                for (index, vc) in viewControllers.enumerated() {
-        //                    if vc is CartViewController {
-        //                        tabBarController.selectedIndex = index // Switch to the Cart tab
-        //                        break
-        //                    }
-        //                }
-        //            }
-        //        } else {
-        //            print("Error: Shared tab bar controller not found.")
-        //        }
-        //
-        //        // Dismiss the current modal
-        //        if self.presentingViewController != nil {
-        //            self.dismiss(animated: true, completion: nil)
-        //        }
-        //    }
-        
+       
         
     }
+
+
     
-}
+

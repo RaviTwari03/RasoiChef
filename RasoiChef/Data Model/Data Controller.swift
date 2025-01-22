@@ -150,13 +150,8 @@ class KitchenDataController {
     ]
     
     static var cartItems: [CartItem] = []
-//        CartItem(
-//            userAdress: "Galgotias University, Plot No. 2, Yamuna Expy",
-//            cartItemID: <#T##String#>,
-////            userID: <#T##String#>,
-//            menuItemID: <#T##String#>,
-//            quantity: <#T##Int#>)
-//    ]
+        
+
     static var orders: [Order] = []
     static var subscriptionPlans: [SubscriptionPlan] = []
     static var feedbacks: [Feedback] = []
@@ -223,6 +218,7 @@ class KitchenDataController {
         "Meal Subscription Plans"
     ]
     static var sectionHeaderLandingNames:[String] = [
+        "Meal Categories",
         "Chef's Speciality Dishes",
         "Nearest Kitchens"
     ]

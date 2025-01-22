@@ -7,14 +7,17 @@
 
 import UIKit
 
+
+
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate {
     
     
     
     
     @IBOutlet var CartItem: UITableView!
+//    static var cartItems: [CartItem] = []
+//    
     static var cartItems: [CartItem] = []
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,6 +146,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             CartViewController.cartItems.append(item) // Add item to the cart array
             CartItem.reloadData() // Refresh table view to reflect the changes
         }
+    
         
         
     }
