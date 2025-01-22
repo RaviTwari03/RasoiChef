@@ -99,7 +99,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 1:
             return 150 // Cart Item Section Height
         case 2:
-            return 250 // Bill Section Height
+            return 100 // Bill Section Height
         case 3:
             return 100 // Payment Section Height
         case 4:
