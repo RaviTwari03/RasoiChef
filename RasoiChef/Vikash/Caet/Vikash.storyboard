@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zXT-Rt-9EW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="2Sp-RJ-fga">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KUy-if-7Nd">
-                                <rect key="frame" x="10" y="160" width="373" height="120"/>
+                                <rect key="frame" x="10" y="64" width="373" height="120"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xUm-Kc-b72">
                                         <rect key="frame" x="10" y="10" width="353" height="100"/>
@@ -74,13 +74,13 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Items" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prd-dm-q4B">
-                                <rect key="frame" x="26.999999999999996" y="288" width="48.666666666666657" height="21.666666666666686"/>
+                                <rect key="frame" x="26.999999999999996" y="192" width="48.666666666666657" height="21.666666666666657"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XY7-h6-zYg">
-                                <rect key="frame" x="10" y="319.66666666666669" width="373" height="120"/>
+                                <rect key="frame" x="10" y="223.66666666666663" width="373" height="120"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RlW-iC-u8k">
                                         <rect key="frame" x="10" y="10" width="353" height="100"/>
@@ -110,7 +110,7 @@
                                                 <buttonConfiguration key="configuration" style="plain" image="xmark.circle.fill" catalog="system"/>
                                             </button>
                                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="dfa-oE-GzJ">
-                                                <rect key="frame" x="260" y="62" width="94" height="32"/>
+                                                <rect key="frame" x="260" y="62.000000000000028" width="94" height="32"/>
                                             </stepper>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -144,19 +144,19 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mXk-aM-dvu">
-                                <rect key="frame" x="20" y="447.66666666666669" width="353" height="35"/>
+                                <rect key="frame" x="20" y="351.66666666666669" width="353" height="35"/>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" image="plus.circle" catalog="system" title=" Add more items"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delivery Options" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V8J-xi-8Wz">
-                                <rect key="frame" x="20" y="496.66666666666669" width="353" height="21.000000000000057"/>
+                                <rect key="frame" x="20" y="400.66666666666669" width="353" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="lFX-0W-0py">
-                                <rect key="frame" x="20" y="525.66666666666663" width="353" height="32"/>
+                                <rect key="frame" x="20" y="429.66666666666669" width="353" height="32"/>
                                 <segments>
                                     <segment title="Self Pickup"/>
                                     <segment title="Delivery"/>
@@ -195,29 +195,67 @@
             </objects>
             <point key="canvasLocation" x="2550.3816793893129" y="-329.57746478873241"/>
         </scene>
-        <!--Cart-->
-        <scene sceneID="cit-CN-jPl">
+        <!--Cart View Controller-->
+        <scene sceneID="FLp-2L-Ecf">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zXT-Rt-9EW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Cart" image="cart" catalog="system" selectedImage="cart.fill" id="5Zl-1R-dgQ"/>
+                <viewController id="x1w-In-pah" customClass="CartViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZQ1-F5-mga" customClass="CartBillTableViewCell" customModule="RasoiChef" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="CcL-UY-GDW">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="FbY-bz-usK">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FbY-bz-usK" id="Pks-ux-sbs">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="VhO-vz-lIf"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="VhO-vz-lIf" firstAttribute="trailing" secondItem="CcL-UY-GDW" secondAttribute="trailing" id="Aoa-1Z-feM"/>
+                            <constraint firstItem="VhO-vz-lIf" firstAttribute="bottom" secondItem="CcL-UY-GDW" secondAttribute="bottom" id="IAa-d9-BPK"/>
+                            <constraint firstItem="CcL-UY-GDW" firstAttribute="top" secondItem="VhO-vz-lIf" secondAttribute="top" id="f6K-rV-duO"/>
+                            <constraint firstItem="CcL-UY-GDW" firstAttribute="leading" secondItem="VhO-vz-lIf" secondAttribute="leading" id="jGa-x6-NaY"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="baD-Zb-aS2"/>
+                    <connections>
+                        <outlet property="CartItem" destination="CcL-UY-GDW" id="gSN-iQ-bO7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tjq-YQ-VUC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5379.3893129770986" y="-310.56338028169017"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ESu-fR-2ml">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2Sp-RJ-fga" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="ph5-wx-Y53">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="mp5-O1-O1a">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="x3m-FF-urw" kind="relationship" relationship="rootViewController" id="aHH-di-wb2"/>
+                        <segue destination="x1w-In-pah" kind="relationship" relationship="rootViewController" id="AoM-Eu-BXv"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gbm-b4-OJI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bWg-hv-S7E" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1623.6641221374045" y="-329.57746478873241"/>
+            <point key="canvasLocation" x="4452.6717557251905" y="-310.56338028169017"/>
         </scene>
     </scenes>
     <resources>
-        <image name="cart" catalog="system" width="128" height="102"/>
-        <image name="cart.fill" catalog="system" width="128" height="102"/>
         <image name="plus.circle" catalog="system" width="128" height="123"/>
         <image name="xmark.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="opaqueSeparatorColor">
