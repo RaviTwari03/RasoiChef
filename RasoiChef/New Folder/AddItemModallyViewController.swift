@@ -92,59 +92,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
            
             quantity: quantity,
             specialRequest: specialRequest,
-            menuItem: MenuItem(
-                itemID: "item001",
-                kitchenID: "kitchen001",
-                name: "Vegetable Poha",
-                description: "A light, nutritious dish made with flattened rice, salted veggies, and flavorful spices.",
-                price: 70.0,
-                rating: 4.1,
-                availableMealTypes: [.breakfast],
-                portionSize: "250 gm",
-                intakeLimit: 20,
-                imageURL: "VegetablePoha",
-                orderDeadline: "Order Before 6 am."
-            ),
-            MenuItem(
-                itemID: "item002",
-                kitchenID: "kitchen001",
-                name: "Veg Thali",
-                description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
-                price: 130.0,
-                rating: 4.4,
-                availableMealTypes: [.lunch],
-                portionSize: "500 gm",
-                intakeLimit: 15,
-                imageURL: "VegThali",
-                orderDeadline: "Order Before 11 am."
-                
-            ),
-            MenuItem(
-                itemID: "item003",
-                kitchenID: "kitchen001",
-                name: "Spring Roll",
-                description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
-                price: 50.0,
-                rating: 4.3,
-                availableMealTypes: [.snacks],
-                portionSize: "6 pieces",
-                intakeLimit: 10,
-                imageURL: "SpringRoll",
-                orderDeadline: "Order Before 3 pm."
-            ),
-            MenuItem(
-                itemID: "item004",
-                kitchenID: "kitchen002",
-                name: "Masala Dosa",
-                description: "A crispy rice pancake filled with spiced potato filling, served with chutneys and sambar.",
-                price: 120.0,
-                rating: 4.5,
-                availableMealTypes: [.dinner],
-                portionSize: "1 piece",
-                intakeLimit: 25,
-                imageURL: "MasalaDosa",
-                orderDeadline: "Order Before 7 pm."
-            ))
+            menuItem: item)
         KitchenDataController.cartItems.append(cartItem)
             print("Item added to cart: \(cartItem)")  // Log the added item
 //            CartItem.reloadData()  // Refresh the table view
