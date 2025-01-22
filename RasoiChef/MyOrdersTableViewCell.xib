@@ -63,10 +63,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1. item 1" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7N-n4-Gmj">
-                                <rect key="frame" x="5" y="98" width="239" height="68"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1. item 1" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7N-n4-Gmj">
+                                <rect key="frame" x="5" y="98" width="128" height="17"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="128" id="AKk-qD-GWX"/>
+                                    <constraint firstAttribute="width" constant="128" id="59N-HE-g4t"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
@@ -124,17 +124,16 @@
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="BcL-H2-jHv"/>
                             <constraint firstItem="dHB-uZ-cc1" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="49" id="GAX-VN-StS"/>
                             <constraint firstItem="HEf-py-kwh" firstAttribute="leading" secondItem="nHO-Pb-2Be" secondAttribute="trailing" constant="60" id="OA0-xh-T3V"/>
-                            <constraint firstItem="P7N-n4-Gmj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="Un5-2z-hfc"/>
                             <constraint firstItem="Ls0-Hj-Y3C" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="Unq-Lc-HsZ"/>
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="5" id="Vf1-9A-rOV"/>
-                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="P7N-n4-Gmj" secondAttribute="bottom" constant="3" id="YlB-5b-5h1"/>
                             <constraint firstAttribute="bottom" secondItem="vWp-2n-UKf" secondAttribute="bottom" constant="2" id="cW9-hs-HK2"/>
                             <constraint firstAttribute="trailing" secondItem="hI8-cZ-BUj" secondAttribute="trailing" constant="8" id="dGC-8k-Hx9"/>
+                            <constraint firstItem="P7N-n4-Gmj" firstAttribute="top" secondItem="d7q-X0-VjG" secondAttribute="bottom" constant="3" id="f4C-6t-IdK"/>
                             <constraint firstAttribute="bottom" secondItem="HqV-eF-K19" secondAttribute="bottom" constant="1" id="fh6-F6-fYj"/>
-                            <constraint firstItem="P7N-n4-Gmj" firstAttribute="top" secondItem="d7q-X0-VjG" secondAttribute="bottom" constant="3" id="flh-Kt-yaf"/>
                             <constraint firstItem="dHB-uZ-cc1" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="gKu-Qg-c3v"/>
                             <constraint firstItem="vWp-2n-UKf" firstAttribute="top" secondItem="hI8-cZ-BUj" secondAttribute="bottom" constant="3" id="mH3-De-NsC"/>
                             <constraint firstItem="HqV-eF-K19" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="141" id="nfF-n7-kcM"/>
+                            <constraint firstItem="P7N-n4-Gmj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="s8f-Bs-YV9"/>
                             <constraint firstAttribute="bottom" secondItem="7Xi-ro-JlI" secondAttribute="bottom" constant="5" id="v3d-eY-1HI"/>
                             <constraint firstItem="7Xi-ro-JlI" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="5" id="vlR-5g-ahO"/>
                             <constraint firstItem="d7q-X0-VjG" firstAttribute="top" secondItem="dHB-uZ-cc1" secondAttribute="bottom" constant="4" id="y9u-md-oZj"/>
