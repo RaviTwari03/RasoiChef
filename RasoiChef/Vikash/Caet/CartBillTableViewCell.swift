@@ -11,8 +11,11 @@ class CartBillTableViewCell: UITableViewCell {
 
     @IBOutlet var itemPriceLabel: UILabel!
     @IBOutlet var gstLabel: UILabel!
+    @IBOutlet var deliveryChargesLabel: UILabel!
     @IBOutlet var discountLabel: UILabel!
     @IBOutlet var totalAmount: UILabel!
+   
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

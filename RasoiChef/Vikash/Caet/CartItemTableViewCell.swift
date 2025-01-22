@@ -28,15 +28,15 @@ class CartItemTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func updateCartItem(for indexpathe : IndexPath) {
-        let cartItem = KitchenDataController.cartItems[indexpathe.row]
-            CartDishLabel.text = cartItem.menuItem.name
-            CartDishDescription.text = cartItem.menuItem.description
-            CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"
-            CartItemQuantityLabel.text = "\(cartItem.quantity)"
-            CartIncreaseCounter.value = Double(cartItem.quantity)
-        }
-    
+//    func updateCartItem(for indexpathe : IndexPath) {
+//        let cartItem = KitchenDataController.cartItems[indexpathe.row]
+//            CartDishLabel.text = cartItem.menuItem.name
+//            CartDishDescription.text = cartItem.menuItem.description
+//            CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"
+//            CartItemQuantityLabel.text = "\(cartItem.quantity)"
+//            CartIncreaseCounter.value = Double(cartItem.quantity)
+//        }
+//    
     }
 
 

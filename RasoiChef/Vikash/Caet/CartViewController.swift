@@ -22,7 +22,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
         
         CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
-        CartItem.register(UINib(nibName: "CartItem", bundle: nil), forCellReuseIdentifier: "CartItem")
+        CartItem.register(UINib(nibName: "CartItems", bundle: nil), forCellReuseIdentifier: "CartItems")
         CartItem.register(UINib(nibName: "CartDelivery", bundle: nil), forCellReuseIdentifier: "CartDelivery")
         CartItem.register(UINib(nibName: "CartBill", bundle: nil), forCellReuseIdentifier: "CartBill")
         CartItem.register(UINib(nibName: "AddItemInCart", bundle: nil), forCellReuseIdentifier: "AddItemInCart")
@@ -31,7 +31,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.dataSource = self
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4 // Four sections: Address, Cart Items, Bill, and Payment
+        return 5 // Four sections: Address, Cart Items, Bill, and Payment
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -39,10 +39,12 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return 1 // Address Section (1 row)
         case 1:
-            return CartViewController.cartItems.count // Cart Items Section
+            return 1/* CartViewController.cartItems.count*/ // Cart Items Section
         case 2:
-            return 1 // Bill Section (1 row)
+            return 1
         case 3:
+            return 1 // Bill Section (1 row)
+        case 4:
             return 1 // Payment Section (1 row)
         default:
             return 0
@@ -58,20 +60,30 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             return cell
         case 1:
             // Cart Items Section
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CartItem", for: indexPath) as! CartItemTableViewCell
-            let cartItem = CartViewController.cartItems[indexPath.row]
-            cell.updateCartItem(for: indexPath) // Assuming a configure method for cart items
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as! CartItemTableViewCell
+            //let cartItem = CartViewController.cartItems[indexPath.row]
+//            cell.updateCartItem(for: indexPath) // Assuming a configure method for cart items
             return cell
         case 2:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "CartDelivery", for: indexPath) as? CartDeliveryTableViewCell {
+                return cell
+            } else {
+                // Handle the error gracefully by returning a default UITableViewCell or logging an issue
+                print("Error: CartDelivery cell could not be dequeued")
+                return UITableViewCell() // Default cell, could log or handle better
+            }
+        case 3:
             // Bill Section
             let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as! CartBillTableViewCell
             //                et totalAmount = calculateTotalAmount()
             //                cell.configure(with: totalAmount) // Assuming a configure method for the bill
             return cell
-        case 3:
+            
+        case 4:
             // Payment Section
             let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as! CartPayTableViewCell
             return cell
+        
         default:
             return UITableViewCell()
         }
@@ -82,11 +94,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return 120 // Address Section Height
         case 1:
-            return 500 // Cart Item Section Height
+            return 150 // Cart Item Section Height
         case 2:
-            return 300 // Bill Section Height
+            return 250 // Bill Section Height
         case 3:
             return 100 // Payment Section Height
+        case 4:
+            return 80
         default:
             return 44
         }
@@ -97,11 +111,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return "Delivery Address"
         case 1:
-            return "Cart Items"
+            return "Items"
         case 2:
             return "Bill Summary"
         case 3:
             return "Payment"
+        case 4:
+            return "Delivery Options"
         default:
             return nil
         }
