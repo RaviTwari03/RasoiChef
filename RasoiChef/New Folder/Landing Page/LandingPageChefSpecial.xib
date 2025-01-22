@@ -117,7 +117,7 @@
                 <outlet property="timeIcon" destination="Vr4-EO-43S" id="u3D-Er-L3B"/>
                 <outlet property="vegicon" destination="Tik-QF-MYS" id="5kd-LY-Wx7"/>
             </connections>
-            <point key="canvasLocation" x="-17" y="-23"/>
+            <point key="canvasLocation" x="-18.320610687022899" y="-23.591549295774648"/>
         </collectionViewCell>
     </objects>
 </document>
