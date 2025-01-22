@@ -32,6 +32,9 @@ class MyOrdersViewController: UIViewController {
         let pastOrderNib = UINib(nibName: "pastOrderTableViewCell", bundle: nil)
         tableView.register(pastOrderNib, forCellReuseIdentifier: "pastOrderTableViewCell")
         
+        
+     
+        
         loadData()
         
     }
@@ -71,6 +74,8 @@ class MyOrdersViewController: UIViewController {
     
 
 }
+
+
 
 
 extension MyOrdersViewController:UITableViewDataSource {
