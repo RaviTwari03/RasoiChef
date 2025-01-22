@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CartItems" id="p7O-uv-5vB" customClass="CartItemTableViewCell" customModule="RasoiChef" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="364" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p7O-uv-5vB" id="PSI-bJ-h99">
+                <rect key="frame" x="0.0" y="0.0" width="364" height="100"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4c2-zS-k0B">
+                        <rect key="frame" x="12" y="7" width="47" height="22"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r9p-2u-Kgh">
+                        <rect key="frame" x="12.000000000000004" y="33" width="41.333333333333343" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ats-Ea-Fcr">
+                        <rect key="frame" x="14" y="62" width="42" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pjB-AO-6qh">
+                        <rect key="frame" x="245" y="62" width="10" height="20"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="2cT-22-VB4">
+                        <rect key="frame" x="257" y="56" width="94" height="32"/>
+                    </stepper>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quantity-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GUQ-VB-Md7">
+                        <rect key="frame" x="169" y="61" width="73" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="4c2-zS-k0B" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="7" id="BpH-ll-3yb"/>
+                    <constraint firstItem="Ats-Ea-Fcr" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="14" id="Cgv-hE-XYP"/>
+                    <constraint firstItem="2cT-22-VB4" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="56" id="EqI-fG-T5w"/>
+                    <constraint firstItem="GUQ-VB-Md7" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="61" id="MMI-DL-1Im"/>
+                    <constraint firstAttribute="bottom" secondItem="Ats-Ea-Fcr" secondAttribute="bottom" constant="17" id="PNS-pv-a2r"/>
+                    <constraint firstItem="r9p-2u-Kgh" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="QJe-7e-Dmc"/>
+                    <constraint firstAttribute="bottom" secondItem="GUQ-VB-Md7" secondAttribute="bottom" constant="18" id="RV2-Ul-vX1"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4c2-zS-k0B" secondAttribute="trailing" constant="29" id="Rbh-gA-qsp"/>
+                    <constraint firstAttribute="bottom" secondItem="2cT-22-VB4" secondAttribute="bottom" constant="12" id="WB4-TI-oKz"/>
+                    <constraint firstItem="pjB-AO-6qh" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="62" id="WqF-rT-mgl"/>
+                    <constraint firstAttribute="trailing" secondItem="2cT-22-VB4" secondAttribute="trailing" constant="13" id="bge-ed-mrV"/>
+                    <constraint firstItem="2cT-22-VB4" firstAttribute="leading" secondItem="pjB-AO-6qh" secondAttribute="trailing" constant="2" id="e8T-nT-cGZ"/>
+                    <constraint firstAttribute="bottom" secondItem="pjB-AO-6qh" secondAttribute="bottom" constant="18" id="fyY-CZ-Mk2"/>
+                    <constraint firstItem="r9p-2u-Kgh" firstAttribute="top" secondItem="4c2-zS-k0B" secondAttribute="bottom" constant="4" id="gFw-Qh-ZuT"/>
+                    <constraint firstItem="pjB-AO-6qh" firstAttribute="leading" secondItem="GUQ-VB-Md7" secondAttribute="trailing" constant="3" id="j3B-UW-F3k"/>
+                    <constraint firstItem="4c2-zS-k0B" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="kCW-ax-LKh"/>
+                    <constraint firstItem="GUQ-VB-Md7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ats-Ea-Fcr" secondAttribute="trailing" constant="30" id="kRb-KV-MxO"/>
+                    <constraint firstItem="Ats-Ea-Fcr" firstAttribute="top" secondItem="r9p-2u-Kgh" secondAttribute="bottom" constant="8" symbolic="YES" id="vr9-Pc-Z7L"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="r9p-2u-Kgh" secondAttribute="trailing" constant="20" symbolic="YES" id="yfo-0f-gcY"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="CartDishDescription" destination="r9p-2u-Kgh" id="hVf-22-qWU"/>
+                <outlet property="CartDishLabel" destination="4c2-zS-k0B" id="vhl-S5-MiR"/>
+                <outlet property="CartDishPriceLabel" destination="Ats-Ea-Fcr" id="FC4-K7-AXz"/>
+                <outlet property="CartIncreaseCounter" destination="2cT-22-VB4" id="s47-z1-MfA"/>
+                <outlet property="CartItemQuantityLabel" destination="pjB-AO-6qh" id="CSb-ME-rA5"/>
+            </connections>
+            <point key="canvasLocation" x="91.603053435114504" y="14.788732394366198"/>
+        </tableViewCell>
+    </objects>
+</document>
