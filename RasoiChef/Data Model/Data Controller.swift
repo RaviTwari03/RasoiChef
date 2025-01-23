@@ -290,4 +290,15 @@ class KitchenDataController {
              icon: "DinnerIcon"
          )
      ]
+    static var user : [User] = [
+        User(
+            userID: nil,
+            name: nil,
+            email: nil,
+            phoneNumber: nil,
+            address: "Galgotias University, Greater Noida"
+            
+        )
+    ]
 }
+

@@ -47,66 +47,162 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 1:
             return CartViewController.cartItems.isEmpty ? 1 : CartViewController.cartItems.count
         case 2:
-            return 1 // Bill Section (1 row)
+            return CartViewController.cartItems.isEmpty ? 0 : 1 // Bill Section (1 row)
         case 3:
-            return 1 // Payment Section (1 row)
+            return CartViewController.cartItems.isEmpty ? 0 : 1
         default:
             return 0
         }
     }
     
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        switch indexPath.section {
+//        case 0:
+//            // Address Section
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "UserCartAddress", for: indexPath) as! UserCartAddressTableViewCell
+//            // cell.updateUserAddress(for: indexPath) // Assuming you have a configure method in the cell
+//            return cell
+//        case 1:
+//            if CartViewController.cartItems.isEmpty {
+//                       // Placeholder cell for an empty cart
+//                       let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
+//                       cell.textLabel?.text = "Your cart is empty. Add some items!"
+//                       cell.textLabel?.textAlignment = .center
+//                       cell.textLabel?.textColor = .gray
+//                
+//                       return cell
+//                   } else {
+//                       // Cart Items Section
+//                       let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as! CartItemTableViewCell
+//                       let cartItem = CartViewController.cartItems[indexPath.row]
+//                       cell.updateCartItem(for: indexPath)
+//                       
+//                       return cell
+//                   }
+//        case 2:
+////            // Bill Section
+////            if CartViewController.cartItems.isEmpty {
+////                // Placeholder cell for an empty cart
+////                let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
+////                cell.textLabel?.text = "Your cart is empty. Add some items!"
+////                cell.textLabel?.textAlignment = .center
+////                cell.textLabel?.textColor = .gray
+////                return cell}else{
+////                    let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as! CartBillTableViewCell
+////                    //                et totalAmount = calculateTotalAmount()
+////                    //                cell.configure(with: totalAmount) // Assuming a configure method for the bill
+////                    return cell}
+//            if CartViewController.cartItems.isEmpty {
+//                       // No need to create a placeholder cell as the row count is 0
+//                       return UITableViewCell()
+//                   } else {
+//                       let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as! CartBillTableViewCell
+//                       // Configure the cell as needed
+//                       return cell
+//                   }
+//               
+//        case 3:
+//            // Payment Section
+////            let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as! CartPayTableViewCell
+////            return cell
+//            if CartViewController.cartItems.isEmpty {
+//                       // No need to create a placeholder cell as the row count is 0
+//                       return UITableViewCell()
+//                   } else {
+//                       let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as! CartPayTableViewCell
+//                       // Configure the cell as needed
+//                       return cell
+//                   }
+//        default:
+//            return UITableViewCell()
+//        }
+//    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
             // Address Section
-            let cell = tableView.dequeueReusableCell(withIdentifier: "UserCartAddress", for: indexPath) as! UserCartAddressTableViewCell
-            // cell.updateUserAddress(for: indexPath) // Assuming you have a configure method in the cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCartAddress", for: indexPath) as? UserCartAddressTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.updateAddress(with: indexPath)
             return cell
+            
         case 1:
+            // Cart Items Section
             if CartViewController.cartItems.isEmpty {
-                       // Placeholder cell for an empty cart
-                       let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
-                       cell.textLabel?.text = "Your cart is empty. Add some items!"
-                       cell.textLabel?.textAlignment = .center
-                       cell.textLabel?.textColor = .gray
-                       return cell
-                   } else {
-                       // Cart Items Section
-                       let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as! CartItemTableViewCell
-                       let cartItem = CartViewController.cartItems[indexPath.row]
-                       cell.updateCartItem(for: indexPath)
-                       return cell
-                   }
+                // Placeholder cell for an empty cart
+                let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
+                cell.textLabel?.text = "Your cart is empty. Add some items!"
+                cell.textLabel?.textAlignment = .center
+                cell.textLabel?.textColor = .gray
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as? CartItemTableViewCell else {
+                    return UITableViewCell()
+                }
+                cell.updateCartItem(for: indexPath)
+                return cell
+            }
+            
         case 2:
             // Bill Section
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as! CartBillTableViewCell
-            //                et totalAmount = calculateTotalAmount()
-            //                cell.configure(with: totalAmount) // Assuming a configure method for the bill
-            return cell
+            if CartViewController.cartItems.isEmpty {
+                return UITableViewCell() // No cell needed when the cart is empty
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
+                    return UITableViewCell()
+                }
+                // Configure the cell as needed
+                // Example: cell.configure(with: totalAmount)
+                return cell
+            }
+            
         case 3:
             // Payment Section
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as! CartPayTableViewCell
-            return cell
+            if CartViewController.cartItems.isEmpty {
+                return UITableViewCell() // No cell needed when the cart is empty
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
+                    return UITableViewCell()
+                }
+                // Configure the cell as needed
+                return cell
+            }
+            
         default:
             return UITableViewCell()
         }
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            return 100 // Address Section Height
+            return 70 // Address Section Height
         case 1:
-            return 150 // Cart Item Section Height
+            return 110 // Cart Item Section Height
         case 2:
-            return 300 // Bill Section Height
+            return 250 // Bill Section Height
         case 3:
-            return 100 // Payment Section Height
+            return 80 // Payment Section Height
         default:
             return 44
         }
     }
     
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        switch section {
+//        case 0:
+//            return "Delivery Address"
+//        case 1:
+//            return "Cart Items"
+//        case 2:
+//            return CartViewController.cartItems.isEmpty ? nil : "Bill Summary"
+//        case 3:
+//            return "Payment"
+//        default:
+//            return nil
+//        }
+//    }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
@@ -114,13 +210,17 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 1:
             return "Cart Items"
         case 2:
-            return "Bill Summary"
+            return CartViewController.cartItems.isEmpty ? nil : "Bill Summary"
         case 3:
-            return "Payment"
+            return CartViewController.cartItems.isEmpty ? nil : "Payment"
         default:
             return nil
         }
     }
+
+    
+
+
 //    func didAddItemToCart(_ item: CartItem) {
 //        CartViewController.cartItems.append(item)
 //        CartItem.reloadData() // Refresh table view

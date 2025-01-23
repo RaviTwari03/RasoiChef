@@ -27,11 +27,11 @@ enum Cuisine: String {
 
 // User Profile
 struct User {
-    let userID: String
-    var name: String
-    var email: String
-    var phoneNumber: String
-    var address: String?
+    let userID: String?
+    var name: String?
+    var email: String?
+    var phoneNumber: String?
+    var address: String
     var profileImageURL: String?
 }
 

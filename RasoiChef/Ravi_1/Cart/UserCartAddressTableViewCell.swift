@@ -25,8 +25,8 @@ class UserCartAddressTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
-//    func updateUserAddress(for indexPath:IndexPath){
-//        _ = KitchenDataController.cartItems[indexPath.row]
-//        userAdressLabel.text = "Galgotias University, Plot No. 2, Yamuna Expy"
-//    }
+    func updateAddress(with indexpath: IndexPath){
+        let address = KitchenDataController.user[indexpath.row]
+        userAdressLabel.text = address.address
+    }
 }
