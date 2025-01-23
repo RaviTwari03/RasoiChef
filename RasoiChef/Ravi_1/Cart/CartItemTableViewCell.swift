@@ -27,7 +27,9 @@ class CartItemTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    
+    @IBAction func stepperValueChanged1(_ sender: UIStepper) {
+        CartItemQuantityLabel.text = "\(Int(sender.value))"
+    }
     func updateCartItem(for indexpath: IndexPath) {
         if KitchenDataController.cartItems.isEmpty {
             print("The cart is empty, no items to update.")
@@ -45,7 +47,9 @@ class CartItemTableViewCell: UITableViewCell {
         CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"
         CartItemQuantityLabel.text = "\(cartItem.quantity)"
         CartIncreaseCounter.value = Double(cartItem.quantity)
+        
     }
+   
     }
 
 
