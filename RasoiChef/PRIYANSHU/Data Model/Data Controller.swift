@@ -26,7 +26,8 @@ class KitchenDataController {
 //            profileImageName: "Kitchen_Image",
             rating: 4.3,
             isOnline: true,
-            distance: 2.6
+            distance: 2.6,
+            kitchenImage: "KitchenImage 1"
         ),
         Kitchen(
             kitchenID: "kitchen002",
@@ -35,7 +36,8 @@ class KitchenDataController {
             cuisines: [.SouthIndian, .Continental],
             rating: 4.6,
             isOnline: true,
-            distance: 3.1 
+            distance: 3.1,
+            kitchenImage: "KitchenImage2"
         )
     ]
     
@@ -282,7 +284,7 @@ class KitchenDataController {
              subtitle: "Order Before 5 pm",
              deliveryTime: "Delivery expected by 6 pm",
              timer: "15 min",
-             icon: "SnackIcon"
+             icon: "SnacksIcon"
          ),
          MealBanner(
              title: "Delightful Dinner",

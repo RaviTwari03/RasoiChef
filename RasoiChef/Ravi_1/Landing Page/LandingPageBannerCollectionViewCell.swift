@@ -14,6 +14,7 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
     @IBOutlet var deliveryExpected: UILabel!
     @IBOutlet var TimeRemainingLabel: UILabel!
     @IBOutlet var BannerImage: UIImageView!
+    @IBOutlet var timerIcon: UIImageView!
     
     
     func updateBannerDetails(for indexPath : IndexPath){
@@ -23,6 +24,13 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         deliveryExpected.text = bannerData.deliveryTime
         TimeRemainingLabel.text = bannerData.timer
         BannerImage.image = UIImage(named: bannerData.icon)
+        timerIcon.image = UIImage(systemName: "timer")
+        timerIcon.tintColor = .systemRed
+        TimeRemainingLabel.tintColor = .systemRed
+        
+        let config = UIImage.SymbolConfiguration(weight: .medium)
+
+        timerIcon.image = UIImage(systemName: "timer", withConfiguration: config)
     }
     
     
