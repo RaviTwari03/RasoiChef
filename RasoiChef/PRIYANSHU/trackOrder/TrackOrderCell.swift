@@ -29,7 +29,7 @@ class TrackOrderCell: UITableViewCell {
         statusLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = .darkGray
-        descriptionLabel.numberOfLines = 0 // Allow multiline descriptions
+        descriptionLabel.numberOfLines = 0
         timeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         timeLabel.textColor = .gray
 
@@ -100,12 +100,5 @@ class TrackOrderCell: UITableViewCell {
         }
     }
 
-//    func configure(status: String, description: String, time: String, isCompleted: Bool) {
-//        statusLabel.text = status
-//        descriptionLabel.text = description
-//        timeLabel.text = time
-//
-//        statusIndicator.backgroundColor = isCompleted ? .systemGreen : .systemOrange
-//        lineView.isHidden = status == "Delivered"
-//    }
+
 }
