@@ -1,40 +1,41 @@
 //
-//  KitchenChefSpecialViewController.swift
-//  kitchen
+//  LandingPageChefSpecialityViewController.swift
+//  RasoiChef
 //
-//  Created by Ravi Tiwari on 18/01/25.
+//  Created by Batch - 1 on 23/01/25.
 //
 
 import UIKit
 
-class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate{
+class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate {
     
-    
-    
-    @IBOutlet var ChefSpecialMenu: UICollectionView!
+    @IBOutlet var ChefsSpecialDishes: UICollectionView!
     var searchBar: UISearchBar!
     var filterStackView: UIStackView!
     
     
     override func viewDidLoad() {
-           super.viewDidLoad()
-           self.view.backgroundColor = .white
-           self.title = "Chef Speciality Dishes"
-            configureSearchBar()
-            configureFilterStackView()
+        super.viewDidLoad()
         
-        
-        
-        let chefSpecialMenuNib = UINib(nibName: "ChefSpecialMenu", bundle: nil)
-        
-        
-        ChefSpecialMenu.register(chefSpecialMenuNib, forCellWithReuseIdentifier: "ChefSpecialMenu")
-        
-        
-        // Setting Layout
-        ChefSpecialMenu.setCollectionViewLayout(generateLayout(), animated: true)
-        ChefSpecialMenu.dataSource = self
-        ChefSpecialMenu.delegate = self
+        self.view.backgroundColor = .white
+        self.title = "Chef Speciality Dishes"
+         configureSearchBar()
+         configureFilterStackView()
+     
+     
+     
+     let chefSpecialMenuNib = UINib(nibName: "ChefSpecialMenuSeeMore", bundle: nil)
+     
+     
+        ChefsSpecialDishes.register(chefSpecialMenuNib, forCellWithReuseIdentifier: "ChefSpecialMenuSeeMore")
+     
+     
+     // Setting Layout
+        ChefsSpecialDishes.setCollectionViewLayout(generateLayout(), animated: true)
+        ChefsSpecialDishes.dataSource = self
+        ChefsSpecialDishes.delegate = self
+
+        // Do any additional setup after loading the view.
     }
     
     func configureSearchBar() {
@@ -120,7 +121,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         return 5
     }
     
-    // MARK: - Number of Items in Section
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -131,11 +132,10 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         }
     }
     
-    // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenu", for: indexPath) as! ChefSpecialMenuCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
             cell.layer.cornerRadius = 10.0    // Rounded corners
             cell.layer.borderWidth = 1.0       // Border width
@@ -155,7 +155,6 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     }
     
     
-    // MARK: - Compositional Layout
     func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
             let section: NSCollectionLayoutSection
@@ -174,7 +173,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     
 
 //
-//    
+//
 //    // Calendar Section Layout
     func generateChefSpecialMenuSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -194,13 +193,5 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         return section
     }
     
-   
-    
 
-    
-       }
-    
-
-   
-
-
+}
