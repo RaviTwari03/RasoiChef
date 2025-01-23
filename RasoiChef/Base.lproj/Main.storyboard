@@ -56,7 +56,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7653" y="-66"/>
+            <point key="canvasLocation" x="8491" y="25"/>
         </scene>
         <!--Add Item Modally View Controller-->
         <scene sceneID="iBo-tC-4AI">
@@ -207,7 +207,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZEB-tb-mKP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8349" y="-66"/>
+            <point key="canvasLocation" x="9457.2519083969455" y="24.647887323943664"/>
         </scene>
         <!--Preorder-->
         <scene sceneID="kHv-Om-szR">
@@ -276,7 +276,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pni-Ip-MZV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4144" y="-66"/>
+            <point key="canvasLocation" x="4857.2519083969464" y="-20.422535211267608"/>
         </scene>
         <!--Kitchen Menu List View Controller-->
         <scene sceneID="MLr-LC-eJI">
@@ -286,8 +286,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RCk-08-4Ee">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RCk-08-4Ee">
+                                <rect key="frame" x="0.0" y="59" width="393" height="148"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tFK-yq-zV8">
                                     <size key="itemSize" width="128" height="128"/>
@@ -340,7 +340,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="azr-mU-eQS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="9023.6641221374048" y="-66.197183098591552"/>
+            <point key="canvasLocation" x="10424" y="25"/>
         </scene>
         <!--Kitchen Chef Special View Controller-->
         <scene sceneID="ZPV-Gx-Zod">
@@ -386,47 +386,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MyU-2Z-7RK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="9679" y="-66"/>
-        </scene>
-        <!--Subscription View Controller-->
-        <scene sceneID="yh0-dg-ulz">
-            <objects>
-                <viewController storyboardIdentifier="SubscriptionViewController" id="0fS-oN-zRT" customClass="SubscriptionViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FPU-eg-QHq">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="sAY-0f-HE8">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="EK3-qc-cDd">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EK3-qc-cDd" id="LsR-Oc-NAG">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="HgN-hA-fnD"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="HgN-hA-fnD" firstAttribute="trailing" secondItem="sAY-0f-HE8" secondAttribute="trailing" id="3NF-Wb-LO0"/>
-                            <constraint firstItem="sAY-0f-HE8" firstAttribute="leading" secondItem="HgN-hA-fnD" secondAttribute="leading" id="NUA-xd-yMv"/>
-                            <constraint firstItem="HgN-hA-fnD" firstAttribute="bottom" secondItem="sAY-0f-HE8" secondAttribute="bottom" id="Ntc-v4-pmn"/>
-                            <constraint firstItem="sAY-0f-HE8" firstAttribute="top" secondItem="HgN-hA-fnD" secondAttribute="top" id="m9Z-xK-x5h"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="MealSubscriptionPlan" destination="sAY-0f-HE8" id="BLs-MU-FfT"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FDK-dI-ZHn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="10660" y="-60"/>
+            <point key="canvasLocation" x="11416" y="25"/>
         </scene>
         <!--Item-->
         <scene sceneID="wqU-uu-SDD">
