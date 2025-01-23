@@ -26,7 +26,8 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
 
         SpecialRating.text = "⭐ \(String(describing: specialDish.rating))"
 
-        specialDishImage.image = UIImage(named: specialDish.imageURL ?? "placeholder") 
+        specialDishImage.image = UIImage(named: specialDish.imageURL)
+        
         timeIcon.image = UIImage(named: "LunchIcon")
         
     }

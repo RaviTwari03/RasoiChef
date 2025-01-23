@@ -25,7 +25,8 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
         Distance.text = "\(restaurant.distance) km"
         CuisineLabel.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
         RatingsLabel.text = "⭐ \(restaurant.rating)"
-        KichenImage.image = UIImage(named: "KitchenImage 1")
+//        KichenImage.image = UIImage(named: "KitchenImage 1")
+        KichenImage.image = UIImage(named: restaurant.kitchenImage)
         
         availabilityLabel.text = restaurant.isOnline ? "Online" : "Offline"
     }

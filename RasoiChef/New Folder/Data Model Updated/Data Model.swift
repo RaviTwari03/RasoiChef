@@ -43,7 +43,8 @@ struct Kitchen {
     var cuisines: [Cuisine]
     var rating: Float
     var isOnline: Bool
-    var distance: Double // Distance from the user
+    var distance: Double
+    var kitchenImage: String// Distance from the user
 }
 
 // Menu Item
@@ -70,7 +71,7 @@ struct ChefSpecialtyDish {
     var description: String
     var price: Double
     var rating: Float
-    var imageURL: String?
+    var imageURL: String
 }
 
 // Cart Item

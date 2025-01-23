@@ -105,6 +105,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
+            cell.updateSpecialDishDetails(for: indexPath)
             cell.layer.cornerRadius = 15.0    // Rounded corners
             cell.layer.borderWidth = 1.0       // Border width
             cell.layer.borderColor = UIColor.black.cgColor
@@ -211,7 +212,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
                // Add content insets to the group
                group.interItemSpacing = .fixed(5)
-               group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 0.0, bottom: 8.0, trailing: 0.0) // No insets on the left/right
+               group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
 
                // Create the section
                let section = NSCollectionLayoutSection(group: group)
