@@ -388,6 +388,46 @@
             </objects>
             <point key="canvasLocation" x="11416" y="25"/>
         </scene>
+        <!--Subscription View Controller-->
+        <scene sceneID="vOH-rF-jFP">
+            <objects>
+                <viewController storyboardIdentifier="SubscriptionViewController" id="yAB-gP-58M" customClass="SubscriptionViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3yW-id-YBx">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="bhz-8I-I6b">
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Zgo-6m-fMZ">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Zgo-6m-fMZ" id="y0u-Eu-okM">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="zZV-4l-IpG"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="zZV-4l-IpG" firstAttribute="bottom" secondItem="bhz-8I-I6b" secondAttribute="bottom" id="3XW-ps-UJr"/>
+                            <constraint firstItem="zZV-4l-IpG" firstAttribute="trailing" secondItem="bhz-8I-I6b" secondAttribute="trailing" id="Pq5-98-zo7"/>
+                            <constraint firstItem="bhz-8I-I6b" firstAttribute="leading" secondItem="zZV-4l-IpG" secondAttribute="leading" id="f6U-7G-fSt"/>
+                            <constraint firstItem="bhz-8I-I6b" firstAttribute="top" secondItem="zZV-4l-IpG" secondAttribute="top" id="wej-WP-flr"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="MealSubscriptionPlan" destination="bhz-8I-I6b" id="SEv-yj-KMr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9A8-zt-c69" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="12327" y="27"/>
+        </scene>
         <!--Item-->
         <scene sceneID="wqU-uu-SDD">
             <objects>
