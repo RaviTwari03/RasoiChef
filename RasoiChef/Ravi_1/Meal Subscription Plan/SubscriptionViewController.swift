@@ -26,28 +26,22 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
            MealSubscriptionPlan.delegate = self
        }
 
-       // Number of sections
        func numberOfSections(in tableView: UITableView) -> Int {
            return 2 // Weekly Plans and Customize Table
        }
 
-       // Number of rows in each section
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return 1/*section == 1*/ /*0 ? 1 */ // 1 row for Weekly Plans, 7 rows for days in Customize Table
+           return 1
        }
 
-       // Configure cells
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            if indexPath.section == 0 {
-               // Weekly Plans Section
+              
                let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as! WeeklyPlansTableViewCell
-               // Configure start date, end date, and selected range
                return cell
            } else {
-               // Customize Table Section
                let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable", for: indexPath) as! CustomiseTableTableViewCell
-               // Configure day and meal icons for indexPath.row
-//               cell.configureForDay(day: getDayForIndex(index: indexPath.row))
+     
                return cell
            }
        }

@@ -8,14 +8,12 @@
 import Foundation
 
 
-// MARK: - Data Controller
 
 class KitchenDataController {
     static let shared = KitchenDataController()
 
     private init() {}
 
-    // Static Data Stores
     static var users: [User] = []
     static var kitchens: [Kitchen] = [
         Kitchen(
@@ -159,9 +157,7 @@ class KitchenDataController {
     static var feedbacks: [Feedback] = []
     static var coupons: [Coupon] = []
 
-    // MARK: - CRUD Operations
-
-    // User Management
+   
     static func addUser(_ user: User) {
         users.append(user)
     }

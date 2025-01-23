@@ -34,24 +34,6 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishPriceLabel.text = "₹\(specialDish.price)"
         specialDishRating.text = "⭐ \(specialDish.rating)"
         specialDishImage.image = UIImage(named: "CholeBhature")
-        //specialDishDescriptionLabel.text = specialDish.description
-        
-//        if let imageURL = specialDish.imageURL, let url = URL(string: imageURL) {
-//            URLSession.shared.dataTask(with: url) { data, _, error in
-//                if let error = error {
-//                    print("Error loading image: \(error)")
-//                    return
-//                }
-//                guard let data = data else {
-//                    print("No image data received.")
-//                    return
-//                }
-//                DispatchQueue.main.async {
-//                    self.specialDishImage.image = UIImage(data: data)
-//                }
-//            }.resume()
-//        } else {
-//            print("Using placeholder image.")
             specialDishImage.image = UIImage(named: "CholeBhature")
         
     }

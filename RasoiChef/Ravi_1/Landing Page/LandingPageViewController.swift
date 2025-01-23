@@ -232,6 +232,14 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 
                 // Navigate to the view controller
                 self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+                
+//                kitchenDetailVC.modalPresentationStyle = .pageSheet
+//                
+//                if let sheet = kitchenDetailVC.sheetPresentationController {
+//                    sheet.detents = [.medium(),.large()]
+//                }
+//                present(kitchenDetailVC,animated: true)
+                
             }
         }
     }

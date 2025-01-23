@@ -17,6 +17,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
            super.viewDidLoad()
         self.title = "Kanha Ji Rasoi"
+        
            // Registering Nibs for Cells
            let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
            let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)
@@ -159,41 +160,41 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
-            cell.updateMenuDetails(with : indexPath)// Pass indexPath insteadofindexPath.section
+            cell.updateMenuDetails(with : indexPath)
             
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
+            cell.layer.cornerRadius = 10.0
+               cell.layer.borderWidth = 1.0
+               cell.layer.borderColor = UIColor.gray.cgColor
+               cell.layer.shadowColor = UIColor.black.cgColor
+               cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+               cell.layer.shadowRadius = 5.0
+            cell.layer.shadowOpacity = 0.2
                cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-               cell.layer.shadowOpacity = 0.2    // Shadow opacity
+            cell.layer.cornerRadius = 10.0
+               cell.layer.borderWidth = 1.0
+               cell.layer.borderColor = UIColor.gray.cgColor
+               cell.layer.shadowColor = UIColor.black.cgColor
+               cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+               cell.layer.shadowRadius = 5.0
+               cell.layer.shadowOpacity = 0.2
                cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
         case 3:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
             cell.updateSubscriptionPlanData(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-               cell.layer.borderWidth = 1.0       // Border width
-               cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-               cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-               cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-               cell.layer.shadowRadius = 5.0     // Shadow blur radius
-               cell.layer.shadowOpacity = 0.2    // Shadow opacity
+            cell.layer.cornerRadius = 10.0
+               cell.layer.borderWidth = 1.0
+               cell.layer.borderColor = UIColor.gray.cgColor
+               cell.layer.shadowColor = UIColor.black.cgColor
+               cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+               cell.layer.shadowRadius = 5.0
+               cell.layer.shadowOpacity = 0.2
                cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
@@ -293,11 +294,20 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
             detailVC.selectedItem = selectedItem
+
+            detailVC.modalPresentationStyle = .pageSheet
+
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+
             present(detailVC, animated: true, completion: nil)
         } else {
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
+
 
 
     

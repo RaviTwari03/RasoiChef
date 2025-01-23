@@ -44,19 +44,19 @@ struct Kitchen {
     var rating: Float
     var isOnline: Bool
     var distance: Double
-    var kitchenImage: String// Distance from the user
+    var kitchenImage: String
 }
 
 // Menu Item
 struct MenuItem {
     let itemID: String
-    let kitchenID: String // Foreign Key to Kitchen
+    let kitchenID: String
     var name: String
     var description: String
     var price: Double
     var rating: Float
     var availableMealTypes: [MealType]
-    var portionSize: String // e.g., "500 gm"
+    var portionSize: String
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline : String
@@ -66,7 +66,7 @@ struct MenuItem {
 struct ChefSpecialtyDish {
     let kitchenName : String
     let dishID: String
-    let kitchenID: String // Foreign Key to Kitchen
+    let kitchenID: String
     var name: String
     var description: String
     var price: Double
@@ -79,25 +79,25 @@ struct CartItem {
     var userAdress: String
     var quantity: Int
     var specialRequest: String?
-    var menuItem: MenuItem // Include MenuItem to access dish details
+    var menuItem: MenuItem
 }
 
 // Order
 struct Order {
     let orderID: String
-    let userID: String // Foreign Key to User
-    let kitchenID: String // Foreign Key to Kitchen
+    let userID: String
+    let kitchenID: String
     let items: [OrderItem]
     var status: OrderStatus
     var totalAmount: Double
     var deliveryAddress: String
     var deliveryDate: Date
-    var deliveryType: String // "Delivery" or "Self Pickup"
+    var deliveryType: String
 }
 
 // Order Item (Nested within Order)
 struct OrderItem {
-    let menuItemID: String // Foreign Key to MenuItem
+    let menuItemID: String
     var quantity: Int
     var price: Double
 }
@@ -105,29 +105,29 @@ struct OrderItem {
 // Subscription Plan
 struct SubscriptionPlan {
     let planID: String
-    let userID: String // Foreign Key to User
-    let kitchenID: String // Foreign Key to Kitchen
+    let userID: String
+    let kitchenID: String
     var startDate: Date?
     var endDate: Date?
     var meals: [SubscriptionMeal]
     var totalPrice: Double?
-    var details: String // Details about the subscription (e.g., "Weekly Plan", "Customizable")
-    var mealCountPerDay: Int? // Number of meals provided daily
+    var details: String
+    var mealCountPerDay: Int?
     var planImage: String?
 }
 
 // Subscription Meal (Nested within SubscriptionPlan)
 struct SubscriptionMeal {
-    var day: String // e.g., "Monday"
+    var day: String
     var mealType: MealType
-    var menuItemID: String // Foreign Key to MenuItem
+    var menuItemID: String
 }
 
 // Feedback
 struct Feedback {
     let feedbackID: String
-    let userID: String // Foreign Key to User
-    let kitchenID: String // Foreign Key to Kitchen
+    let userID: String
+    let kitchenID: String
     var rating: Float
     var comments: String?
 }
@@ -147,10 +147,9 @@ struct DateItem {
     let isDisabled: Bool
 }
 struct MealBanner {
-    let title: String              // E.g., "Taste the Noon Magic"
-    let subtitle: String           // E.g., "Order Before 11 am"
-    let deliveryTime: String       // E.g., "Delivery expected by 1 pm"
-    let timer: String              // E.g., "10 min"
-    let icon: String               // E.g., "Lunch Time" (with an associated sun icon)
+    let title: String
+    let subtitle: String
+    let deliveryTime: String
+    let timer: String
+    let icon: String
 }
-

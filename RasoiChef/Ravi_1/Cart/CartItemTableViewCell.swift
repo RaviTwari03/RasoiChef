@@ -26,14 +26,14 @@ class CartItemTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    
     func updateCartItem(for indexpath: IndexPath) {
-        // Check if the cartItems array is empty
         if KitchenDataController.cartItems.isEmpty {
             print("The cart is empty, no items to update.")
             return
         }
         
-        // Ensure the index is within bounds
         guard indexpath.row < KitchenDataController.cartItems.count else {
             print("Index out of range: \(indexpath.row) exceeds number of cart items")
             return
