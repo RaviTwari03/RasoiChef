@@ -15,15 +15,11 @@ class MyOrdersTableViewCell: UITableViewCell {
     
     var orderForDetail:Order?
    
-            @IBOutlet weak var orderIDLabel: UILabel!
-            @IBOutlet weak var dateLabel: UILabel!
-            @IBOutlet weak var kitchenName: UILabel!
-            @IBOutlet weak var locationLabel: UILabel!
-            @IBOutlet weak var itemsLabel: UILabel!
-            @IBOutlet weak var paymentDetailsButton: UIButton!
-        
-
-    
+    @IBOutlet weak var orderIDLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var kitchenName: UILabel!
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var itemsLabel: UILabel!
     @IBOutlet weak var cardView: UIView!
     
     override func awakeFromNib() {
@@ -48,9 +44,9 @@ class MyOrdersTableViewCell: UITableViewCell {
         cardView.layer.masksToBounds = true
             // Add shadow to create a card-like appearance
         cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
         cardView.layer.shadowRadius = 5
-        cardView.layer.shadowOpacity = 0.2
+        cardView.layer.shadowOpacity = 0.4
         cardView.layer.masksToBounds = false
             // Add padding by adjusting the content insets
         cardView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
@@ -91,8 +87,11 @@ class MyOrdersTableViewCell: UITableViewCell {
         @IBOutlet weak var trackButton: UIButton!
         
         weak var delegate: MyOrderTableViewCellDelegate?
-//        var order: Order!
+        var order: Order!
+    
+    
         @IBAction func trackButtonTapped(_ sender: Any) {
+            
             delegate?.didTapTrackButton(forOrder: orderForDetail!)
             
         }

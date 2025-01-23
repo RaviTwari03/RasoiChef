@@ -59,10 +59,12 @@ class TrackOrderCell: UITableViewCell {
             statusIndicator.heightAnchor.constraint(equalToConstant: 12),
 
             // Line View
-            lineView.centerXAnchor.constraint(equalTo: statusIndicator.centerXAnchor),
+            
+            lineView.leadingAnchor.constraint(equalTo: statusIndicator.centerXAnchor, constant: -1),
             lineView.topAnchor.constraint(equalTo: statusIndicator.bottomAnchor),
-            lineView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             lineView.widthAnchor.constraint(equalToConstant: 2),
+            lineView.heightAnchor.constraint(equalToConstant: 55),
+//
 
             // Status Label
             statusLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: 20),
@@ -93,9 +95,11 @@ class TrackOrderCell: UITableViewCell {
         // Adjust the visibility of the line based on the status
         if isCompleted {
             lineView.backgroundColor = .systemGreen
+            
             lineView.isHidden = false
         } else {
             lineView.backgroundColor = .lightGray
+            
             lineView.isHidden = true
         }
     }

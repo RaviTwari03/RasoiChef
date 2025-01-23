@@ -43,7 +43,11 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        190
+        230
+        
+        
+        
+        
     }
     
     

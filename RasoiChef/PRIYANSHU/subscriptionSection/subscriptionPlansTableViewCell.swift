@@ -39,9 +39,9 @@ class subscriptionPlansTableViewCell: UITableViewCell {
         cardView.layer.masksToBounds = true
             // Add shadow to create a card-like appearance
         cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
         cardView.layer.shadowRadius = 5
-        cardView.layer.shadowOpacity = 0.2
+        cardView.layer.shadowOpacity = 0.4
         cardView.layer.masksToBounds = false
             // Add padding by adjusting the content insets
         cardView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)

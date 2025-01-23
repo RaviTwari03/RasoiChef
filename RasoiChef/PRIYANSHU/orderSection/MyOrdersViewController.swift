@@ -33,7 +33,7 @@ class MyOrdersViewController: UIViewController {
         tableView.register(pastOrderNib, forCellReuseIdentifier: "pastOrderTableViewCell")
         
         
-     
+        tableView.sectionHeaderTopPadding = 10
         
         loadData()
         
@@ -93,24 +93,48 @@ extension MyOrdersViewController:UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+            let headerView = UIView()
+//            headerView.backgroundColor = .lightGray
+
+            let titleLabel = UILabel()
+            titleLabel.text = section == 0 ? "Current Orders" : "Past Orders"
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+            titleLabel.textColor = .black
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+            headerView.addSubview(titleLabel)
+
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
+                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+            ])
+
+            return headerView
+        }
+
+        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+            return 44
+        }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            if section == 0 {
-                    return "Current Orders"
-            } else {
-                    return "Past Orders"
-            }
-    }
     
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-             if let header = view as? UITableViewHeaderFooterView {
-                    header.textLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
-                    header.textLabel?.textColor = .black
-                    header.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: header.frame.height)
-              
-                    }
-    }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//            if section == 0 {
+//                    return "Current Orders"
+//            } else {
+//                    return "Past Orders"
+//            }
+//    }
+//    
+//    
+//    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+//             if let header = view as? UITableViewHeaderFooterView {
+//                 header.textLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize)
+//                    header.textLabel?.textColor = .black
+//                    header.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: header.frame.height)
+//              
+//                    }
+//    }
    
 
     
@@ -123,6 +147,7 @@ extension MyOrdersViewController:UITableViewDataSource {
                                 cell.configure(order: order)
             
                     cell.delegate = self
+                
                     cell.onInfoButtonTapped = { [weak self] in
                     guard let self = self else { return }
                     self.showPricePopup(for: order)
@@ -163,6 +188,17 @@ extension MyOrdersViewController:UITableViewDelegate{
     }
     
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            // Force headers to scroll out of view
+            let offsetY = scrollView.contentOffset.y
+            if offsetY > 0 {
+                tableView.contentInset = UIEdgeInsets(top: -44, left: 0, bottom: 0, right: 0)
+            } else {
+                tableView.contentInset = .zero
+            }
+        }
+    
+    
        
    
 }
@@ -175,4 +211,6 @@ extension MyOrdersViewController: MyOrderTableViewCellDelegate {
     }
     
 }
+
+
 
