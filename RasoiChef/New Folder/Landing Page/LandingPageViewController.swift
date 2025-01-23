@@ -29,6 +29,8 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            
            // Setting Layout
         LandingPage.register(SectionHeaderLandingCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeaderLanding")
+//        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
+
 
         LandingPage.setCollectionViewLayout(generateLayout(), animated: true)
         LandingPage.dataSource = self
@@ -78,12 +80,19 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 header.actionButton.isHidden = false
                 header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
             }
+            if header.headerLabel.text == "Meal Categories" {
+                header.actionButton.isHidden = true
+                header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
+            } else {
+                header.actionButton.isHidden = false
+                header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+            }
             
             header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
             header.actionButton.setTitle("See All", for: .normal)
 
         header.actionButton.tag = indexPath.section
-//        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
+        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
              
             
             return header
@@ -189,20 +198,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
        // Layout for Chef's Special Section
        func generateLandingPageKitchenSectionLayout() -> NSCollectionLayoutSection {
-//           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-//           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//           
-//           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
-//           let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-//           group.interItemSpacing = .fixed(5)
-//           group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 12.0, bottom: 8.0, trailing: 8.0)
-//           
-////           let section = NSCollectionLayoutSection(group: group)
-////           section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
-//////           section.orthogonalScrollingBehavior = .groupPaging
-//           let section = NSCollectionLayoutSection(group: group)
-//           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20)
-//           return section
+
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
                let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
@@ -237,7 +233,21 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     }
     
     
-    
+    @objc func sectionButtonTapped(_ sender: UIButton) {
+        switch sender.tag {
+        case 1:
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "LandingPageChefSpecialitySeeMoreViewController") as? LandingPageChefSpecialitySeeMoreViewController {
+                self.navigationController?.pushViewController(firstScreenVC, animated: true)
+            } else {
+                print("Error: Could not instantiate KitchenMenuListViewController")
+            }
+
+        default:
+            break
+        }
+    }
+
 
     
 

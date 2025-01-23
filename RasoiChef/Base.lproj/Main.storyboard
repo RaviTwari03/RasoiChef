@@ -278,6 +278,21 @@
             </objects>
             <point key="canvasLocation" x="4857.2519083969464" y="-20.422535211267608"/>
         </scene>
+        <!--Landing Page Chef Speciality See More View Controller-->
+        <scene sceneID="aCu-cQ-TRs">
+            <objects>
+                <viewController storyboardIdentifier="LandingPageChefSpecialitySeeMoreViewController" id="zFd-b5-Xyg" customClass="LandingPageChefSpecialitySeeMoreViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OjI-mh-mnc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="udb-jQ-7Bl"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fWI-mb-dql" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4926" y="662"/>
+        </scene>
         <!--Kitchen Menu List View Controller-->
         <scene sceneID="MLr-LC-eJI">
             <objects>
