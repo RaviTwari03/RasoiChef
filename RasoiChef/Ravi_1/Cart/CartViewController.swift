@@ -95,7 +95,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            return 120 // Address Section Height
+            return 100 // Address Section Height
         case 1:
             return 150 // Cart Item Section Height
         case 2:
