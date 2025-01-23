@@ -24,6 +24,7 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupUI()
     }
 

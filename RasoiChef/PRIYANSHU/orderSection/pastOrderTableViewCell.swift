@@ -38,17 +38,19 @@ class pastOrderTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     private func applyCardStyle() {
+        pastOrderViewCell.layer.borderWidth = 0.5
+        pastOrderViewCell.layer.borderColor = UIColor.black.cgColor
             // Round the corners of the content view to make it appear as a card
         pastOrderViewCell.layer.cornerRadius = 16
         pastOrderViewCell.layer.masksToBounds = true
 
-            // Add shadow to create a card-like appearance
-        pastOrderViewCell.layer.shadowColor = UIColor.black.cgColor
-        pastOrderViewCell.layer.shadowOffset = CGSize(width: 0, height: 2)
-        pastOrderViewCell.layer.shadowRadius = 5
-        pastOrderViewCell.layer.shadowOpacity = 0.3
-        pastOrderViewCell.layer.masksToBounds = false
-            
+//            // Add shadow to create a card-like appearance
+//        pastOrderViewCell.layer.shadowColor = UIColor.black.cgColor
+//        pastOrderViewCell.layer.shadowOffset = CGSize(width: 0, height: 2)
+//        pastOrderViewCell.layer.shadowRadius = 5
+//        pastOrderViewCell.layer.shadowOpacity = 0.3
+//        pastOrderViewCell.layer.masksToBounds = false
+//            
             // Add padding by adjusting the content insets
         pastOrderViewCell.layoutMargins = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
             
