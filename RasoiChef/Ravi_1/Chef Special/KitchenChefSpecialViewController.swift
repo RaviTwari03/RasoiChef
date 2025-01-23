@@ -172,34 +172,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         return layout
     }
     
-//    func setupCollectionView() {
-//        // Ensure the collection view exists
-//        guard let collectionView = ChefSpecialMenu else {
-//            print("Error: ChefSpecialMenu collection view is not initialized.")
-//            return
-//        }
-//        
-//        // Configure layout
-//        let layout = UICollectionViewCompositionalLayout { sectionIndex, environment in
-//            return self.generateChefSpecialMenuSectionLayout()
-//        }
-//        collectionView.setCollectionViewLayout(layout, animated: false)
-//        
-//        // Ensure the filterStackView exists
-//        guard let filterStackView = filterStackView else {
-//            print("Error: Filter stack view is not initialized.")
-//            return
-//        }
-//        
-//        // Set up constraints
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            collectionView.topAnchor.constraint(equalTo: filterStackView.bottomAnchor, constant: 8),
-//            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-//        ])
-//    }
+
 //
 //    
 //    // Calendar Section Layout
@@ -223,42 +196,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     
    
     
-    ////    MARK: - For ADD button in the menu items cell
-    //    func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
-    //        guard let indexPath = collectionView1.indexPath(for: cell) else { return }
-    //        let selectedItem = KitchenDataController.menuItems[indexPath.row]
-    //        print("Add button tapped for meal: \(selectedItem.name)")
-    //
-    //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    //        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-    //            detailVC.selectedItem = selectedItem
-    //            present(detailVC, animated: true, completion: nil)
-    //        } else {
-    //            print("Error: Could not instantiate AddItemModallyViewController")
-    //        }
-    //    }
-    //
-    //
-    //
-    //    @objc func sectionButtonTapped(_ sender: UIButton) {
-    //        switch sender.tag {
-    //        case 1:
-    //            let firstScreenVC = KitchenMenuListViewController()
-    //            self.navigationController?.pushViewController(firstScreenVC, animated: true)
-    //        case 2:
-    //
-    //            let secondScreenVC = KitchenChefSpecialViewController() // No need to use nib
-    //            self.navigationController?.pushViewController(secondScreenVC, animated: true)
-    ////        case 3:
-    ////            let thirdScreenVC = ThirdScreenViewController() // No need to use nib
-    ////            self.navigationController?.pushViewController(thirdScreenVC, animated: true)
-    //        default:
-    //            break
-    //        }
-    //    }
-    //
-    //
-    //   }
+
     
        }
     
