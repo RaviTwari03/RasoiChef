@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AddItemCart" id="512-jq-Gv3" customClass="AddItemCartTableViewCell" customModule="kitchen" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="364" height="41"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="512-jq-Gv3" id="31D-x9-Aqx">
+                <rect key="frame" x="0.0" y="0.0" width="364" height="41"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7fn-lC-3GN">
+                        <rect key="frame" x="8" y="9" width="20" height="20"/>
+                        <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="eCs-8d-rQd"/>
+                            <constraint firstAttribute="height" constant="21.329999999999998" id="yW7-Mc-IfV"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add More Items" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHy-uX-GTl">
+                        <rect key="frame" x="45.999999999999993" y="8" width="120.33333333333331" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="7fn-lC-3GN" firstAttribute="top" secondItem="31D-x9-Aqx" secondAttribute="top" constant="8.3300000000000001" id="Pt8-vE-rlg"/>
+                    <constraint firstItem="eHy-uX-GTl" firstAttribute="top" secondItem="31D-x9-Aqx" secondAttribute="top" constant="8" id="RjN-SO-jyY"/>
+                    <constraint firstAttribute="bottom" secondItem="eHy-uX-GTl" secondAttribute="bottom" constant="12" id="Vud-Tb-Rgk"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="eHy-uX-GTl" secondAttribute="trailing" constant="17" id="Xpe-EH-h3y"/>
+                    <constraint firstAttribute="bottom" secondItem="7fn-lC-3GN" secondAttribute="bottom" constant="11.33" id="bdy-OB-f01"/>
+                    <constraint firstItem="7fn-lC-3GN" firstAttribute="leading" secondItem="31D-x9-Aqx" secondAttribute="leading" constant="8" id="fDp-mc-G9f"/>
+                    <constraint firstItem="7fn-lC-3GN" firstAttribute="centerY" secondItem="31D-x9-Aqx" secondAttribute="centerY" id="sCT-L8-jLd"/>
+                    <constraint firstItem="eHy-uX-GTl" firstAttribute="leading" secondItem="7fn-lC-3GN" secondAttribute="trailing" constant="18" id="vGA-ID-YF9"/>
+                </constraints>
+            </tableViewCellContentView>
+            <point key="canvasLocation" x="164" y="-18"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="plus.circle" catalog="system" width="128" height="123"/>
+    </resources>
+</document>

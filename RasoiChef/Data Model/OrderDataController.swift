@@ -33,6 +33,7 @@ class OrderDataController{
             sortOrdersByStatus()
         }
     
+    
     // Sort orders into current and past orders based on their status
         func sortOrdersByStatus() {
             MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
@@ -52,23 +53,7 @@ class OrderDataController{
             sortOrdersByStatus()  // Ensure the orders are categorized correctly into current and past orders
         }
     
-//    func getPastOrderCount() -> Int {
-//        return pastOrders.count
-//    }
-    
-//        func loadDummyOrders(){
-//            orders = [
-//                Order(orderID: UUID(), orderNumber: "Order 1", homecook: HomeCook(name: "Kanha Ji Rasoi"), items: [Meal(name: "Rajma Chawal")], date: Date()),
-//                Order(orderID: UUID(), orderNumber: "Order 1", homecook: HomeCook(name: "Kanha Ji Rasoi"), items: [Meal(name: "Rajma Chawal")], date: Date()),
-//               
-//            ]
-//            
-//        }
-//         func pastOrdersdummyData(){
-//            pastOrders = [
-//                Order(orderID: UUID(), orderNumber: "Order 1", homecook: HomeCook(name: "Kanha Ji Rasoi"), items: [Meal(name: "Rajma Chawal")], date: Date()),
-//                Order(orderID: UUID(), orderNumber: "order 2", homecook: HomeCook(name: "Rana Ji Rasoi"), items: [Meal(name: "Paneer")], date: Date())]
-//                }
+
 }
     
     
