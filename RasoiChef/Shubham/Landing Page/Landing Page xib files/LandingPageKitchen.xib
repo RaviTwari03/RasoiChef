@@ -157,6 +157,7 @@
                     <constraint firstItem="xaf-Ae-984" firstAttribute="top" secondItem="i4E-mb-NoM" secondAttribute="bottom" constant="3" id="w08-Ga-tOF"/>
                     <constraint firstItem="Ldp-YK-72L" firstAttribute="top" secondItem="caU-lT-Hgm" secondAttribute="top" id="ws3-2M-R98"/>
                     <constraint firstItem="caU-lT-Hgm" firstAttribute="top" secondItem="LSr-ZL-q9y" secondAttribute="top" id="ybu-7a-D3N"/>
+                    <constraint firstAttribute="trailing" secondItem="qNz-6L-zuS" secondAttribute="trailing" constant="250" id="zxb-ag-Jmk"/>
                     <constraint firstItem="4K5-P7-LU2" firstAttribute="top" relation="greaterThanOrEqual" secondItem="xaf-Ae-984" secondAttribute="bottom" constant="3" id="zzw-sS-QEB"/>
                 </constraints>
             </collectionViewCellContentView>

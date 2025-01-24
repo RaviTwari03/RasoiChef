@@ -131,9 +131,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         }
         return layout
     }
-    
-  
-    
     // Calendar Section Layout
     func generateMenuCalenderSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -150,7 +147,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
 
         return section
     }
-
     // Menu List Section Layout
     func generateMenuListSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -165,9 +161,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         section.interGroupSpacing = 0
 
         return section
-    }
-
-    
+    }    
     //    MARK: - For ADD button in the menu items cell
         func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
             guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
