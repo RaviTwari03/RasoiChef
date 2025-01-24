@@ -24,7 +24,7 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     func updateMealDetails(with indexPath: IndexPath) {
         let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
 //        vegImage.image = UIImage(systemName: "rectangle.portrait.and.arrow.right.fill")
-        mealNameLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+        mealNameLabel.text = menuItem.name
 //        ratingLabel.text = "⭐ \(menuItem.rating)"
 //        dishNameLabel.text = menuItem.name
 //        dishDescription.text = menuItem.description

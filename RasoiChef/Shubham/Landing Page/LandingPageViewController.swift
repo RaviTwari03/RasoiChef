@@ -257,8 +257,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     }
 
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 { // Section 2 corresponds to the "LandingPageKitchen" section
-            // Initialize the destination view controller
+        if indexPath.section == 0 { 
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
             if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
                 
