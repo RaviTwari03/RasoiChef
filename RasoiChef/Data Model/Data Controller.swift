@@ -51,7 +51,8 @@ class KitchenDataController {
             portionSize: "250 gm",
             intakeLimit: 20,
             imageURL: "VegetablePoha",
-            orderDeadline: "Order Before 6 am."
+            orderDeadline: "Order Before 6 am.",
+            availability: [.Available]
         ),
         MenuItem(
             itemID: "item002",
@@ -64,7 +65,8 @@ class KitchenDataController {
             portionSize: "500 gm",
             intakeLimit: 15,
             imageURL: "VegThali",
-            orderDeadline: "Order Before 11 am."
+            orderDeadline: "Order Before 11 am.",
+            availability: [.Unavailable]
             
         ),
         MenuItem(
@@ -78,7 +80,8 @@ class KitchenDataController {
             portionSize: "6 pieces",
             intakeLimit: 10,
             imageURL: "SpringRoll",
-            orderDeadline: "Order Before 3 pm."
+            orderDeadline: "Order Before 3 pm.",
+            availability: [.Available]
         ),
         MenuItem(
             itemID: "item004",
@@ -91,7 +94,8 @@ class KitchenDataController {
             portionSize: "1 piece",
             intakeLimit: 25,
             imageURL: "MasalaDosa",
-            orderDeadline: "Order Before 7 pm."
+            orderDeadline: "Order Before 7 pm.",
+            availability: [.Available]
         )
     ]
     

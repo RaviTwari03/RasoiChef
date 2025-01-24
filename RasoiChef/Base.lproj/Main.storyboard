@@ -142,8 +142,12 @@
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I9l-q5-voz">
                                 <rect key="frame" x="0.0" y="53" width="393" height="44"/>
                                 <items>
-                                    <navigationItem title="Title" id="Wq7-Vc-P27">
-                                        <barButtonItem key="rightBarButtonItem" title="Item" image="xmark.circle" catalog="system" id="9ve-I7-cd3"/>
+                                    <navigationItem id="Wq7-Vc-P27">
+                                        <barButtonItem key="rightBarButtonItem" title="Item" image="xmark.circle" catalog="system" id="9ve-I7-cd3">
+                                            <connections>
+                                                <segue destination="fCk-Rf-7uu" kind="unwind" unwindAction="unwindBackToKitchenLandingPageWithSegue:" id="UNM-XW-S3Y"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -206,6 +210,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZEB-tb-mKP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="fCk-Rf-7uu" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="9457.2519083969455" y="24.647887323943664"/>
         </scene>
@@ -333,7 +338,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RCk-08-4Ee">
-                                <rect key="frame" x="0.0" y="59" width="393" height="148"/>
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tFK-yq-zV8">
                                     <size key="itemSize" width="128" height="128"/>
@@ -352,32 +357,14 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-2q-nmQ">
-                                <rect key="frame" x="0.0" y="207" width="393" height="611"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Ueg-2U-JH0">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ueg-2U-JH0" id="Yy9-pS-eCG">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="FYh-g3-7xz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="FYh-g3-7xz" firstAttribute="trailing" secondItem="RCk-08-4Ee" secondAttribute="trailing" id="6WL-Ty-IfK"/>
-                            <constraint firstItem="FYh-g3-7xz" firstAttribute="trailing" secondItem="jIt-2q-nmQ" secondAttribute="trailing" id="QbA-cA-zze"/>
-                            <constraint firstItem="FYh-g3-7xz" firstAttribute="bottom" secondItem="jIt-2q-nmQ" secondAttribute="bottom" id="SSs-1A-SvV"/>
                             <constraint firstItem="RCk-08-4Ee" firstAttribute="leading" secondItem="FYh-g3-7xz" secondAttribute="leading" id="apc-BD-DeG"/>
-                            <constraint firstItem="FYh-g3-7xz" firstAttribute="bottom" secondItem="RCk-08-4Ee" secondAttribute="bottom" constant="611" id="fLj-KQ-Loc"/>
+                            <constraint firstItem="FYh-g3-7xz" firstAttribute="bottom" secondItem="RCk-08-4Ee" secondAttribute="bottom" id="fLj-KQ-Loc"/>
                             <constraint firstItem="RCk-08-4Ee" firstAttribute="top" secondItem="FYh-g3-7xz" secondAttribute="top" id="qzM-0D-EwS"/>
-                            <constraint firstItem="jIt-2q-nmQ" firstAttribute="top" secondItem="RCk-08-4Ee" secondAttribute="bottom" id="wNW-gb-0up"/>
-                            <constraint firstItem="jIt-2q-nmQ" firstAttribute="leading" secondItem="FYh-g3-7xz" secondAttribute="leading" id="y7k-Kc-wiQ"/>
                         </constraints>
                     </view>
                     <connections>
