@@ -17,7 +17,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
            super.viewDidLoad()
         self.title = "Kanha Ji Rasoi"
-        
+        self.navigationItem.largeTitleDisplayMode = .never
+
            // Registering Nibs for Cells
            let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
            let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)

@@ -35,6 +35,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     
     var menuItems: [MenuItem] = []
     override func viewDidLoad() {
+        self.navigationItem.largeTitleDisplayMode = .never
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Menu"

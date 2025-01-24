@@ -18,9 +18,10 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     
     override func viewDidLoad() {
            super.viewDidLoad()
+        self.navigationItem.largeTitleDisplayMode = .never
            self.view.backgroundColor = .white
            self.title = "Chef Speciality Dishes"
-            configureSearchBar()
+          configureSearchBar()
             configureFilterStackView()
         
         

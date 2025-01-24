@@ -14,22 +14,12 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//  self.title = "Kanha Ji Rasoi"
+
      
         // Registering Nibs for Cells
         let kitchenDetailsNib = UINib(nibName: "MealCategories", bundle: nil)
-//        let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)
-//        let chefSpecialDishesNib = UINib(nibName: "ChefSpecialDishes", bundle: nil)
-//        let subscriptionDetailsNib = UINib(nibName: "SubscriptionDetails", bundle: nil)
         
         MealCategories.register(kitchenDetailsNib, forCellWithReuseIdentifier: "MealCategories")
-//     collectionView1.register(menuDetailsNib, forCellWithReuseIdentifier: "MenuDetails")
-//     collectionView1.register(chefSpecialDishesNib, forCellWithReuseIdentifier: "ChefSpecialDishes")
-//     collectionView1.register(subscriptionDetailsNib, forCellWithReuseIdentifier: "SubscriptionDetails")
-//        
-        // Setting Layout
-//     /*collectionView1.register(SectionHeader1CollectionReusableView.self, forSupplementaryViewOfKind: UICo*/llectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader")
-//            header.button.addTarget(self, action: #selector(sectionbuttonTapped(_:)), for: .touchUpInside)
 
         MealCategories.setCollectionViewLayout(generateLayout(), animated: true)
         MealCategories.dataSource = self
@@ -46,12 +36,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         switch section {
         case 0:
             return 1 // Single restaurant/kitchen details
-//        case 1:
-//            return KitchenDataController.menuItems.count
-//        case 2:
-//            return KitchenDataController.chefSpecialtyDishes.count
-//        case 3:
-//            return KitchenDataController.subscriptionPlan.count
+
         default:
             return 0
         }
@@ -132,15 +117,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
      switch section {
      case 0:
          return CGSize(width: collectionView.bounds.width, height: 0) // No header
-//     case 1:
-//         let title = KitchenDataController.sectionHeaderNames[0]
-//         return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-//     case 2:
-//         let title = KitchenDataController.sectionHeaderNames[1]
-//         return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-//     case 3:
-//         let title = KitchenDataController.sectionHeaderNames[2]
-//         return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+
      default:
          return CGSize(width: collectionView.bounds.width, height: 50) // Default header size
      }
@@ -155,47 +132,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
          cell.updateMealDetails(with: indexPath)
          cell.layer.cornerRadius = 8.0
          return cell
-//     case 1:
-//         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
-//         cell.delegate = self
-//         cell.updateMenuDetails(with : indexPath)
-//         
-//         cell.layer.cornerRadius = 10.0
-//            cell.layer.borderWidth = 1.0
-//            cell.layer.borderColor = UIColor.gray.cgColor
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 5.0
-//         cell.layer.shadowOpacity = 0.2
-//            cell.layer.masksToBounds = false
-//         cell.layer.shadowColor = UIColor.black.cgColor
-//         return cell
-//     case 2:
-//         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
-//         cell.updateChefSpecialtyDetails(for: indexPath)
-//        cell.layer.cornerRadius = 10.0
-//            cell.layer.borderWidth = 1.0
-//            cell.layer.borderColor = UIColor.gray.cgColor
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 5.0
-//            cell.layer.shadowOpacity = 0.2
-//            cell.layer.masksToBounds = false
-//         cell.layer.shadowColor = UIColor.black.cgColor
-//         return cell
-//     case 3:
-//         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
-//         cell.updateSubscriptionPlanData(for: indexPath)
-//         cell.layer.cornerRadius = 10.0
-//            cell.layer.borderWidth = 1.0
-//            cell.layer.borderColor = UIColor.gray.cgColor
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 5.0
-//            cell.layer.shadowOpacity = 0.2
-//            cell.layer.masksToBounds = false
-//         cell.layer.shadowColor = UIColor.black.cgColor
-//         return cell
+
      default:
          return UICollectionViewCell()
      }
@@ -209,12 +146,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             switch sectionIndex {
             case 0:
                 section = self.generateKitchenSectionLayout()
-            case 1:
-                section = self.generateMenuCategorySectionLayout()
-            case 2:
-                section = self.generateChefSpecialSectionLayout()
-            case 3:
-                section = self.generateSubscriptionPlanSectionLayout()
+           
             default:
                 return nil
             }
@@ -241,53 +173,6 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         return section
     }
     
-    // Layout for Menu Categories Section
-    func generateMenuCategorySectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .absolute(250))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        group.interItemSpacing = .fixed(5)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
-    }
-    
-    // Layout for Chef's Special Section
-    func generateChefSpecialSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(150))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        group.interItemSpacing = .fixed(5)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
-
-    }
-    
- func generateSubscriptionPlanSectionLayout() -> NSCollectionLayoutSection {
-     let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-         // Define group size and layout
-         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(130))
-         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-         // Add content insets to the group
-         group.interItemSpacing = .fixed(5)
-         group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
-
-         // Create the section
-         let section = NSCollectionLayoutSection(group: group)
-         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-
-     return section
- }
  
 //    MARK: - For ADD button in the menu items cell
 // func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
