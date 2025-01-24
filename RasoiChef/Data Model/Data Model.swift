@@ -73,6 +73,16 @@ struct ChefSpecialtyDish {
     var rating: Float
     var imageURL: String
 }
+struct GlobalChefSpeciality{
+    let kitchenName : String
+    let dishID: String
+    let kitchenID: String
+    var name: String
+    var description: String
+    var price: Double
+    var rating: Float
+    var imageURL: String
+}
 
 // Cart Item
 struct CartItem {

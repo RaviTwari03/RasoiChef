@@ -117,6 +117,90 @@ class KitchenDataController {
                 imageURL: "SpringRoll"
             )
         ]
+    
+    static var globalChefSpecial: [GlobalChefSpeciality] = [
+        GlobalChefSpeciality(
+            kitchenName: "Flavors of Punjab",
+            dishID: "special003",
+            kitchenID: "kitchen003",
+            name: "Butter Chicken",
+            description: "Tender chicken cooked in a rich, creamy, and buttery tomato gravy.",
+            price: 300.0,
+            rating: 4.9,
+            imageURL: "ButterChicken"
+        ),
+        GlobalChefSpeciality(
+            kitchenName: "Mumbai Spices",
+            dishID: "special004",
+            kitchenID: "kitchen004",
+            name: "Pav Bhaji",
+            description: "A thick and spicy vegetable curry served with buttery bread rolls.",
+            price: 150.0,
+            rating: 4.5,
+            imageURL: "PavBhaji"
+        ),
+        GlobalChefSpeciality(
+            kitchenName: "Delhi Zaika",
+            dishID: "special005",
+            kitchenID: "kitchen005",
+            name: "Rajma Chawal",
+            description: "A comforting dish of red kidney beans cooked in spices and served with rice.",
+            price: 180.0,
+            rating: 4.6,
+            imageURL: "RajmaChawal"
+        ),
+//        ChefSpecialtyDish(
+//            kitchenName: "South Indian Delights",
+//            dishID: "special006",
+//            kitchenID: "kitchen006",
+//            name: "Masala Dosa",
+//            description: "A crispy dosa filled with spiced potato masala, served with chutneys.",
+//            price: 120.0,
+//            rating: 4.8,
+//            imageURL: "MasalaDosa"
+//        ),
+        GlobalChefSpeciality(
+            kitchenName: "Spice Aroma",
+            dishID: "special007",
+            kitchenID: "kitchen007",
+            name: "Paneer Tikka",
+            description: "Chunks of paneer marinated in spices and grilled to perfection.",
+            price: 220.0,
+            rating: 4.7,
+            imageURL: "PaneerTikka"
+        ),
+        GlobalChefSpeciality(
+            kitchenName: "Royal Rajasthan",
+            dishID: "special008",
+            kitchenID: "kitchen008",
+            name: "Dal Baati Churma",
+            description: "Traditional Rajasthani dish served with ghee-dipped baati and churma.",
+            price: 250.0,
+            rating: 4.9,
+            imageURL: "DalBaatiChurma"
+        ),
+        GlobalChefSpeciality(
+            kitchenName: "Biryani Bliss",
+            dishID: "special009",
+            kitchenID: "kitchen009",
+            name: "Hyderabadi Biryani",
+            description: "Aromatic and flavorful rice dish with tender pieces of chicken.",
+            price: 350.0,
+            rating: 4.8,
+            imageURL: "HyderabadiBiryani"
+        ),
+        GlobalChefSpeciality(
+            kitchenName: "Street Food Junction",
+            dishID: "special010",
+            kitchenID: "kitchen010",
+            name: "Pani Puri",
+            description: "Crispy puris filled with spicy, tangy tamarind water and potato filling.",
+            price: 100.0,
+            rating: 4.6,
+            imageURL: "PaniPuri"
+        )
+    ]
+
 
 //    struct SubscriptionPlan {
 //        let planID: String

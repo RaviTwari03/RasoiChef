@@ -48,7 +48,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            case 0:
                return KitchenDataController.mealBanner.count
            case 1:
-               return KitchenDataController.chefSpecialtyDishes.count
+               return KitchenDataController.globalChefSpecial.count
            case 2:
                return KitchenDataController.kitchens.count
            

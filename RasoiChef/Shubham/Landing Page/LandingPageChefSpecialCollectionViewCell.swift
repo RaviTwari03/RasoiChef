@@ -19,7 +19,7 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet var vegicon: UIImageView!
     func updateSpecialDishDetails(for indexPath: IndexPath) {
-        let specialDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
+        let specialDish = KitchenDataController.globalChefSpecial[indexPath.row]
         SpecialKitchenNameLabel.text = specialDish.kitchenName
         SpecialDishName.text = specialDish.name
         SpecialPriceLabel.text = "₹\(specialDish.price)"
@@ -29,6 +29,7 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishImage.image = UIImage(named: specialDish.imageURL)
         
         timeIcon.image = UIImage(named: "LunchIcon")
+        specialDishImage.layer.cornerRadius = 10
         
     }
     
