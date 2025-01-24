@@ -547,7 +547,7 @@
         <scene sceneID="x2y-zL-QzA">
             <objects>
                 <viewControllerPlaceholder storyboardName="Vikash" id="PdY-xe-vW1" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="GGp-nB-Wr3"/>
+                    <tabBarItem key="tabBarItem" title="Cart" image="cart" catalog="system" selectedImage="cart.fill" id="GGp-nB-Wr3"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="p5P-OT-ByH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -959,6 +959,8 @@
         <image name="apple.logo" catalog="system" width="105" height="128"/>
         <image name="calendar.circle" catalog="system" width="128" height="123"/>
         <image name="calendar.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="cart" catalog="system" width="128" height="102"/>
+        <image name="cart.fill" catalog="system" width="128" height="102"/>
         <image name="icons8-apple-50" width="50" height="50"/>
         <image name="icons8-facebook-48 " width="48" height="48"/>
         <image name="icons8-google-logo-48" width="48" height="48"/>
