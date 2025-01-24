@@ -16,7 +16,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.navigationItem.largeTitleDisplayMode = .never
         self.view.backgroundColor = .white
         self.title = "Chef Speciality Dishes"
          configureSearchBar()
@@ -46,7 +46,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
            // self.navigationItem.titleView = searchBar
         if let navigationBarHeight = navigationController?.navigationBar.frame.height {
                let statusBarHeight = UIApplication.shared.statusBarFrame.height
-               let yPosition = navigationBarHeight + statusBarHeight
+               let yPosition = navigationBarHeight 
                searchBar.frame = CGRect(x: 0, y: yPosition, width: view.frame.width, height: searchBar.frame.height)
            } else {
                searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: searchBar.frame.height)
