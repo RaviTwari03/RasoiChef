@@ -209,6 +209,52 @@
             </objects>
             <point key="canvasLocation" x="10354.883720930233" y="24.463519313304722"/>
         </scene>
+        <!--Menu Categories View Controller-->
+        <scene sceneID="Ixq-XI-U9r">
+            <objects>
+                <viewController storyboardIdentifier="MenuCategoriesViewController" id="0bV-MW-NFc" customClass="MenuCategoriesViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ypp-vF-OPG">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ks7-3j-B8O">
+                                <rect key="frame" x="0.0" y="59" width="430" height="839"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="SQn-5D-yva">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="XSM-b6-9J4">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="qR1-AS-gPx">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="MKT-MF-YZ4"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="MKT-MF-YZ4" firstAttribute="trailing" secondItem="ks7-3j-B8O" secondAttribute="trailing" id="10z-IY-BoS"/>
+                            <constraint firstItem="MKT-MF-YZ4" firstAttribute="bottom" secondItem="ks7-3j-B8O" secondAttribute="bottom" id="Fd8-qT-UXe"/>
+                            <constraint firstItem="ks7-3j-B8O" firstAttribute="top" secondItem="MKT-MF-YZ4" secondAttribute="top" id="aIZ-eK-jAD"/>
+                            <constraint firstItem="ks7-3j-B8O" firstAttribute="leading" secondItem="MKT-MF-YZ4" secondAttribute="leading" id="vHl-bC-R5m"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="MealCategories" destination="ks7-3j-B8O" id="8fl-83-hyt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WAA-Eb-Ahe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="10454" y="1306"/>
+        </scene>
         <!--Home-->
         <scene sceneID="kHv-Om-szR">
             <objects>

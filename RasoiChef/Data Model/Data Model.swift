@@ -67,6 +67,20 @@ struct MenuItem {
     var orderDeadline : String
     var availability: [Availabiltiy]
 }
+struct GlobalMenuItem{
+    let itemID: String
+    let kitchenID: String
+    var name: String
+    var description: String
+    var price: Double
+    var rating: Float
+    var availableMealTypes: [MealType]
+    var portionSize: String
+    var intakeLimit: Int
+    var imageURL: String
+    var orderDeadline : String
+    var availability: [Availabiltiy]
+}
 
 // Chef Specialty Dishes
 struct ChefSpecialtyDish {

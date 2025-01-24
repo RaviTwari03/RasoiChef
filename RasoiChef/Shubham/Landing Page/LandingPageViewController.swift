@@ -256,7 +256,28 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         }
     }
 
-
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // Section 2 corresponds to the "LandingPageKitchen" section
+            // Initialize the destination view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
+            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+                
+                // Pass data to the destination view controller if needed
+                kitchenDetailVC.MenuCategories = KitchenDataController.GloballunchMenuItems[indexPath.row]
+                
+                // Navigate to the view controller
+                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+                
+//                kitchenDetailVC.modalPresentationStyle = .pageSheet
+//
+//                if let sheet = kitchenDetailVC.sheetPresentationController {
+//                    sheet.detents = [.medium(),.large()]
+//                }
+//                present(kitchenDetailVC,animated: true)
+                
+            }
+        }
+    }
     
 
 }

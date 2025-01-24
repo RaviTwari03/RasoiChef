@@ -237,6 +237,135 @@ class KitchenDataController {
         )
     ]
     
+    // GlobalLunchMenu
+    static var GloballunchMenuItems: [MenuItem] = [
+        MenuItem(
+            itemID: "item101",
+            kitchenID: "kitchen002",
+            name: "Paneer Butter Masala",
+            description: "A creamy and delicious North Indian dish with tender paneer cubes cooked in a buttery tomato gravy.",
+            price: 150.0,
+            rating: 4.6,
+            availableMealTypes: [.lunch],
+            portionSize: "300 gm",
+            intakeLimit: 15,
+            imageURL: "PaneerButterMasala",
+            orderDeadline: "Order Before 11 am.",
+            availability: [.Available]
+        ),
+        MenuItem(
+            itemID: "item102",
+            kitchenID: "kitchen003",
+            name: "Chicken Biryani",
+            description: "A flavorful and aromatic rice dish cooked with tender chicken pieces, spices, and saffron.",
+            price: 180.0,
+            rating: 4.7,
+            availableMealTypes: [.lunch],
+            portionSize: "400 gm",
+            intakeLimit: 10,
+            imageURL: "ChickenBiryani",
+            orderDeadline: "Order Before 11 am.",
+            availability: [.Available]
+        )
+    ]
+
+    // GlobalBreakfastMenu
+    static var GlobalbreakfastMenuItems: [MenuItem] = [
+        MenuItem(
+            itemID: "item201",
+            kitchenID: "kitchen004",
+            name: "Masala Dosa",
+            description: "A crispy rice pancake filled with spiced potato stuffing, served with coconut chutney and sambhar.",
+            price: 50.0,
+            rating: 4.5,
+            availableMealTypes: [.breakfast],
+            portionSize: "200 gm",
+            intakeLimit: 20,
+            imageURL: "MasalaDosa",
+            orderDeadline: "Order Before 6 am.",
+            availability: [.Available]
+        ),
+        MenuItem(
+            itemID: "item202",
+            kitchenID: "kitchen005",
+            name: "Pancakes with Honey",
+            description: "Fluffy pancakes served with a drizzle of pure honey and a side of fresh fruits.",
+            price: 90.0,
+            rating: 4.3,
+            availableMealTypes: [.breakfast],
+            portionSize: "200 gm",
+            intakeLimit: 25,
+            imageURL: "PancakesHoney",
+            orderDeadline: "Order Before 6 am.",
+            availability: [.Available]
+        )
+    ]
+
+    // GlobalSnacksMenu
+    static var GlobalsnacksMenuItems: [MenuItem] = [
+        MenuItem(
+            itemID: "item301",
+            kitchenID: "kitchen006",
+            name: "Samosa",
+            description: "A crispy and flaky pastry filled with spiced potato and peas mixture, served with mint chutney.",
+            price: 20.0,
+            rating: 4.2,
+            availableMealTypes: [.snacks],
+            portionSize: "100 gm",
+            intakeLimit: 50,
+            imageURL: "Samosa",
+            orderDeadline: "Order Before 3 pm.",
+            availability: [.Available]
+        ),
+        MenuItem(
+            itemID: "item302",
+            kitchenID: "kitchen007",
+            name: "Chicken Nuggets",
+            description: "Crispy, golden-brown chicken nuggets served with tangy barbecue sauce.",
+            price: 70.0,
+            rating: 4.4,
+            availableMealTypes: [.snacks],
+            portionSize: "150 gm",
+            intakeLimit: 30,
+            imageURL: "ChickenNuggets",
+            orderDeadline: "Order Before 3 pm.",
+            availability: [.Available]
+        )
+    ]
+
+    // GlobalDinnerMenu
+    static var GlobaldinnerMenuItems: [MenuItem] = [
+        MenuItem(
+            itemID: "item401",
+            kitchenID: "kitchen008",
+            name: "Dal Tadka with Jeera Rice",
+            description: "Classic Indian yellow dal tempered with ghee, spices, and served with fragrant cumin rice.",
+            price: 120.0,
+            rating: 4.6,
+            availableMealTypes: [.dinner],
+            portionSize: "350 gm",
+            intakeLimit: 20,
+            imageURL: "DalTadkaJeeraRice",
+            orderDeadline: "Order Before 7 pm.",
+            availability: [.Available]
+        ),
+        MenuItem(
+            itemID: "item402",
+            kitchenID: "kitchen009",
+            name: "Grilled Salmon",
+            description: "Perfectly grilled salmon fillet served with steamed vegetables and a lemon butter sauce.",
+            price: 300.0,
+            rating: 4.8,
+            availableMealTypes: [.dinner],
+            portionSize: "300 gm",
+            intakeLimit: 8,
+            imageURL: "GrilledSalmon",
+            orderDeadline: "Order Before 7 pm.",
+            availability: [.Available]
+        )
+    ]
+
+    
     static var cartItems: [CartItem] = []
         
 
