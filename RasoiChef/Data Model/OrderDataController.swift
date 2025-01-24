@@ -33,6 +33,7 @@ class OrderDataController{
             sortOrdersByStatus()
         }
     
+    
     // Sort orders into current and past orders based on their status
         func sortOrdersByStatus() {
             MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
