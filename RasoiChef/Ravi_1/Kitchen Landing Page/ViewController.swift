@@ -175,7 +175,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
-            cell.layer.cornerRadius = 10.0
+           cell.layer.cornerRadius = 10.0
                cell.layer.borderWidth = 1.0
                cell.layer.borderColor = UIColor.gray.cgColor
                cell.layer.shadowColor = UIColor.black.cgColor
@@ -273,15 +273,21 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
        }
        
     func generateSubscriptionPlanSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        // Adjust the height of the section item to a bigger size
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(150))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        group.interItemSpacing = .fixed(8)
-        let section = NSCollectionLayoutSection(group: group)
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+            // Define group size and layout
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(130))
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+
+            // Add content insets to the group
+            group.interItemSpacing = .fixed(5)
+            group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
+
+            // Create the section
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+
         return section
     }
     
@@ -344,7 +350,6 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     }
 //        case 1: // Menu List
 //            if let menuListVC = storyboard?.instantiateViewController(withIdentifier: "KitchenMenuListViewController") as? KitchenMenuListViewController {
-//                    // Pass menu items for section 1
 //                    menuListVC.menuItems = KitchenDataController.menuItems.filter { $0.kitchenID == "kitchen001" } // Example filter
 //                    self.navigationController?.pushViewController(menuListVC, animated: true)
 //                } else {

@@ -98,12 +98,13 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             cell.delegate = self
             cell.layer.borderWidth = 1.0       // Border width
             cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-            cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
+////            cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
             cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
             cell.layer.shadowRadius = 5.0     // Shadow blur radius
             cell.layer.shadowOpacity = 0.2    // Shadow opacity
-            cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.masksToBounds = true
+//            cell.layer.shadowColor = UIColor.black.cgColor
+//            cell.layer.cornerRadius = 10
             return cell
             
         default:
@@ -155,7 +156,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(300))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(250))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0.0, bottom: 0.0, trailing: 0.0)
         group.interItemSpacing = .fixed(0)
