@@ -125,7 +125,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return KitchenDataController.chefSpecialtyDishes.count
+            return KitchenDataController.globalChefSpecial.count
         
         default:
             return 0

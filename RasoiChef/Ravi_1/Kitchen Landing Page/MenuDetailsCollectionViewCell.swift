@@ -28,6 +28,7 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
    
     @IBOutlet var mealImageView: UIImageView!
     
+    @IBOutlet var availabiltyLabel: UILabel!
     weak var delegate: MenuDetailsCellDelegate?
     
     
@@ -48,6 +49,10 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         mealPriceLabel.text = "₹\(menuItem.price)"
         mealRatingLabel.text = "⭐ \(menuItem.rating)" // Default to 0.0 if rating is nil
         mealImageView.image = UIImage(named: menuItem.imageURL)
+        //        availabiltyLabel.text = .Available
+        availabiltyLabel.text = "\(menuItem.availability.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+//        availabilityLabel.text = menuItem.availability.rawValue.capitalized
+//           availabilityLabel.textColor = menuItem.availability == .Available ? .green : .gray
     }
 
 }

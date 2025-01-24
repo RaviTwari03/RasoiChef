@@ -14,6 +14,10 @@ protocol KitchenMenuDetailsCellDelegate: AnyObject {
 
 class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+//        applyCardStyle1()
+    }
   
     
     @IBOutlet var vegImage: UIImageView!
@@ -25,7 +29,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var dishTime: UILabel!
     @IBOutlet var dishDeliveryExpected: UILabel!
     
-    @IBOutlet var cardView: UIView!
+    @IBOutlet var cardViewKitchenMenu: UIView!
     @IBOutlet var dishIntakLimit: UILabel!
     
     weak var delegate: KitchenMenuDetailsCellDelegate?
@@ -44,5 +48,20 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.KitchenMenuListaddButtonTapped(in: self)
     }
-    
+//     func applyCardStyle1() {
+//            // Round the corners of the content view to make it appear as a card
+//       cardViewKitchenMenu.layer.cornerRadius = 16
+//        cardViewKitchenMenu.layer.masksToBounds = true
+//            // Add shadow to create a card-like appearance
+//        cardViewKitchenMenu.layer.shadowColor = UIColor.black.cgColor
+//        cardViewKitchenMenu.layer.shadowOffset = CGSize(width: 0, height: 2)
+//        cardViewKitchenMenu.layer.shadowRadius = 5
+//        cardViewKitchenMenu.layer.shadowOpacity = 0.2
+//        cardViewKitchenMenu.layer.masksToBounds = false
+//            // Add padding by adjusting the content insets
+//        cardViewKitchenMenu.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
+//            
+//            // Optionally, you can add a background color for the card
+//        cardViewKitchenMenu.backgroundColor = .white
+//        }
 }

@@ -9,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MenuDetails" id="IhZ-3h-uy8" customClass="MenuDetailsCollectionViewCell" customModule="kitchen" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MenuDetails" id="IhZ-3h-uy8" customClass="MenuDetailsCollectionViewCell" customModule="RasoiChef" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="267" height="235"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="BNY-Mf-9xT">
@@ -143,6 +143,7 @@
             </collectionViewCellContentView>
             <size key="customSize" width="267" height="218"/>
             <connections>
+                <outlet property="availabiltyLabel" destination="SGg-b3-pM2" id="rS2-Yv-pxa"/>
                 <outlet property="expectedDeliveryLabel" destination="bHK-FG-T3Q" id="7TY-6L-JV0"/>
                 <outlet property="mealImageView" destination="F4H-sg-Vk4" id="572-12-fu1"/>
                 <outlet property="mealNameLabel" destination="8qx-hI-sNQ" id="1EE-BU-upt"/>

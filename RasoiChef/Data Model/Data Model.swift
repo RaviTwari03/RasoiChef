@@ -5,6 +5,11 @@ enum MealType: String {
     case snacks
     case dinner
 }
+enum Availabiltiy : String {
+    case Available
+    case Unavailable
+}
+
 
 enum OrderStatus: String {
     case placed
@@ -60,10 +65,21 @@ struct MenuItem {
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline : String
+    var availability: [Availabiltiy]
 }
 
 // Chef Specialty Dishes
 struct ChefSpecialtyDish {
+    let kitchenName : String
+    let dishID: String
+    let kitchenID: String
+    var name: String
+    var description: String
+    var price: Double
+    var rating: Float
+    var imageURL: String
+}
+struct GlobalChefSpeciality{
     let kitchenName : String
     let dishID: String
     let kitchenID: String

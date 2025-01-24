@@ -24,7 +24,7 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
     
     func updateSpecialDishDetails(for indexPath: IndexPath) {
         // Fetch the corresponding ChefSpecialtyDish for the given indexPath
-        let specialDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
+        let specialDish = KitchenDataController.globalChefSpecial[indexPath.row]
         
         // Update the UI elements with the data from the specialDish object
         dishName.text = specialDish.name
