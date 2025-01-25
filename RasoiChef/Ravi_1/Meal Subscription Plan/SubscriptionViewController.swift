@@ -13,6 +13,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
     
+    let mealIcons: [[String]] = [
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Monday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Tuesday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Wednesday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Thursday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Friday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"], // Saturday
+           ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"]  // Sunday
+       ]
+
 
     override func viewDidLoad() {
            super.viewDidLoad()
@@ -38,11 +48,19 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
            if indexPath.section == 0 {
               
                let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as! WeeklyPlansTableViewCell
+              
                return cell
            } else {
-               let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable", for: indexPath) as! CustomiseTableTableViewCell
-     
-               return cell
+               guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable", for: indexPath) as? CustomiseTableTableViewCell else {
+                           return UITableViewCell()
+                       }
+
+                       // Configure the cell with icons for the respective day
+                       let iconsForDay = mealIcons[indexPath.row]
+                       cell.configureRow(withIcons: iconsForDay)
+
+                       return cell
+                   }
            }
        }
 
@@ -79,6 +97,5 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
        func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
            return section == 1 ? 60 : 0
        }
-   }
-
+   
 
