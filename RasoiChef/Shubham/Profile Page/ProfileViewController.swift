@@ -9,21 +9,52 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+//    @IBOutlet weak var profileImageView: UIImageView!
+      @IBOutlet weak var nameLabel: UILabel!
+      @IBOutlet weak var emailLabel: UILabel!
 
-        // Do any additional setup after loading the view.
-    }
+      override func viewDidLoad() {
+          super.viewDidLoad()
+          // Load initial data
+          loadProfileData()
+          }
+
+          override func viewWillAppear(_ animated: Bool) {
+              super.viewWillAppear(animated)
+              // Reload profile data every time the view appears
+              loadProfileData()
+          }
     
+    
+    func loadProfileData() {
+            let savedName = UserDefaults.standard.string(forKey: "userName") ?? "Shubham Jaiswal"
+            let savedEmail = UserDefaults.standard.string(forKey: "userEmail") ?? "shubham22445@gmail.com"
 
-    /*
-    // MARK: - Navigation
+            // Update the labels with saved or default data
+        nameLabel.text = savedName
+        emailLabel.text = savedEmail
+        }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+      // Prepare for segue to EditProfileViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+            if segue.identifier == "editProfileSegue",
+               let editVC = segue.destination as? ProfileEditViewController {
+                // Pass current name and email to the Edit Profile screen
+                editVC.name = nameLabel.text
+                editVC.email = emailLabel.text
+                editVC.delegate = self
+            }
+        }
     }
-    */
 
+  // Extend ProfileViewController to conform to the delegate
+extension ProfileViewController: EditProfileDelegate {
+    func didUpdateProfile(name: String, email: String) {
+        // Update the profile labels
+        UserDefaults.standard.set(name, forKey: "userName")
+        UserDefaults.standard.set(email, forKey: "userEmail")
+
+        nameLabel.text = name
+        emailLabel.text = email
+    }
 }
