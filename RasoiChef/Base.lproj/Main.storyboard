@@ -370,7 +370,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fWI-mb-dql" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5756" y="747"/>
+            <point key="canvasLocation" x="5755.8139534883721" y="746.78111587982835"/>
         </scene>
         <!--Kitchen Menu List View Controller-->
         <scene sceneID="MLr-LC-eJI">
