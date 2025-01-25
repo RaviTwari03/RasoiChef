@@ -298,6 +298,20 @@ class KitchenDataController {
             imageURL: "PancakesHoney",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available]
+        ),
+        MenuItem(
+            itemID: "item201",
+            kitchenID: "kitchen004",
+            name: "Masala Dosa",
+            description: "A crispy rice pancake filled with spiced potato stuffing, served with coconut chutney and sambhar.",
+            price: 50.0,
+            rating: 4.5,
+            availableMealTypes: [.breakfast],
+            portionSize: "200 gm",
+            intakeLimit: 20,
+            imageURL: "MasalaDosa",
+            orderDeadline: "Order Before 6 am.",
+            availability: [.Available]
         )
     ]
 
