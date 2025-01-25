@@ -271,7 +271,7 @@
                             <imageReference key="image" image="person.crop.circle.fill" catalog="system" symbolScale="large"/>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
-                                <segue destination="KFf-62-aMO" kind="show" identifier="" id="lGB-R6-4Yz"/>
+                                <action selector="profileButtonTapped:" destination="jhF-fO-tm7" id="2E0-Pf-jez"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -282,16 +282,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pni-Ip-MZV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5756" y="-66"/>
-        </scene>
-        <!--Profile-->
-        <scene sceneID="ADl-81-yFJ">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Profile" storyboardName="Profile" id="KFf-62-aMO" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="2yJ-B7-fxa"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cxs-WQ-VhC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="6597" y="-406"/>
         </scene>
         <!--Landing Page Chef Speciality See More View Controller-->
         <scene sceneID="aCu-cQ-TRs">
@@ -597,7 +587,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-google-logo-48" imagePadding="0.0" cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GvZ-42-QzU">
@@ -605,7 +595,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-facebook-48 " cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PaF-LB-RkF">
@@ -613,7 +603,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-apple-50" cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                 </subviews>
@@ -723,11 +713,10 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="430" height="390"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Ma-p5-wVv">
-                                                        <rect key="frame" x="0.0" y="-3" width="430" height="305"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="430" height="300"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="300" id="zqS-Cl-Pxe"/>
                                                         </constraints>
-                                                        <imageReference key="image" image="apple.logo" catalog="system" symbolScale="large"/>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   Sign up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8mj-In-I7a">
                                                         <rect key="frame" x="0.0" y="300" width="430" height="70"/>
@@ -872,7 +861,6 @@
         <!--Preorder-->
         <scene sceneID="Xgs-JG-a8l">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="MXi-Nb-nIN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yAK-Hh-nj7" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Preorder" image="calendar.circle" catalog="system" selectedImage="calendar.circle.fill" id="uVZ-CS-eb3"/>
                     <toolbarItems/>
@@ -885,13 +873,13 @@
                         <segue destination="jhF-fO-tm7" kind="relationship" relationship="rootViewController" id="cIV-xX-SXY"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MXi-Nb-nIN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4698" y="-66"/>
         </scene>
     </scenes>
     <resources>
         <image name="WhatsApp Image 2025-01-16 at 20.47.08" width="1024" height="768"/>
-        <image name="apple.logo" catalog="system" width="105" height="128"/>
         <image name="calendar.circle" catalog="system" width="128" height="123"/>
         <image name="calendar.circle.fill" catalog="system" width="128" height="123"/>
         <image name="icons8-apple-50" width="50" height="50"/>
@@ -903,7 +891,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

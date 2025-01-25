@@ -255,7 +255,17 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             break
         }
     }
-
+    @IBAction func profileButtonTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+            
+            
+        
+            if let profileVC = storyboard.instantiateInitialViewController() {
+                
+                navigationController?.pushViewController(profileVC, animated: true)
+            }
+    }
+    
 
     
 

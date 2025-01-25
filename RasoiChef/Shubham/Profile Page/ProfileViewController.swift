@@ -1,13 +1,13 @@
 //
-//  ProfilePageViewController.swift
+//  ProfileViewController.swift
 //  RasoiChef
 //
-//  Created by Shubham Jaiswal on 24/01/25.
+//  Created by Shubham Jaiswal on 25/01/25.
 //
 
 import UIKit
 
-class ProfilePageViewController: UIViewController {
+class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
