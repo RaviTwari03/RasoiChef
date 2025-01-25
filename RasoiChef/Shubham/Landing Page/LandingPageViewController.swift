@@ -48,7 +48,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            case 0:
                return KitchenDataController.mealBanner.count
            case 1:
-               return KitchenDataController.globalChefSpecial.count
+               return KitchenDataController.chefSpecialtyDishes.count
            case 2:
                return KitchenDataController.kitchens.count
            
@@ -217,77 +217,28 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            return section
        }
        
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        if indexPath.section == 2 { // Section 2 corresponds to the "LandingPageKitchen" section
-//            // Initialize the destination view controller
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
-//            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
-//                
-//                // Pass data to the destination view controller if needed
-//                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
-//                
-//                // Navigate to the view controller
-//                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
-//                
-////                kitchenDetailVC.modalPresentationStyle = .pageSheet
-////                
-////                if let sheet = kitchenDetailVC.sheetPresentationController {
-////                    sheet.detents = [.medium(),.large()]
-////                }
-////                present(kitchenDetailVC,animated: true)
-//                
-//            }
-//        }
-//    }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == LandingPage {
-            if indexPath.section == 0 {
-                collectionView1(collectionView, didSelectItemAt: indexPath)
-            } else if indexPath.section == 2 {
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
-                    kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
-                    self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
-                }
+        if indexPath.section == 2 { // Section 2 corresponds to the "LandingPageKitchen" section
+            // Initialize the destination view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
+            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                
+                // Pass data to the destination view controller if needed
+                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
+                
+                // Navigate to the view controller
+                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+                
+//                kitchenDetailVC.modalPresentationStyle = .pageSheet
+//                
+//                if let sheet = kitchenDetailVC.sheetPresentationController {
+//                    sheet.detents = [.medium(),.large()]
+//                }
+//                present(kitchenDetailVC,animated: true)
+                
             }
         }
     }
-
-    func collectionView1(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Item selected at row: \(indexPath.row)")
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let menuCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-            print("ViewController instantiated successfully")
-            switch indexPath.row {
-            case 0:
-                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalbreakfastMenuItems
-                menuCategoriesVC.title = "Breakfast"
-                menuCategoriesVC.navigationItem.largeTitleDisplayMode = .never
-            case 1:
-                menuCategoriesVC.MenuCategories = KitchenDataController.GloballunchMenuItems
-                menuCategoriesVC.title = "Lunch"
-                menuCategoriesVC.navigationItem.largeTitleDisplayMode = .never
-
-            case 2:
-                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalsnacksMenuItems
-                menuCategoriesVC.title = "Snacks"
-                menuCategoriesVC.navigationItem.largeTitleDisplayMode = .never
-
-            case 3:
-                menuCategoriesVC.MenuCategories = KitchenDataController.GlobaldinnerMenuItems
-                menuCategoriesVC.title = "Dinner"
-                menuCategoriesVC.navigationItem.largeTitleDisplayMode = .never
-
-            default:
-                print("Invalid selection")
-                return
-            }
-            self.navigationController?.pushViewController(menuCategoriesVC, animated: true)
-        } else {
-            print("Failed to instantiate MenuCategoriesViewController")
-        }
-    }
-
     
     
     @objc func sectionButtonTapped(_ sender: UIButton) {
@@ -304,83 +255,18 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             break
         }
     }
-
-//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        if indexPath.section == 0 { 
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
-//            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-//                
-//                // Pass data to the destination view controller if needed
-//                kitchenDetailVC.MenuCategories = KitchenDataController.GloballunchMenuItems[indexPath.row]
-//                
-//                // Navigate to the view controller
-//                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
-//                
-////                kitchenDetailVC.modalPresentationStyle = .pageSheet
-////
-////                if let sheet = kitchenDetailVC.sheetPresentationController {
-////                    sheet.detents = [.medium(),.large()]
-////                }
-////                present(kitchenDetailVC,animated: true)
-//                
-//            }
-//        }
-//    }
-//    func collectionView1(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
-//        
-//        if let menuCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-//            
-//            // Determine which time slot was selected and pass the corresponding data
-//            switch indexPath.row {
-//            case 0:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalbreakfastMenuItems // Replace with your breakfast data source
-//            case 1:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GloballunchMenuItems // Replace with your lunch data source
-//            case 2:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalsnacksMenuItems // Replace with your snack data source
-//            case 3:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobaldinnerMenuItems // Replace with your dinner data source
-//            default:
-//                print("Invalid selection")
-//                return
-//            }
-//            
-//            // Navigate to the destination view controller
-//            self.navigationController?.pushViewController(menuCategoriesVC, animated: true)
-//        }
-//    func collectionView1(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print("Item selected at row: \(indexPath.row)")
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//
-//        if let menuCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-//            print("ViewController instantiated successfully")
-//
-//            // Pass the data based on selection
-//            switch indexPath.row {
-//            case 0:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalbreakfastMenuItems
-//            case 1:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GloballunchMenuItems
-//            case 2:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobalsnacksMenuItems
-//            case 3:
-//                menuCategoriesVC.MenuCategories = KitchenDataController.GlobaldinnerMenuItems
-//            default:
-//                print("Invalid selection")
-//                return
-//            }
-//
-//            // Navigate to the view controller
-//            print("Navigating to MenuCategoriesViewController")
-//            self.navigationController?.pushViewController(menuCategoriesVC, animated: true)
-//        } else {
-//            print("Failed to instantiate MenuCategoriesViewController")
-//        }
-//    }
-
+    @IBAction func profileButtonTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+            
+            
+        
+            if let profileVC = storyboard.instantiateInitialViewController() {
+                
+                navigationController?.pushViewController(profileVC, animated: true)
+            }
     }
+    
 
     
 
-
+}

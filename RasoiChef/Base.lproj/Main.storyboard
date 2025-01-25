@@ -56,7 +56,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="9389.3023255813951" y="24.463519313304722"/>
+            <point key="canvasLocation" x="10287.906976744185" y="24.463519313304722"/>
         </scene>
         <!--Add Item Modally View Controller-->
         <scene sceneID="iBo-tC-4AI">
@@ -207,7 +207,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZEB-tb-mKP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="10354.883720930233" y="24.463519313304722"/>
+            <point key="canvasLocation" x="11253.488372093023" y="24.463519313304722"/>
         </scene>
         <!--Menu Categories View Controller-->
         <scene sceneID="Ixq-XI-U9r">
@@ -270,7 +270,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-0t-7Ie">
-                                <rect key="frame" x="0.0" y="162" width="430" height="721"/>
+                                <rect key="frame" x="0.0" y="110" width="430" height="773"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="udv-lV-EJm">
                                     <size key="itemSize" width="128" height="128"/>
@@ -290,7 +290,7 @@
                                 </cells>
                             </collectionView>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="KJL-cx-A7n">
-                                <rect key="frame" x="16" y="96" width="398" height="56"/>
+                                <rect key="frame" x="16" y="44" width="398" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="jhF-fO-tm7" id="iBp-ay-H0M"/>
@@ -316,6 +316,9 @@
                         <barButtonItem key="rightBarButtonItem" title="Profile" id="lNc-s8-lcd">
                             <imageReference key="image" image="person.crop.circle.fill" catalog="system" symbolScale="large"/>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="profileButtonTapped:" destination="jhF-fO-tm7" id="2E0-Pf-jez"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -424,7 +427,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="azr-mU-eQS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="11321.860465116279" y="24.463519313304722"/>
+            <point key="canvasLocation" x="12220.465116279069" y="24.463519313304722"/>
         </scene>
         <!--Kitchen Chef Special View Controller-->
         <scene sceneID="ZPV-Gx-Zod">
@@ -470,7 +473,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MyU-2Z-7RK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="12313.953488372093" y="24.463519313304722"/>
+            <point key="canvasLocation" x="13212.558139534884" y="24.463519313304722"/>
         </scene>
         <!--Subscription View Controller-->
         <scene sceneID="Pso-Kw-rhk">
@@ -524,9 +527,9 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="hfx-3S-SeW" kind="relationship" relationship="viewControllers" id="dSI-mt-iF3"/>
-                        <segue destination="AFU-Zr-oBM" kind="relationship" relationship="viewControllers" id="fVW-qA-DZg"/>
-                        <segue destination="PdY-xe-vW1" kind="relationship" relationship="viewControllers" id="f77-CJ-7jj"/>
+                        <segue destination="yAK-Hh-nj7" kind="relationship" relationship="viewControllers" id="uAz-CU-aea"/>
+                        <segue destination="AFU-Zr-oBM" kind="relationship" relationship="viewControllers" id="Q0b-kl-t6M"/>
+                        <segue destination="PdY-xe-vW1" kind="relationship" relationship="viewControllers" id="oWb-SD-e4t"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1aL-Ou-d2r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -660,7 +663,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-google-logo-48" imagePadding="0.0" cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GvZ-42-QzU">
@@ -668,7 +671,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-facebook-48 " cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PaF-LB-RkF">
@@ -676,7 +679,7 @@
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="filled" image="icons8-apple-50" cornerStyle="capsule">
-                                                            <color key="baseBackgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </buttonConfiguration>
                                                     </button>
                                                 </subviews>
@@ -786,11 +789,10 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="430" height="390"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Ma-p5-wVv">
-                                                        <rect key="frame" x="0.0" y="-3" width="430" height="305"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="430" height="300"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="300" id="zqS-Cl-Pxe"/>
                                                         </constraints>
-                                                        <imageReference key="image" image="apple.logo" catalog="system" symbolScale="large"/>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   Sign up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8mj-In-I7a">
                                                         <rect key="frame" x="0.0" y="300" width="430" height="70"/>
@@ -933,30 +935,27 @@
             <point key="canvasLocation" x="2673" y="794"/>
         </scene>
         <!--Preorder-->
-        <scene sceneID="Gbn-Xg-dSo">
+        <scene sceneID="Xgs-JG-a8l">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hfx-3S-SeW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Preorder" selectedImage="calendar.circle.fill" catalog="system" id="7rw-De-zEu">
-                        <imageReference key="image" image="calendar.circle" catalog="system" symbolScale="large"/>
-                    </tabBarItem>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yAK-Hh-nj7" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Preorder" image="calendar.circle" catalog="system" selectedImage="calendar.circle.fill" id="uVZ-CS-eb3"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="e6I-Hg-yQO">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="96"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="m96-W8-geH">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="jhF-fO-tm7" kind="relationship" relationship="rootViewController" id="vo3-XL-fiP"/>
+                        <segue destination="jhF-fO-tm7" kind="relationship" relationship="rootViewController" id="cIV-xX-SXY"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0Eh-Oc-JMH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MXi-Nb-nIN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4716" y="-66"/>
+            <point key="canvasLocation" x="4698" y="-66"/>
         </scene>
     </scenes>
     <resources>
         <image name="WhatsApp Image 2025-01-16 at 20.47.08" width="1024" height="768"/>
-        <image name="apple.logo" catalog="system" width="105" height="128"/>
         <image name="calendar.circle" catalog="system" width="128" height="123"/>
         <image name="calendar.circle.fill" catalog="system" width="128" height="123"/>
         <image name="cart" catalog="system" width="128" height="102"/>

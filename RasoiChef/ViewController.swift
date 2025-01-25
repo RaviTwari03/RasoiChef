@@ -17,8 +17,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
            super.viewDidLoad()
         self.title = "Kanha Ji Rasoi"
-        self.navigationItem.largeTitleDisplayMode = .never
-
+        
            // Registering Nibs for Cells
            let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
            let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)
@@ -59,43 +58,9 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                return 0
            }
        }
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        if kind == UICollectionView.elementKindSectionHeader {
-//            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
-//            
-//            // Switch case for section headers
-//            switch indexPath.section {
-//            case 0:
-//                header.headerLabel.text = ""
-//            case 1:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[0]
-//            case 2:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[1]
-//            case 3:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
-//            default:
-//                header.headerLabel.text = "Section \(indexPath.section)" // Default case to prevent out of range error
-//            }
-//            if header.headerLabel.text == "" {
-//                header.actionButton.isHidden = true
-//                header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
-//            } else {
-//                header.actionButton.isHidden = false
-//                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-//            }
-//            
-//            header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-//            header.actionButton.setTitle("See All", for: .normal)
-//
-//        header.actionButton.tag = indexPath.section
-//        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
-//             
-//            
-//            return header
-//        }
-//        print("Supplementary View Not Found")
-//        return UICollectionReusableView()
-//    }
+
+    
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
@@ -176,7 +141,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
-           cell.layer.cornerRadius = 10.0
+            cell.layer.cornerRadius = 10.0
                cell.layer.borderWidth = 1.0
                cell.layer.borderColor = UIColor.gray.cgColor
                cell.layer.shadowColor = UIColor.black.cgColor
@@ -274,21 +239,15 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
        }
        
     func generateSubscriptionPlanSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-            // Define group size and layout
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(130))
-            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-            // Add content insets to the group
-            group.interItemSpacing = .fixed(5)
-            group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
-
-            // Create the section
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Adjust the height of the section item to a bigger size
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(150))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        group.interItemSpacing = .fixed(8)
+        let section = NSCollectionLayoutSection(group: group)
         return section
     }
     
@@ -347,15 +306,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             break
         }
     }
+    
+    
+   
 
-    }
-//        case 1: // Menu List
-//            if let menuListVC = storyboard?.instantiateViewController(withIdentifier: "KitchenMenuListViewController") as? KitchenMenuListViewController {
-//                    menuListVC.menuItems = KitchenDataController.menuItems.filter { $0.kitchenID == "kitchen001" } // Example filter
-//                    self.navigationController?.pushViewController(menuListVC, animated: true)
-//                } else {
-//                    print("Error: Could not instantiate KitchenMenuListViewController")
-//                }
+}
+
 
    
 
