@@ -288,80 +288,204 @@ class CustomiseTableTableViewCell: UITableViewCell {
 //    }
 //}
     // Maintain the hidden states of buttons for reusability
-       private var buttonStates: [Bool] = [true, true, true, true]
+//       private var buttonStates: [Bool] = [true, true, true, true]
+//
+//       override func awakeFromNib() {
+//           super.awakeFromNib()
+//           resetButtonStates()
+//       }
+//
+//       func configureRow(withIcons icons: [String]) {
+//           guard icons.count == 4 else { return }
+//
+//           // Update button visibility based on states
+//           Breakfastbutton.isHidden = !buttonStates[0]
+//           LunchButton.isHidden = !buttonStates[1]
+//           SnacksButton.isHidden = !buttonStates[2]
+//           DinnerButton.isHidden = !buttonStates[3]
+//
+//           setButtonImage(button: Breakfastbutton, iconName: icons[0])
+//           setButtonImage(button: LunchButton, iconName: icons[1])
+//           setButtonImage(button: SnacksButton, iconName: icons[2])
+//           setButtonImage(button: DinnerButton, iconName: icons[3])
+//       }
+//
+//       private func setButtonImage(button: UIButton, iconName: String) {
+//           guard let image = UIImage(named: iconName) else {
+//               print("Error: Image \(iconName) not found.")
+//               button.setImage(nil, for: .normal)
+//               return
+//           }
+//           button.setImage(resizeImage(image: image, targetSize: CGSize(width: 35, height: 35)), for: .normal)
+//           button.imageView?.contentMode = .scaleAspectFit
+//           button.setTitle(nil, for: .normal) // Remove default button title
+//       }
+//
+//       private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+//           let size = image.size
+//           let widthRatio = targetSize.width / size.width
+//           let heightRatio = targetSize.height / size.height
+//           let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
+//
+//           UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+//           image.draw(in: CGRect(origin: .zero, size: newSize))
+//           let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//           UIGraphicsEndImageContext()
+//
+//           return newImage ?? image
+//       }
+//
+//       @IBAction func buttonClicked(_ sender: UIButton) {
+//           switch sender {
+//           case Breakfastbutton:
+//               buttonStates[0] = false
+//           case LunchButton:
+//               buttonStates[1] = false
+//           case SnacksButton:
+//               buttonStates[2] = false
+//           case DinnerButton:
+//               buttonStates[3] = false
+//           default:
+//               return
+//           }
+//
+//           sender.isHidden = true // Hide the button
+//       }
+//
+//       private func resetButtonStates() {
+//           buttonStates = [true, true, true, true]
+//           Breakfastbutton.isHidden = false
+//           LunchButton.isHidden = false
+//           SnacksButton.isHidden = false
+//           DinnerButton.isHidden = false
+//       }
+//
+//       override func prepareForReuse() {
+//           super.prepareForReuse()
+//           resetButtonStates()
+//       }
+//   }
+    // Tracks button visibility states
+        private var buttonStates: [Bool] = [true, true, true, true]
 
-       override func awakeFromNib() {
-           super.awakeFromNib()
-           resetButtonStates()
-       }
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            resetButtonStates()
+        }
 
-       func configureRow(withIcons icons: [String]) {
-           guard icons.count == 4 else { return }
+//        func configureRow(withIcons icons: [String]) {
+//            guard icons.count == 4 else { return }
+//
+//            // Set button visibility based on buttonStates
+//            Breakfastbutton.isHidden = !buttonStates[0]
+//            LunchButton.isHidden = !buttonStates[1]
+//            SnacksButton.isHidden = !buttonStates[2]
+//            DinnerButton.isHidden = !buttonStates[3]
+//
+//            // Assign images
+//            setButtonImage(button: Breakfastbutton, iconName: icons[0])
+//            setButtonImage(button: LunchButton, iconName: icons[1])
+//            setButtonImage(button: SnacksButton, iconName: icons[2])
+//            setButtonImage(button: DinnerButton, iconName: icons[3])
+//        }
+    func configureRow(withIcons icons: [String]) {
+        print("Configuring row with icons: \(icons)")
 
-           // Update button visibility based on states
-           Breakfastbutton.isHidden = !buttonStates[0]
-           LunchButton.isHidden = !buttonStates[1]
-           SnacksButton.isHidden = !buttonStates[2]
-           DinnerButton.isHidden = !buttonStates[3]
+        Breakfastbutton.isHidden = !buttonStates[0]
+        LunchButton.isHidden = !buttonStates[1]
+        SnacksButton.isHidden = !buttonStates[2]
+        DinnerButton.isHidden = !buttonStates[3]
 
-           setButtonImage(button: Breakfastbutton, iconName: icons[0])
-           setButtonImage(button: LunchButton, iconName: icons[1])
-           setButtonImage(button: SnacksButton, iconName: icons[2])
-           setButtonImage(button: DinnerButton, iconName: icons[3])
-       }
+        setButtonImage(button: Breakfastbutton, iconName: icons[0])
+        setButtonImage(button: LunchButton, iconName: icons[1])
+        setButtonImage(button: SnacksButton, iconName: icons[2])
+        setButtonImage(button: DinnerButton, iconName: icons[3])
+    }
 
-       private func setButtonImage(button: UIButton, iconName: String) {
-           guard let image = UIImage(named: iconName) else {
-               print("Error: Image \(iconName) not found.")
-               button.setImage(nil, for: .normal)
-               return
-           }
-           button.setImage(resizeImage(image: image, targetSize: CGSize(width: 45, height: 45)), for: .normal)
-           button.imageView?.contentMode = .scaleAspectFit
-           button.setTitle(nil, for: .normal) // Remove default button title
-       }
+        private func setButtonImage(button: UIButton, iconName: String) {
+            guard let image = UIImage(named: iconName) else {
+                print("Error: Image \(iconName) not found.")
+                button.setImage(nil, for: .normal)
+                return
+            }
+            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 45, height: 45))
+            button.setImage(resizedImage, for: .normal)
+            button.imageView?.contentMode = .scaleAspectFit
+            button.setTitle(nil, for: .normal)
+        }
 
-       private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-           let size = image.size
-           let widthRatio = targetSize.width / size.width
-           let heightRatio = targetSize.height / size.height
-           let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
+        private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+            let size = image.size
+            let widthRatio = targetSize.width / size.width
+            let heightRatio = targetSize.height / size.height
+            let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
 
-           UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-           image.draw(in: CGRect(origin: .zero, size: newSize))
-           let newImage = UIGraphicsGetImageFromCurrentImageContext()
-           UIGraphicsEndImageContext()
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
 
-           return newImage ?? image
-       }
+            return newImage ?? image
+        }
 
-       @IBAction func buttonClicked(_ sender: UIButton) {
-           switch sender {
-           case Breakfastbutton:
-               buttonStates[0] = false
-           case LunchButton:
-               buttonStates[1] = false
-           case SnacksButton:
-               buttonStates[2] = false
-           case DinnerButton:
-               buttonStates[3] = false
-           default:
-               return
-           }
+//        @IBAction func buttonClicked(_ sender: UIButton) {
+//            print("Button clicked: \(sender)")
+//            print("Button clicked: \(sender.title(for: .normal) ?? "Unknown")")
+//
+//            // Update buttonStates based on the clicked button
+//            switch sender {
+//            case Breakfastbutton:
+//                buttonStates[0] = false
+//            case LunchButton:
+//                buttonStates[1] = false
+//            case SnacksButton:
+//                buttonStates[2] = false
+//            case DinnerButton:
+//                buttonStates[3] = false
+//            default:
+//                return
+//            }
+//
+//            // Hide the button
+//            sender.isHidden = true
+//            print("Button hidden: \(sender.isHidden)")
+//        }
+    @IBAction func buttonClicked(_ sender: UIButton) {
+        print("Button clicked: \(sender)")
+        print("Tag: \(sender.tag)")
 
-           sender.isHidden = true // Hide the button
-       }
+        switch sender {
+        case Breakfastbutton:
+            print("Breakfast button clicked")
+            buttonStates[0] = false
+        case LunchButton:
+            print("Lunch button clicked")
+            buttonStates[1] = false
+        case SnacksButton:
+            print("Snacks button clicked")
+            buttonStates[2] = false
+        case DinnerButton:
+            print("Dinner button clicked")
+            buttonStates[3] = false
+        default:
+            print("Unknown button clicked")
+            return
+        }
 
-       private func resetButtonStates() {
-           buttonStates = [true, true, true, true]
-           Breakfastbutton.isHidden = false
-           LunchButton.isHidden = false
-           SnacksButton.isHidden = false
-           DinnerButton.isHidden = false
-       }
+        sender.isHidden = true
+        print("Button hidden: \(sender.isHidden)")
+    }
 
-       override func prepareForReuse() {
-           super.prepareForReuse()
-           resetButtonStates()
-       }
-   }
+        private func resetButtonStates() {
+            buttonStates = [true, true, true, true]
+            Breakfastbutton.isHidden = false
+            LunchButton.isHidden = false
+            SnacksButton.isHidden = false
+            DinnerButton.isHidden = false
+        }
+
+        override func prepareForReuse() {
+            super.prepareForReuse()
+            resetButtonStates()
+        }
+    }

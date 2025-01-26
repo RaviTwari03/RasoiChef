@@ -197,10 +197,23 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 //        cell.configureRow(withIcons: icons)
 //        return cell
 //    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as! CustomiseTableTableViewCell
+//        cell.dayLabel.text = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][indexPath.row]
+//        let icons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon" ];        cell.configureRow(withIcons: icons)
+//        return cell
+//    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as! CustomiseTableTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
+            fatalError("CustomiseTableTableViewCell not found")
+        }
+
         cell.dayLabel.text = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][indexPath.row]
-        let icons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon" ];        cell.configureRow(withIcons: icons)
+
+        let icons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"] // Replace with your actual image names
+        print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
+        cell.configureRow(withIcons: icons)
+
         return cell
     }
 
