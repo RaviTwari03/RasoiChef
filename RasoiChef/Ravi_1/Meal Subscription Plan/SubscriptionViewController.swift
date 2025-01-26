@@ -167,27 +167,41 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     //            return cell
     //        }
     //    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as! CustomiseTableTableViewCell
+//        
+//        let dayMeal = weeklyMeals[indexPath.row]
+//        cell.configure(day: dayMeal.day, meals: dayMeal.meals)
+//        
+//        // Handle button taps
+//        cell.buttonAction = { [weak self] button in
+//            guard let self = self else { return }
+//            
+//            let column = button == cell.Breakfastbutton ? 0 :
+//            button == cell.LunchButton ? 1 :
+//            button == cell.SnacksButton ? 2 : 3
+//            
+//            // Update model
+//            self.weeklyMeals[indexPath.row].meals[column] = nil
+//            
+//            // Reload the specific row
+//            self.MealSubscriptionPlan.reloadRows(at: [indexPath], with: .automatic)
+//        }
+//        
+//        return cell
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as! CustomiseTableTableViewCell
+//        cell.dayLabel.text = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][indexPath.row]
+//        let icons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon", ] // Replace with your actual icons
+//        cell.configureRow(withIcons: icons)
+//        return cell
+//    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as! CustomiseTableTableViewCell
-        
-        let dayMeal = weeklyMeals[indexPath.row]
-        cell.configure(day: dayMeal.day, meals: dayMeal.meals)
-        
-        // Handle button taps
-        cell.buttonAction = { [weak self] button in
-            guard let self = self else { return }
-            
-            let column = button == cell.Breakfastbutton ? 0 :
-            button == cell.LunchButton ? 1 :
-            button == cell.SnacksButton ? 2 : 3
-            
-            // Update model
-            self.weeklyMeals[indexPath.row].meals[column] = nil
-            
-            // Reload the specific row
-            self.MealSubscriptionPlan.reloadRows(at: [indexPath], with: .automatic)
-        }
-        
+        cell.dayLabel.text = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][indexPath.row]
+        let icons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon" ];        cell.configureRow(withIcons: icons)
         return cell
     }
+
 }
