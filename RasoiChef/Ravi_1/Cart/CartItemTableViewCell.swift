@@ -70,7 +70,12 @@ class CartItemTableViewCell: UITableViewCell {
         CartIncreaseCounter.value = Double(cartItem.quantity)
         
     }
-   
+    func configure(with item: CartItem) {
+        CartDishLabel.text = item.menuItem.name
+        CartDishDescription.text = item.menuItem.description
+        CartDishPriceLabel.text = "₹\(item.menuItem.price)"
+        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
+      }
     }
 
 

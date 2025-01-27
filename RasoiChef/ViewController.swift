@@ -272,6 +272,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         } else {
             print("Error: Could not instantiate AddItemModallyViewController")
         }
+        
     }
 
 
@@ -309,7 +310,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     
    
+    
+    @IBAction func cross(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
 
+    }
 }
 
 

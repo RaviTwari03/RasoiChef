@@ -36,6 +36,10 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.reloadData()
 
     }
+    func didAddItemToCart(_ item: CartItem) {
+           KitchenDataController.cartItems.append(item)
+           CartItem.reloadData() // Refresh table view
+       }
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
@@ -156,18 +160,21 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        
     }
 //    extension CartViewController: AddItemDelegate {
-    func didAddItemToCart(_ item: CartItem) {
-        KitchenDataController.cartItems.append(item)
-        if KitchenDataController.cartItems.isEmpty {
-            print("No items to display in the cart.")
-        } else {
-            print("Items added to cart. Current count: \(KitchenDataController.cartItems.count)")
-        }
-        CartItem.reloadData()  // Refresh table view
-    }
+//    func didAddItemToCart(_ item: CartItem) {
+//        KitchenDataController.cartItems.append(item)
+//        if KitchenDataController.cartItems.isEmpty {
+//            print("No items to display in the cart.")
+//        } else {
+//            print("Items added to cart. Current count: \(KitchenDataController.cartItems.count)")
+//        }
+//        CartItem.reloadData()  // Refresh table view
+//    }
 
    
-       
+    func didAddItemToCart1(_ item: CartItem) {
+           KitchenDataController.cartItems.append(item)
+           CartItem.reloadData() // Refresh table view
+       }
 
   
         
