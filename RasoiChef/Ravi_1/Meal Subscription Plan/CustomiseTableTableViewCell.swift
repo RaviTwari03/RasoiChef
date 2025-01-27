@@ -18,14 +18,20 @@ class CustomiseTableTableViewCell: UITableViewCell {
     @IBOutlet var dayLabel: UILabel!
     @IBOutlet var DinnerButton: UIButton!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        resetButtonStates()
 
+        // Assign custom tags
+        Breakfastbutton.tag = 40
+        LunchButton.tag = 60
+        SnacksButton.tag = 40
+        DinnerButton.tag = 60
+    }
     // Tracks button visibility states
         private var buttonStates: [Bool] = [true, true, true, true]
 
-        override func awakeFromNib() {
-            super.awakeFromNib()
-            resetButtonStates()
-        }
+        
 
     func configureRow(withIcons icons: [String]) {
         print("Configuring row with icons: \(icons)")
@@ -47,7 +53,7 @@ class CustomiseTableTableViewCell: UITableViewCell {
                 button.setImage(nil, for: .normal)
                 return
             }
-            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 35, height: 35))
+            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 30, height: 30))
             button.setImage(resizedImage, for: .normal)
             button.imageView?.contentMode = .scaleAspectFit
             button.setTitle(nil, for: .normal)
