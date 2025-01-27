@@ -47,6 +47,9 @@
                     </label>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="2cT-22-VB4">
                         <rect key="frame" x="285" y="57" width="94" height="27"/>
+                        <connections>
+                            <action selector="CartIncreaseCounter:" destination="p7O-uv-5vB" eventType="valueChanged" id="bDO-Jg-Q0M"/>
+                        </connections>
                     </stepper>
                 </subviews>
                 <constraints>

@@ -29,8 +29,27 @@ class CartItemTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    @IBAction func stepperValueChanged1(_ sender: UIStepper) {
+    @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
         CartItemQuantityLabel.text = "\(Int(sender.value))"
+        let newQuantity = Int(sender.value)
+
+           if newQuantity > 10 {
+               // Reset stepper value to 10
+               sender.value = 10
+
+               // Show an alert
+               if let parentViewController = self.window?.rootViewController {
+                   let alert = UIAlertController(
+                       title: "Limit Exceeded",
+                       message: "You can only add up to 10 items.",
+                       preferredStyle: .alert
+                   )
+                   alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                   parentViewController.present(alert, animated: true, completion: nil)
+               }
+
+               return
+           }
     }
     func updateCartItem(for indexpath: IndexPath) {
         if KitchenDataController.cartItems.isEmpty {
