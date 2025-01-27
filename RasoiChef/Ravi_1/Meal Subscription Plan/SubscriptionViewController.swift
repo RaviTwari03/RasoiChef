@@ -7,10 +7,14 @@
 
 import UIKit
 
-class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
+class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate {
+//    func buttonClicked(withTag tag: Int) {
+//        <#code#>
+//    }
+//    
     
     
-    var totalPrice: Int = 200 // Initial total price (40 + 60 + 40 + 60)
+    var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
     
@@ -28,50 +32,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         DayMeal(day: "Saturday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"]),
         DayMeal(day: "Sunday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"])
     ]
-//    var weeklyMeals: [DayMeal] = [
-//           DayMeal(day: "Monday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true)
-//           ]),
-//           DayMeal(day: "Tuesday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true)
-//           ]),
-//           DayMeal(day: "Wednesday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true),
-//               ]),
-//               DayMeal(day: "Thursday", meals: [
-//                   Meal(name: "Breakfast", price: 40, isSelected: true),
-//                   Meal(name: "Lunch", price: 60, isSelected: true),
-//                   Meal(name: "Snacks", price: 40, isSelected: true),
-//                   Meal(name: "Dinner", price: 60, isSelected: true)
-//                   ]),
-//           DayMeal(day: "Friday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true)
-//           ]),
-//           DayMeal(day: "Tuesday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true)
-//               ]),
-//           DayMeal(day: "Tuesday", meals: [
-//               Meal(name: "Breakfast", price: 40, isSelected: true),
-//               Meal(name: "Lunch", price: 60, isSelected: true),
-//               Meal(name: "Snacks", price: 40, isSelected: true),
-//               Meal(name: "Dinner", price: 60, isSelected: true)
-//       ])
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,35 +91,49 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             
             print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
             cell.configureRow(withIcons: icons)
-            
+            cell.delegate = self
             return cell
             
         default:
             fatalError("Unexpected section index")
         }
     }
+
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        switch indexPath.section {
+//        case 1: // Customize Table Section
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
+//                fatalError("CustomiseTableTableViewCell not found")
+//            }
+//            
+//            let dayMeal = weeklyMeals[indexPath.row]
+//            cell.dayLabel.text = dayMeal.day
+//            
+//            // Provide icons for each meal
+//            let icons = dayMeal.meals.map { meal in
+//                switch meal {
+//                case "Breakfast": return "BreakfastIcon"
+//                case "Lunch": return "LunchIcon"
+//                case "Snacks": return "SnacksIcon"
+//                case "Dinner": return "DinnerIcon"
+//                default: return nil
+//                }
+//            }.compactMap { $0 } // Filter out nil values
+//            
+//            print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
+//            cell.configureRow(withIcons: icons)
+//            
+//            // Set the delegate
+//            cell.delegate = self
+//            
+//            return cell
+//        default:
+//            fatalError("Unexpected section index")
+//        }
+//    }
+
     
-    
-    //    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-    //        if section == 1 {
-    //            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
-    //
-    //            // Add "Pay ₹" label
-    //            let payLabel = UILabel(frame: CGRect(x: 16, y: 10, width: 150, height: 40))
-    //            payLabel.tag = 100 // Use a tag to update this label dynamically
-    //            payLabel.text = "Pay ₹\(totalPrice)"
-    //            payLabel.font = UIFont.boldSystemFont(ofSize: 18)
-    //            footerView.addSubview(payLabel)
-    //
-    //            // Add "Subscribe Plan" button
-    //            let button = UIButton(frame: CGRect(x: tableView.frame.width - 160, y: 10, width: 140, height: 40))
-    //            button.setTitle("Subscribe Plan", for: .normal)
-    //            button.backgroundColor = .orange
-    //            button.setTitleColor(.white, for: .normal)
-    //            button.layer.cornerRadius = 10
-    //            footerView.addSubview(button)
-    //
-    //            return footerView
+   
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
             if section == 1 {
                 let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
@@ -182,25 +157,14 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             }
         return nil
     }
-    private func updateFooterPrice() {
-           if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
-              let payLabel = footerView.viewWithTag(100) as? UILabel {
-               payLabel.text = "Pay ₹\(totalPrice)"
-           }
-       }
-       
-//       private func recalculateTotalPrice() {
-//           totalPrice = weeklyMeals.flatMap { $0.meals }
-//               .filter { $0.isSelected }
-//               .map { $0.price }
-//               .reduce(0, +) * 7
-//       }
 //    private func updateFooterPrice() {
-//        if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
-//           let payLabel = footerView.viewWithTag(100) as? UILabel {
-//            payLabel.text = "Pay ₹\(totalPrice)"
-//        }
-//    }
+//           if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
+//              let payLabel = footerView.viewWithTag(100) as? UILabel {
+//               payLabel.text = "Pay ₹\(totalPrice)"
+//           }
+//       }
+       
+
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 1 {
@@ -218,4 +182,32 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             return 0
         }
     }
-}
+//    func buttonClicked(withTag tag: Int) {
+//            print("Received button tag: \(tag)")
+//            
+//            // Update the total price
+//            totalPrice -= tag
+//            
+//            // Update the footer label
+//            updateFooterPrice()
+//        }
+    func buttonClicked(withTag tag: Int) {
+        print("Received button tag: \(tag)")
+        
+        // Update the total price
+        totalPrice -= tag
+        
+        // Reload the footer by refreshing the entire section
+        let footerSectionIndex = 1
+        MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
+    }
+
+        private func updateFooterPrice() {
+            if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
+               let payLabel = footerView.viewWithTag(100) as? UILabel {
+                payLabel.text = "Pay ₹\(totalPrice)"
+            }
+        }
+    
+    }
+

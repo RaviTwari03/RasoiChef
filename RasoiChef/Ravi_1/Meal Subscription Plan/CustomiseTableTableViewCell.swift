@@ -7,8 +7,13 @@
 
 import UIKit
 
-class CustomiseTableTableViewCell: UITableViewCell {
+protocol CustomiseTableDelegate: AnyObject {
+    func buttonClicked(withTag tag: Int)
+}
 
+class CustomiseTableTableViewCell: UITableViewCell {
+    
+    weak var delegate: CustomiseTableDelegate?
   
     @IBOutlet var Breakfastbutton: UIButton!
     @IBOutlet var LunchButton: UIButton!
@@ -31,6 +36,7 @@ class CustomiseTableTableViewCell: UITableViewCell {
     // Tracks button visibility states
         private var buttonStates: [Bool] = [true, true, true, true]
 
+        
         
 
     func configureRow(withIcons icons: [String]) {
@@ -77,7 +83,7 @@ class CustomiseTableTableViewCell: UITableViewCell {
     @IBAction func buttonClicked(_ sender: UIButton) {
         print("Button clicked: \(sender)")
         print("Tag: \(sender.tag)")
-
+        delegate?.buttonClicked(withTag: sender.tag)
         switch sender {
         case Breakfastbutton:
             print("Breakfast button clicked")
@@ -98,6 +104,7 @@ class CustomiseTableTableViewCell: UITableViewCell {
 
         sender.isHidden = true
         print("Button hidden: \(sender.isHidden)")
+        
     }
 
         private func resetButtonStates() {
