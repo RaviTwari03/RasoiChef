@@ -37,33 +37,50 @@ class CustomiseTableTableViewCell: UITableViewCell {
         private var buttonStates: [Bool] = [true, true, true, true]
 
         
-        
-
     func configureRow(withIcons icons: [String]) {
-        print("Configuring row with icons: \(icons)")
+           Breakfastbutton.isHidden = false
+           LunchButton.isHidden = false
+           SnacksButton.isHidden = false
+           DinnerButton.isHidden = false
 
-        Breakfastbutton.isHidden = !buttonStates[0]
-        LunchButton.isHidden = !buttonStates[1]
-        SnacksButton.isHidden = !buttonStates[2]
-        DinnerButton.isHidden = !buttonStates[3]
+           setButtonImage(button: Breakfastbutton, iconName: icons[0])
+           setButtonImage(button: LunchButton, iconName: icons[1])
+           setButtonImage(button: SnacksButton, iconName: icons[2])
+           setButtonImage(button: DinnerButton, iconName: icons[3])
+       }
 
-        setButtonImage(button: Breakfastbutton, iconName: icons[0])
-        setButtonImage(button: LunchButton, iconName: icons[1])
-        setButtonImage(button: SnacksButton, iconName: icons[2])
-        setButtonImage(button: DinnerButton, iconName: icons[3])
-    }
+//    func configureRow(withIcons icons: [String]) {
+//        print("Configuring row with icons: \(icons)")
+//
+//        Breakfastbutton.isHidden = !buttonStates[0]
+//        LunchButton.isHidden = !buttonStates[1]
+//        SnacksButton.isHidden = !buttonStates[2]
+//        DinnerButton.isHidden = !buttonStates[3]
+//
+//        setButtonImage(button: Breakfastbutton, iconName: icons[0])
+//        setButtonImage(button: LunchButton, iconName: icons[1])
+//        setButtonImage(button: SnacksButton, iconName: icons[2])
+//        setButtonImage(button: DinnerButton, iconName: icons[3])
+//    }
 
-        private func setButtonImage(button: UIButton, iconName: String) {
-            guard let image = UIImage(named: iconName) else {
-                print("Error: Image \(iconName) not found.")
-                button.setImage(nil, for: .normal)
-                return
-            }
-            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 30, height: 30))
-            button.setImage(resizedImage, for: .normal)
-            button.imageView?.contentMode = .scaleAspectFit
-            button.setTitle(nil, for: .normal)
-        }
+//        private func setButtonImage(button: UIButton, iconName: String) {
+//            guard let image = UIImage(named: iconName) else {
+//                print("Error: Image \(iconName) not found.")
+//                button.setImage(nil, for: .normal)
+//                return
+//            }
+//            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 30, height: 30))
+//            button.setImage(resizedImage, for: .normal)
+//            button.imageView?.contentMode = .scaleAspectFit
+//            button.setTitle(nil, for: .normal)
+//        }
+    private func setButtonImage(button: UIButton, iconName: String) {
+           guard let image = UIImage(named: iconName) else { return }
+           let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 30, height: 30))
+           button.setImage(resizedImage, for: .normal)
+           button.imageView?.contentMode = .scaleAspectFit
+           button.setTitle(nil, for: .normal)
+       }
 
         private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let size = image.size

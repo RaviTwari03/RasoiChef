@@ -190,6 +190,9 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 //            
 //            // Update the footer label
 //            updateFooterPrice()
+//        let footerSectionIndex = 1
+//               MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
+//
 //        }
     func buttonClicked(withTag tag: Int) {
         print("Received button tag: \(tag)")
@@ -197,10 +200,30 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         // Update the total price
         totalPrice -= tag
         
-        // Reload the footer by refreshing the entire section
+        // Update the footer label
+        updateFooterPrice()
+
+        // Find the index path of the clicked cell
+        if let indexPath = MealSubscriptionPlan.indexPathForSelectedRow {
+            // Reload the row to update button visibility
+            MealSubscriptionPlan.reloadRows(at: [indexPath], with: .none)
+        }
+
+        // Reload the footer section to update the total price
         let footerSectionIndex = 1
         MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
     }
+
+//    func buttonClicked(withTag tag: Int) {
+//        print("Received button tag: \(tag)")
+//        
+//        // Update the total price
+//        totalPrice -= tag
+//        
+//        // Reload the footer by refreshing the entire section
+//        let footerSectionIndex = 1
+//        MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
+//    }
 
         private func updateFooterPrice() {
             if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
