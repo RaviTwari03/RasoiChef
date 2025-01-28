@@ -115,13 +115,20 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
         case 3:
             // Payment Section
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
+//                    return UITableViewCell()
+//                }
+//                let totalPrice = calculateTotalItemPrice()
+//                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
+//                cell.delegate = self // Assign delegate to handle button action
+//                return cell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
-                    return UITableViewCell()
-                }
-                let totalPrice = calculateTotalItemPrice()
-                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
-                cell.delegate = self // Assign delegate to handle button action
-                return cell
+                            return UITableViewCell()
+                        }
+                        let grandTotal = calculateGrandTotal()
+                        cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
+                        cell.delegate = self
+                        return cell
             
         default:
             return UITableViewCell()
@@ -223,6 +230,12 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     func fetchMenuItem(by id: Int) -> MenuItem? {
         return KitchenDataController.menuItems.first /*{ $0.id == id }*/
     }
-
+    func calculateGrandTotal() -> Double {
+            let totalPrice = calculateTotalItemPrice()
+            let gst = totalPrice * 0.18 // 18% GST
+            let deliveryCharges = 50.0
+            let discount = 20.0
+            return totalPrice + gst + deliveryCharges - discount
+        }
     }
 

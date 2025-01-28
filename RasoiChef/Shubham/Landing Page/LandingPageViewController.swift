@@ -16,6 +16,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     override func viewDidLoad() {
            super.viewDidLoad()
         self.title = "Home"
+        self.navigationItem.largeTitleDisplayMode = .always
            // Registering Nibs for Cells
            let BannerDetailsNib = UINib(nibName: "LandingPageBanner", bundle: nil)
            let LandingPageChefSpecialNib = UINib(nibName: "LandingPageChefSpecial", bundle: nil)
