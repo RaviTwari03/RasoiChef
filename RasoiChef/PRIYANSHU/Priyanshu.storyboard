@@ -11,7 +11,7 @@
         <!--My Orders-->
         <scene sceneID="O74-Yy-zbg">
             <objects>
-                <viewController id="PGd-HJ-QzC" customClass="MyOrdersViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MyOrdersViewController" id="PGd-HJ-QzC" customClass="MyOrdersViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QbZ-qI-8lL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

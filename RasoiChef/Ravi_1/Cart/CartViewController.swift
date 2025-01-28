@@ -9,7 +9,15 @@ import UIKit
 
 
 
-class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate {
+class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate {
+    func didTapPlaceOrder() {
+        // Navigate to MyOrdersViewController
+                let storyboard = UIStoryboard(name: "Priyanshu", bundle: nil)
+                if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
+                    self.navigationController?.pushViewController(myOrdersVC, animated: true)
+                }
+    }
+    
     
     
     
@@ -36,10 +44,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.reloadData()
 
     }
-//    func didAddItemToCart(_ item: CartItem) {
-//           KitchenDataController.cartItems.append(item)
-//           CartItem.reloadData() // Refresh table view
-//       }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
@@ -88,16 +93,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             }
             
         case 2:
-            // Bill Section
-//            if CartViewController.cartItems.isEmpty {
-//                return UITableViewCell() // No cell needed when the cart is empty
-//            } else {
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
-//                    return UITableViewCell()
-//                }
-//                // Configure the cell as needed
-//                // Example: cell.configure(with: totalAmount)
-//                return cell
+  
             if CartViewController.cartItems.isEmpty {
                     return UITableViewCell() // No cell needed when the cart is empty
                 } else {
@@ -119,16 +115,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
         case 3:
             // Payment Section
-            if CartViewController.cartItems.isEmpty {
-                return UITableViewCell() // No cell needed when the cart is empty
-            } else {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
                     return UITableViewCell()
                 }
-                // Configure the cell as needed
+                let totalPrice = calculateTotalItemPrice()
+                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
+                cell.delegate = self // Assign delegate to handle button action
                 return cell
-           
-            }
             
         default:
             return UITableViewCell()

@@ -6,9 +6,14 @@
 //
 
 import UIKit
+protocol CartPayCellDelegate: AnyObject {
+    func didTapPlaceOrder()
+}
 
 class CartPayTableViewCell: UITableViewCell {
+    weak var delegate: CartPayCellDelegate?
 
+    
     @IBOutlet var TotalAmountLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -23,6 +28,10 @@ class CartPayTableViewCell: UITableViewCell {
     
     
    
-       
+    @IBAction func placeOrderButton(_ sender: Any) {
+        delegate?.didTapPlaceOrder()
+
+    }
+    
 
 }
