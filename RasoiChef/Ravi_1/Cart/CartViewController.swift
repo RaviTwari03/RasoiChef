@@ -195,7 +195,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 //       }
     func didAddItemToCart(_ item: CartItem) {
         KitchenDataController.cartItems.append(item)
-//        print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
+        updateTabBarBadge()
+        CartItem.reloadData()
+//       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
     }
 
     
@@ -203,7 +205,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
   
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        CartItem.reloadData() // Reload the table view when the view appears
+        CartItem.reloadData()
+        updateTabBarBadge()// Reload the table view when the view appears
     }
     @objc func updateCart() {
         CartItem.reloadData()
@@ -237,5 +240,14 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             let discount = 20.0
             return totalPrice + gst + deliveryCharges - discount
         }
+    func updateTabBarBadge() {
+        if let tabItems = self.tabBarController?.tabBar.items {
+            let cartTabItem = tabItems[2] // Replace with the correct index for the "Cart" tab
+            let itemCount = CartViewController.cartItems.count
+            cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
+        }
+    }
+
+
     }
 

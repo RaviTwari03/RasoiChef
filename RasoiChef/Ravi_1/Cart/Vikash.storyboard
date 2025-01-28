@@ -49,11 +49,11 @@
             </objects>
             <point key="canvasLocation" x="5379.3893129770986" y="-310.56338028169017"/>
         </scene>
-        <!--Item-->
+        <!--Cart-->
         <scene sceneID="ESu-fR-2ml">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2Sp-RJ-fga" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="BKA-1l-M7K"/>
+                    <tabBarItem key="tabBarItem" title="Cart" image="cart" catalog="system" selectedImage="cart.fill" id="BKA-1l-M7K"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="mp5-O1-O1a">
@@ -71,6 +71,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="cart" catalog="system" width="128" height="102"/>
+        <image name="cart.fill" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
