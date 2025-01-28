@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="CcL-UY-GDW">
-                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="FbY-bz-usK">
@@ -49,11 +49,13 @@
             </objects>
             <point key="canvasLocation" x="5379.3893129770986" y="-310.56338028169017"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Item-->
         <scene sceneID="ESu-fR-2ml">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2Sp-RJ-fga" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="BKA-1l-M7K"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="mp5-O1-O1a">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>

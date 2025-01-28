@@ -275,7 +275,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-0t-7Ie">
-                                <rect key="frame" x="0.0" y="110" width="430" height="773"/>
+                                <rect key="frame" x="0.0" y="162" width="430" height="721"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="udv-lV-EJm">
                                     <size key="itemSize" width="128" height="128"/>
@@ -295,7 +295,7 @@
                                 </cells>
                             </collectionView>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="KJL-cx-A7n">
-                                <rect key="frame" x="16" y="44" width="398" height="56"/>
+                                <rect key="frame" x="16" y="96" width="398" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="jhF-fO-tm7" id="iBp-ay-H0M"/>
@@ -320,7 +320,7 @@
                     <navigationItem key="navigationItem" title="Home" leftItemsSupplementBackButton="YES" id="ovK-Kc-OLa">
                         <barButtonItem key="rightBarButtonItem" title="Profile" id="lNc-s8-lcd">
                             <imageReference key="image" image="person.crop.circle.fill" catalog="system" symbolScale="large"/>
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
                                 <action selector="profileButtonTapped:" destination="jhF-fO-tm7" id="2E0-Pf-jez"/>
                             </connections>
@@ -945,8 +945,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yAK-Hh-nj7" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Preorder" image="calendar.circle" catalog="system" selectedImage="calendar.circle.fill" id="uVZ-CS-eb3"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="m96-W8-geH">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="m96-W8-geH">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -974,7 +974,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

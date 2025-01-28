@@ -198,8 +198,8 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         totalPrice -= tag
         
         // Reload the footer by refreshing the entire section
-//        let footerSectionIndex = 1
-//        MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
+        let footerSectionIndex = 1
+        MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
     }
 
         private func updateFooterPrice() {

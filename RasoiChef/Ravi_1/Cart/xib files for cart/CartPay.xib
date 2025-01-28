@@ -24,6 +24,10 @@
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="spe-Vr-cqs">
                         <rect key="frame" x="228" y="14" width="125" height="35"/>
                         <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="35" id="mB2-al-72T"/>
+                            <constraint firstAttribute="width" constant="125" id="wXo-hs-Hw5"/>
+                        </constraints>
                         <color key="tintColor" red="0.93333333730000001" green="0.93333333730000001" blue="0.93725490570000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" title="Place Order">
@@ -48,6 +52,7 @@
                     <constraint firstAttribute="trailing" secondItem="spe-Vr-cqs" secondAttribute="trailing" constant="40" id="K4Z-dt-YHA"/>
                     <constraint firstItem="Sjw-qx-Qhx" firstAttribute="leading" secondItem="2XR-6J-0cw" secondAttribute="trailing" constant="10.329999923706055" id="K9y-yI-TyA"/>
                     <constraint firstAttribute="bottom" secondItem="2XR-6J-0cw" secondAttribute="bottom" constant="21" id="KSI-W8-Gha"/>
+                    <constraint firstAttribute="bottom" secondItem="spe-Vr-cqs" secondAttribute="bottom" constant="14" id="QjW-Ki-zyz"/>
                     <constraint firstItem="2XR-6J-0cw" firstAttribute="top" secondItem="Uja-u6-Qzz" secondAttribute="top" constant="21" id="SE8-SX-aYN"/>
                     <constraint firstItem="spe-Vr-cqs" firstAttribute="top" secondItem="Uja-u6-Qzz" secondAttribute="top" constant="14" id="jPR-KX-V9x"/>
                     <constraint firstItem="2XR-6J-0cw" firstAttribute="leading" secondItem="Uja-u6-Qzz" secondAttribute="leading" constant="20" symbolic="YES" id="jdh-uV-2dE"/>
