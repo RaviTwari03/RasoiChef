@@ -89,15 +89,32 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
         case 2:
             // Bill Section
+//            if CartViewController.cartItems.isEmpty {
+//                return UITableViewCell() // No cell needed when the cart is empty
+//            } else {
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
+//                    return UITableViewCell()
+//                }
+//                // Configure the cell as needed
+//                // Example: cell.configure(with: totalAmount)
+//                return cell
             if CartViewController.cartItems.isEmpty {
-                return UITableViewCell() // No cell needed when the cart is empty
-            } else {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
-                    return UITableViewCell()
-                }
-                // Configure the cell as needed
-                // Example: cell.configure(with: totalAmount)
-                return cell
+                    return UITableViewCell() // No cell needed when the cart is empty
+                } else {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
+                        return UITableViewCell()
+                    }
+                    let totalPrice = calculateTotalItemPrice()
+                    cell.itemPriceLabel.text = String(format: "₹ %.2f", totalPrice)
+                    
+                    // Example: Update other labels like GST, delivery charges, etc.
+                    let gst = totalPrice * 0.18 // 18% GST
+                    cell.gstLabel.text = String(format: "₹ %.2f", gst)
+                    cell.deliveryChargesLabel.text = "₹ 50.00" // Example static delivery charge
+                    cell.discountLabel.text = "-₹ 20.00" // Example static discount
+                    cell.totalAmount.text = String(format: "₹ %.2f", totalPrice + gst + 50 - 20)
+                    
+                    return cell
             }
             
         case 3:
@@ -110,6 +127,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 }
                 // Configure the cell as needed
                 return cell
+           
             }
             
         default:
@@ -126,7 +144,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 2:
             return 250 // Bill Section Height
         case 3:
-            return 80 // Payment Section Height
+            return 100 // Payment Section Height
         default:
             return 44
         }
@@ -189,6 +207,28 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     @objc func updateCart() {
         CartItem.reloadData()
+    }
+//    func calculateTotalItemPrice() -> Double {
+//        return CartViewController.cartItems.reduce(0) { $0 + ($1.MenuItem.price * Double($1.quantity)) }
+//    }
+//    func calculateTotalItemPrice() -> Double {
+//        return CartViewController.cartItems.reduce(into: 0) { total, cartItem in
+//            if let menuItem = fetchMenuItem(by: cartItem.MenuItem) {
+//                return total + (menuItem.price * Double(cartItem.quantity))
+//            }
+//            return total
+//        }
+//    }
+    func calculateTotalItemPrice() -> Double {
+        return CartViewController.cartItems.reduce(0) { total, cartItem in
+            total + (cartItem.menuItem.price * Double(cartItem.quantity))
+        }
+    }
+
+
+    // Example function to fetch a MenuItem by ID
+    func fetchMenuItem(by id: Int) -> MenuItem? {
+        return KitchenDataController.menuItems.first /*{ $0.id == id }*/
     }
 
     }
