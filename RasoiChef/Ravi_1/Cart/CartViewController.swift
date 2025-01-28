@@ -10,16 +10,7 @@ import UIKit
 
 
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate {
-//    func didTapPlaceOrder() {
-//        // Navigate to MyOrdersViewController
-////                let storyboard = UIStoryboard(name: "Priyanshu", bundle: nil)
-////                if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
-////                    self.navigationController?.pushViewController(myOrdersVC, animated: true)
-//        if let tabBarController = self.tabBarController {
-//                tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
-//            }
-//                }
-//    }
+
     
     func didTapPlaceOrder() {
         // Assuming "My Orders" is a tab in your UITabBarController
