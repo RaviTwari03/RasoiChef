@@ -36,10 +36,10 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.reloadData()
 
     }
-    func didAddItemToCart(_ item: CartItem) {
-           KitchenDataController.cartItems.append(item)
-           CartItem.reloadData() // Refresh table view
-       }
+//    func didAddItemToCart(_ item: CartItem) {
+//           KitchenDataController.cartItems.append(item)
+//           CartItem.reloadData() // Refresh table view
+//       }
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
@@ -171,12 +171,25 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 //    }
 
    
-    func didAddItemToCart1(_ item: CartItem) {
-           KitchenDataController.cartItems.append(item)
-           CartItem.reloadData() // Refresh table view
-       }
+//    func didAddItemToCart1(_ item: CartItem) {
+//           KitchenDataController.cartItems.append(item)
+//           CartItem.reloadData() // Refresh table view
+//       }
+    func didAddItemToCart(_ item: CartItem) {
+        KitchenDataController.cartItems.append(item)
+//        print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
+    }
+
+    
 
   
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        CartItem.reloadData() // Reload the table view when the view appears
+    }
+    @objc func updateCart() {
+        CartItem.reloadData()
+    }
+
     }
 

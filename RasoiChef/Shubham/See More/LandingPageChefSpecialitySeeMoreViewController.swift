@@ -37,64 +37,48 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
 
         // Do any additional setup after loading the view.
     }
-    
+
     func configureSearchBar() {
             searchBar = UISearchBar()
             searchBar.delegate = self
             searchBar.placeholder = "Search"
-            searchBar.sizeToFit()
-           // self.navigationItem.titleView = searchBar
-        if let navigationBarHeight = navigationController?.navigationBar.frame.height {
-               let statusBarHeight = UIApplication.shared.statusBarFrame.height
-               let yPosition = navigationBarHeight 
-               searchBar.frame = CGRect(x: 0, y: yPosition, width: view.frame.width, height: searchBar.frame.height)
-           } else {
-               searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: searchBar.frame.height)
-           }
-
-           // Add the search bar to the view
-           view.addSubview(searchBar)
+            searchBar.translatesAutoresizingMaskIntoConstraints = false
+            
+            // Add the search bar below the navigation bar
+            view.addSubview(searchBar)
+            
+            NSLayoutConstraint.activate([
+                searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+                searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                searchBar.heightAnchor.constraint(equalToConstant: 40)
+            ])
         }
-
-    func configureFilterStackView() {
-        let sortButton = createFilterButton(title: "Sort")
-        let nearestButton = createFilterButton(title: "Nearest")
-        let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-        let pureVeg = createFilterButton(title: "Pure Veg")
         
-        filterStackView = UIStackView(arrangedSubviews: [sortButton, nearestButton, ratingsButton])
-        filterStackView.axis = .horizontal
-        filterStackView.distribution = .fillEqually
-        filterStackView.spacing = 8.0
-        filterStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-//        self.view.addSubview(filterStackView)
-        self.view.addSubview(filterStackView)
-
+        func configureFilterStackView() {
+            let sortButton = createFilterButton(title: "Sort")
+            let nearestButton = createFilterButton(title: "Nearest")
+            let ratingsButton = createFilterButton(title: "Ratings 4.0+")
+            let pureVegButton = createFilterButton(title: "Pure Veg")
+            
+            filterStackView = UIStackView(arrangedSubviews: [sortButton, nearestButton, ratingsButton, pureVegButton])
+            filterStackView.axis = .horizontal
+            filterStackView.distribution = .fillEqually
+            filterStackView.spacing = 8.0
+            filterStackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            // Add the filter stack view below the search bar
+            view.addSubview(filterStackView)
+            
             NSLayoutConstraint.activate([
                 filterStackView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
-                filterStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
-                filterStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16),
+                filterStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                filterStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
                 filterStackView.heightAnchor.constraint(equalToConstant: 40)
             ])
-        
-        // Ensure the search bar is configured and added to the view first
-        guard let searchBar = searchBar else {
-            print("Search bar is not configured or added to the view yet.")
-            return
         }
         
-        // Add constraints
-        NSLayoutConstraint.activate([
-            filterStackView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
-            filterStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
-            filterStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16),
-            filterStackView.heightAnchor.constraint(equalToConstant: 40)
-        ])
-    }
-
-    func createFilterButton(title: String) -> UIButton {
+        func createFilterButton(title: String) -> UIButton {
             let button = UIButton(type: .system)
             button.setTitle(title, for: .normal)
             button.setTitleColor(.white, for: .normal)
@@ -107,91 +91,63 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         @objc func filterButtonTapped(_ sender: UIButton) {
             guard let title = sender.title(for: .normal) else { return }
             print("Filter tapped: \(title)")
-            // Handle filter logic here
         }
         
-        // MARK: - Search Bar Delegate
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             print("Search query: \(searchText)")
-            // Filter collection view data based on the search query
         }
         
-    // MARK: - Number of Sections
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5
-    }
-    
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
+        func numberOfSections(in collectionView: UICollectionView) -> Int {
+            return 1
+        }
+        
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             return KitchenDataController.globalChefSpecial.count
-        
-        default:
-            return 0
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
+        
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-            cell.layer.borderWidth = 1.0       // Border width
-            cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-            cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-            cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-            cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
+            cell.updateSpecialDishDetails(for: indexPath)
+            cell.layer.cornerRadius = 10.0
+            cell.layer.borderWidth = 1.0
+            cell.layer.borderColor = UIColor.gray.cgColor
+            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+            cell.layer.shadowRadius = 5.0
+            cell.layer.shadowOpacity = 0.2
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
-       
-            
-        default:
-            return UICollectionViewCell()
         }
-    }
-    
-    
-    func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
-            let section: NSCollectionLayoutSection
-            switch sectionIndex {
-            case 0:
-                section = self.generateChefSpecialMenuSectionLayout()
-            
-            default:
-                return nil
-            }
-            
-            return section
-        }
-        return layout
-    }
-    
-
-//
-//
-//    // Calendar Section Layout
-    func generateChefSpecialMenuSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(350))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 8.0)
-        group.interItemSpacing = .fixed(10)
-
-        let section = NSCollectionLayoutSection(group: group)
-        let layout = UICollectionViewFlowLayout()
         
-
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 8.0, bottom: 10.0, trailing: 8.0)
-
-        return section
-    }
+//        func generateLayout() -> UICollectionViewLayout {
+//            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//            
+//            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(350))
+//            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//            
+//            let section = NSCollectionLayoutSection(group: group)
+//            return UICollectionViewCompositionalLayout(section: section)
+//        }
     
-
-}
+    
+        func generateLayout() -> UICollectionViewLayout {
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+    
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(350))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 8.0)
+            group.interItemSpacing = .fixed(10)
+    
+            let section = NSCollectionLayoutSection(group: group)
+            let layout = UICollectionViewFlowLayout()
+    
+    
+    //        section.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 8.0, bottom: 10.0, trailing: 8.0)
+    
+            return UICollectionViewCompositionalLayout(section: section)
+        }
+    }
