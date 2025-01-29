@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate {
+    
    
     
     
@@ -112,15 +113,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
-            cell.layer.cornerRadius = 10.0
-            cell.layer.borderWidth = 1.0
-            cell.layer.borderColor = UIColor.gray.cgColor
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-            cell.layer.shadowRadius = 5.0
-            cell.layer.shadowOpacity = 0.2
-            cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+            
             return cell
         case 5:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
@@ -230,7 +223,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Adjust the height of the section item to a bigger size
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(90))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 //        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
         group.interItemSpacing = .fixed(8)
@@ -242,7 +235,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(150))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(180))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5)
         group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
@@ -348,6 +341,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     func didTapSeeMore2() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        }
+    }
+    func didTapSeeMore3() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "PlansMenuViewController") as? PlansMenuViewController {
             self.navigationController?.pushViewController(firstScreenVC, animated: true)
         }
     }

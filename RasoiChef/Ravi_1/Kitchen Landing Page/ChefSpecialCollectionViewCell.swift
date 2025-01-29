@@ -17,7 +17,9 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet var specialDishImage: UIImageView!
     
+    @IBOutlet var addButton: UIButton!
     
+    @IBOutlet var specialCard: UIView!
     
     
     func updateChefSpecialtyDetails(for indexPath: IndexPath) {
@@ -35,8 +37,18 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishRating.text = "⭐ \(specialDish.rating)"
         specialDishImage.image = UIImage(named: "CholeBhature")
             specialDishImage.image = UIImage(named: "CholeBhature")
-        
+        addButton.layer.cornerRadius = 11
+        applyCardStyle3()
     }
-
+    
+          func applyCardStyle3() {
+              specialCard.layer.cornerRadius = 16
+              specialCard.layer.masksToBounds = false
+              specialCard.layer.shadowColor = UIColor.black.cgColor
+              specialCard.layer.shadowOffset = CGSize(width: 0, height: 4)
+              specialCard.layer.shadowRadius = 5
+              specialCard.layer.shadowOpacity = 0.4
+              specialCard.backgroundColor = .white
+         }
     
 }
