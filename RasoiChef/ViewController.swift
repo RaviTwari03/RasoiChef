@@ -18,7 +18,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Kanha Ji Rasoi"
-        
+        self.navigationItem.largeTitleDisplayMode = .never
         // Registering Nibs for Cells
         let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
         let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)
@@ -30,10 +30,10 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         collectionView1.register(menuDetailsNib, forCellWithReuseIdentifier: "MenuDetails")
         collectionView1.register(chefSpecialDishesNib, forCellWithReuseIdentifier: "ChefSpecialDishes")
         collectionView1.register(subscriptionDetailsNib, forCellWithReuseIdentifier: "SubscriptionDetails")
-        collectionView1.register(MenuListHeaderNib, forCellWithReuseIdentifier: "MenuListHeaderNib")
+        collectionView1.register(MenuListHeaderNib, forCellWithReuseIdentifier: "MenuListHeader")
         
-        // Setting Layout
-        collectionView1.register(SectionHeader1CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader")
+//        // Setting Layout
+//        collectionView1.register(SectionHeader1CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader")
         //            header.button.addTarget(self, action: #selector(sectionbuttonTapped(_:)), for: .touchUpInside)
         
         collectionView1.setCollectionViewLayout(generateLayout(), animated: true)
@@ -52,10 +52,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 0:
             return 1 // Single restaurant/kitchen details
         case 1:
-            return KitchenDataController.menuItems.count
+            return 1
         case 2:
-            return KitchenDataController.chefSpecialtyDishes.count
+            return KitchenDataController.menuItems.count
         case 3:
+            return KitchenDataController.chefSpecialtyDishes.count
+        case 4:
             return KitchenDataController.subscriptionPlan.count
         default:
             return 0
@@ -64,59 +66,59 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        if kind == UICollectionView.elementKindSectionHeader {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
-            
-            // Set header titles dynamically
-            switch indexPath.section {
-            case 0:
-                header.headerLabel.text = ""
-            case 1:
-                header.headerLabel.text = KitchenDataController.sectionHeaderNames[0]
-            case 2:
-                header.headerLabel.text = KitchenDataController.sectionHeaderNames[1]
-            case 3:
-                header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
-            default:
-                header.headerLabel.text = "Section \(indexPath.section)" // Default case
-            }
-            
-            // Adjust visibility and font
-            if header.headerLabel.text?.isEmpty == true {
-                header.actionButton.isHidden = true
-            } else {
-                header.actionButton.isHidden = false
-                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-            }
-            
-            header.actionButton.setTitle("See All", for: .normal)
-            header.actionButton.tag = indexPath.section
-            header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
-            return header
-        }
-        print("Supplementary View Not Found")
-        return UICollectionReusableView()
-    }
+//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//        
+//        if kind == UICollectionView.elementKindSectionHeader {
+//            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
+//            
+//            // Set header titles dynamically
+//            switch indexPath.section {
+//            case 0:
+//                header.headerLabel.text = ""
+//            case 1:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[0]
+//            case 2:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[1]
+//            case 3:
+//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
+//            default:
+//                header.headerLabel.text = "Section \(indexPath.section)" // Default case
+//            }
+//            
+//            // Adjust visibility and font
+//            if header.headerLabel.text?.isEmpty == true {
+//                header.actionButton.isHidden = true
+//            } else {
+//                header.actionButton.isHidden = false
+//                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+//            }
+//            
+//            header.actionButton.setTitle("See All", for: .normal)
+//            header.actionButton.tag = indexPath.section
+//            header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
+//            return header
+//        }
+//        print("Supplementary View Not Found")
+//        return UICollectionReusableView()
+//    }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        switch section {
-        case 0:
-            return CGSize(width: collectionView.bounds.width, height: 0) // No header
-        case 1:
-            let title = KitchenDataController.sectionHeaderNames[0]
-            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-        case 2:
-            let title = KitchenDataController.sectionHeaderNames[1]
-            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-        case 3:
-            let title = KitchenDataController.sectionHeaderNames[2]
-            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-        default:
-            return CGSize(width: collectionView.bounds.width, height: 50) // Default header size
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        switch section {
+//        case 0:
+//            return CGSize(width: collectionView.bounds.width, height: 0) // No header
+//        case 1:
+//            let title = KitchenDataController.sectionHeaderNames[0]
+//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+//        case 2:
+//            let title = KitchenDataController.sectionHeaderNames[1]
+//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+//        case 3:
+//            let title = KitchenDataController.sectionHeaderNames[2]
+//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
+//        default:
+//            return CGSize(width: collectionView.bounds.width, height: 50) // Default header size
+//        }
+//    }
     
     
     // MARK: - Cell for Item at IndexPath
@@ -128,6 +130,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.cornerRadius = 8.0
             return cell
         case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeader", for: indexPath) as! MenuListHeaderCollectionViewCell
+                    cell.delegate = self
+                    return cell
+            
+        case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
             cell.updateMenuDetails(with : indexPath)
@@ -142,7 +149,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
-        case 2:
+           
+        case 3:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
             cell.layer.cornerRadius = 10.0
@@ -155,7 +163,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
-        case 3:
+            
+        case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
             cell.updateSubscriptionPlanData(for: indexPath)
             cell.layer.cornerRadius = 10.0
@@ -168,10 +177,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
-        case 4:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeaderCell", for: indexPath) as! MenuListHeaderCollectionViewCell
-                    cell.delegate = self
-                    return cell
+            
         default:
             return UICollectionViewCell()
         }
@@ -186,19 +192,21 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             case 0:
                 section = self.generateKitchenSectionLayout()
             case 1:
-                section = self.generateMenuCategorySectionLayout()
+                section = self.MenuListHeaderSectionLayout()
             case 2:
-                section = self.generateChefSpecialSectionLayout()
+                section = self.generateMenuCategorySectionLayout()
             case 3:
+                section = self.generateChefSpecialSectionLayout()
+            case 4:
                 section = self.generateSubscriptionPlanSectionLayout()
             default:
                 return nil
             }
             
             // Add Header
-            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
-            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-            section.boundarySupplementaryItems = [header]
+//            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+//            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+//            section.boundarySupplementaryItems = [header]
             
             return section
         }
@@ -214,6 +222,18 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    func MenuListHeaderSectionLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Adjust the height of the section item to a bigger size
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+//        group.interItemSpacing = .fixed(8)
+        let section = NSCollectionLayoutSection(group: group)
         return section
     }
     
