@@ -3,13 +3,14 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="KitchenDetails" id="ehu-Tx-755" customClass="KitchenDetailsCollectionViewCell" customModule="kitchen" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="KitchenDetails" id="ehu-Tx-755" customClass="KitchenDetailsCollectionViewCell" customModule="RasoiChef" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="393" height="374"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="kEX-ot-PqW">
@@ -66,9 +67,14 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lsG-bm-9h9">
+                        <rect key="frame" x="0.0" y="364" width="393" height="1"/>
+                        <color key="backgroundColor" systemColor="systemGrayColor"/>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Z6y-Dn-DcD" firstAttribute="leading" secondItem="xaT-Sz-tUf" secondAttribute="leading" id="2Tb-68-1xV"/>
+                    <constraint firstAttribute="bottom" secondItem="lsG-bm-9h9" secondAttribute="bottom" constant="9" id="598-xg-uW2"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" constant="16" id="7lG-Gu-AAF"/>
                     <constraint firstItem="Ibw-uj-kA0" firstAttribute="leading" relation="lessThanOrEqual" secondItem="alG-V3-vRL" secondAttribute="trailing" constant="269" id="7o4-Y9-R3P"/>
                     <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Z6y-Dn-DcD" secondAttribute="trailing" constant="335" id="87U-Yt-8ri"/>
@@ -77,6 +83,7 @@
                     <constraint firstAttribute="trailing" secondItem="kzh-o3-C6S" secondAttribute="trailing" constant="24" id="Eqr-oV-QHy"/>
                     <constraint firstItem="alG-V3-vRL" firstAttribute="top" secondItem="Z6y-Dn-DcD" secondAttribute="bottom" constant="8" symbolic="YES" id="FiZ-6n-FwD"/>
                     <constraint firstItem="kzh-o3-C6S" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="14" id="HLd-6J-jc1"/>
+                    <constraint firstAttribute="trailing" secondItem="lsG-bm-9h9" secondAttribute="trailing" id="Vzc-yI-bns"/>
                     <constraint firstItem="kzh-o3-C6S" firstAttribute="leading" relation="lessThanOrEqual" secondItem="xaT-Sz-tUf" secondAttribute="trailing" constant="213" id="Wt8-4L-Rcb"/>
                     <constraint firstItem="bKR-wE-NkE" firstAttribute="top" secondItem="kEX-ot-PqW" secondAttribute="top" id="Zem-Xr-OAx"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="8" symbolic="YES" id="asU-N0-pPT"/>
@@ -85,8 +92,10 @@
                     <constraint firstItem="Ibw-uj-kA0" firstAttribute="top" secondItem="kzh-o3-C6S" secondAttribute="bottom" constant="34" id="kjw-Gp-xWT"/>
                     <constraint firstAttribute="trailing" secondItem="bKR-wE-NkE" secondAttribute="trailing" id="lLn-Gt-i8r"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="8" symbolic="YES" id="m9h-Wv-1Yz"/>
+                    <constraint firstItem="lsG-bm-9h9" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" id="mob-dc-OlV"/>
                     <constraint firstAttribute="bottom" secondItem="Ibw-uj-kA0" secondAttribute="bottom" constant="23" id="n5Y-BM-4rD"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="8" symbolic="YES" id="nRY-g1-LxN"/>
+                    <constraint firstItem="lsG-bm-9h9" firstAttribute="top" secondItem="alG-V3-vRL" secondAttribute="bottom" constant="4" id="o9L-K6-fEH"/>
                     <constraint firstItem="alG-V3-vRL" firstAttribute="leading" secondItem="Z6y-Dn-DcD" secondAttribute="leading" id="tEV-Wd-a72"/>
                 </constraints>
             </collectionViewCellContentView>
@@ -101,4 +110,9 @@
             <point key="canvasLocation" x="87.786259541984734" y="-24.647887323943664"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

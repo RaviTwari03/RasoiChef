@@ -39,10 +39,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Menu"
-        //        guard let kitchenMenu = KitchenMenuList else {
-        //            print("Error: KitchenMenu is nil")
-        //            return
-        //        }
+       
         
         // Registering Nibs for Cells
         let kitchenMenuCalenderNib = UINib(nibName: "KitchenMenuCalender", bundle: nil)
@@ -82,30 +79,20 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenuCalender", for: indexPath) as! KitchenMenuCalenderCollectionViewCell
             cell.updateMenuListDate(for: indexPath)
-            cell.layer.cornerRadius = 10.0    // Rounded corners
-            cell.layer.borderWidth = 1.0       // Border width
-            cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-            cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-            cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-            cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
+            cell.layer.cornerRadius = 10.0
+            cell.layer.borderWidth = 1.0
+            cell.layer.borderColor = UIColor.gray.cgColor
+            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+            cell.layer.shadowRadius = 5.0
+            cell.layer.shadowOpacity = 0.2
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
-            //            cell.delegate = self
-            cell.updateMealDetails(with: indexPath)// Pass indexPath insteadofindexPath.section
+            cell.updateMealDetails(with: indexPath)
             cell.delegate = self
-            cell.layer.borderWidth = 1.0       // Border width
-            cell.layer.borderColor = UIColor.gray.cgColor  // Border color
-////            cell.layer.shadowColor = UIColor.black.cgColor  // Shadow color
-            cell.layer.shadowOffset = CGSize(width: 2, height: 2)  // Shadow offset
-            cell.layer.shadowRadius = 5.0     // Shadow blur radius
-            cell.layer.shadowOpacity = 0.2    // Shadow opacity
-            cell.layer.masksToBounds = true
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.cornerRadius = 10
             return cell
             
         default:
@@ -177,28 +164,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
                 print("Error: Could not instantiate AddItemModallyViewController")
             }
         }
-   
-//    
-//        @objc func sectionButtonTapped(_ sender: UIButton) {
-//            switch sender.tag {
-//            case 1:
-//                let firstScreenVC = KitchenMenuListViewController()
-//                self.navigationController?.pushViewController(firstScreenVC, animated: true)
-//            case 2:
-//    
-//                let secondScreenVC = KitchenChefSpecialViewController() // No need to use nib
-//                self.navigationController?.pushViewController(secondScreenVC, animated: true)
-//    //        case 3:
-//    //            let thirdScreenVC = ThirdScreenViewController() // No need to use nib
-//    //            self.navigationController?.pushViewController(thirdScreenVC, animated: true)
-//            default:
-//                break
-//            }
-//        }
-    //
-    //
-    //   }
-    
-  
+
     
 }

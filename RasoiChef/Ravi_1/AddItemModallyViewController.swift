@@ -71,9 +71,9 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         AddDishItemCounterLabel.text = "\(Int(sender.value))"
     }
     
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return HalfScreenPresentationController(presentedViewController: presented, presenting: presenting)
-    }
+//    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+//        return HalfScreenPresentationController(presentedViewController: presented, presenting: presenting)
+//    }
     
     
     

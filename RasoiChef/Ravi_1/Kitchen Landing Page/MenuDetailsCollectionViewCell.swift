@@ -6,9 +6,7 @@
 //
 
 import UIKit
-//protocol MenuDetailsCollectionViewCellDelegate: AnyObject {
-//    func addButtonTapped(in cell: MenuDetailsCollectionViewCell)
-//}
+
 protocol MenuDetailsCellDelegate: AnyObject {
     func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell)
 }
@@ -29,9 +27,15 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var mealImageView: UIImageView!
     
     @IBOutlet var availabiltyLabel: UILabel!
+    
+    @IBOutlet var cardViewKitchen: UIView!
     weak var delegate: MenuDetailsCellDelegate?
     
-    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        applyCardStyle2()
+//        applyCardStyle1()
+    }
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
@@ -40,19 +44,32 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
 //    var selectedItem: MenuItem?
     
     func updateMenuDetails(with indexPath: IndexPath) {
-        
+        applyCardStyle2()
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         mealTimeLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         orderDeadlineLabel.text = "Order Before 4 pm"
         expectedDeliveryLabel.text = "Delivery Expected By 6 pm"
         mealNameLabel.text = menuItem.name
         mealPriceLabel.text = "₹\(menuItem.price)"
-        mealRatingLabel.text = "⭐ \(menuItem.rating)" // Default to 0.0 if rating is nil
+        mealRatingLabel.text = "⭐ \(menuItem.rating)"
         mealImageView.image = UIImage(named: menuItem.imageURL)
-        //        availabiltyLabel.text = .Available
         availabiltyLabel.text = "\(menuItem.availability.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-//        availabilityLabel.text = menuItem.availability.rawValue.capitalized
-//           availabilityLabel.textColor = menuItem.availability == .Available ? .green : .gray
+
+        
     }
+   
+    
+    func applyCardStyle2() {
+        cardViewKitchen.layer.cornerRadius = 22
+        cardViewKitchen.layer.masksToBounds = false
+        cardViewKitchen.layer.shadowColor = UIColor.black.cgColor
+        cardViewKitchen.layer.shadowOffset = CGSize(width: 0, height: 0)
+        cardViewKitchen.layer.shadowRadius = 10
+        cardViewKitchen.layer.shadowOpacity = 0.5
+        cardViewKitchen.backgroundColor = .white
+        
+ }
+
+
 
 }
