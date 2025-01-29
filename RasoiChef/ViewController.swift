@@ -95,6 +95,14 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.delegate = self
             cell.updateMenuDetails(with : indexPath)
 //            cell.layer.cornerRadius = 22
+////            cell.layer.borderWidth = 1.0
+////            cell.layer.borderColor = UIColor.gray.cgColor
+////            cell.layer.shadowColor = UIColor.black.cgColor
+////            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+//            cell.layer.shadowRadius = 10.0
+//            cell.layer.shadowOpacity = 0.1
+//           cell.layer.masksToBounds = false
+////           cell.layer.shadowColor = UIColor.black.cgColor
             return cell
             
         case 3:
@@ -197,7 +205,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .absolute(270))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .absolute(280))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         //        group.interItemSpacing = .fixed(5)
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 8, trailing: 0.0)
