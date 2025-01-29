@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="MealSubscriptionPlanHeaderCollectionViewCell" reuseIdentifier="MealSubscriptionPlanHeader" id="TPr-v8-wys" customClass="MealSubscriptionPlanHeaderCollectionViewCell" customModule="RasoiChef" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="AJc-5M-2nE">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Meal Subscription Plan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ju-We-0LQ">
+                        <rect key="frame" x="15.999999999999986" y="12" width="234.66666666666663" height="27"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="-23" translatesAutoresizingMaskIntoConstraints="NO" id="Qll-ml-uCK">
+                        <rect key="frame" x="291.66666666666669" y="8" width="97.666666666666686" height="34.333333333333336"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAU-a8-nUg">
+                                <rect key="frame" x="0.0" y="0.0" width="81" height="34.333333333333336"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Explore"/>
+                                <connections>
+                                    <action selector="seeMoreTapped:" destination="TPr-v8-wys" eventType="touchUpInside" id="HO0-ia-gvf"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YL5-Cb-rP9">
+                                <rect key="frame" x="58" y="0.0" width="39.666666666666657" height="34.333333333333336"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
+                            </button>
+                        </subviews>
+                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="6ju-We-0LQ" firstAttribute="leading" secondItem="AJc-5M-2nE" secondAttribute="leading" constant="16" id="519-9R-WCD"/>
+                    <constraint firstItem="6ju-We-0LQ" firstAttribute="top" secondItem="AJc-5M-2nE" secondAttribute="top" constant="12" id="5c0-hm-rkB"/>
+                    <constraint firstItem="Qll-ml-uCK" firstAttribute="leading" secondItem="6ju-We-0LQ" secondAttribute="trailing" constant="41" id="OWy-f8-OEb"/>
+                    <constraint firstItem="Qll-ml-uCK" firstAttribute="top" secondItem="AJc-5M-2nE" secondAttribute="top" constant="8" id="Z27-1r-Ynh"/>
+                    <constraint firstAttribute="bottom" secondItem="6ju-We-0LQ" secondAttribute="bottom" constant="11" id="pig-cv-RFT"/>
+                    <constraint firstAttribute="trailing" secondItem="Qll-ml-uCK" secondAttribute="trailing" constant="3.6699999999999999" id="rC8-vu-bBb"/>
+                    <constraint firstAttribute="bottom" secondItem="Qll-ml-uCK" secondAttribute="bottom" constant="7.6699999999999999" id="sW5-ca-u1D"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <point key="canvasLocation" x="10" y="13"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="chevron.right" catalog="system" width="97" height="128"/>
+    </resources>
+</document>

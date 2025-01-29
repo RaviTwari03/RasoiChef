@@ -7,7 +7,10 @@
 
 import UIKit
 
-class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate {
+class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate {
+   
+    
+    
     
     
     
@@ -25,16 +28,17 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let chefSpecialDishesNib = UINib(nibName: "ChefSpecialDishes", bundle: nil)
         let subscriptionDetailsNib = UINib(nibName: "SubscriptionDetails", bundle: nil)
         let MenuListHeaderNib = UINib(nibName: "MenuListHeader", bundle: nil)
-        
+        let ChefSpecialityDishesHeaderNib = UINib(nibName: "ChefSpecialityDishesHeader", bundle: nil)
+        let MealSubscriptionPlanNib = UINib(nibName: "MealSubscriptionPlanHeader", bundle: nil)
         collectionView1.register(kitchenDetailsNib, forCellWithReuseIdentifier: "KitchenDetails")
         collectionView1.register(menuDetailsNib, forCellWithReuseIdentifier: "MenuDetails")
         collectionView1.register(chefSpecialDishesNib, forCellWithReuseIdentifier: "ChefSpecialDishes")
         collectionView1.register(subscriptionDetailsNib, forCellWithReuseIdentifier: "SubscriptionDetails")
         collectionView1.register(MenuListHeaderNib, forCellWithReuseIdentifier: "MenuListHeader")
+        collectionView1.register(ChefSpecialityDishesHeaderNib, forCellWithReuseIdentifier: "ChefSpecialityDishesHeader")
+        collectionView1.register(MealSubscriptionPlanNib, forCellWithReuseIdentifier: "MealSubscriptionPlanHeader")
         
-//        // Setting Layout
-//        collectionView1.register(SectionHeader1CollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader")
-        //            header.button.addTarget(self, action: #selector(sectionbuttonTapped(_:)), for: .touchUpInside)
+
         
         collectionView1.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView1.dataSource = self
@@ -43,7 +47,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     // MARK: - Number of Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5
+        return 10
     }
     
     // MARK: - Number of Items in Section
@@ -56,8 +60,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 2:
             return KitchenDataController.menuItems.count
         case 3:
-            return KitchenDataController.chefSpecialtyDishes.count
+            return 1
         case 4:
+            return KitchenDataController.chefSpecialtyDishes.count
+        case 5:
+            return 1
+        case 6:
             return KitchenDataController.subscriptionPlan.count
         default:
             return 0
@@ -66,61 +74,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     
     
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        
-//        if kind == UICollectionView.elementKindSectionHeader {
-//            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! SectionHeader1CollectionReusableView
-//            
-//            // Set header titles dynamically
-//            switch indexPath.section {
-//            case 0:
-//                header.headerLabel.text = ""
-//            case 1:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[0]
-//            case 2:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[1]
-//            case 3:
-//                header.headerLabel.text = KitchenDataController.sectionHeaderNames[2]
-//            default:
-//                header.headerLabel.text = "Section \(indexPath.section)" // Default case
-//            }
-//            
-//            // Adjust visibility and font
-//            if header.headerLabel.text?.isEmpty == true {
-//                header.actionButton.isHidden = true
-//            } else {
-//                header.actionButton.isHidden = false
-//                header.headerLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-//            }
-//            
-//            header.actionButton.setTitle("See All", for: .normal)
-//            header.actionButton.tag = indexPath.section
-//            header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
-//            return header
-//        }
-//        print("Supplementary View Not Found")
-//        return UICollectionReusableView()
-//    }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        switch section {
-//        case 0:
-//            return CGSize(width: collectionView.bounds.width, height: 0) // No header
-//        case 1:
-//            let title = KitchenDataController.sectionHeaderNames[0]
-//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-//        case 2:
-//            let title = KitchenDataController.sectionHeaderNames[1]
-//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-//        case 3:
-//            let title = KitchenDataController.sectionHeaderNames[2]
-//            return title.isEmpty ? CGSize(width: collectionView.bounds.width, height: 0) : CGSize(width: collectionView.bounds.width, height: 50)
-//        default:
-//            return CGSize(width: collectionView.bounds.width, height: 50) // Default header size
-//        }
-//    }
-    
-    
+   
     // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
@@ -131,8 +85,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeader", for: indexPath) as! MenuListHeaderCollectionViewCell
-                    cell.delegate = self
-                    return cell
+            cell.delegate = self
+            return cell
             
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
@@ -149,8 +103,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
-           
+            
         case 3:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialityDishesHeader", for: indexPath) as! ChefSpecialityDishCollectionViewCell
+            cell.delegate = self
+            return cell
+        case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
             cell.layer.cornerRadius = 10.0
@@ -163,8 +121,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
             return cell
+        case 5:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
+            cell.delegate = self
+            return cell
             
-        case 4:
+        case 6:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
             cell.updateSubscriptionPlanData(for: indexPath)
             cell.layer.cornerRadius = 10.0
@@ -196,18 +158,18 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             case 2:
                 section = self.generateMenuCategorySectionLayout()
             case 3:
-                section = self.generateChefSpecialSectionLayout()
+                section = self.generateChefSpecialityDishCollectionViewCell()
             case 4:
+                section = self.generateChefSpecialSectionLayout()
+            case 5:
+                section = self.generateMealSubscriptionPlanHeader()
+            case 6:
                 section = self.generateSubscriptionPlanSectionLayout()
             default:
                 return nil
             }
             
-            // Add Header
-//            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
-//            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-//            section.boundarySupplementaryItems = [header]
-            
+           
             return section
         }
         return layout
@@ -225,18 +187,18 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         return section
     }
     func MenuListHeaderSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Adjust the height of the section item to a bigger size
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-//        group.interItemSpacing = .fixed(8)
+//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        group.interItemSpacing = .fixed(8)
         let section = NSCollectionLayoutSection(group: group)
         return section
     }
-    
+   
     // Layout for Menu Categories Section
     func generateMenuCategorySectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -244,13 +206,36 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .absolute(250))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        group.interItemSpacing = .fixed(5)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        //        group.interItemSpacing = .fixed(5)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 8, trailing: 0.0)
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
-    
+    func generateChefSpecialityDishCollectionViewCell() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Adjust the height of the section item to a bigger size
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        group.interItemSpacing = .fixed(8)
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+    func generateMealSubscriptionPlanHeader() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Adjust the height of the section item to a bigger size
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        group.interItemSpacing = .fixed(8)
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
     // Layout for Chef's Special Section
     func generateChefSpecialSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -341,7 +326,6 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     @IBAction func cross(_ sender: UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)
-        
     }
     func didTapSeeMore() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -351,7 +335,19 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
     }
     
-    
-    
-    
+    func didTapSeeMore1() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenChefSpecialViewController") as? KitchenChefSpecialViewController {
+            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        }
+        
+        
+        
+    }
+    func didTapSeeMore2() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        }
+    }
 }
