@@ -95,15 +95,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
             cell.updateMenuDetails(with : indexPath)
-//            cell.layer.cornerRadius = 22
-////            cell.layer.borderWidth = 1.0
-////            cell.layer.borderColor = UIColor.gray.cgColor
-////            cell.layer.shadowColor = UIColor.black.cgColor
-////            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 10.0
-//            cell.layer.shadowOpacity = 0.1
-//           cell.layer.masksToBounds = false
-////           cell.layer.shadowColor = UIColor.black.cgColor
+
             return cell
             
         case 3:
@@ -353,16 +345,31 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         
     }
-    func didTapSeeMore2() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-            self.navigationController?.pushViewController(firstScreenVC, animated: true)
-        }
-    }
-    func didTapSeeMore3() {
+   
+    func didTapSeeMorePlansMenu() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "PlansMenuViewController") as? PlansMenuViewController {
             self.navigationController?.pushViewController(firstScreenVC, animated: true)
         }
     }
+    func didTapSeeMoreToSubscriptionPlans() {
+        let alert = UIAlertController(title: "Notice",
+                                      message: "This kitchen provides plans for a minimum of 2 days and a maximum of 7 days.",
+                                      preferredStyle: .alert)
+        
+        let acceptAction = UIAlertAction(title: "Accept", style: .default) { _ in
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+                self.navigationController?.pushViewController(firstScreenVC, animated: true)
+            }
+        }
+        
+        let declineAction = UIAlertAction(title: "Decline", style: .cancel, handler: nil)
+
+        alert.addAction(acceptAction)
+        alert.addAction(declineAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+
 }

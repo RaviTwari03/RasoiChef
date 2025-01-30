@@ -8,8 +8,8 @@
 import UIKit
 
 protocol MealSubscriptionPlanHeaderDelegate: AnyObject {
-    func didTapSeeMore2()
-    func didTapSeeMore3()
+    func didTapSeeMoreToSubscriptionPlans()
+    func didTapSeeMorePlansMenu()
     }
 
 class MealSubscriptionPlanHeaderCollectionViewCell: UICollectionViewCell {
@@ -17,10 +17,10 @@ class MealSubscriptionPlanHeaderCollectionViewCell: UICollectionViewCell {
     weak var delegate: MealSubscriptionPlanHeaderDelegate?
     
     @IBAction func menuPlans(_ sender: UIButton) {
-        delegate?.didTapSeeMore3()
+        delegate?.didTapSeeMorePlansMenu()
     }
     
     @IBAction func seeMoreTapped(_ sender: UIButton) {
-        delegate?.didTapSeeMore2()
+        delegate?.didTapSeeMoreToSubscriptionPlans()
     }
 }

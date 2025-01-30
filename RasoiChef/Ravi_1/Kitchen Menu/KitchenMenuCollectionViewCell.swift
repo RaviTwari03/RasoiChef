@@ -28,6 +28,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var cardViewKitchenMenu: UIView!
     @IBOutlet var dishIntakLimit: UILabel!
     
+    @IBOutlet var addButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
 //        applyCardStyle1()
@@ -37,7 +38,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     
     func updateMealDetails(with indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
-        vegImage.image = UIImage(systemName: "rectangle.portrait.and.arrow.right.fill")
+        vegImage.image = UIImage(named: "vegImage")
         dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         ratingLabel.text = "⭐ \(menuItem.rating)"
         dishNameLabel.text = menuItem.name
@@ -46,6 +47,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         dishImge.image = UIImage(named: menuItem.imageURL)
         dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
        applyCardStyle1()
+        addButton.layer.cornerRadius = 11
     }
    
          func applyCardStyle1() {

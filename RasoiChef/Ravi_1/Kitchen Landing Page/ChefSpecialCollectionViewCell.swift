@@ -35,9 +35,12 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishNameLabel.text = specialDish.name
         specialDishPriceLabel.text = "₹\(specialDish.price)"
         specialDishRating.text = "⭐ \(specialDish.rating)"
-        specialDishImage.image = UIImage(named: "CholeBhature")
-            specialDishImage.image = UIImage(named: "CholeBhature")
+//        specialDishImage.image = UIImage(named: "CholeBhature")
+//            specialDishImage.image = UIImage(named: "CholeBhature")
+        specialDishImage.image = UIImage(named: specialDish.imageURL)
         addButton.layer.cornerRadius = 11
+        specialDishIntakeLimtLabel.text = "Mon,Thur"
+        
         applyCardStyle3()
     }
     
