@@ -242,6 +242,7 @@
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="AddDishButton" destination="aWx-dr-Jgx" id="oiN-qr-XiO"/>
                         <outlet property="AddDishItemCounterLabel" destination="Rop-xJ-wck" id="m6f-r8-ygI"/>
                         <outlet property="AddDishNameLabel" destination="umw-sy-lDy" id="kc9-fK-6GV"/>
                         <outlet property="AddDishPriceLabel" destination="i5a-SF-oHT" id="a6l-Ai-qBn"/>

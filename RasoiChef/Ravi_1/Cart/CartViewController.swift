@@ -80,7 +80,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             if CartViewController.cartItems.isEmpty {
                 // Placeholder cell for an empty cart
                 let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
-                cell.textLabel?.text = "Your cart is empty. Add some items!"
+                cell.textLabel?.text = "Your cart is empty. Add some items!🙁"
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .gray
                 return cell
