@@ -132,7 +132,7 @@
                 <outlet property="orderIntakeLimit" destination="Efp-nb-apm" id="CjQ-Cl-xKl"/>
                 <outlet property="planImage" destination="Vhj-aa-zyb" id="ahq-Mt-Lkp"/>
                 <outlet property="planYourMealButton" destination="m6L-Q0-ZcG" id="Ke1-9J-NGt"/>
-                <outlet property="sunscriptionView" destination="0Eb-Op-fpz" id="JOx-y5-hmf"/>
+                <outlet property="sunscriptionView" destination="ii9-6a-qAc" id="ebW-C2-yVZ"/>
             </connections>
             <point key="canvasLocation" x="114.50381679389312" y="-126.40845070422536"/>
         </collectionViewCell>
