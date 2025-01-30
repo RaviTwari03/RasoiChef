@@ -49,7 +49,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         switch section {
 //        case 0:
 //            return KitchenDataController.dateItem.count
-        case 0:
+        case 1:
             return KitchenDataController.menuItems.count
         default:
             return 0
@@ -60,7 +60,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
     // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
-        case 0:
+        case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
             cell.updateMenuDetails(with: indexPath)
 //            cell.layer.cornerRadius = 10.0
@@ -92,7 +92,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             switch sectionIndex {
 //            case 0:
 //                section = self.generateMenuCalenderSectionLayout()
-            case 0:
+            case 1:
                 section = self.generateMenuListSectionLayout()
                 
             default:
@@ -124,7 +124,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(250))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0.0, bottom: 0.0, trailing: 0.0)
         group.interItemSpacing = .fixed(0)
