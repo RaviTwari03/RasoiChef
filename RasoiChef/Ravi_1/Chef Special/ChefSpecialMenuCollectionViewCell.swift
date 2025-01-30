@@ -20,6 +20,7 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
     @IBOutlet var specialDishRating: UILabel!
     @IBOutlet var specialDishIntakeLimit: UILabel!
     
+    @IBOutlet var addButton: UIButton!
     func updateSpecialDishDetails(for indexPath: IndexPath) {
         // Fetch the corresponding ChefSpecialtyDish for the given indexPath
         let specialDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
@@ -32,6 +33,7 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
         specialDishRating.text = "⭐ \(String(describing: specialDish.rating))"
         specialDishIntakeLimit.text = "Max Limit: 50"             // Update dynamically if data exists
         specialDishImage.image = UIImage(named: specialDish.imageURL ?? "placeholder") // Placeholder image if URL is nil
+        addButton.layer.cornerRadius = 11
     }
 
     
