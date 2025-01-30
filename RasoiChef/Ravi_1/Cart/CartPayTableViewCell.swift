@@ -14,6 +14,7 @@ class CartPayTableViewCell: UITableViewCell {
     weak var delegate: CartPayCellDelegate?
 
     
+    @IBOutlet var addButton: UIButton!
     @IBOutlet var TotalAmountLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,10 +27,13 @@ class CartPayTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    
+    func addButtonUpdate(){
+        addButton.layer.cornerRadius = 11
+    }
    
     @IBAction func placeOrderButton(_ sender: Any) {
         delegate?.didTapPlaceOrder()
+        
 
     }
     

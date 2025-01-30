@@ -60,6 +60,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="TotalAmountLabel" destination="Sjw-qx-Qhx" id="ain-0z-cWg"/>
+                <outlet property="addButton" destination="spe-Vr-cqs" id="3ap-di-DHD"/>
             </connections>
             <point key="canvasLocation" x="138.1679389312977" y="48.943661971830991"/>
         </tableViewCell>

@@ -125,9 +125,11 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
                             return UITableViewCell()
                         }
+            cell.addButtonUpdate()
                         let grandTotal = calculateGrandTotal()
                         cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
                         cell.delegate = self
+           
                         return cell
             
         default:
@@ -144,7 +146,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 2:
             return 250 // Bill Section Height
         case 3:
-            return 100 // Payment Section Height
+            return 70// Payment Section Height
         default:
             return 44
         }
@@ -177,22 +179,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
        
     }
-//    extension CartViewController: AddItemDelegate {
-//    func didAddItemToCart(_ item: CartItem) {
-//        KitchenDataController.cartItems.append(item)
-//        if KitchenDataController.cartItems.isEmpty {
-//            print("No items to display in the cart.")
-//        } else {
-//            print("Items added to cart. Current count: \(KitchenDataController.cartItems.count)")
-//        }
-//        CartItem.reloadData()  // Refresh table view
-//    }
 
-   
-//    func didAddItemToCart1(_ item: CartItem) {
-//           KitchenDataController.cartItems.append(item)
-//           CartItem.reloadData() // Refresh table view
-//       }
     func didAddItemToCart(_ item: CartItem) {
         KitchenDataController.cartItems.append(item)
         updateTabBarBadge()

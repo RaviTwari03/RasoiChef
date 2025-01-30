@@ -9,11 +9,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="KitchenMenuCalender" id="VfX-P8-Qol" customClass="KitchenMenuCalenderCollectionViewCell" customModule="kitchen" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="59" height="77"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="KitchenMenuCalender" id="VfX-P8-Qol" customClass="KitchenMenuCalenderCollectionViewCell" customModule="RasoiChef" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="59" height="85"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="u9Y-An-dBW">
-                <rect key="frame" x="0.0" y="0.0" width="59" height="77"/>
+                <rect key="frame" x="0.0" y="0.0" width="59" height="85"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uLJ-Ru-kA9">
@@ -39,12 +39,13 @@
                     </label>
                 </subviews>
             </collectionViewCellContentView>
+            <size key="customSize" width="59" height="85"/>
             <connections>
                 <outlet property="dateLabel" destination="yIs-eH-SVS" id="6Pg-zd-Me7"/>
                 <outlet property="dayLabel" destination="A9O-Qv-eHU" id="T5x-3k-vR7"/>
                 <outlet property="monthLabel" destination="uLJ-Ru-kA9" id="bDr-c5-1Xf"/>
             </connections>
-            <point key="canvasLocation" x="118" y="-22"/>
+            <point key="canvasLocation" x="116.79389312977099" y="-19.366197183098592"/>
         </collectionViewCell>
     </objects>
 </document>

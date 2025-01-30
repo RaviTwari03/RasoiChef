@@ -8,12 +8,12 @@
 import UIKit
 
 class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate {
-//    func buttonClicked(withTag tag: Int) {
-//        <#code#>
-//    }
-//    
-    
-    
+
+    var hiddenButtons: [IndexPath: Bool] = [:]
+    var footerCell: SubscriptionFooterTableViewCell?
+    var isModificationBlocked = false
+    var buttonClickCount = 0 // To track the number of button clicks
+
     var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
@@ -40,7 +40,8 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         // Register custom cells
         MealSubscriptionPlan.register(UINib(nibName: "WeeklyPlans", bundle: nil), forCellReuseIdentifier: "WeeklyPlans")
         MealSubscriptionPlan.register(UINib(nibName: "CustomiseTable2", bundle: nil), forCellReuseIdentifier: "CustomiseTable2")
-        
+        MealSubscriptionPlan.register(UINib(nibName: "SubscriptionFooter", bundle: nil), forCellReuseIdentifier: "SubscriptionFooter")
+
         // Set the dataSource and delegate
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
@@ -49,14 +50,29 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 // Two sections
+        return 3 // Two sections
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1 // Number of days in the week
-        } else {
-            return weeklyMeals.count // Section 1 has no rows, only a footer
+//        if section == 0  {
+//            return 1 // Number of days in the week
+//        } else {
+//            return weeklyMeals.count // Section 1 has no rows, only a footer
+//        }
+//        if section == 2 {
+//            return 1 // Number of days in the week
+//        } else {
+//            return weeklyMeals.count // Section 1 has no rows, only a footer
+//        }
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return weeklyMeals.count
+        case 2:
+            return 1
+        default:
+            return 0
         }
     }
     
@@ -93,76 +109,21 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             cell.configureRow(withIcons: icons)
             cell.delegate = self
             return cell
+        case 2:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
+                fatalError("CustomiseTableCell not found")
+            }
+            footerCell = cell // Store reference for updating price
+               footerCell?.PaymentLabel.text = "\(totalPrice)"
+            return cell
             
         default:
             fatalError("Unexpected section index")
         }
     }
 
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        switch indexPath.section {
-//        case 1: // Customize Table Section
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
-//                fatalError("CustomiseTableTableViewCell not found")
-//            }
-//            
-//            let dayMeal = weeklyMeals[indexPath.row]
-//            cell.dayLabel.text = dayMeal.day
-//            
-//            // Provide icons for each meal
-//            let icons = dayMeal.meals.map { meal in
-//                switch meal {
-//                case "Breakfast": return "BreakfastIcon"
-//                case "Lunch": return "LunchIcon"
-//                case "Snacks": return "SnacksIcon"
-//                case "Dinner": return "DinnerIcon"
-//                default: return nil
-//                }
-//            }.compactMap { $0 } // Filter out nil values
-//            
-//            print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
-//            cell.configureRow(withIcons: icons)
-//            
-//            // Set the delegate
-//            cell.delegate = self
-//            
-//            return cell
-//        default:
-//            fatalError("Unexpected section index")
-//        }
-//    }
 
-    
-   
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-            if section == 1 {
-                let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
-                
-                // Add "Pay ₹" label
-                let payLabel = UILabel(frame: CGRect(x: 16, y: 10, width: 150, height: 40))
-                payLabel.tag = 100 // Use a tag to update this label dynamically
-                payLabel.text = "Pay ₹\(totalPrice)"
-                payLabel.font = UIFont.boldSystemFont(ofSize: 18)
-                footerView.addSubview(payLabel)
-                
-                // Add "Subscribe Plan" button
-                let button = UIButton(frame: CGRect(x: tableView.frame.width - 160, y: 10, width: 140, height: 40))
-                button.setTitle("Subscribe Plan", for: .normal)
-                button.backgroundColor = .orange
-                button.setTitleColor(.white, for: .normal)
-                button.layer.cornerRadius = 10
-                footerView.addSubview(button)
-                
-                return footerView
-            }
-        return nil
-    }
-//    private func updateFooterPrice() {
-//           if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
-//              let payLabel = footerView.viewWithTag(100) as? UILabel {
-//               payLabel.text = "Pay ₹\(totalPrice)"
-//           }
-//       }
+
        
 
     
@@ -178,36 +139,50 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             return 300
         case 1:
             return 45
+        case 2:
+            return 65
         default:
             return 0
         }
     }
-//    func buttonClicked(withTag tag: Int) {
-//            print("Received button tag: \(tag)")
-//            
-//            // Update the total price
-//            totalPrice -= tag
-//            
-//            // Update the footer label
-//            updateFooterPrice()
-//        }
+
+
+
+
+
+    private func updateFooterPrice() {
+        footerCell?.PaymentLabel.text = "₹\(totalPrice)"
+    }
     func buttonClicked(withTag tag: Int) {
+        // Increment the button click count
+        buttonClickCount += 1
+        
+        // Check if the limit has been exceeded
+        if buttonClickCount > 4 {
+            showAlert()
+            return // Exit the function if the limit is exceeded
+        }
+        
         print("Received button tag: \(tag)")
         
         // Update the total price
         totalPrice -= tag
         
-        // Reload the footer by refreshing the entire section
-//        let footerSectionIndex = 1
-//        MealSubscriptionPlan.reloadSections(IndexSet(integer: footerSectionIndex), with: .none)
+        // Update footer price dynamically
+        updateFooterPrice()
+
+        // Reload only the row where the button was clicked
+        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
+            hiddenButtons[selectedIndexPath] = true
+            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
+        }
     }
 
-        private func updateFooterPrice() {
-            if let footerView = MealSubscriptionPlan.footerView(forSection: 1),
-               let payLabel = footerView.viewWithTag(100) as? UILabel {
-                payLabel.text = "Pay ₹\(totalPrice)"
-            }
-        }
-    
+    func showAlert() {
+        let alert = UIAlertController(title: "Limit Exceeded", message: "You have exceeded the limit of modification.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
     }
 

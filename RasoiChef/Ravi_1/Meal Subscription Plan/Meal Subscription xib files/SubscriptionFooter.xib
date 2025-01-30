@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubscriptionFooter" id="ftU-Y0-8eR" customClass="SubscriptionFooterTableViewCell" customModule="RasoiChef" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="370" height="56"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ftU-Y0-8eR" id="Fln-o2-TlV">
+                <rect key="frame" x="0.0" y="0.0" width="370" height="56"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cCA-9S-sdL">
+                        <rect key="frame" x="5" y="5" width="350" height="56"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pay" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bdp-Gh-SAm">
+                                <rect key="frame" x="8" y="11" width="35" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qg7-nC-9ZJ">
+                                <rect key="frame" x="51" y="11" width="48" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-VR-jPA">
+                                <rect key="frame" x="171.66666666666663" y="4" width="178.33333333333337" height="38"/>
+                                <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Subscribe Plans">
+                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                                </buttonConfiguration>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="bdp-Gh-SAm" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="11" id="5LY-4z-ksY"/>
+                            <constraint firstItem="bdp-Gh-SAm" firstAttribute="leading" secondItem="cCA-9S-sdL" secondAttribute="leading" constant="8" id="ADP-xJ-8s7"/>
+                            <constraint firstItem="qg7-nC-9ZJ" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="11" id="Ab9-et-nXO"/>
+                            <constraint firstAttribute="bottom" secondItem="bdp-Gh-SAm" secondAttribute="bottom" constant="21" id="Fxd-oK-rxi"/>
+                            <constraint firstAttribute="trailing" secondItem="fPw-VR-jPA" secondAttribute="trailing" id="Ghs-nI-Nki"/>
+                            <constraint firstAttribute="bottom" secondItem="fPw-VR-jPA" secondAttribute="bottom" constant="14" id="PKs-LF-BMe"/>
+                            <constraint firstItem="fPw-VR-jPA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qg7-nC-9ZJ" secondAttribute="trailing" constant="22" id="QgU-iW-DAX"/>
+                            <constraint firstItem="fPw-VR-jPA" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="4" id="UGs-bO-zF7"/>
+                            <constraint firstAttribute="width" constant="350" id="Wyl-bK-Wke"/>
+                            <constraint firstAttribute="height" constant="56" id="aQX-58-360"/>
+                            <constraint firstItem="qg7-nC-9ZJ" firstAttribute="leading" secondItem="bdp-Gh-SAm" secondAttribute="trailing" constant="8" symbolic="YES" id="i9y-fD-GT4"/>
+                            <constraint firstAttribute="bottom" secondItem="qg7-nC-9ZJ" secondAttribute="bottom" constant="21" id="yKA-JA-gzP"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="cCA-9S-sdL" secondAttribute="bottom" constant="5" id="27C-qp-JOh"/>
+                    <constraint firstAttribute="trailing" secondItem="cCA-9S-sdL" secondAttribute="trailing" constant="5" id="3Jd-7c-Ssq"/>
+                    <constraint firstItem="cCA-9S-sdL" firstAttribute="leading" secondItem="Fln-o2-TlV" secondAttribute="leading" constant="5" id="Umx-Vd-6jP"/>
+                    <constraint firstItem="cCA-9S-sdL" firstAttribute="top" secondItem="Fln-o2-TlV" secondAttribute="top" constant="5" id="Vsz-sr-sgg"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="PaymentLabel" destination="qg7-nC-9ZJ" id="HvU-YL-buP"/>
+                <outlet property="SubscribeButton" destination="fPw-VR-jPA" id="FzJ-yb-6np"/>
+            </connections>
+            <point key="canvasLocation" x="-690.07633587786256" y="-1.4084507042253522"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
