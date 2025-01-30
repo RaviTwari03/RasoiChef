@@ -98,7 +98,9 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
             let button = UIButton(type: .system)
             button.setTitle(title, for: .normal)
             button.setTitleColor(.white, for: .normal)
-            button.backgroundColor = .systemOrange
+//            button.backgroundColor = .systemOrange
+        button.backgroundColor = UIColor(red: 0xED / 255.0, green: 0x7A / 255.0, blue: 0x57 / 255.0, alpha: 1.0)
+
             button.layer.cornerRadius = 8
             button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
             return button

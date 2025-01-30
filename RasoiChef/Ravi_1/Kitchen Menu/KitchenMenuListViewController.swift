@@ -11,6 +11,19 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     
     
     
+//    func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
+//        guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
+//        let selectedItem = KitchenDataController.menuItems[indexPath.row]
+//        print("Add button tapped for meal: \(selectedItem.name)")
+//
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+//            detailVC.selectedItem = selectedItem
+//            present(detailVC, animated: true, completion: nil)
+//        } else {
+//            print("Error: Could not instantiate AddItemModallyViewController")
+//        }
+//    }
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
         let selectedItem = KitchenDataController.menuItems[indexPath.row]
@@ -19,12 +32,20 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
             detailVC.selectedItem = selectedItem
+            
+            detailVC.modalPresentationStyle = .pageSheet
+            
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+
             present(detailVC, animated: true, completion: nil)
         } else {
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
-    
+
     
     
     
