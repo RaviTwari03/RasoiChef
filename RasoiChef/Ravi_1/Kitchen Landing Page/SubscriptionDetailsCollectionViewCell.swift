@@ -10,6 +10,7 @@ import UIKit
 class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
    
     
+    @IBOutlet var sunscriptionView: UIView!
     @IBOutlet var SubscriptionNameLabel: UILabel!
     @IBOutlet var orderIntakeLimit: UILabel!
     @IBOutlet var breakfastIconImage: UIImageView!
@@ -17,6 +18,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var snacksIconImage: UIImageView!
     
     @IBOutlet var planImage: UIImageView!
+    @IBOutlet var planYourMealButton: UIButton!
     @IBOutlet var dinnerIconImage: UIImageView!
     
     
@@ -54,6 +56,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
 //        }
 //    }
     func updateSubscriptionPlanData(for indexPath: IndexPath) {
+        applyCardStyle2()
         // Fetch the subscription plan based on the index path
         let subscriptionPlan = KitchenDataController.subscriptionPlan[indexPath.row]
         
@@ -62,49 +65,20 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         
         // Update the meal intake limit (assuming meals count for intake)
         let remainingMeals = subscriptionPlan.meals.count
-        orderIntakeLimit.text = "Intake Limit Left: \(remainingMeals)"
+        orderIntakeLimit.text = "\(remainingMeals)"
         planImage.image = UIImage(named: subscriptionPlan.planImage ?? "nil")
-        
+        planYourMealButton.layer.cornerRadius = 11
         // Update meal types for the plan
-        var availableMealTypes = [String]()
-        if subscriptionPlan.meals.contains(where: { $0.mealType == .breakfast }) {
-            availableMealTypes.append("Breakfast")
-            breakfastIconImage.isHidden = false
-        } else {
-            breakfastIconImage.isHidden = true
-        }
-        
-        if subscriptionPlan.meals.contains(where: { $0.mealType == .lunch }) {
-            availableMealTypes.append("Lunch")
-            lunchIconImage.isHidden = false
-        } else {
-            lunchIconImage.isHidden = true
-        }
-        
-        if subscriptionPlan.meals.contains(where: { $0.mealType == .snacks }) {
-            availableMealTypes.append("Snacks")
-            snacksIconImage.isHidden = false
-        } else {
-            snacksIconImage.isHidden = true
-        }
-        
-        if subscriptionPlan.meals.contains(where: { $0.mealType == .dinner }) {
-            availableMealTypes.append("Dinner")
-            dinnerIconImage.isHidden = false
-        } else {
-            dinnerIconImage.isHidden = true
-        }
-        
-        //        // Update plan availability (available meal types for the subscription)
-        //        planAvailabilityLabel.text = "Available Meals: \(availableMealTypes.joined(separator: ", "))"
-        //        
-        //        // Plan image (if applicable, assuming you have an image related to each plan)
-        //        if let planImageName = subscriptionPlan.image {
-        //            planImageView.image = UIImage(named: planImageName)
-        //        } else {
-        //            planImageView.image = nil // Set default image or nil if there's no image
-        //        }
-        //    }
+    
     }
+    func applyCardStyle2() {
+        sunscriptionView.layer.cornerRadius = 16
+        sunscriptionView.layer.masksToBounds = false
+        sunscriptionView.layer.shadowColor = UIColor.black.cgColor
+        sunscriptionView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        sunscriptionView.layer.shadowRadius = 5
+        sunscriptionView.layer.shadowOpacity = 0.4
+        sunscriptionView.backgroundColor = .white
+   }
     
 }

@@ -123,15 +123,15 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 6:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
             cell.updateSubscriptionPlanData(for: indexPath)
-            cell.layer.cornerRadius = 10.0
-            cell.layer.borderWidth = 1.0
-            cell.layer.borderColor = UIColor.gray.cgColor
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-            cell.layer.shadowRadius = 5.0
-            cell.layer.shadowOpacity = 0.2
-            cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
+//            cell.layer.cornerRadius = 10.0
+//            cell.layer.borderWidth = 1.0
+//            cell.layer.borderColor = UIColor.gray.cgColor
+//            cell.layer.shadowColor = UIColor.black.cgColor
+//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+//            cell.layer.shadowRadius = 5.0
+//            cell.layer.shadowOpacity = 0.2
+//            cell.layer.masksToBounds = false
+//            cell.layer.shadowColor = UIColor.black.cgColor
             return cell
             
         default:
@@ -246,15 +246,30 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     }
     
     func generateSubscriptionPlanSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        // Adjust the height of the section item to a bigger size
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(150))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        group.interItemSpacing = .fixed(8)
-        let section = NSCollectionLayoutSection(group: group)
+//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
+//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//        
+//        // Adjust the height of the section item to a bigger size
+//        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .absolute(165))
+//        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 20.0, bottom: 8.0, trailing: 15.0)
+//        group.interItemSpacing = .fixed(8)
+//        let section = NSCollectionLayoutSection(group: group)
+//        return section
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+            // Define group size and layout
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+
+            // Add content insets to the group
+            group.interItemSpacing = .fixed(5)
+            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
+
+            // Create the section
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         return section
     }
     

@@ -12,6 +12,7 @@ class PlansMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Plans"
+//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action:
         // Do any additional setup after loading the view.
     }
     
