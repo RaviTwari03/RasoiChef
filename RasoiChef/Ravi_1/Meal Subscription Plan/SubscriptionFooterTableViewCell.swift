@@ -14,6 +14,7 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     @IBOutlet var PaymentLabel: UILabel!
     @IBOutlet var SubscribeButton: UIButton!
     
+    @IBOutlet var addButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -24,5 +25,7 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    func updateButton(){
+        addButton.layer.cornerRadius = 11
+    }
 }

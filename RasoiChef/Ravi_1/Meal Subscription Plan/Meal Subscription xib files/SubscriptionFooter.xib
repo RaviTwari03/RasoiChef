@@ -68,6 +68,7 @@
             <connections>
                 <outlet property="PaymentLabel" destination="qg7-nC-9ZJ" id="HvU-YL-buP"/>
                 <outlet property="SubscribeButton" destination="fPw-VR-jPA" id="FzJ-yb-6np"/>
+                <outlet property="addButton" destination="fPw-VR-jPA" id="hyN-tK-qWM"/>
             </connections>
             <point key="canvasLocation" x="-690.07633587786256" y="-1.4084507042253522"/>
         </tableViewCell>

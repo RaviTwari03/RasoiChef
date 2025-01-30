@@ -51,6 +51,15 @@
                             <action selector="CartIncreaseCounter:" destination="p7O-uv-5vB" eventType="valueChanged" id="bDO-Jg-Q0M"/>
                         </connections>
                     </stepper>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ci-JE-VC7">
+                        <rect key="frame" x="326" y="1" width="50" height="35"/>
+                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="multiply.circle" catalog="system"/>
+                        <connections>
+                            <action selector="crossButtonTapped:" destination="p7O-uv-5vB" eventType="touchUpInside" id="all-jj-KK6"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="GUQ-VB-Md7" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="62" id="1Z8-Qt-76Q"/>
@@ -63,12 +72,15 @@
                     <constraint firstItem="2cT-22-VB4" firstAttribute="leading" secondItem="pjB-AO-6qh" secondAttribute="trailing" constant="15" id="INa-Rt-5Xj"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4c2-zS-k0B" secondAttribute="trailing" constant="33" id="JHM-se-aEs"/>
                     <constraint firstItem="4c2-zS-k0B" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="LK9-MB-kVK"/>
+                    <constraint firstAttribute="trailing" secondItem="9Ci-JE-VC7" secondAttribute="trailing" constant="17" id="N5N-Nx-BP2"/>
                     <constraint firstAttribute="bottom" secondItem="pjB-AO-6qh" secondAttribute="bottom" constant="16" id="PgO-wa-FuJ"/>
+                    <constraint firstItem="9Ci-JE-VC7" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="1" id="Shy-gj-oIH"/>
                     <constraint firstItem="r9p-2u-Kgh" firstAttribute="top" secondItem="4c2-zS-k0B" secondAttribute="bottom" constant="4" id="UnY-X2-Idu"/>
                     <constraint firstItem="Ats-Ea-Fcr" firstAttribute="top" secondItem="r9p-2u-Kgh" secondAttribute="bottom" constant="11.67" id="aKE-n8-cUY"/>
                     <constraint firstItem="pjB-AO-6qh" firstAttribute="leading" secondItem="GUQ-VB-Md7" secondAttribute="trailing" constant="9" id="bhb-g3-aZ6"/>
                     <constraint firstItem="Ats-Ea-Fcr" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="cFL-Dx-QTc"/>
                     <constraint firstItem="r9p-2u-Kgh" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="ehu-cU-Qa7"/>
+                    <constraint firstItem="2cT-22-VB4" firstAttribute="top" secondItem="9Ci-JE-VC7" secondAttribute="bottom" constant="21" id="hDs-rL-HkB"/>
                     <constraint firstAttribute="bottom" secondItem="2cT-22-VB4" secondAttribute="bottom" constant="16" id="nNy-f5-JZl"/>
                     <constraint firstAttribute="bottom" secondItem="GUQ-VB-Md7" secondAttribute="bottom" constant="17" id="sfT-7o-Tl0"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="r9p-2u-Kgh" secondAttribute="trailing" constant="30" id="xsf-7p-iha"/>
@@ -80,8 +92,12 @@
                 <outlet property="CartDishPriceLabel" destination="Ats-Ea-Fcr" id="FC4-K7-AXz"/>
                 <outlet property="CartIncreaseCounter" destination="2cT-22-VB4" id="s47-z1-MfA"/>
                 <outlet property="CartItemQuantityLabel" destination="pjB-AO-6qh" id="CSb-ME-rA5"/>
+                <outlet property="crossbutton" destination="9Ci-JE-VC7" id="j7M-xo-6zt"/>
             </connections>
             <point key="canvasLocation" x="92" y="6"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="multiply.circle" catalog="system" width="128" height="123"/>
+    </resources>
 </document>

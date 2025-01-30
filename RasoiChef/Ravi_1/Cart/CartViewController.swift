@@ -9,8 +9,8 @@ import UIKit
 
 
 
-class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate {
-
+class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate {
+    
     
     func didTapPlaceOrder() {
         // Assuming "My Orders" is a tab in your UITabBarController
@@ -18,12 +18,12 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
         }
     }
-
+    
     
     
     
     @IBOutlet var CartItem: UITableView!
-
+    
     static var cartItems: [CartItem] = []
     
     
@@ -38,13 +38,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.register(UINib(nibName: "CartBill", bundle: nil), forCellReuseIdentifier: "CartBill")
         CartItem.register(UINib(nibName: "AddItemInCart", bundle: nil), forCellReuseIdentifier: "AddItemInCart")
         CartItem.register(UITableViewCell.self, forCellReuseIdentifier: "EmptyCartPlaceholder")
-
+        
         CartItem.delegate = self
         CartItem.dataSource = self
         CartItem.reloadData()
-
+        
     }
-
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
@@ -64,7 +64,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
     }
     
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
@@ -83,60 +83,64 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 cell.textLabel?.text = "Your cart is empty. Add some items!🙁"
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .gray
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as? CartItemTableViewCell else {
+                    
                     return UITableViewCell()
                 }
+                cell.delegate = self
+//                cell.updateCartItem(for: indexPath)
                 cell.updateCartItem(for: indexPath)
                 return cell
             }
             
         case 2:
-  
+            
             if CartViewController.cartItems.isEmpty {
-                    return UITableViewCell() // No cell needed when the cart is empty
-                } else {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
-                        return UITableViewCell()
-                    }
-                    let totalPrice = calculateTotalItemPrice()
-                    cell.itemPriceLabel.text = String(format: "₹ %.2f", totalPrice)
-                    
-                    // Example: Update other labels like GST, delivery charges, etc.
-                    let gst = totalPrice * 0.18 // 18% GST
-                    cell.gstLabel.text = String(format: "₹ %.2f", gst)
-                    cell.deliveryChargesLabel.text = "₹ 50.00" // Example static delivery charge
-                    cell.discountLabel.text = "-₹ 20.00" // Example static discount
-                    cell.totalAmount.text = String(format: "₹ %.2f", totalPrice + gst + 50 - 20)
-                    
-                    return cell
+                return UITableViewCell() // No cell needed when the cart is empty
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
+                    return UITableViewCell()
+                }
+                let totalPrice = calculateTotalItemPrice()
+                cell.itemPriceLabel.text = String(format: "₹ %.2f", totalPrice)
+                
+                // Example: Update other labels like GST, delivery charges, etc.
+                let gst = totalPrice * 0.18 // 18% GST
+                cell.gstLabel.text = String(format: "₹ %.2f", gst)
+                cell.deliveryChargesLabel.text = "₹ 50.00" // Example static delivery charge
+                cell.discountLabel.text = "-₹ 20.00" // Example static discount
+                cell.totalAmount.text = String(format: "₹ %.2f", totalPrice + gst + 50 - 20)
+                
+                return cell
             }
             
         case 3:
             // Payment Section
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
-//                    return UITableViewCell()
-//                }
-//                let totalPrice = calculateTotalItemPrice()
-//                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
-//                cell.delegate = self // Assign delegate to handle button action
-//                return cell
+            //            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
+            //                    return UITableViewCell()
+            //                }
+            //                let totalPrice = calculateTotalItemPrice()
+            //                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
+            //                cell.delegate = self // Assign delegate to handle button action
+            //                return cell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
-                            return UITableViewCell()
-                        }
+                return UITableViewCell()
+            }
             cell.addButtonUpdate()
-                        let grandTotal = calculateGrandTotal()
-                        cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
-                        cell.delegate = self
-           
-                        return cell
+            let grandTotal = calculateGrandTotal()
+            cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
+            cell.delegate = self
+            
+            return cell
             
         default:
             return UITableViewCell()
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
@@ -151,7 +155,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             return 44
         }
     }
-
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
@@ -166,10 +170,10 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             return nil
         }
     }
-
     
-
-
+    
+    
+    
     func presentAddItemModal(with item: MenuItem) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
@@ -177,19 +181,19 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             addItemVC.delegate = self // Set the delegate
             self.present(addItemVC, animated: true, completion: nil)
         }
-       
+        
     }
-
+    
     func didAddItemToCart(_ item: CartItem) {
         KitchenDataController.cartItems.append(item)
         updateTabBarBadge()
         CartItem.reloadData()
-//       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
+        //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
     }
-
     
-
-  
+    
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         CartItem.reloadData()
@@ -198,35 +202,35 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     @objc func updateCart() {
         CartItem.reloadData()
     }
-//    func calculateTotalItemPrice() -> Double {
-//        return CartViewController.cartItems.reduce(0) { $0 + ($1.MenuItem.price * Double($1.quantity)) }
-//    }
-//    func calculateTotalItemPrice() -> Double {
-//        return CartViewController.cartItems.reduce(into: 0) { total, cartItem in
-//            if let menuItem = fetchMenuItem(by: cartItem.MenuItem) {
-//                return total + (menuItem.price * Double(cartItem.quantity))
-//            }
-//            return total
-//        }
-//    }
+    //    func calculateTotalItemPrice() -> Double {
+    //        return CartViewController.cartItems.reduce(0) { $0 + ($1.MenuItem.price * Double($1.quantity)) }
+    //    }
+    //    func calculateTotalItemPrice() -> Double {
+    //        return CartViewController.cartItems.reduce(into: 0) { total, cartItem in
+    //            if let menuItem = fetchMenuItem(by: cartItem.MenuItem) {
+    //                return total + (menuItem.price * Double(cartItem.quantity))
+    //            }
+    //            return total
+    //        }
+    //    }
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
             total + (cartItem.menuItem.price * Double(cartItem.quantity))
         }
     }
-
-
+    
+    
     // Example function to fetch a MenuItem by ID
     func fetchMenuItem(by id: Int) -> MenuItem? {
         return KitchenDataController.menuItems.first /*{ $0.id == id }*/
     }
     func calculateGrandTotal() -> Double {
-            let totalPrice = calculateTotalItemPrice()
-            let gst = totalPrice * 0.18 // 18% GST
-            let deliveryCharges = 50.0
-            let discount = 20.0
-            return totalPrice + gst + deliveryCharges - discount
-        }
+        let totalPrice = calculateTotalItemPrice()
+        let gst = totalPrice * 0.18 // 18% GST
+        let deliveryCharges = 50.0
+        let discount = 20.0
+        return totalPrice + gst + deliveryCharges - discount
+    }
     func updateTabBarBadge() {
         if let tabItems = self.tabBarController?.tabBar.items {
             let cartTabItem = tabItems[2] // Replace with the correct index for the "Cart" tab
@@ -234,7 +238,75 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
         }
     }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//        
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = CartItem.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            CartItem.deleteRows(at: [indexPath], with: .fade)
+//            updateTabBarBadge() // Update the cart badge count
+//        }
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        guard let indexPath = CartItem.indexPath(for: cell),
+//              indexPath.row < KitchenDataController.cartItems.count else {
+//            print("Invalid indexPath: \(String(describing: CartItem.indexPath(for: cell)))")
+//            return
+//        }
+//
+//        // Safely remove the item from the data source
+//        KitchenDataController.cartItems.remove(at: indexPath.row)
+//
+//        if KitchenDataController.cartItems.isEmpty {
+//            // If cart is empty, reload the table to show "Cart is empty"
+//            CartItem.reloadData()
+//        } else {
+//            // Otherwise, delete the row smoothly
+//            CartItem.deleteRows(at: [indexPath], with: .fade)
+//        }
+//
+//        updateTabBarBadge() // Update badge count
+//    }
 
+    func didTapRemoveButton(cell: CartItemTableViewCell) {
+        guard let indexPath = CartItem.indexPath(for: cell) else {
+            print("⚠️ Invalid indexPath: Cell not found in tableView")
+            return
+        }
 
+        guard indexPath.row < KitchenDataController.cartItems.count else {
+            print("⚠️ Index out of bounds: \(indexPath.row), cart count: \(KitchenDataController.cartItems.count)")
+            return
+        }
+
+        // Remove the item from cart
+        KitchenDataController.cartItems.remove(at: indexPath.row)
+
+        // Check if the cart is empty after removal
+        if KitchenDataController.cartItems.isEmpty {
+            print("🛒 Cart is now empty, reloading table to show placeholder and other sections.")
+            CartItem.reloadData() // Reload table to reflect empty cart
+        } else {
+            print("✅ Item removed, updating UI")
+            CartItem.deleteRows(at: [indexPath], with: .fade)
+        }
+
+        updateTabBarBadge() // Update the cart badge count
     }
 
+
+
+
+    
+}

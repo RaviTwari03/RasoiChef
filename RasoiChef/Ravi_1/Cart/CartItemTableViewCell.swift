@@ -6,15 +6,19 @@
 //
 
 import UIKit
-
+protocol CartItemTableViewCellDelegate: AnyObject {
+    func didTapRemoveButton(cell: CartItemTableViewCell)
+}
 class CartItemTableViewCell: UITableViewCell {
 
+    weak var delegate: CartItemTableViewCellDelegate?
     
     @IBOutlet var CartDishLabel: UILabel!
     @IBOutlet var CartDishDescription: UILabel!
     @IBOutlet var CartDishPriceLabel: UILabel!
     @IBOutlet var CartItemQuantityLabel: UILabel!
     @IBOutlet var CartIncreaseCounter: UIStepper!
+    @IBOutlet var crossbutton: UIButton!
     
     
     override func awakeFromNib() {
@@ -28,6 +32,9 @@ class CartItemTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    @IBAction func crossButtonTapped(_ sender: UIButton) {
+           delegate?.didTapRemoveButton(cell: self)
+       }
     
     @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
         CartItemQuantityLabel.text = "\(Int(sender.value))"

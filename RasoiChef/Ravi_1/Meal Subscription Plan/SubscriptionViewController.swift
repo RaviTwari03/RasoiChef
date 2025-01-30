@@ -115,7 +115,9 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             }
             footerCell = cell // Store reference for updating price
                footerCell?.PaymentLabel.text = "\(totalPrice)"
+            cell.updateButton()
             return cell
+           
             
         default:
             fatalError("Unexpected section index")
