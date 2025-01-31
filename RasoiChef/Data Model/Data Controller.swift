@@ -52,7 +52,8 @@ class KitchenDataController {
             intakeLimit: 20,
             imageURL: "VegetablePoha",
             orderDeadline: "Order Before 6 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item002",
@@ -66,7 +67,8 @@ class KitchenDataController {
             intakeLimit: 15,
             imageURL: "VegThali",
             orderDeadline: "Order Before 11 am.",
-            availability: [.Unavailable]
+            availability: [.Unavailable],
+            availableDays: [.monday]
             
         ),
         MenuItem(
@@ -81,7 +83,8 @@ class KitchenDataController {
             intakeLimit: 10,
             imageURL: "SpringRoll",
             orderDeadline: "Order Before 3 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item004",
@@ -95,7 +98,8 @@ class KitchenDataController {
             intakeLimit: 25,
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 7 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         )
     ]
     
@@ -251,7 +255,8 @@ class KitchenDataController {
             intakeLimit: 15,
             imageURL: "PaneerButterMasala",
             orderDeadline: "Order Before 11 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
             
         ),
         MenuItem(
@@ -266,7 +271,8 @@ class KitchenDataController {
             intakeLimit: 10,
             imageURL: "ChickenBiryani",
             orderDeadline: "Order Before 11 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         )
     ]
 
@@ -284,7 +290,8 @@ class KitchenDataController {
             intakeLimit: 20,
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 6 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item202",
@@ -298,7 +305,8 @@ class KitchenDataController {
             intakeLimit: 25,
             imageURL: "PancakesHoney",
             orderDeadline: "Order Before 6 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item201",
@@ -312,7 +320,8 @@ class KitchenDataController {
             intakeLimit: 20,
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 6 am.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         )
     ]
 
@@ -330,7 +339,8 @@ class KitchenDataController {
             intakeLimit: 50,
             imageURL: "Samosa",
             orderDeadline: "Order Before 3 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item302",
@@ -344,7 +354,8 @@ class KitchenDataController {
             intakeLimit: 30,
             imageURL: "ChickenNuggets",
             orderDeadline: "Order Before 3 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         )
     ]
 
@@ -362,7 +373,8 @@ class KitchenDataController {
             intakeLimit: 20,
             imageURL: "DalTadkaJeeraRice",
             orderDeadline: "Order Before 7 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         ),
         MenuItem(
             itemID: "item402",
@@ -376,7 +388,8 @@ class KitchenDataController {
             intakeLimit: 8,
             imageURL: "GrilledSalmon",
             orderDeadline: "Order Before 7 pm.",
-            availability: [.Available]
+            availability: [.Available],
+            availableDays: [.monday]
         )
     ]
 
