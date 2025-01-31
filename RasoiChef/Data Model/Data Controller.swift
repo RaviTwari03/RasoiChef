@@ -252,6 +252,7 @@ class KitchenDataController {
             imageURL: "PaneerButterMasala",
             orderDeadline: "Order Before 11 am.",
             availability: [.Available]
+            
         ),
         MenuItem(
             itemID: "item102",

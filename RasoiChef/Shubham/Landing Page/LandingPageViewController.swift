@@ -219,27 +219,26 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        }
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 2 { // Section 2 corresponds to the "LandingPageKitchen" section
-            // Initialize the destination view controller
+        if indexPath.section == 0 { // Section 0 corresponds to "LandingPageBanner"
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
+            if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+                
+                // Pass data if necessary, for example:
+                // mealCategoriesVC.selectedBannerData = KitchenDataController.mealBanner[indexPath.item]
+                
+                self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
+            }
+        } else if indexPath.section == 2 { // Existing logic for "LandingPageKitchen"
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
                 
-                // Pass data to the destination view controller if needed
                 kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
                 
-                // Navigate to the view controller
                 self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
-                
-//                kitchenDetailVC.modalPresentationStyle = .pageSheet
-//                
-//                if let sheet = kitchenDetailVC.sheetPresentationController {
-//                    sheet.detents = [.medium(),.large()]
-//                }
-//                present(kitchenDetailVC,animated: true)
-                
             }
         }
     }
+
     
     
     @objc func sectionButtonTapped(_ sender: UIButton) {
@@ -248,6 +247,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "LandingPageChefSpecialitySeeMoreViewController") as? LandingPageChefSpecialitySeeMoreViewController {
                 self.navigationController?.pushViewController(firstScreenVC, animated: true)
+            } else {
+                print("Error: Could not instantiate KitchenMenuListViewController")
+            }
+        case 2:
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let SecondScreenVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+                self.navigationController?.pushViewController(SecondScreenVC, animated: true)
             } else {
                 print("Error: Could not instantiate KitchenMenuListViewController")
             }
