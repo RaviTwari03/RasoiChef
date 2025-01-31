@@ -23,6 +23,8 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Menu"
+        let seeMoreButton = UIBarButtonItem(title: "Subscribe", style: .plain, target: self, action: #selector(didTapSeeMoreToSubscriptionPlans))
+            self.navigationItem.rightBarButtonItem = seeMoreButton
        
         
         // Registering Nibs for Cells
@@ -124,7 +126,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0.0, bottom: 0.0, trailing: 0.0)
         group.interItemSpacing = .fixed(0)
@@ -134,4 +136,22 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
 
         return section
     }
+    @objc func didTapSeeMoreToSubscriptionPlans() {
+        let alert = UIAlertController(title: "Notice",
+                                      message: "This kitchen provides plans for a minimum of 2 days and a maximum of 7 days.",
+                                      preferredStyle: .alert)
+
+        let acceptAction = UIAlertAction(title: "Accept", style: .default) { _ in
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
+                self.navigationController?.pushViewController(firstScreenVC, animated: true)
+            }
+        }
+
+        alert.addAction(acceptAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
+
 }

@@ -9,6 +9,9 @@ enum Availabiltiy : String {
     case Available
     case Unavailable
 }
+enum WeekDay: String, CaseIterable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+}
 
 
 enum OrderStatus: String {
@@ -66,6 +69,7 @@ struct MenuItem {
     var imageURL: String
     var orderDeadline : String
     var availability: [Availabiltiy]
+    var availableDays: [WeekDay]
 }
 struct GlobalMenuItem{
     let itemID: String
