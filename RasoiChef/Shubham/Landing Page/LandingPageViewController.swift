@@ -109,8 +109,8 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
             cell.updateBannerDetails(for: indexPath)
             cell.layer.cornerRadius = 15.0    // Rounded corners
-            cell.layer.borderColor = UIColor.black.cgColor
-            cell.layer.borderWidth = 1.0
+//            cell.layer.borderColor = UIColor.black.cgColor
+//            cell.layer.borderWidth = 1.0
             return cell
             
         case 1:
@@ -188,8 +188,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5) // Space between items within the section
         group.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 10.0, bottom: 0, trailing: 8.0)
-//        let section = NSCollectionLayoutSection(group: group)
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 8, bottom: 0, trailing: 10) // Minimize insets
+        
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20)
         section.orthogonalScrollingBehavior = .groupPaging
@@ -262,11 +261,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             break
         }
     }
+    
+    
+    
     @IBAction func profileButtonTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
             
-            
-        
             if let profileVC = storyboard.instantiateInitialViewController() {
                 
                 navigationController?.pushViewController(profileVC, animated: true)
