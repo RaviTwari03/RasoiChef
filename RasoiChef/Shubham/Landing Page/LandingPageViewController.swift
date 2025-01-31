@@ -7,11 +7,15 @@
 
 import UIKit
 
-class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
+class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating {
 
     @IBOutlet var LandingPage: UICollectionView!
     
     
+    
+    
+    let searchController = UISearchController(searchResultsController: nil)
+
     
     override func viewDidLoad() {
            super.viewDidLoad()
@@ -36,6 +40,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         LandingPage.setCollectionViewLayout(generateLayout(), animated: true)
         LandingPage.dataSource = self
         LandingPage.delegate = self
+        
+        setupSearchController()
+       
+        
        }
        
        // MARK: - Number of Sections
@@ -109,24 +117,20 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
             cell.updateBannerDetails(for: indexPath)
             cell.layer.cornerRadius = 15.0    // Rounded corners
-//            cell.layer.borderColor = UIColor.black.cgColor
-//            cell.layer.borderWidth = 1.0
+
             return cell
             
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
             cell.layer.cornerRadius = 15.0    // Rounded corners
-            cell.layer.borderWidth = 1.0       // Border width
-            cell.layer.borderColor = UIColor.black.cgColor
+
             return cell
             
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchen", for: indexPath) as! LandingPageKitchenCollectionViewCell
             cell.updateLandingPageKitchen(for: indexPath)
             cell.layer.cornerRadius = 15.0    // Rounded corners
-            cell.layer.borderWidth = 1.0       // Border width
-            cell.layer.borderColor = UIColor.black.cgColor  // Border color
             return cell
         
         default:
@@ -187,10 +191,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(145))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5) // Space between items within the section
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 10.0, bottom: 0, trailing: 8.0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
@@ -203,12 +207,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                // Define group size and layout
-               let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
+               let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(160))
                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
                // Add content insets to the group
                group.interItemSpacing = .fixed(5)
-               group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 5.0, bottom: 8.0, trailing: 5.0) // No insets on the left/right
+           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 20, trailing: 10.0) // No insets on the left/right
 
                // Create the section
                let section = NSCollectionLayoutSection(group: group)
@@ -274,6 +278,22 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     }
     
 
+    
+    
+    
+    // MARK: - Search bar
+    
+    func setupSearchController() {
+           navigationItem.searchController = searchController
+           searchController.searchResultsUpdater = self
+           searchController.obscuresBackgroundDuringPresentation = false
+           searchController.searchBar.placeholder = "Search here..."
+       }
+
+       func updateSearchResults(for searchController: UISearchController) {
+           // Handle search logic
+       }
+    
     
 
 }

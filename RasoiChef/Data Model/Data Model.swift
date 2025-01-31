@@ -186,4 +186,5 @@ struct MealBanner {
     let deliveryTime: String
     let timer: String
     let icon: String
+    let mealType: String
 }

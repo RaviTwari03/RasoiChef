@@ -17,6 +17,7 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
     @IBOutlet var Distance: UILabel!
     @IBOutlet var RatingsLabel: UILabel!
 
+    @IBOutlet weak var containerView: UIView!
     
     func updateLandingPageKitchen(for indexPath: IndexPath) {
         
@@ -30,4 +31,36 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
         
         availabilityLabel.text = restaurant.isOnline ? "Online" : "Offline"
     }
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupShadow()
+    }
+    
+    func setupShadow() {
+        containerView.layer.masksToBounds = false  // Allow shadow to be visible outside the cell bounds
+        
+        containerView.layer.cornerRadius = 15 // Rounded corners
+        containerView.layer.masksToBounds = true  // Ensure content respects rounded corners
+        
+        // Apply shadow to contentView
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.5
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 2.5
+        layer.masksToBounds = false
+        
+        // Set shadow path for better performance
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: containerView.layer.cornerRadius).cgPath
+    }
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: containerView.layer.cornerRadius).cgPath
+        
+    }
+    
+    
 }

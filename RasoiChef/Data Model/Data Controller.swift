@@ -506,35 +506,41 @@ class KitchenDataController {
     ]
     static var mealBanner : [MealBanner] =
     [MealBanner(
-        title: "Taste the Noon Magic",
-        subtitle: "Order Before 11 am",
-        deliveryTime: "Delivery expected by 1 pm",
-        timer: "10 min",
-        icon: "LunchIcon"
+        title: "Rise and Shine Breakfast",
+        subtitle: "Order Before 6 am",
+        deliveryTime: "Delivery expected by 9 am",
+        timer: "20 min",
+        icon: "BreakfastIcon",
+        mealType: "Breakfast"
     ),
     
          MealBanner(
-             title: "Rise and Shine Breakfast",
-             subtitle: "Order Before 8 am",
-             deliveryTime: "Delivery expected by 9 am",
-             timer: "20 min",
-             icon: "BreakfastIcon"
+             title: "Taste the Noon Magic",
+             subtitle: "Order Before 11 am",
+             deliveryTime: "Delivery expected by 1 pm",
+             timer: "10 min",
+             icon: "LunchIcon",
+             mealType: "Lunch"
          ),
          MealBanner(
              title: "Evening Snack Treat",
-             subtitle: "Order Before 5 pm",
+             subtitle: "Order Before 4 pm",
              deliveryTime: "Delivery expected by 6 pm",
              timer: "15 min",
-             icon: "SnacksIcon"
+             icon: "SnacksIcon", 
+             mealType: "Snacks"
          ),
          MealBanner(
              title: "Delightful Dinner",
              subtitle: "Order Before 7 pm",
-             deliveryTime: "Delivery expected by 8 pm",
+             deliveryTime: "Delivery expected by 9 pm",
              timer: "25 min",
-             icon: "DinnerIcon"
+             icon: "DinnerIcon",
+             mealType: "Dinner"
          )
      ]
+    
+    
     static var user : [User] = [
         User(
             userID: nil,

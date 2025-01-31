@@ -31,6 +31,7 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         timerIcon.image = UIImage(systemName: "timer")
         timerIcon.tintColor = .systemRed
         TimeRemainingLabel.tintColor = .systemRed
+        mealCategoryLabel.text = bannerData.mealType
         
         let config = UIImage.SymbolConfiguration(weight: .medium)
         
