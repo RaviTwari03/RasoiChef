@@ -18,26 +18,42 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var orderIntakeLimitLabel: UILabel!
     
     @IBOutlet weak var priceLabel: UILabel!
-    @IBOutlet weak var distanceLabel: UILabel!
+    
+    @IBOutlet weak var descriptionLabel: UILabel!
     
     
-    //    func updateMealDetails(with indexPath: IndexPath) {
-    //        let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
-    ////        vegImage.image = UIImage(systemName: "rectangle.portrait.and.arrow.right.fill")
-    //        mealNameLabel.text = menuItem.name
-    ////        ratingLabel.text = "⭐ \(menuItem.rating)"
-    ////        dishNameLabel.text = menuItem.name
-    ////        dishDescription.text = menuItem.description
-    ////        dishDeliveryExpected.text = menuItem.orderDeadline
-    //        mealImage.image = UIImage(named: menuItem.imageURL)
-    //        orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
-    //    }
+    //        func updateMealDetails(for indexPath: IndexPath) {
+    //            let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
     //
-    func configure(with indexpath : IndexPath) {
-//        mealNameLabel.text = menuItem.name
-//        //            menuItemDescriptionLabel.text = menuItem.description
-//        priceLabel.text = "$\(menuItem.price)"
+    //            mealNameLabel.text = menuItem.name
+    //            mealImage.image = UIImage(named: menuItem.imageURL)
+    //            kitchenNameLabel.text = menuItem.name
+    //            orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
+    //           priceLabel.text = "₹\(menuItem.price)"
+    //            descriptionLabel.text = menuItem.description
+    //        }
+    ////
+    //    func configure(with indexpath : IndexPath) {
+    ////        mealNameLabel.text = menuItem.name
+    ////        //            menuItemDescriptionLabel.text = menuItem.description
+    ////        priceLabel.text = "$\(menuItem.price)"
+    //
+    //
+    //    }
+    func updateMealDetails(with indexPath: IndexPath) {
+        guard indexPath.row < KitchenDataController.GloballunchMenuItems.count else {
+            print("Error: Index \(indexPath.row) is out of range. Available items: \(KitchenDataController.GloballunchMenuItems.count)")
+            return
+        }
         
+        let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
         
+        mealNameLabel.text = menuItem.name
+        mealImage.image = UIImage(named: menuItem.imageURL)
+        kitchenNameLabel.text = menuItem.name
+        orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
+        priceLabel.text = "₹\(menuItem.price)"
+        descriptionLabel.text = menuItem.description
     }
 }
+//}
