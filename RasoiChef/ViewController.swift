@@ -354,7 +354,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         }
     }
     func didTapSeeMoreToSubscriptionPlans() {
-        let alert = UIAlertController(title: "Notice",
+        let alert = UIAlertController(title: "",
                                       message: "This kitchen provides plans for a minimum of 2 days and a maximum of 7 days.",
                                       preferredStyle: .alert)
         

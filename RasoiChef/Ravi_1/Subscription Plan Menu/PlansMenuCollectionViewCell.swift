@@ -22,17 +22,10 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
     
     func updateMenuDetails(with indexPath: IndexPath) {
         applyCardStyle2()
-//        addButton.layer.cornerRadius = 11
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         MenuTiming.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-//        orderDeadlineLabel.text = "Order Before 4 pm"
-//        expectedDeliveryLabel.text = "Delivery Expected By 6 pm"
-        MealName.text = menuItem.name
         MealDescription.text = menuItem.description
-//        mealPriceLabel.text = "₹\(menuItem.price)"
-//        mealRatingLabel.text = "⭐ \(menuItem.rating)"
         MealImage.image = UIImage(named: menuItem.imageURL)
-//        availabiltyLabel.text = "\(menuItem.availability.map { $0.rawValue.capitalized }.joined(separator: ", "))"
 
         
     }
