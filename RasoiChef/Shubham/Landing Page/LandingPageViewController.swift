@@ -82,6 +82,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             default:
                 header.headerLabel.text = "Section \(indexPath.section)" // Default case to prevent out of range error
             }
+            
             if header.headerLabel.text == "" {
                 header.actionButton.isHidden = true
                 header.headerLabel.font = UIFont.systemFont(ofSize: 0, weight: .regular)
@@ -156,7 +157,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                }
                
                // Add Header
-               let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+               let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.03), heightDimension: .absolute(55))
                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
                section.boundarySupplementaryItems = [header]
                
@@ -176,7 +177,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            group.interItemSpacing = .fixed(5) // Space between items within the section
            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
            let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20) // Minimize insets
+           section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 20) // Minimize insets
            section.orthogonalScrollingBehavior = .groupPaging
            return section
        }
@@ -188,13 +189,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(145))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(140))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5) // Space between items within the section
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 20)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
@@ -216,7 +217,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
                // Create the section
                let section = NSCollectionLayoutSection(group: group)
-               section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+               section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
 
            return section
        }
@@ -253,13 +254,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             } else {
                 print("Error: Could not instantiate KitchenMenuListViewController")
             }
-        case 2:
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let SecondScreenVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-                self.navigationController?.pushViewController(SecondScreenVC, animated: true)
-            } else {
-                print("Error: Could not instantiate KitchenMenuListViewController")
-            }
+//        case 2:
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            if let SecondScreenVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+//                self.navigationController?.pushViewController(SecondScreenVC, animated: true)
+//            } else {
+//                print("Error: Could not instantiate KitchenMenuListViewController")
+//            }
 
         default:
             break
