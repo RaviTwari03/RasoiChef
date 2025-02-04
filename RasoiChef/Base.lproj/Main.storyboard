@@ -375,7 +375,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Daa-W5-xEC" userLabel="Landing Chef Special See More">
-                                <rect key="frame" x="0.0" y="174" width="430" height="724"/>
+                                <rect key="frame" x="0.0" y="209" width="430" height="689"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="h5j-9P-R9Z">
                                     <size key="itemSize" width="128" height="128"/>
@@ -400,7 +400,7 @@
                         <constraints>
                             <constraint firstItem="Daa-W5-xEC" firstAttribute="trailing" secondItem="udb-jQ-7Bl" secondAttribute="trailing" id="PBx-Zn-sR9"/>
                             <constraint firstItem="Daa-W5-xEC" firstAttribute="leading" secondItem="udb-jQ-7Bl" secondAttribute="leading" id="btS-43-PfA"/>
-                            <constraint firstItem="Daa-W5-xEC" firstAttribute="top" secondItem="udb-jQ-7Bl" secondAttribute="top" constant="115" id="dF3-DR-7py"/>
+                            <constraint firstItem="Daa-W5-xEC" firstAttribute="top" secondItem="udb-jQ-7Bl" secondAttribute="top" constant="150" id="eKg-az-xqD"/>
                             <constraint firstItem="Daa-W5-xEC" firstAttribute="bottom" secondItem="udb-jQ-7Bl" secondAttribute="bottom" id="qBN-TH-l5U"/>
                         </constraints>
                     </view>

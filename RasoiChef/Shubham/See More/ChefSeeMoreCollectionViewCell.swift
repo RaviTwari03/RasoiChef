@@ -10,9 +10,6 @@ import UIKit
 class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
     
     
-    
-    
-    
     @IBOutlet var DishImage: UIImageView!
     @IBOutlet var dishName: UILabel!
     @IBOutlet var PriceOfDish: UILabel!
@@ -35,4 +32,7 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         LimitLeft.text = "Max Limit: 50"             // Update dynamically if data exists
         DishImage.image = UIImage(named: specialDish.imageURL ) 
     }
+    
+    
+
 }
