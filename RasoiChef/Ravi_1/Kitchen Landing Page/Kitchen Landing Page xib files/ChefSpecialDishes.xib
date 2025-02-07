@@ -45,7 +45,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Intake Limit left  : 5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tmi-zo-aq1">
-                                <rect key="frame" x="8" y="70" width="159" height="16"/>
+                                <rect key="frame" x="8" y="70" width="168" height="16"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -62,33 +62,35 @@
                                 <rect key="frame" x="90" y="86" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AN6-Wt-qLa">
-                                <rect key="frame" x="31" y="114" width="105" height="35"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-Bb-9IU">
+                                <rect key="frame" x="34" y="86" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HVm-d4-wyP">
+                                <rect key="frame" x="190" y="25" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="L4b-O7-UiT"/>
+                                    <constraint firstAttribute="height" constant="120" id="qpd-Ac-t2Q"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AN6-Wt-qLa">
+                                <rect key="frame" x="37" y="115" width="100" height="30"/>
                                 <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="2k8-xX-Xqu"/>
+                                    <constraint firstAttribute="height" constant="30" id="iQn-LC-a4X"/>
+                                </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="ADD">
                                     <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
                                 </buttonConfiguration>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-Bb-9IU">
-                                <rect key="frame" x="34" y="86" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HVm-d4-wyP">
-                                <rect key="frame" x="181" y="25" width="120" height="120"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="L4b-O7-UiT"/>
-                                    <constraint firstAttribute="height" constant="120" id="qpd-Ac-t2Q"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="HVm-d4-wyP" firstAttribute="top" secondItem="S01-vu-mMT" secondAttribute="bottom" constant="4" id="5FG-6U-fLr"/>
                             <constraint firstItem="S5V-ZM-yRc" firstAttribute="leading" secondItem="GCR-wN-Qxa" secondAttribute="leading" constant="8" id="7TH-ph-OQN"/>
-                            <constraint firstItem="HVm-d4-wyP" firstAttribute="leading" secondItem="GCR-wN-Qxa" secondAttribute="leading" constant="181" id="9qn-9w-xjM"/>
                             <constraint firstItem="HVm-d4-wyP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="S5V-ZM-yRc" secondAttribute="trailing" constant="14" id="A2R-h3-Rrw"/>
                             <constraint firstItem="ls2-N3-44F" firstAttribute="top" secondItem="S5V-ZM-yRc" secondAttribute="bottom" constant="3" id="Civ-O9-8Hm"/>
                             <constraint firstItem="nwc-Jr-0aG" firstAttribute="top" secondItem="GCR-wN-Qxa" secondAttribute="top" constant="6" id="DON-Du-kRh"/>
@@ -97,6 +99,7 @@
                             <constraint firstItem="S01-vu-mMT" firstAttribute="top" secondItem="GCR-wN-Qxa" secondAttribute="top" constant="9" id="Szr-kr-7qi"/>
                             <constraint firstItem="HVm-d4-wyP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ls2-N3-44F" secondAttribute="trailing" constant="14" id="Xbf-G0-Cet"/>
                             <constraint firstItem="S01-vu-mMT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nwc-Jr-0aG" secondAttribute="trailing" constant="20" id="aZ4-MP-66e"/>
+                            <constraint firstItem="AN6-Wt-qLa" firstAttribute="leading" secondItem="GCR-wN-Qxa" secondAttribute="leading" constant="37" id="dWK-gC-K6a"/>
                             <constraint firstItem="Tmi-zo-aq1" firstAttribute="top" secondItem="ls2-N3-44F" secondAttribute="bottom" constant="3" id="g9d-XJ-OIx"/>
                             <constraint firstItem="ls2-N3-44F" firstAttribute="leading" secondItem="GCR-wN-Qxa" secondAttribute="leading" constant="8" id="ivC-VD-yxx"/>
                             <constraint firstItem="HVm-d4-wyP" firstAttribute="leading" secondItem="Tmi-zo-aq1" secondAttribute="trailing" constant="14" id="lLy-zy-If5"/>
@@ -104,6 +107,8 @@
                             <constraint firstAttribute="bottom" secondItem="HVm-d4-wyP" secondAttribute="bottom" constant="5" id="lzl-V6-yeo"/>
                             <constraint firstAttribute="trailing" secondItem="S01-vu-mMT" secondAttribute="trailing" constant="21" id="mxF-2S-oMe"/>
                             <constraint firstItem="nwc-Jr-0aG" firstAttribute="leading" secondItem="GCR-wN-Qxa" secondAttribute="leading" constant="8" id="nhj-7p-sfl"/>
+                            <constraint firstAttribute="bottom" secondItem="AN6-Wt-qLa" secondAttribute="bottom" constant="5" id="qqA-ig-b3J"/>
+                            <constraint firstAttribute="trailing" secondItem="HVm-d4-wyP" secondAttribute="trailing" constant="5" id="tpV-mt-XrN"/>
                         </constraints>
                     </view>
                 </subviews>

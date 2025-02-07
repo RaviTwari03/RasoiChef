@@ -30,13 +30,10 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var availabiltyLabel: UILabel!
     
     @IBOutlet var cardViewKitchen: UIView!
+    
+    
     weak var delegate: MenuDetailsCellDelegate?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        applyCardStyle2()
-//        applyCardStyle1()
-    }
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
@@ -46,7 +43,7 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
 //    var selectedItem: MenuItem?
     
     func updateMenuDetails(with indexPath: IndexPath) {
-        applyCardStyle2()
+        applyCardStyle1()
         addButton.layer.cornerRadius = 11
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         mealTimeLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
@@ -62,26 +59,15 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     }
    
     
-//    func applyCardStyle2() {
-//        cardViewKitchen.layer.cornerRadius = 22
-//        cardViewKitchen.layer.masksToBounds = false
-//       cardViewKitchen.layer.shadowColor = UIColor.black.cgColor
-//        cardViewKitchen.layer.shadowOffset = CGSize(width: 0, height: 1)
-//        cardViewKitchen.layer.shadowRadius = 5
-//        cardViewKitchen.layer.shadowOpacity = 0.5
-//        cardViewKitchen.backgroundColor = .white
-//        
-// }
-    
-          func applyCardStyle2() {
-              cardViewKitchen.layer.cornerRadius = 16
-              cardViewKitchen.layer.masksToBounds = false
-              cardViewKitchen.layer.shadowColor = UIColor.black.cgColor
-              cardViewKitchen.layer.shadowOffset = CGSize(width: 0, height: 4)
-              cardViewKitchen.layer.shadowRadius = 5
-              cardViewKitchen.layer.shadowOpacity = 0.4
-              cardViewKitchen.backgroundColor = .white
-         }
+    func applyCardStyle1() {
+        cardViewKitchen.layer.cornerRadius = 15
+        cardViewKitchen.layer.masksToBounds = false
+        cardViewKitchen.layer.shadowColor = UIColor.black.cgColor
+        cardViewKitchen.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cardViewKitchen.layer.shadowRadius = 2.5
+        cardViewKitchen.layer.shadowOpacity = 0.4
+        cardViewKitchen.backgroundColor = .white
+   }
 
 
 

@@ -24,7 +24,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="-23" translatesAutoresizingMaskIntoConstraints="NO" id="Qll-ml-uCK">
-                        <rect key="frame" x="295" y="37" width="97.666666666666686" height="34.333333333333343"/>
+                        <rect key="frame" x="285.33333333333331" y="37" width="97.666666666666686" height="34.333333333333343"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAU-a8-nUg">
                                 <rect key="frame" x="0.0" y="0.0" width="81" height="34.333333333333336"/>
@@ -42,12 +42,11 @@
                         </subviews>
                         <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="gAU-a8-nUg" secondAttribute="trailing" constant="16.666666666666686" id="Nu7-b3-JJZ"/>
                             <constraint firstItem="YL5-Cb-rP9" firstAttribute="leading" secondItem="Qll-ml-uCK" secondAttribute="leading" constant="58" id="vFR-Wz-ymR"/>
                         </constraints>
                     </stackView>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XEV-HX-QCf">
-                        <rect key="frame" x="45" y="36.333333333333329" width="136.66666666666666" height="37.333333333333329"/>
+                        <rect key="frame" x="30" y="36.333333333333329" width="136.66666666666666" height="37.333333333333329"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Plan Menu" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vhk-m8-woR">
                                 <rect key="frame" x="0.0" y="0.0" width="89.666666666666671" height="37.333333333333336"/>
@@ -56,7 +55,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vn9-cn-gFM">
-                                <rect key="frame" x="89.666666666666657" y="0.0" width="47" height="37.333333333333336"/>
+                                <rect key="frame" x="89.666666666666671" y="0.0" width="47.000000000000014" height="37.333333333333336"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="menucard" catalog="system"/>
@@ -67,7 +66,7 @@
                         </subviews>
                     </stackView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tgQ-YI-LC9">
-                        <rect key="frame" x="45" y="74" width="332" height="1"/>
+                        <rect key="frame" x="30" y="74" width="334" height="1"/>
                         <color key="backgroundColor" systemColor="systemGray3Color"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="RAr-wQ-UWh"/>
@@ -75,19 +74,17 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="tgQ-YI-LC9" secondAttribute="trailing" constant="16" id="0I6-mv-fed"/>
                     <constraint firstAttribute="bottom" secondItem="Qll-ml-uCK" secondAttribute="bottom" constant="8.6699999999999999" id="2YU-Yp-479"/>
+                    <constraint firstItem="XEV-HX-QCf" firstAttribute="leading" secondItem="AJc-5M-2nE" secondAttribute="leading" constant="30" id="FbN-kN-L2e"/>
                     <constraint firstAttribute="bottom" secondItem="tgQ-YI-LC9" secondAttribute="bottom" constant="5" id="K48-dm-dIK"/>
                     <constraint firstItem="tgQ-YI-LC9" firstAttribute="top" secondItem="XEV-HX-QCf" secondAttribute="bottom" constant="0.33000000000000002" id="OXr-IA-0rb"/>
-                    <constraint firstAttribute="trailing" secondItem="Qll-ml-uCK" secondAttribute="trailing" constant="0.33000000000000002" id="R5H-en-z50"/>
                     <constraint firstItem="6ju-We-0LQ" firstAttribute="leading" secondItem="AJc-5M-2nE" secondAttribute="leading" constant="16" id="Xdz-qU-Ozs"/>
-                    <constraint firstItem="Qll-ml-uCK" firstAttribute="leading" secondItem="XEV-HX-QCf" secondAttribute="trailing" constant="113.33" id="YQQ-f7-hDf"/>
                     <constraint firstItem="6ju-We-0LQ" firstAttribute="top" secondItem="AJc-5M-2nE" secondAttribute="top" constant="12" id="ZIN-GY-tEu"/>
+                    <constraint firstAttribute="trailing" secondItem="tgQ-YI-LC9" secondAttribute="trailing" constant="29" id="bNa-6R-G7W"/>
                     <constraint firstItem="XEV-HX-QCf" firstAttribute="top" secondItem="AJc-5M-2nE" secondAttribute="top" constant="36.329999999999998" id="cE8-M5-TYx"/>
-                    <constraint firstItem="Qll-ml-uCK" firstAttribute="leading" secondItem="XEV-HX-QCf" secondAttribute="trailing" constant="113.33" id="d3J-OV-RqL"/>
                     <constraint firstAttribute="trailing" secondItem="6ju-We-0LQ" secondAttribute="trailing" constant="142.33000000000001" id="e8e-rR-KMy"/>
                     <constraint firstItem="tgQ-YI-LC9" firstAttribute="leading" secondItem="XEV-HX-QCf" secondAttribute="leading" id="jkv-Bw-31S"/>
-                    <constraint firstItem="XEV-HX-QCf" firstAttribute="leading" secondItem="AJc-5M-2nE" secondAttribute="leading" constant="45" id="kSc-Rg-3GB"/>
+                    <constraint firstAttribute="trailing" secondItem="Qll-ml-uCK" secondAttribute="trailing" constant="10" id="net-dF-suB"/>
                     <constraint firstItem="Qll-ml-uCK" firstAttribute="top" secondItem="AJc-5M-2nE" secondAttribute="top" constant="37" id="pSs-rK-8WA"/>
                 </constraints>
             </collectionViewCellContentView>

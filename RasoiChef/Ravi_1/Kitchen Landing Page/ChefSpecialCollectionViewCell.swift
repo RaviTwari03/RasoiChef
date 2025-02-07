@@ -41,17 +41,19 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         addButton.layer.cornerRadius = 11
         specialDishIntakeLimtLabel.text = "Mon,Thur"
         
-        applyCardStyle3()
+        
+        applyCardStyle1()
+        
     }
     
-          func applyCardStyle3() {
-              specialCard.layer.cornerRadius = 16
-              specialCard.layer.masksToBounds = false
-              specialCard.layer.shadowColor = UIColor.black.cgColor
-              specialCard.layer.shadowOffset = CGSize(width: 0, height: 4)
-              specialCard.layer.shadowRadius = 5
-              specialCard.layer.shadowOpacity = 0.4
-              specialCard.backgroundColor = .white
-         }
-    
+
+    func applyCardStyle1() {
+        specialCard.layer.cornerRadius = 15
+        specialCard.layer.masksToBounds = false
+        specialCard.layer.shadowColor = UIColor.black.cgColor
+        specialCard.layer.shadowOffset = CGSize(width: 0, height: 2)
+        specialCard.layer.shadowRadius = 2.5
+        specialCard.layer.shadowOpacity = 0.4
+        specialCard.backgroundColor = .white
+   }
 }

@@ -26,7 +26,7 @@
                         <rect key="frame" x="272" y="8" width="114.33333333333331" height="34.333333333333336"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fio-5b-ewO">
-                                <rect key="frame" x="0.0" y="0.0" width="96.666666666666671" height="34.333333333333336"/>
+                                <rect key="frame" x="0.0" y="0.0" width="98.333333333333329" height="34.333333333333336"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="See More"/>
                                 <connections>
@@ -34,12 +34,15 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ws0-ay-A4d">
-                                <rect key="frame" x="74.666666666666686" y="0.0" width="39.666666666666657" height="34.333333333333336"/>
+                                <rect key="frame" x="76.333333333333314" y="0.0" width="38" height="34.333333333333336"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
                             </button>
                         </subviews>
                         <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="fio-5b-ewO" secondAttribute="trailing" constant="16" id="tBU-Rk-KLt"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>

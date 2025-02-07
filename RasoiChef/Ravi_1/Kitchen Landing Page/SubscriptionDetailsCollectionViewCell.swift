@@ -24,39 +24,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
     
     
     
-//    func updateSubscriptionPlanData(with indexPath: IndexPath) {
-//        // Fetch the subscription plan details based on the index path
-//        let subscriptionPlan = KitchenDataController.subscriptionPlans[indexPath.row]
-//        
-//        // Update the subscription name
-//        SubscriptionNameLabel.text = "Plan: \(subscriptionPlan.planID)"
-//        
-//        // Update the intake limit (assuming meals count for intake)
-//        let remainingMeals = subscriptionPlan.meals.count
-//        orderIntakeLimit.text = "Meals Left: \(remainingMeals)"
-//        
-//        // Reset all meal type icons to hidden
-//        breakfastIconImage.isHidden = true
-//        lunchIconImage.isHidden = true
-//        snacksIconImage.isHidden = true
-//        dinnerIconImage.isHidden = true
-//        
-//        // Show icons based on meal types in the subscription
-//        for meal in subscriptionPlan.meals {
-//            switch meal.mealType {
-//            case .breakfast:
-//                breakfastIconImage.isHidden = false
-//            case .lunch:
-//                lunchIconImage.isHidden = false
-//            case .snacks:
-//                snacksIconImage.isHidden = false
-//            case .dinner:
-//                dinnerIconImage.isHidden = false
-//            }
-//        }
-//    }
     func updateSubscriptionPlanData(for indexPath: IndexPath) {
-        applyCardStyle2()
         // Fetch the subscription plan based on the index path
         let subscriptionPlan = KitchenDataController.subscriptionPlan[indexPath.row]
         
@@ -67,18 +35,39 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         let remainingMeals = subscriptionPlan.meals.count
         orderIntakeLimit.text = "\(remainingMeals)"
         planImage.image = UIImage(named: subscriptionPlan.planImage ?? "nil")
-        planYourMealButton.layer.cornerRadius = 11
+        planYourMealButton.layer.cornerRadius = 10
+        
         // Update meal types for the plan
     
     }
-    func applyCardStyle2() {
-        sunscriptionView.layer.cornerRadius = 16
-        sunscriptionView.layer.masksToBounds = false
-        sunscriptionView.layer.shadowColor = UIColor.black.cgColor
-        sunscriptionView.layer.shadowOffset = CGSize(width: 0, height: 4)
-        sunscriptionView.layer.shadowRadius = 5
-        sunscriptionView.layer.shadowOpacity = 0.4
-        sunscriptionView.backgroundColor = .white
-   }
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupShadow()
+    }
+    
+    func setupShadow() {
+        sunscriptionView.layer.masksToBounds = false  // Allow shadow to be visible outside the cell bounds
+        
+        sunscriptionView.layer.cornerRadius = 15 // Rounded corners
+        sunscriptionView.layer.masksToBounds = true  // Ensure content respects rounded corners
+        
+        // Apply shadow to contentView
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.5
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 2.5
+        layer.masksToBounds = false
+        
+        // Set shadow path for better performance
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: sunscriptionView.layer.cornerRadius).cgPath
+        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: sunscriptionView.layer.cornerRadius).cgPath
+        
+        
+    }
     
 }
