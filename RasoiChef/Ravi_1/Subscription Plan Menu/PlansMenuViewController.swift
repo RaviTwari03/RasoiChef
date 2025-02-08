@@ -9,13 +9,7 @@ import UIKit
 
 class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
 
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        self.title = "Menu"
-//       
-//    }
-    
-    
+
     @IBOutlet var subscriptionPlan: UICollectionView!
     
     override func viewDidLoad() {

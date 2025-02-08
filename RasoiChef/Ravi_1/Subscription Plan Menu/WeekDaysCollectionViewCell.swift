@@ -11,15 +11,7 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet var weekDays: UILabel!
     
-//    
-//        func weekDay(day: String) {
-//               // Set only the first letter of the weekday
-//               weekDays.text = String(day.prefix(1))
-//               
-//               // Optional: Style the text
-//               weekDays.font = UIFont.boldSystemFont(ofSize: 18)
-//               weekDays.textAlignment = .center
-//           }
+
     var onTap: (() -> Void)? // Closure to handle tap events
 
         override func awakeFromNib() {

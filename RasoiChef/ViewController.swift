@@ -9,16 +9,6 @@ import UIKit
 
 class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate,
                       planYourMealDelegate{
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     @IBOutlet var collectionView1: UICollectionView!
     var kitchenData: Kitchen?
