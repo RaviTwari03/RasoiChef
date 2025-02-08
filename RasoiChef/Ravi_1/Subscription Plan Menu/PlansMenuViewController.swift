@@ -259,9 +259,9 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 let mealKey = Array(meals.keys)[indexPath.item]
                 let mealValue = meals[mealKey] ?? ""
                 
-                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue)
+                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
                 return cell
-
+          
             default:
                 return UICollectionViewCell()
             }
@@ -289,6 +289,18 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
 //        
 //        return plan.weeklyMeals[weekDayEnum] ?? [:]
 //    }
+//    private func getMenuForSelectedDay() -> [MealType: String] {
+//        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
+//        
+//        // Convert selectedDay string to DayOfWeek
+//        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
+//        
+//        // Convert DayOfWeek to WeekDay
+//        let weekDayEnum = selectedDayEnum.toWeekDay()
+//        
+//        // Fetch the meals for the selected day
+//        return plan.weeklyMeals[weekDayEnum] ?? [:]
+//    }
     private func getMenuForSelectedDay() -> [MealType: String] {
         guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
         
@@ -299,7 +311,12 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let weekDayEnum = selectedDayEnum.toWeekDay()
         
         // Fetch the meals for the selected day
-        return plan.weeklyMeals[weekDayEnum] ?? [:]
+        guard let mealsForDay = plan.weeklyMeals[weekDayEnum] else { return [:] }
+        
+        // Map MenuItem? to its name string, filtering out nil values
+        return mealsForDay.compactMapValues { menuItem in
+            menuItem?.name ?? ""  // Return an empty string if MenuItem is nil
+        }
     }
 
 

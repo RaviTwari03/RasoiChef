@@ -109,6 +109,7 @@ class KitchenDataController {
             availableDays: [.monday],
             mealCategory: [.veg]
         ),
+        //subscription menu
         MenuItem(
             itemID: "item201",
             kitchenID: "kitchen001",
@@ -123,7 +124,7 @@ class KitchenDataController {
             imageURL: "PancakesHoney",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available],
-            availableDays: [.monday, .wednesday, .friday],
+            availableDays: [.monday],
             mealCategory: [.veg]
         ),
         MenuItem(
@@ -328,77 +329,19 @@ class KitchenDataController {
         )
     ]
 
-
-//    struct SubscriptionPlan {
-//        let planID: String
-//        let userID: String // Foreign Key to User
-//        let kitchenID: String // Foreign Key to Kitchen
-//        var startDate: Date
-//        var endDate: Date
-//        var meals: [SubscriptionMeal]
-//        var totalPrice: Double
-//        var details: String // Details about the subscription (e.g., "Weekly Plan", "Customizable")
-//        var mealCountPerDay: Int // Number of meals provided daily
-//    }
-    
-//    static var subscriptionPlan : [SubscriptionPlan] = [
-//        SubscriptionPlan(
-//            planID: "001",
-//            userID: "001",
-//            kitchenID: "kitchen001",
-//            startDate: nil ,
-//            endDate: nil,
-//            meals: [SubscriptionMeal(
-//                day: "Monday",
-//                mealType: .dinner,
-//                menuItemID: "menu001")
-//            ],
-//            totalPrice: nil,
-//            details: "Weekly Plan",
-//            mealCountPerDay: nil,
-//            planImage: "PlanImage",
-//            weeklyMeals: <#[WeekDay : [MealType : String]]#>
-//        )
-//    ]
 //    static var subscriptionPlan: [SubscriptionPlan] = [
 //        SubscriptionPlan(
 //            planID: "001",
 //            userID: "001",
 //            kitchenID: "kitchen001",
-//            startDate: nil,
-//            endDate: nil,
-//            meals: [SubscriptionMeal(
-//                day: "Monday",
-//                mealType: .dinner,
-//                menuItemID: "menu001"
-//            )],
-//            totalPrice: nil,
+//            startDate: "2025-02-10",
+//            endDate: "2025-02-16",
+//            totalPrice: 1400.0,
 //            details: "Weekly Plan",
-//            mealCountPerDay: nil,
+//            mealCountPerDay: 4,
 //            planImage: "PlanImage",
 //            weeklyMeals: [
-//                .monday: [.dinner: "menu001"]
-//            ]
-//        )
-//    ]
-//    static var subscriptionPlan: [SubscriptionPlan] = [
-//        SubscriptionPlan(
-//            planID: "001",
-//            userID: "001",
-//            kitchenID: "kitchen001",
-//            startDate: nil,
-//            endDate: nil,
-//            meals: [SubscriptionMeal(
-//                day: "Monday",
-//                mealType: .dinner,
-//                menuItemID: "menu001"
-//            )],
-//            totalPrice: nil,
-//            details: "Weekly Plan",
-//            mealCountPerDay: nil,
-//            planImage: "PlanImage",
-//            weeklyMeals: [
-//                .monday: [.breakfast: "item201", .lunch: "item101", .snacks: "item301", .dinner: "menu001"],
+//                .monday: [.breakfast: menuItems.first(where: { $0.itemID == "item201" }),.lunch: "item101", .snacks: "item301", .dinner: "menu001"],
 //                .tuesday: [.breakfast: "item202", .lunch: "item102", .snacks: "item302", .dinner: "item401"],
 //                .wednesday: [.breakfast: "item203", .lunch: "item103", .snacks: "item303", .dinner: "item402"],
 //                .thursday: [.breakfast: "item204", .lunch: "item104", .snacks: "item304", .dinner: "item403"],
@@ -408,6 +351,8 @@ class KitchenDataController {
 //            ]
 //        )
 //    ]
+   
+
     static var subscriptionPlan: [SubscriptionPlan] = [
         SubscriptionPlan(
             planID: "001",
@@ -415,18 +360,53 @@ class KitchenDataController {
             kitchenID: "kitchen001",
             startDate: "2025-02-10",
             endDate: "2025-02-16",
-            totalPrice: 1200.0,
-            details: "Weekly Plan with variety of meals.",
+            totalPrice: 1400.0,
+            details: "Weekly Plan",
             mealCountPerDay: 4,
-            planImage: "WeeklyPlanImage",
+            planImage: "PlanImage",
             weeklyMeals: [
-                .monday: [.breakfast: "item201", .lunch: "item101", .snacks: "item301", .dinner: "menu001"],
-                .tuesday: [.breakfast: "item202", .lunch: "item102", .snacks: "item302", .dinner: "item401"],
-                .wednesday: [.breakfast: "item203", .lunch: "item103", .snacks: "item303", .dinner: "item402"],
-                .thursday: [.breakfast: "item204", .lunch: "item104", .snacks: "item304", .dinner: "item403"],
-                .friday: [.breakfast: "item205", .lunch: "item105", .snacks: "item305", .dinner: "item404"],
-                .saturday: [.breakfast: "item206", .lunch: "item106", .snacks: "item306", .dinner: "item405"],
-                .sunday: [.breakfast: "item207", .lunch: "item107", .snacks: "item307", .dinner: "item406"]
+                .monday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item201" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item101" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item301" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "menu001" })
+                ],
+                .tuesday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item202" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item102" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item302" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item401" })
+                ],
+                .wednesday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item203" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item103" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item303" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item402" })
+                ],
+                .thursday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item204" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item104" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item304" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item403" })
+                ],
+                .friday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item205" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item105" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item305" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item404" })
+                ],
+                .saturday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item206" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item106" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item306" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item405" })
+                ],
+                .sunday: [
+                    .breakfast: menuItems.first(where: { $0.itemID == "item207" }),
+                    .lunch: menuItems.first(where: { $0.itemID == "item107" }),
+                    .snacks: menuItems.first(where: { $0.itemID == "item307" }),
+                    .dinner: menuItems.first(where: { $0.itemID == "item406" })
+                ]
             ]
         )
     ]

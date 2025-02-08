@@ -40,17 +40,20 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
 //   }
 //
 //}
-    func updateMenuDetails(mealType: String, mealName: String) {
+    func updateMenuDetails(mealType: String, mealName: String, mealDescription : String) {
             applyCardStyle2()
             
             MenuTiming.text = mealType
             MealName.text = mealName
-            MealDescription.text = "Delicious \(mealName) crafted with fresh ingredients."
+            MealDescription.text = "\(mealName)"
             
             // Set default image if no image is available
             let imageName = mealName.replacingOccurrences(of: " ", with: "_").lowercased()
             MealImage.image = UIImage(named: imageName) ?? UIImage(named: "default_meal")
+        
         }
+
+   
 
         func applyCardStyle2() {
             subscriptionView.layer.cornerRadius = 16

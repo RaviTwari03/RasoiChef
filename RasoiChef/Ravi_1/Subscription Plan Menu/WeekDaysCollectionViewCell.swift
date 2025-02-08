@@ -38,6 +38,8 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
 
     private var day: String = ""
 
+        var onTap: (() -> Void)? // Closure to handle tap events
+
         override func awakeFromNib() {
             super.awakeFromNib()
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
