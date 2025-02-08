@@ -358,18 +358,39 @@ struct OrderItem {
 }
 
 // Subscription Plan
+//struct SubscriptionPlan {
+//    let planID: String
+//    let userID: String
+//    let kitchenID: String
+//    var startDate: String?
+//    var endDate: String?
+//    var meals: [SubscriptionMeal]
+//    var totalPrice: Double?
+//    var details: String
+//    var mealCountPerDay: Int?
+//    var planImage: String?
+//    var weeklyMeals: [WeekDay: [MealType: String]]
+//}
 struct SubscriptionPlan {
-    let planID: String
-    let userID: String
-    let kitchenID: String
-    var startDate: Date?
-    var endDate: Date?
-    var meals: [SubscriptionMeal]
+    var planID: String
+    var userID: String
+    var kitchenID: String
+    var startDate: String?  // Consider using Date for better calculations
+    var endDate: String?
     var totalPrice: Double?
     var details: String
     var mealCountPerDay: Int?
-    var planImage: String?
+    var planImage: String
     var weeklyMeals: [WeekDay: [MealType: String]]
+
+    // Computed property to generate meals dynamically
+    var meals: [SubscriptionMeal] {
+        weeklyMeals.flatMap { day, meals in
+            meals.map { mealType, menuItemID in
+                SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItemID)
+            }
+        }
+    }
 }
 
 // Subscription Meal (Nested within SubscriptionPlan)
