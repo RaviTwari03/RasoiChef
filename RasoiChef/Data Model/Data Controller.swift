@@ -43,6 +43,7 @@ class KitchenDataController {
         MenuItem(
             itemID: "item001",
             kitchenID: "kitchen001",
+            kitchenName: "Keshav Foods",
             name: "Vegetable Poha",
             description: "A light, nutritious dish made with flattened rice, salted veggies, and flavorful spices.",
             price: 70.0,
@@ -53,11 +54,13 @@ class KitchenDataController {
             imageURL: "VegetablePoha",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item002",
             kitchenID: "kitchen001",
+            kitchenName: "Kanha Ji Rasoi",
             name: "Veg Thali",
             description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
             price: 130.0,
@@ -68,12 +71,14 @@ class KitchenDataController {
             imageURL: "VegThali",
             orderDeadline: "Order Before 11 am.",
             availability: [.Unavailable],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
             
         ),
         MenuItem(
             itemID: "item003",
             kitchenID: "kitchen001",
+            kitchenName: "Pritam Fast Food",
             name: "Spring Roll",
             description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
             price: 50.0,
@@ -84,11 +89,13 @@ class KitchenDataController {
             imageURL: "SpringRoll",
             orderDeadline: "Order Before 3 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item004",
             kitchenID: "kitchen002",
+            kitchenName: "Dosa Junction",
             name: "Masala Dosa",
             description: "A crispy rice pancake filled with spiced potato filling, served with chutneys and sambar.",
             price: 120.0,
@@ -99,7 +106,8 @@ class KitchenDataController {
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 7 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         )
     ]
     
@@ -112,7 +120,8 @@ class KitchenDataController {
                 description: "A creamy and rich tomato-based curry with soft paneer cubes.",
                 price: 200.0,
                 rating: 4.7,
-                imageURL: "CholeBhature"
+                imageURL: "CholeBhature",
+                mealCategory: [.veg]
             ),
             ChefSpecialtyDish(
                 kitchenName: "Anjali's Kitchen",
@@ -122,7 +131,8 @@ class KitchenDataController {
                 description: "A spicy and flavorful South Indian chicken curry.",
                 price: 250.0,
                 rating: 4.8,
-                imageURL: "SpringRoll"
+                imageURL: "SpringRoll",
+                mealCategory: [.veg]
             )
         ]
     
@@ -135,7 +145,8 @@ class KitchenDataController {
             description: "Tender chicken cooked in a rich, creamy, and buttery tomato gravy.",
             price: 300.0,
             rating: 4.9,
-            imageURL: "ButterChicken"
+            imageURL: "ButterChicken",
+            mealCategory: [.nonVeg]
         ),
         GlobalChefSpeciality(
             kitchenName: "Mumbai Spices",
@@ -145,7 +156,8 @@ class KitchenDataController {
             description: "A thick and spicy vegetable curry served with buttery bread rolls.",
             price: 150.0,
             rating: 4.5,
-            imageURL: "PavBhaji"
+            imageURL: "PavBhaji",
+            mealCategory: [.veg]
         ),
         GlobalChefSpeciality(
             kitchenName: "Delhi Zaika",
@@ -155,7 +167,8 @@ class KitchenDataController {
             description: "A comforting dish of red kidney beans cooked in spices and served with rice.",
             price: 180.0,
             rating: 4.6,
-            imageURL: "RajmaChawal"
+            imageURL: "RajmaChawal",
+            mealCategory: [.veg]
         ),
 //        ChefSpecialtyDish(
 //            kitchenName: "South Indian Delights",
@@ -175,7 +188,8 @@ class KitchenDataController {
             description: "Chunks of paneer marinated in spices and grilled to perfection.",
             price: 220.0,
             rating: 4.7,
-            imageURL: "PaneerTikka"
+            imageURL: "PaneerTikka",
+            mealCategory: [.veg]
         ),
         GlobalChefSpeciality(
             kitchenName: "Royal Rajasthan",
@@ -185,7 +199,8 @@ class KitchenDataController {
             description: "Traditional Rajasthani dish served with ghee-dipped baati and churma.",
             price: 250.0,
             rating: 4.9,
-            imageURL: "DalBaatiChurma"
+            imageURL: "DalBaatiChurma",
+            mealCategory: [.veg]
         ),
         GlobalChefSpeciality(
             kitchenName: "Biryani Bliss",
@@ -195,7 +210,8 @@ class KitchenDataController {
             description: "Aromatic and flavorful rice dish with tender pieces of chicken.",
             price: 350.0,
             rating: 4.8,
-            imageURL: "HyderabadiBiryani"
+            imageURL: "HyderabadiBiryani",
+            mealCategory: [.veg]
         ),
         GlobalChefSpeciality(
             kitchenName: "Street Food Junction",
@@ -205,7 +221,8 @@ class KitchenDataController {
             description: "Crispy puris filled with spicy, tangy tamarind water and potato filling.",
             price: 100.0,
             rating: 4.6,
-            imageURL: "PaniPuri"
+            imageURL: "PaniPuri",
+            mealCategory: [.veg]
         )
     ]
 
@@ -222,65 +239,157 @@ class KitchenDataController {
 //        var mealCountPerDay: Int // Number of meals provided daily
 //    }
     
-    static var subscriptionPlan : [SubscriptionPlan] = [
+//    static var subscriptionPlan : [SubscriptionPlan] = [
+//        SubscriptionPlan(
+//            planID: "001",
+//            userID: "001",
+//            kitchenID: "kitchen001",
+//            startDate: nil ,
+//            endDate: nil,
+//            meals: [SubscriptionMeal(
+//                day: "Monday",
+//                mealType: .dinner,
+//                menuItemID: "menu001")
+//            ],
+//            totalPrice: nil,
+//            details: "Weekly Plan",
+//            mealCountPerDay: nil,
+//            planImage: "PlanImage",
+//            weeklyMeals: <#[WeekDay : [MealType : String]]#>
+//        )
+//    ]
+//    static var subscriptionPlan: [SubscriptionPlan] = [
+//        SubscriptionPlan(
+//            planID: "001",
+//            userID: "001",
+//            kitchenID: "kitchen001",
+//            startDate: nil,
+//            endDate: nil,
+//            meals: [SubscriptionMeal(
+//                day: "Monday",
+//                mealType: .dinner,
+//                menuItemID: "menu001"
+//            )],
+//            totalPrice: nil,
+//            details: "Weekly Plan",
+//            mealCountPerDay: nil,
+//            planImage: "PlanImage",
+//            weeklyMeals: [
+//                .monday: [.dinner: "menu001"]
+//            ]
+//        )
+//    ]
+    static var subscriptionPlan: [SubscriptionPlan] = [
         SubscriptionPlan(
             planID: "001",
             userID: "001",
             kitchenID: "kitchen001",
-            startDate: nil ,
+            startDate: nil,
             endDate: nil,
             meals: [SubscriptionMeal(
                 day: "Monday",
                 mealType: .dinner,
-                menuItemID: "menu001")
-            ],
+                menuItemID: "menu001"
+            )],
             totalPrice: nil,
             details: "Weekly Plan",
             mealCountPerDay: nil,
-            planImage: "PlanImage"
+            planImage: "PlanImage",
+            weeklyMeals: [
+                .monday: [.breakfast: "item201", .lunch: "item101", .snacks: "item301", .dinner: "menu001"],
+                .tuesday: [.breakfast: "item202", .lunch: "item102", .snacks: "item302", .dinner: "item401"],
+                .wednesday: [.breakfast: "item203", .lunch: "item103", .snacks: "item303", .dinner: "item402"],
+                .thursday: [.breakfast: "item204", .lunch: "item104", .snacks: "item304", .dinner: "item403"],
+                .friday: [.breakfast: "item205", .lunch: "item105", .snacks: "item305", .dinner: "item404"],
+                .saturday: [.breakfast: "item206", .lunch: "item106", .snacks: "item306", .dinner: "item405"],
+                .sunday: [.breakfast: "item207", .lunch: "item107", .snacks: "item307", .dinner: "item406"]
+            ]
         )
     ]
+
     
     // GlobalLunchMenu
     static var GloballunchMenuItems: [MenuItem] = [
         MenuItem(
             itemID: "item101",
             kitchenID: "kitchen002",
-            name: "Paneer Butter Masala",
+            kitchenName: "Punjabi Rasoi",
+            name: "Paneer Masala",
             description: "A creamy and delicious North Indian dish with tender paneer cubes cooked in a buttery tomato gravy.",
             price: 150.0,
             rating: 4.6,
             availableMealTypes: [.lunch],
             portionSize: "300 gm",
             intakeLimit: 15,
-            imageURL: "PaneerButterMasala",
+            imageURL: "PaneerTikka",
             orderDeadline: "Order Before 11 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
             
         ),
         MenuItem(
             itemID: "item102",
             kitchenID: "kitchen003",
-            name: "Chicken Biryani",
-            description: "A flavorful and aromatic rice dish cooked with tender chicken pieces, spices, and saffron.",
+            kitchenName: "Shyam Rasoi ",
+            name: "Rajma Chawal",
+            description: "A flavorful and aromatic Rajma dish,  cooked with  spices, and tomato-based gravy",
             price: 180.0,
             rating: 4.7,
             availableMealTypes: [.lunch],
             portionSize: "400 gm",
             intakeLimit: 10,
-            imageURL: "ChickenBiryani",
+            imageURL: "RajmaChawal",
             orderDeadline: "Order Before 11 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.friday],
+            mealCategory: [.veg]
+        ),
+        MenuItem(
+            itemID: "item104",
+            kitchenID: "kitchen004",
+            kitchenName: "Punjabi Rasoi",
+            name: "Paneer Masala",
+            description: "A creamy and delicious North Indian dish with tender paneer cubes cooked in a buttery tomato gravy.",
+            price: 150.0,
+            rating: 4.6,
+            availableMealTypes: [.lunch],
+            portionSize: "300 gm",
+            intakeLimit: 15,
+            imageURL: "PaneerTikka",
+            orderDeadline: "Order Before 11 am.",
+            availability: [.Available],
+            availableDays: [.friday],
+            mealCategory: [.veg]
+
+            
+        ),
+        MenuItem(
+            itemID: "item102",
+            kitchenID: "kitchen003",
+            kitchenName: "Shyam Rasoi ",
+            name: "Rajma Chawal",
+            description: "A flavorful and aromatic Rajma dish,  cooked with  spices, and tomato-based gravy",
+            price: 180.0,
+            rating: 4.7,
+            availableMealTypes: [.lunch],
+            portionSize: "400 gm",
+            intakeLimit: 10,
+            imageURL: "RajmaChawal",
+            orderDeadline: "Order Before 11 am.",
+            availability: [.Available],
+            availableDays: [.monday],
+            mealCategory: [.veg]
         )
     ]
+    
 
     // GlobalBreakfastMenu
     static var GlobalbreakfastMenuItems: [MenuItem] = [
         MenuItem(
             itemID: "item201",
             kitchenID: "kitchen004",
+            kitchenName: "Dosa Station",
             name: "Masala Dosa",
             description: "A crispy rice pancake filled with spiced potato stuffing, served with coconut chutney and sambhar.",
             price: 50.0,
@@ -291,11 +400,13 @@ class KitchenDataController {
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item202",
             kitchenID: "kitchen005",
+            kitchenName: "Rohan Fast Food",
             name: "Pancakes with Honey",
             description: "Fluffy pancakes served with a drizzle of pure honey and a side of fresh fruits.",
             price: 90.0,
@@ -306,11 +417,13 @@ class KitchenDataController {
             imageURL: "PancakesHoney",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item201",
             kitchenID: "kitchen004",
+            kitchenName: "South Indian Junction",
             name: "Masala Dosa",
             description: "A crispy rice pancake filled with spiced potato stuffing, served with coconut chutney and sambhar.",
             price: 50.0,
@@ -321,7 +434,8 @@ class KitchenDataController {
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 6 am.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         )
     ]
 
@@ -330,6 +444,7 @@ class KitchenDataController {
         MenuItem(
             itemID: "item301",
             kitchenID: "kitchen006",
+            kitchenName: "Ram Fast Food",
             name: "Samosa",
             description: "A crispy and flaky pastry filled with spiced potato and peas mixture, served with mint chutney.",
             price: 20.0,
@@ -340,11 +455,13 @@ class KitchenDataController {
             imageURL: "Samosa",
             orderDeadline: "Order Before 3 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item302",
             kitchenID: "kitchen007",
+            kitchenName: "Abdul Fast Food",
             name: "Chicken Nuggets",
             description: "Crispy, golden-brown chicken nuggets served with tangy barbecue sauce.",
             price: 70.0,
@@ -355,7 +472,8 @@ class KitchenDataController {
             imageURL: "ChickenNuggets",
             orderDeadline: "Order Before 3 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         )
     ]
 
@@ -364,6 +482,7 @@ class KitchenDataController {
         MenuItem(
             itemID: "item401",
             kitchenID: "kitchen008",
+            kitchenName: "Krishna rasoi",
             name: "Dal Tadka with Jeera Rice",
             description: "Classic Indian yellow dal tempered with ghee, spices, and served with fragrant cumin rice.",
             price: 120.0,
@@ -374,11 +493,13 @@ class KitchenDataController {
             imageURL: "DalTadkaJeeraRice",
             orderDeadline: "Order Before 7 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         ),
         MenuItem(
             itemID: "item402",
             kitchenID: "kitchen009",
+            kitchenName: "Fast Food Junction",
             name: "Grilled Salmon",
             description: "Perfectly grilled salmon fillet served with steamed vegetables and a lemon butter sauce.",
             price: 300.0,
@@ -389,7 +510,8 @@ class KitchenDataController {
             imageURL: "GrilledSalmon",
             orderDeadline: "Order Before 7 pm.",
             availability: [.Available],
-            availableDays: [.monday]
+            availableDays: [.monday],
+            mealCategory: [.veg]
         )
     ]
 
@@ -527,7 +649,7 @@ class KitchenDataController {
              subtitle: "Order Before 4 pm",
              deliveryTime: "Delivery expected by 6 pm",
              timer: "15 min",
-             icon: "SnacksIcon", 
+             icon: "SnacksIcon",
              mealType: "Snacks"
          ),
          MealBanner(
