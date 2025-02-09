@@ -20,7 +20,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
             super.viewDidLoad()
             self.navigationItem.largeTitleDisplayMode = .never
             self.view.backgroundColor = .white
-            self.title = "Chef's Speciality Dishes"
+            self.title = "Chef's Speciality"
             
             configureSearchBar()
             configureFilterStackView()

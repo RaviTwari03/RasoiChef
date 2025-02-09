@@ -1,57 +1,72 @@
 //
-//  KitchenSeeMoreViewController.swift
+//  MenuCategoriesViewController.swift
 //  RasoiChef
 //
-//  Created by Shubham Jaiswal on 09/02/25.
+//  Created by Batch - 1 on 24/01/25.
 //
 
 import UIKit
 
-class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate {
-
-    @IBOutlet weak var AllKitchens: UICollectionView!
+class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate {
     
     
-
+    
+    @IBOutlet weak var MealCategories: UICollectionView!
+    
     var searchBar: UISearchBar!
     var filterScrollView: UIScrollView!
     var filterStackView: UIStackView!
     var itemCountLabel: UILabel!
     
+    
+    var MenuCategories: [MenuItem] = []
+ 
+           func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+               return 4
+           }
+    
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.largeTitleDisplayMode = .never
+        
         self.view.backgroundColor = .white
-        self.title = "Nearest Kitchens"
+        self.navigationItem.largeTitleDisplayMode = .never
+        self.title = "Menu Categories"
+        
+        // Register the custom cell XIB
+        let menuCategoriesNib = UINib(nibName: "MealCategories", bundle: nil)
+        MealCategories.register(menuCategoriesNib, forCellWithReuseIdentifier: "MealCategories")
+        
+        // Set up collection view layout
+        MealCategories.setCollectionViewLayout(generateLayout(), animated: true)
+        
+        // Set the delegate and data source
+        MealCategories.delegate = self
+        MealCategories.dataSource = self
+        
+        // Reload data
+        MealCategories.reloadData()
         
         configureSearchBar()
         configureFilterStackView()
         configureItemCountLabel()
         
-        AllKitchens.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(AllKitchens)
+        MealCategories.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(MealCategories)
 
         NSLayoutConstraint.activate([
-            AllKitchens.topAnchor.constraint(equalTo: itemCountLabel.bottomAnchor, constant: 10),
-            AllKitchens.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            AllKitchens.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            AllKitchens.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            MealCategories.topAnchor.constraint(equalTo: itemCountLabel.bottomAnchor, constant: 10),
+            MealCategories.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            MealCategories.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            MealCategories.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
-        
-        let chefSpecialMenuNib = UINib(nibName: "KitchenViewCell", bundle: nil)
-        AllKitchens.register(chefSpecialMenuNib, forCellWithReuseIdentifier: "KitchenViewCell")
-        
-        // Setting Layout
-        AllKitchens.setCollectionViewLayout(generateLayout(), animated: true)
-        AllKitchens.dataSource = self
-        AllKitchens.delegate = self
-        
-        
         updateItemCount()
+        
     }
-
-
+    
+    
     func configureSearchBar() {
         searchBar = UISearchBar()
         searchBar.delegate = self
@@ -176,47 +191,58 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return KitchenDataController.kitchens.count
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // Banner tapped
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+                
+                // Pass data (Make sure `MenuCategories` is set properly)
+                mealCategoriesVC.MenuCategories = KitchenDataController.menuItems
+                
+                self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
+            }
+        }
     }
-
-
-
-// MARK: - Update Item Count Label
-func updateItemCount() {
-    let count = KitchenDataController.kitchens.count
-    DispatchQueue.main.async {
-        self.itemCountLabel.text = "\(count) Kitchens Available For You"
+    
+    
+    // MARK: - Update Item Count Label
+    func updateItemCount() {
+        let count = KitchenDataController.globalChefSpecial.count
+        DispatchQueue.main.async {
+            self.itemCountLabel.text = "\(count) Dishes Available For You"
+        }
     }
-}
-
-
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
-        cell.updateSpecialDishDetails(for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealCategories", for: indexPath) as! MenuCategoriesCollectionViewCell
         cell.layer.cornerRadius = 15.0
         cell.layer.shadowColor = UIColor.black.cgColor
         cell.layer.shadowOffset = CGSize(width: 0, height: 2)
         cell.layer.shadowRadius = 2.5
         cell.layer.shadowOpacity = 0.5
         cell.layer.masksToBounds = false
+        cell.updateMealDetails(with: indexPath)
+
+
         return cell
     }
     
+    
+    
+     func generateLayout() -> UICollectionViewLayout {
+         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
+         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(210))
+         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+         group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 16.0, bottom: 8.0, trailing: 16.0)
+         group.interItemSpacing = .fixed(10)
 
-    func generateLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(160))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 16.0, bottom: 8.0, trailing: 16.0)
-        group.interItemSpacing = .fixed(10)
-
-        let section = NSCollectionLayoutSection(group: group)
-        return UICollectionViewCompositionalLayout(section: section)
+         let section = NSCollectionLayoutSection(group: group)
+         return UICollectionViewCompositionalLayout(section: section)
     }
-
 }
+

@@ -21,25 +21,8 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var descriptionLabel: UILabel!
     
+   
     
-    //        func updateMealDetails(for indexPath: IndexPath) {
-    //            let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
-    //
-    //            mealNameLabel.text = menuItem.name
-    //            mealImage.image = UIImage(named: menuItem.imageURL)
-    //            kitchenNameLabel.text = menuItem.name
-    //            orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
-    //           priceLabel.text = "₹\(menuItem.price)"
-    //            descriptionLabel.text = menuItem.description
-    //        }
-    ////
-    //    func configure(with indexpath : IndexPath) {
-    ////        mealNameLabel.text = menuItem.name
-    ////        //            menuItemDescriptionLabel.text = menuItem.description
-    ////        priceLabel.text = "$\(menuItem.price)"
-    //
-    //
-    //    }
     func updateMealDetails(with indexPath: IndexPath) {
         guard indexPath.row < KitchenDataController.GloballunchMenuItems.count else {
             print("Error: Index \(indexPath.row) is out of range. Available items: \(KitchenDataController.GloballunchMenuItems.count)")
