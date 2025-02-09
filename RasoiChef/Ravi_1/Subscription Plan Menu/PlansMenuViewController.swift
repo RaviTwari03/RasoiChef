@@ -251,6 +251,15 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 cell.configure(with: day)
                 cell.delegate = self  // Assign delegate
                 cell.highlightSelection(day == selectedDay) // Highlight if selected
+                cell.layer.cornerRadius = 10.0
+                            cell.layer.borderWidth = 1.0
+                            cell.layer.borderColor = UIColor.orange.cgColor
+                          //  cell.layer.shadowColor = UIColor.black.cgColor
+                //            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+                         //   cell.layer.shadowRadius = 5.0
+                //            cell.layer.shadowOpacity = 0.2
+                        //    cell.layer.masksToBounds = false
+                //            cell.layer.shadowColor = UIColor.black.cgColor
                 return cell
                 
             case 1:  // Menu Items

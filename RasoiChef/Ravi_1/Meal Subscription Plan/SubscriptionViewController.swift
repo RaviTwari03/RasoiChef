@@ -7,13 +7,15 @@
 
 import UIKit
 
-class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate {
-
+class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate {
+    
+    
+    
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
     var isModificationBlocked = false
     var buttonClickCount = 0 // To track the number of button clicks
-
+    
     var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
@@ -32,7 +34,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         DayMeal(day: "Saturday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"]),
         DayMeal(day: "Sunday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"])
     ]
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +43,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         MealSubscriptionPlan.register(UINib(nibName: "WeeklyPlans", bundle: nil), forCellReuseIdentifier: "WeeklyPlans")
         MealSubscriptionPlan.register(UINib(nibName: "CustomiseTable2", bundle: nil), forCellReuseIdentifier: "CustomiseTable2")
         MealSubscriptionPlan.register(UINib(nibName: "SubscriptionFooter", bundle: nil), forCellReuseIdentifier: "SubscriptionFooter")
-
+        
         // Set the dataSource and delegate
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
@@ -54,16 +56,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if section == 0  {
-//            return 1 // Number of days in the week
-//        } else {
-//            return weeklyMeals.count // Section 1 has no rows, only a footer
-//        }
-//        if section == 2 {
-//            return 1 // Number of days in the week
-//        } else {
-//            return weeklyMeals.count // Section 1 has no rows, only a footer
-//        }
+        //        if section == 0  {
+        //            return 1 // Number of days in the week
+        //        } else {
+        //            return weeklyMeals.count // Section 1 has no rows, only a footer
+        //        }
+        //        if section == 2 {
+        //            return 1 // Number of days in the week
+        //        } else {
+        //            return weeklyMeals.count // Section 1 has no rows, only a footer
+        //        }
         switch section {
         case 0:
             return 1
@@ -114,20 +116,21 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 fatalError("CustomiseTableCell not found")
             }
             footerCell = cell // Store reference for updating price
-               footerCell?.PaymentLabel.text = "\(totalPrice)"
+            footerCell?.PaymentLabel.text = "\(totalPrice)"
             cell.updateButton()
+            cell.delegate = self
             return cell
-           
+            
             
         default:
             fatalError("Unexpected section index")
         }
     }
-
-
-
-       
-
+    
+    
+    
+    
+    
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 1 {
@@ -147,11 +150,11 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             return 0
         }
     }
-
-
-
-
-
+    
+    
+    
+    
+    
     private func updateFooterPrice() {
         footerCell?.PaymentLabel.text = "₹\(totalPrice)"
     }
@@ -172,19 +175,24 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         
         // Update footer price dynamically
         updateFooterPrice()
-
+        
         // Reload only the row where the button was clicked
         if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
             hiddenButtons[selectedIndexPath] = true
             MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
         }
     }
-
+    
     func showAlert() {
         let alert = UIAlertController(title: "Limit Exceeded", message: "You have exceeded the limit of modification.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-
+    func didTapSeeMorePlanYourMeal() {
+        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
+            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        }
     }
-
+    
+}

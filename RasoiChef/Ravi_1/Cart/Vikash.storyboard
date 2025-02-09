@@ -11,7 +11,7 @@
         <!--Cart View Controller-->
         <scene sceneID="FLp-2L-Ecf">
             <objects>
-                <viewController id="x1w-In-pah" customClass="CartViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CartViewController" id="x1w-In-pah" customClass="CartViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZQ1-F5-mga" customClass="CartBillTableViewCell" customModule="RasoiChef" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
