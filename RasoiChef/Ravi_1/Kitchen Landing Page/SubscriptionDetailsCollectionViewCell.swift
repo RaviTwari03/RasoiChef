@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol planYourMealDelegate: AnyObject {
+    func didTapSeeMorePlanYourMeal()
+    }
+
+
 class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
    
+    weak var delegate : planYourMealDelegate?
     
     @IBOutlet var sunscriptionView: UIView!
     @IBOutlet var SubscriptionNameLabel: UILabel!
@@ -70,4 +76,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         
     }
     
+    @IBAction func planYourMealButtton(_ sender: Any) {
+        delegate?.didTapSeeMorePlanYourMeal()
+    }
 }

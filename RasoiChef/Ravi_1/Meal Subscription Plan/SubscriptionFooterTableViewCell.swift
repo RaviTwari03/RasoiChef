@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol SubscribeYourPlanButtonDelegate: AnyObject {
+    func didTapSeeMorePlanYourMeal()
+    }
+
 class SubscriptionFooterTableViewCell: UITableViewCell {
 
+    weak var delegate : SubscribeYourPlanButtonDelegate?
     var footerCell: SubscriptionFooterTableViewCell?
 
     @IBOutlet var PaymentLabel: UILabel!
@@ -27,5 +32,9 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     }
     func updateButton(){
         addButton.layer.cornerRadius = 11
+    }
+    
+    @IBAction func subscribePlansButtonClicked(_ sender: Any) {
+        delegate?.didTapSeeMorePlanYourMeal()
     }
 }

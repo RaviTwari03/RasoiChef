@@ -67,6 +67,9 @@
                                 <buttonConfiguration key="configuration" style="plain" title="Plan Your Meal">
                                     <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="planYourMealButtton:" destination="dCF-B6-S5c" eventType="touchUpInside" id="X9l-SB-aZ0"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Efp-nb-apm">
                                 <rect key="frame" x="116" y="27" width="10.333333333333329" height="20"/>

@@ -93,7 +93,7 @@
         <!--subscriptionPlans-->
         <scene sceneID="BHW-Ia-fBs">
             <objects>
-                <viewController title="subscriptionPlans" id="3Dm-l8-eF6" customClass="subscriptionPlansModifyViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="subscriptionPlansModifyViewController" title="subscriptionPlans" id="3Dm-l8-eF6" customClass="subscriptionPlansModifyViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Omb-G4-9Jt">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="593"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

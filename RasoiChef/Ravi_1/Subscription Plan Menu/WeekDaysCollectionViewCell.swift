@@ -6,36 +6,66 @@
 //
 
 import UIKit
+protocol WeekDaysSelectionDelegate: AnyObject {
+    func didSelectDay(_ day: String)
+}
+
 
 class WeekDaysCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet var weekDays: UILabel!
+    weak var delegate: WeekDaysSelectionDelegate?
+    @IBOutlet var weekDaysLabel: UILabel!
     
-//    
+//
+//    var onTap: (() -> Void)? // Closure to handle tap events
+//
+//        override func awakeFromNib() {
+//            super.awakeFromNib()
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+//            self.addGestureRecognizer(tapGesture)
+//        }
+//
+//        @objc func handleTap() {
+//            onTap?() // Trigger the closure when the cell is tapped
+//        }
+//
 //        func weekDay(day: String) {
-//               // Set only the first letter of the weekday
-//               weekDays.text = String(day.prefix(1))
-//               
-//               // Optional: Style the text
-//               weekDays.font = UIFont.boldSystemFont(ofSize: 18)
-//               weekDays.textAlignment = .center
-//           }
-    var onTap: (() -> Void)? // Closure to handle tap events
+//            weekDays.text = String(day.prefix(1))
+//            weekDays.font = UIFont.boldSystemFont(ofSize: 18)
+//            weekDays.textAlignment = .center
+//        }
+//    }
+
+    private var day: String = ""
+
+        var onTap: (() -> Void)? // Closure to handle tap events
 
         override func awakeFromNib() {
             super.awakeFromNib()
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
             self.addGestureRecognizer(tapGesture)
+            setupUI()
+        }
+
+        func configure(with day: String) {
+            self.day = day
+            weekDaysLabel.text = String(day.prefix(1)) // Show only the first letter
+            weekDaysLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            weekDaysLabel.textAlignment = .center
         }
 
         @objc func handleTap() {
-            onTap?() // Trigger the closure when the cell is tapped
+            delegate?.didSelectDay(day)  // Notify delegate
+            highlightSelection(true)
         }
 
-        func weekDay(day: String) {
-            weekDays.text = String(day.prefix(1))
-            weekDays.font = UIFont.boldSystemFont(ofSize: 18)
-            weekDays.textAlignment = .center
+        func highlightSelection(_ isSelected: Bool) {
+            self.contentView.backgroundColor = isSelected ? UIColor.orange : UIColor.clear
+            weekDaysLabel.textColor = isSelected ? .white : .black
+        }
+
+        private func setupUI() {
+            self.layer.cornerRadius = 10
+            self.clipsToBounds = true
         }
     }
-

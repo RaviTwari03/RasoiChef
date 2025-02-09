@@ -7,13 +7,8 @@
 
 import UIKit
 
-class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate {
-    
-   
-    
-    
-    
-    
+class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate,
+                      planYourMealDelegate{
     
     @IBOutlet var collectionView1: UICollectionView!
     var kitchenData: Kitchen?
@@ -42,7 +37,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         collectionView1.register(ChefSpecialityDishesHeaderNib, forCellWithReuseIdentifier: "ChefSpecialityDishesHeader")
         collectionView1.register(MealSubscriptionPlanNib, forCellWithReuseIdentifier: "MealSubscriptionPlanHeader")
         
-
+        
         
         collectionView1.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView1.dataSource = self
@@ -78,7 +73,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     
     
-   
+    
     // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
@@ -96,7 +91,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
             cell.updateMenuDetails(with : indexPath)
-
+            
             return cell
             
         case 3:
@@ -116,7 +111,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 6:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
             cell.updateSubscriptionPlanData(for: indexPath)
-            cell.layer.cornerRadius = 15.0 
+            cell.layer.cornerRadius = 15.0
+            cell.delegate = self
             return cell
             
         default:
@@ -148,7 +144,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 return nil
             }
             
-           
+            
             return section
         }
         return layout
@@ -172,12 +168,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         // Adjust the height of the section item to a bigger size
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        //        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
         group.interItemSpacing = .fixed(8)
         let section = NSCollectionLayoutSection(group: group)
         return section
     }
-   
+    
     // Layout for Menu Categories Section
     func generateMenuCategorySectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -198,7 +194,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         // Adjust the height of the section item to a bigger size
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(55))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        //        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
         group.interItemSpacing = .fixed(8)
         let section = NSCollectionLayoutSection(group: group)
         return section
@@ -210,7 +206,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         // Adjust the height of the section item to a bigger size
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(90))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        //        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
         group.interItemSpacing = .fixed(8)
         let section = NSCollectionLayoutSection(group: group)
         return section
@@ -231,19 +227,19 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     }
     
     func generateSubscriptionPlanSectionLayout() -> NSCollectionLayoutSection {
-
+        
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-            // Define group size and layout
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Define group size and layout
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(140))
-            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-            // Add content insets to the group
-            group.interItemSpacing = .fixed(5)
-            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 20.0, trailing: 8.0) // No insets on 
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        // Add content insets to the group
+        group.interItemSpacing = .fixed(5)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 20.0, trailing: 8.0) // No insets on
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
         return section
     }
     
@@ -327,7 +323,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         
     }
-   
+    
     func didTapSeeMorePlansMenu() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "PlansMenuViewController") as? PlansMenuViewController {
@@ -335,6 +331,13 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         }
     }
     func didTapSeeMoreToSubscriptionPlans() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "PlansMenuViewController") as? PlansMenuViewController {
+            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        }
+        
+    }
+    func didTapSeeMorePlanYourMeal() {
         let alert = UIAlertController(title: "",
                                       message: "This kitchen provides plans for a minimum of 2 days and a maximum of 7 days.",
                                       preferredStyle: .alert)
@@ -347,11 +350,10 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         }
         
         let declineAction = UIAlertAction(title: "Decline", style: .cancel, handler: nil)
-
+        
         alert.addAction(acceptAction)
         alert.addAction(declineAction)
         
         present(alert, animated: true, completion: nil)
     }
-
 }
