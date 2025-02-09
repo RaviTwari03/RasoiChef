@@ -218,8 +218,4 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         }
     
     
-        
-  
-    
-    
     }

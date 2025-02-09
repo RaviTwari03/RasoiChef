@@ -300,7 +300,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WAA-Eb-Ahe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7171" y="747"/>
+            <point key="canvasLocation" x="7503" y="747"/>
         </scene>
         <!--Home-->
         <scene sceneID="kHv-Om-szR">
@@ -411,6 +411,52 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fWI-mb-dql" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5755.8139534883721" y="746.78111587982835"/>
+        </scene>
+        <!--Kitchen See More View Controller-->
+        <scene sceneID="DYD-SA-8OO">
+            <objects>
+                <viewController storyboardIdentifier="KitchenSeeMoreViewController" id="rN1-QG-kjR" customClass="KitchenSeeMoreViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cvu-bg-Cn6">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="VSi-L8-76b">
+                                <rect key="frame" x="0.0" y="209" width="430" height="689"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Wsk-3w-27m">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="fcJ-ma-8UB">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="6se-Cn-5JB">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fib-aI-zes"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fib-aI-zes" firstAttribute="trailing" secondItem="VSi-L8-76b" secondAttribute="trailing" id="Sch-rP-UbF"/>
+                            <constraint firstItem="VSi-L8-76b" firstAttribute="leading" secondItem="fib-aI-zes" secondAttribute="leading" id="ZKr-c0-Yve"/>
+                            <constraint firstItem="VSi-L8-76b" firstAttribute="top" secondItem="fib-aI-zes" secondAttribute="top" constant="150" id="bR2-vV-GN6"/>
+                            <constraint firstItem="fib-aI-zes" firstAttribute="bottom" secondItem="VSi-L8-76b" secondAttribute="bottom" id="fAe-WN-QYW"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="AllKitchens" destination="VSi-L8-76b" id="zHr-eo-XTU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oj5-df-H9D" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6565" y="748"/>
         </scene>
         <!--Kitchen Menu List View Controller-->
         <scene sceneID="MLr-LC-eJI">
@@ -1006,7 +1052,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
