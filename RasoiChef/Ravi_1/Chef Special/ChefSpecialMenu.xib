@@ -59,6 +59,9 @@
                         <buttonConfiguration key="configuration" style="plain" title="ADD">
                             <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
                         </buttonConfiguration>
+                        <connections>
+                            <action selector="ChefSpecialAddButtonTapped:" destination="bsU-X5-Q8s" eventType="touchUpInside" id="NJV-5v-CGK"/>
+                        </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCD-Be-xi4">
                         <rect key="frame" x="247.33333333333334" y="246" width="102.66666666666666" height="21"/>

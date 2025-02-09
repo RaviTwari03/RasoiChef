@@ -7,7 +7,53 @@
 
 import UIKit
 
-class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate{
+class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate,ChefSpecialMenuDetailsCellDelegate{
+    
+    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
+                guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
+                let selectedItem = KitchenDataController.menuItems[indexPath.row]
+                print("Add button tapped for meal: \(selectedItem.name)")
+        
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+                    detailVC.selectedItem = selectedItem
+        
+                    detailVC.modalPresentationStyle = .pageSheet
+        
+                    if let sheet = detailVC.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        sheet.prefersGrabberVisible = true
+                    }
+        
+                    present(detailVC, animated: true, completion: nil)
+                } else {
+                    print("Error: Could not instantiate AddItemModallyViewController")
+                }
+    }
+    
+   
+//    func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
+//        guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
+//        let selectedItem = KitchenDataController.menuItems[indexPath.row]
+//        print("Add button tapped for meal: \(selectedItem.name)")
+//
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+//            detailVC.selectedItem = selectedItem
+//            
+//            detailVC.modalPresentationStyle = .pageSheet
+//            
+//            if let sheet = detailVC.sheetPresentationController {
+//                sheet.detents = [.medium(), .large()]
+//                sheet.prefersGrabberVisible = true
+//            }
+//
+//            present(detailVC, animated: true, completion: nil)
+//        } else {
+//            print("Error: Could not instantiate AddItemModallyViewController")
+//        }
+//    }
+//    
     
     
     
@@ -149,6 +195,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
             cell.layer.shadowOpacity = 0.2    // Shadow opacity
             cell.layer.masksToBounds = false
             cell.layer.shadowColor = UIColor.black.cgColor
+            cell.delegate = self
             return cell
        
             

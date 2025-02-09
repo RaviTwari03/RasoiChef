@@ -6,9 +6,12 @@
 //
 
 import UIKit
-
+protocol ChefSpecialMenuDetailsCellDelegate: AnyObject {
+    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell)
+}
 class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
     
+    weak var delegate : ChefSpecialMenuDetailsCellDelegate?
     
     @IBOutlet var specialDishImage: UIImageView!
     @IBOutlet var specialDishName: UILabel!
@@ -36,5 +39,8 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
         addButton.layer.cornerRadius = 11
     }
 
+    @IBAction func ChefSpecialAddButtonTapped(_ sender: Any) {
+        delegate?.MenuListaddButtonTapped(in: self)
+    }
     
 }
