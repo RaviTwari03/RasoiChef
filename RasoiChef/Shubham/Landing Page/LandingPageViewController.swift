@@ -254,13 +254,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             } else {
                 print("Error: Could not instantiate KitchenMenuListViewController")
             }
-//        case 2:
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            if let SecondScreenVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-//                self.navigationController?.pushViewController(SecondScreenVC, animated: true)
-//            } else {
-//                print("Error: Could not instantiate KitchenMenuListViewController")
-//            }
+        case 2:
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let SecondScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenSeeMoreViewController") as? KitchenSeeMoreViewController {
+                self.navigationController?.pushViewController(SecondScreenVC, animated: true)
+            } else {
+                print("Error: Could not instantiate KitchenMenuListViewController")
+            }
 
         default:
             break
