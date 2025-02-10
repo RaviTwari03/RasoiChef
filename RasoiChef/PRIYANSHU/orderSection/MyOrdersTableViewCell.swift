@@ -98,3 +98,13 @@ class MyOrdersTableViewCell: UITableViewCell {
         
   
 }
+extension MyOrdersTableViewCell:CartPayCellDelegate{
+    func didTapPlaceOrder() {
+        orderIDLabel.text = "Order ID - \(order.orderID)"
+        dateLabel.text = formatDate(order.deliveryDate)
+        locationLabel.text = order.deliveryAddress
+        kitchenName.text = order.kitchenID
+    }
+    
+}
+

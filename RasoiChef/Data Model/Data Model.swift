@@ -341,6 +341,7 @@ struct CartItem {
 struct Order {
     let orderID: String
     let userID: String
+    let kitchenName: String
     let kitchenID: String
     let items: [OrderItem]
     var status: OrderStatus
