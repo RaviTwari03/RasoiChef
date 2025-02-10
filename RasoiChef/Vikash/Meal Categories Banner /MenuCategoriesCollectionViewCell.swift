@@ -35,7 +35,9 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         
         mealNameLabel.text = menuItem.name
         mealImage.image = UIImage(named: menuItem.imageURL)
-        kitchenNameLabel.text = menuItem.name
+        kitchenNameLabel.text = menuItem.kitchenName
+        KitchenDistance.text = "\(menuItem.distance) km"
+        Ratings.text = "\(menuItem.rating)"
         orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
         priceLabel.text = "₹\(menuItem.price)"
         descriptionLabel.text = menuItem.description
