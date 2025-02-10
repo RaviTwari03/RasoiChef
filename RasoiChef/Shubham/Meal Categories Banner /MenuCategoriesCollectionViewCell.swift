@@ -21,7 +21,9 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var descriptionLabel: UILabel!
     
-   
+    @IBOutlet weak var KitchenDistance: UILabel!
+    
+    @IBOutlet weak var Ratings: UILabel!
     
     func updateMealDetails(with indexPath: IndexPath) {
         guard indexPath.row < KitchenDataController.GloballunchMenuItems.count else {
