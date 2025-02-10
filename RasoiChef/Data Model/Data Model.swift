@@ -334,7 +334,8 @@ struct CartItem {
     var userAdress: String
     var quantity: Int
     var specialRequest: String?
-    var menuItem: MenuItem
+    var menuItem: MenuItem?
+    var chefSpecial : ChefSpecialtyDish?
 }
 
 // Order
