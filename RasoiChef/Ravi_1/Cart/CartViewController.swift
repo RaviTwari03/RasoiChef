@@ -74,14 +74,14 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             // Create order items from cart items
             let orderItems = cartItems.map { cartItem -> OrderItem in
                 return OrderItem(
-                    menuItemID: cartItem.menuItem.itemID,
+                    menuItemID: cartItem.menuItem?.itemID ?? "",
                     quantity: cartItem.quantity,
-                    price: cartItem.menuItem.price * Double(cartItem.quantity)
+                    price: (cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity)
                 )
             }
             
             // Calculate the total amount from all cart items
-            let totalAmount = cartItems.reduce(0.0) { $0 + ($1.menuItem.price * Double($1.quantity)) }
+        let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0) * Double($1.quantity)) }
             
             // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
            // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
@@ -90,8 +90,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             let order = Order(
                 orderID: UUID().uuidString,  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
-                kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
-                kitchenID: cartItems.first?.menuItem.kitchenID ?? "",    // Pass the kitchen name here
+                kitchenName: cartItems.first?.menuItem?.kitchenName ?? "",
+                kitchenID: cartItems.first?.menuItem?.kitchenID ?? "",    // Pass the kitchen name here
                 items: orderItems,
                 status: .placed,
                 totalAmount: totalAmount,
