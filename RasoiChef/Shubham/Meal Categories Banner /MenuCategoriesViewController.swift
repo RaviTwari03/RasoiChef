@@ -193,19 +193,6 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
     
     
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 { // Banner tapped
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-                
-                // Pass data (Make sure `MenuCategories` is set properly)
-                mealCategoriesVC.MenuCategories = KitchenDataController.menuItems
-                
-                self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
-            }
-        }
-    }
-    
     
     // MARK: - Update Item Count Label
     func updateItemCount() {

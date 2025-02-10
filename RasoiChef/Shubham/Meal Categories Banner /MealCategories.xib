@@ -20,7 +20,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ido-ef-KSW">
                         <rect key="frame" x="0.0" y="0.0" width="359" height="190"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bqk-kA-EkK">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bqk-kA-EkK">
                                 <rect key="frame" x="214" y="5" width="140" height="140"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="140" id="fqi-vv-hMJ"/>
@@ -70,36 +70,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wES-JE-zlP">
-                                <rect key="frame" x="234" y="150" width="100" height="30"/>
-                                <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="V5Y-ri-UlI"/>
-                                    <constraint firstAttribute="height" constant="30" id="jHY-f2-z8D"/>
-                                </constraints>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="ADD">
-                                    <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
-                                </buttonConfiguration>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.shadowColor">
-                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
-                                        <size key="value" width="0.0" height="2"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
-                                        <real key="value" value="2.5"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
-                                        <real key="value" value="0.5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2G-NL-bRc" userLabel="Rating">
                                 <rect key="frame" x="164" y="10" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -120,14 +90,42 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n9Y-rG-PUS">
+                                <rect key="frame" x="234" y="150" width="100" height="30"/>
+                                <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="IaA-KR-ZM2"/>
+                                    <constraint firstAttribute="width" constant="100" id="PmJ-u5-NlR"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="ADD" cornerStyle="capsule">
+                                    <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
+                                </buttonConfiguration>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="laye.shadowColor">
+                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <real key="value" value="2.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                        <size key="value" width="0.0" height="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="wES-JE-zlP" firstAttribute="top" secondItem="bqk-kA-EkK" secondAttribute="bottom" constant="5" id="2xj-c8-9Qd"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="leading" secondItem="IcH-Kp-7ce" secondAttribute="leading" id="9sR-fD-Z0W"/>
                             <constraint firstItem="TQX-SV-13y" firstAttribute="top" secondItem="dC9-61-viy" secondAttribute="bottom" constant="5" id="CW4-BB-s0v"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TQX-SV-13y" secondAttribute="trailing" constant="30" id="CjL-bL-y8R"/>
-                            <constraint firstItem="wES-JE-zlP" firstAttribute="centerX" secondItem="bqk-kA-EkK" secondAttribute="centerX" id="E00-g5-alc"/>
                             <constraint firstItem="dC9-61-viy" firstAttribute="top" secondItem="U1X-P8-j1b" secondAttribute="bottom" constant="5" id="Epq-JC-aqb"/>
                             <constraint firstItem="J1I-9Q-j62" firstAttribute="top" secondItem="ZNv-a3-OBz" secondAttribute="bottom" constant="4" id="FfV-Ru-yvt"/>
                             <constraint firstItem="J1I-9Q-j62" firstAttribute="leading" secondItem="ZNv-a3-OBz" secondAttribute="leading" id="LnR-J6-Xyr"/>
@@ -136,10 +134,12 @@
                             <constraint firstItem="Vb3-ha-qEP" firstAttribute="leading" secondItem="dC9-61-viy" secondAttribute="trailing" constant="3" id="Qj7-CA-IK5"/>
                             <constraint firstItem="IcH-Kp-7ce" firstAttribute="leading" secondItem="J1I-9Q-j62" secondAttribute="leading" id="WVV-eV-aq2"/>
                             <constraint firstItem="U1X-P8-j1b" firstAttribute="top" secondItem="yma-fl-V7r" secondAttribute="bottom" constant="4" id="aqm-01-gLG"/>
+                            <constraint firstItem="n9Y-rG-PUS" firstAttribute="centerX" secondItem="bqk-kA-EkK" secondAttribute="centerX" id="d2B-si-oJQ"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" secondItem="g2G-NL-bRc" secondAttribute="trailing" constant="8" id="hUn-GW-wsC"/>
                             <constraint firstItem="TQX-SV-13y" firstAttribute="leading" secondItem="dC9-61-viy" secondAttribute="leading" id="hVL-Z3-hNH"/>
                             <constraint firstItem="ZNv-a3-OBz" firstAttribute="leading" secondItem="ido-ef-KSW" secondAttribute="leading" constant="10" id="nP5-Bw-ruH"/>
                             <constraint firstItem="ZNv-a3-OBz" firstAttribute="top" secondItem="ido-ef-KSW" secondAttribute="top" constant="10" id="oia-Jx-HMd"/>
+                            <constraint firstItem="n9Y-rG-PUS" firstAttribute="top" secondItem="bqk-kA-EkK" secondAttribute="bottom" constant="5" id="qpr-lb-zu2"/>
                             <constraint firstItem="dC9-61-viy" firstAttribute="leading" secondItem="U1X-P8-j1b" secondAttribute="leading" id="qtg-17-Bry"/>
                             <constraint firstItem="g2G-NL-bRc" firstAttribute="top" secondItem="ido-ef-KSW" secondAttribute="top" constant="10" id="quX-lq-d46"/>
                             <constraint firstAttribute="trailing" secondItem="bqk-kA-EkK" secondAttribute="trailing" constant="5" id="qwn-WQ-gMi"/>
@@ -163,6 +163,8 @@
             </collectionViewCellContentView>
             <size key="customSize" width="359" height="190"/>
             <connections>
+                <outlet property="KitchenDistance" destination="Vb3-ha-qEP" id="sP9-tE-94s"/>
+                <outlet property="Ratings" destination="g2G-NL-bRc" id="6oN-ud-nak"/>
                 <outlet property="descriptionLabel" destination="TQX-SV-13y" id="U64-WJ-zA9"/>
                 <outlet property="kitchenNameLabel" destination="IcH-Kp-7ce" id="3dp-bu-B6V"/>
                 <outlet property="mealImage" destination="bqk-kA-EkK" id="3BO-q6-SEg"/>
