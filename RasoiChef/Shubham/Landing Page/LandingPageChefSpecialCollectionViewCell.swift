@@ -28,7 +28,7 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         SpecialDishName.text = specialDish.name
         SpecialPriceLabel.text = "₹\(specialDish.price)"
 
-        SpecialRating.text = "⭐ \(String(describing: specialDish.rating))"
+        SpecialRating.text = "\(String(describing: specialDish.rating))"
 
         specialDishImage.image = UIImage(named: specialDish.imageURL)
         
