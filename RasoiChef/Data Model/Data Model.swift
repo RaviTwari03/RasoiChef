@@ -275,6 +275,7 @@ struct MenuItem {
     let itemID: String
     let kitchenID: String
     let kitchenName :String
+    var distance: Double
     var name: String
     var description: String
     var price: Double
@@ -292,6 +293,7 @@ struct GlobalMenuItem{
     let itemID: String
     let kitchenID: String
     let kitchenName : String
+    var distance: Double
     var name: String
     var description: String
     var price: Double
