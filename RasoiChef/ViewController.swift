@@ -8,11 +8,21 @@
 import UIKit
 
 class ViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, MenuDetailsCellDelegate,UICollectionViewDelegateFlowLayout, MenuListHeaderDelegate,ChefSpeacialityHeaderDelegate,MealSubscriptionPlanHeaderDelegate,
-                      planYourMealDelegate{
+                      planYourMealDelegate,ChefSpecialLandingPageMenuDetailsCellDelegate{
+    
+    
+   
+    
+    
     
     @IBOutlet var collectionView1: UICollectionView!
     var kitchenData: Kitchen?
+    //    var selectedChefSpecialtyDish: ChefSpecialtyDish?
+    var selectedItem: MenuItem?
+    var selectedChefSpecialtyDish: ChefSpecialtyDish?
     
+    //    var selectedItem: MenuItem?
+    //  var menuItems: [MenuItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,6 +111,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             cell.updateChefSpecialtyDetails(for: indexPath)
+            cell.delegate = self
             
             return cell
         case 5:
@@ -356,4 +367,35 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         present(alert, animated: true, completion: nil)
     }
-}
+    
+    func ChefSpecislDishaddButtonTapped(in cell: ChefSpecialCollectionViewCell) {
+        guard let indexPath = collectionView1.indexPath(for: cell) else { return }
+        
+        // Fetch the Chef Specialty Dish from the data controller
+        let selectedChefSpecialtyDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
+        print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
+        
+        // Instantiate the detail view controller
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            // Pass the selected Chef Specialty Dish to the detailVC
+            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
+            
+            // Set the modal presentation style
+            detailVC.modalPresentationStyle = .pageSheet
+            
+            // Customize the presentation style for iPad/large screens
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            // Present the modal view controller
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
+    }
+    }
+    
+

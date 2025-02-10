@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ChefSpecialLandingPageMenuDetailsCellDelegate: AnyObject {
-    func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell)
+    func ChefSpecislDishaddButtonTapped(in cell: ChefSpecialCollectionViewCell)
 }
 
 
@@ -63,4 +63,8 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialCard.layer.shadowOpacity = 0.4
         specialCard.backgroundColor = .white
    }
+    
+    @IBAction func SpecialDishAddButton(_ sender: Any) {
+        delegate?.ChefSpecislDishaddButtonTapped(in: self)
+    }
 }

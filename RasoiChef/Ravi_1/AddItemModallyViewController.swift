@@ -37,51 +37,54 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBOutlet var AddIncreaseDishButton: UIStepper!
     
 
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        configureModalSize()
-//        AddDishButton.layer.cornerRadius = 11
-//        guard let item = selectedItem else {
-//            print("Error: No item data passed.")
-//            return}
-        
-//        AddDishNameLabel.text = item.name
-//        AddDishRatingLabel.text = "⭐ \(item.rating)"
-//        AddDishPriceLabel.text = "₹\(item.price)"
-//        DishDescriptionLabel.text = item.description
-//        
-//       
-//        AddDishRequestTextField.text = ""
-//        AddDishItemCounterLabel.text = "1"
-//        AddIncreaseDishButton.value = 1
-    
-       
-//    }
-    override func viewDidLoad() {
-            super.viewDidLoad()
-            configureModalSize()
-            AddDishButton.layer.cornerRadius = 11
-            
-            // Check whether we have a MenuItem or ChefSpecialtyDish and populate UI
-            if let item = selectedItem {
-                AddDishNameLabel.text = item.name
-                AddDishRatingLabel.text = "⭐ \(item.rating)"
-                AddDishPriceLabel.text = "₹\(item.price)"
-                DishDescriptionLabel.text = item.description
-            } else if let chefDish = selectedChefSpecialtyDish {
-                AddDishNameLabel.text = chefDish.name
-                AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
-                AddDishPriceLabel.text = "₹\(chefDish.price)"
-                DishDescriptionLabel.text = chefDish.description
-            } else {
-                print("Error: No data passed.")
-            }
 
-            // Default values
-            AddDishRequestTextField.text = ""
-            AddDishItemCounterLabel.text = "1"
-            AddIncreaseDishButton.value = 1
+//    override func viewDidLoad() {
+//            super.viewDidLoad()
+//            configureModalSize()
+//            AddDishButton.layer.cornerRadius = 11
+//            
+//            // Check whether we have a MenuItem or ChefSpecialtyDish and populate UI
+//            if let item = selectedItem {
+//                AddDishNameLabel.text = item.name
+//                AddDishRatingLabel.text = "⭐ \(item.rating)"
+//                AddDishPriceLabel.text = "₹\(item.price)"
+//                DishDescriptionLabel.text = item.description
+//            } else if let chefDish = selectedChefSpecialtyDish {
+//                AddDishNameLabel.text = chefDish.name
+//                AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
+//                AddDishPriceLabel.text = "₹\(chefDish.price)"
+//                DishDescriptionLabel.text = chefDish.description
+//            } else {
+//                print("Error: No data passed.")
+//            }
+//
+//            // Default values
+//            AddDishRequestTextField.text = ""
+//            AddDishItemCounterLabel.text = "1"
+//            AddIncreaseDishButton.value = 1
+//        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureModalSize()
+        AddDishButton.layer.cornerRadius = 11
+
+        // Check whether we have a MenuItem or ChefSpecialtyDish and populate UI
+        if let item = selectedItem {
+            print("Selected MenuItem: \(item.name)")  // Debugging print
+            AddDishNameLabel.text = item.name
+            AddDishRatingLabel.text = "⭐ \(item.rating)"
+            AddDishPriceLabel.text = "₹\(item.price)"
+            DishDescriptionLabel.text = item.description
+        } else if let chefDish = selectedChefSpecialtyDish {
+            print("Selected ChefSpecialtyDish: \(chefDish.name)")  // Debugging print
+            AddDishNameLabel.text = chefDish.name
+            AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
+            AddDishPriceLabel.text = "₹\(chefDish.price)"
+            DishDescriptionLabel.text = chefDish.description
+        } else {
+            print("Error: No data passed.")
         }
+    }
 
     private func configureModalSize() {
         // Set the modal presentation style
@@ -99,96 +102,13 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         AddDishItemCounterLabel.text = "\(Int(sender.value))"
     }
-    
-//    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-//        return HalfScreenPresentationController(presentedViewController: presented, presenting: presenting)
-//    }
-    
+
     
     
     
     //    MARK: - For cart
   
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
-
-//        guard let item = selectedItem else { return }
-//           let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-//           let specialRequest = AddDishRequestTextField.text ?? ""
-//
-//           let cartItem = CartItem(
-//               userAdress: "Galgotias University", // Replace with an actual address if needed
-//               quantity: quantity,
-//               specialRequest: specialRequest,
-//               menuItem: item
-//           )
-//
-//           // Add the item to the cart
-//           KitchenDataController.cartItems.append(cartItem)
-//           CartViewController.cartItems.append(cartItem)
-//
-//           // Update the tab bar badge
-//           updateCartBadge() // Call the method to handle badge update
-//
-//           print("Item added to cart: \(cartItem)") // Log the added item
-//
-//           // Dismiss the current view controller if presented modally
-//           if self.presentingViewController != nil {
-//               self.dismiss(animated: true, completion: nil)
-//           }
-//       }
-//
-//       // Helper function to update the badge
-//       func updateCartBadge() {
-//           DispatchQueue.main.async {
-//               if let tabItems = self.tabBarController?.tabBar.items {
-//                   let cartTabItem = tabItems[2] // Assuming "Cart" is the third tab
-//                   let itemCount = CartViewController.cartItems.count
-//                   cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
-//               }
-//           }
-//       }
-//        guard let item = selectedItem else { return }
-//            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-//            let specialRequest = AddDishRequestTextField.text ?? ""
-//
-//            let cartItem = CartItem(
-//                userAdress: "Galgotias University", // Replace with an actual address if needed
-//                quantity: quantity,
-//                specialRequest: specialRequest,
-//                menuItem: item
-//            )
-//
-//            // Add the item to the cart
-//            KitchenDataController.cartItems.append(cartItem)
-//            CartViewController.cartItems.append(cartItem)
-//
-//            // Debugging: Print the cart items to verify
-//            print("Cart Items: \(CartViewController.cartItems)")
-//
-//            // Update the tab bar badge
-//            updateCartBadge() // Call the method to handle badge update
-//
-//            print("Item added to cart: \(cartItem)") // Log the added item
-//
-//            // Dismiss the current view controller if presented modally
-//            if self.presentingViewController != nil {
-//                self.dismiss(animated: true, completion: nil)
-//            }
-//        }
-//
-//        // Helper function to update the badge
-//        func updateCartBadge() {
-//            DispatchQueue.main.async {
-//                if let tabItems = self.tabBarController?.tabBar.items {
-//                    let cartTabItem = tabItems[2] // Assuming "Cart" is the third tab
-//                    let itemCount = CartViewController.cartItems.count
-//                    cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
-//                    // Debugging: Print the badge value to verify
-//                    print("Badge Value: \(cartTabItem.badgeValue ?? "nil")")
-//                }
-//            }
-//        }
-//
         guard let item = selectedItem else { return }
             let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
             let specialRequest = AddDishRequestTextField.text ?? ""
