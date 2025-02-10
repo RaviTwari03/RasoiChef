@@ -1,6 +1,6 @@
 import UIKit
 
-class BannerView: UIView {
+class CustomBannerView: UIView {
 
     private let messageLabel = UILabel()
     private let iconImageView = UIImageView()
@@ -24,48 +24,49 @@ class BannerView: UIView {
         self.layer.shadowOffset = CGSize(width: 0, height: 2)
         self.layer.shadowRadius = 4
 
-        // Start the banner offscreen
-        self.frame = CGRect(x: 20, y: -80, width: UIScreen.main.bounds.width - 40, height: 60)
+        // Set initial frame offscreen below the view (it won't drop from top now)
+        self.frame = CGRect(x: 20, y: -80, width: UIScreen.main.bounds.width - 40, height: 80)
         self.alpha = 0
 
+        // Icon
         iconImageView.image = UIImage(systemName: "checkmark.circle.fill")
         iconImageView.tintColor = .white
         iconImageView.contentMode = .scaleAspectFit
-        iconImageView.frame = CGRect(x: 15, y: 15, width: 30, height: 30)
+        iconImageView.frame = CGRect(x: 15, y: 25, width: 30, height: 30)
         self.addSubview(iconImageView)
 
+        // Message Label
         messageLabel.textColor = .white
         messageLabel.font = UIFont.boldSystemFont(ofSize: 16)
         messageLabel.textAlignment = .left
-        messageLabel.frame = CGRect(x: 55, y: 0, width: self.frame.width - 70, height: 60)
+        messageLabel.frame = CGRect(x: 55, y: 0, width: self.frame.width - 70, height: self.frame.height)
         self.addSubview(messageLabel)
     }
 
     func show(in view: UIView, message: String) {
         messageLabel.text = message
-        
-        // Ensure the banner is on top
+
+        // Ensure the banner is on top of all other views
         if self.superview == nil {
             view.addSubview(self)
         }
 
-        // Position the banner at the top (offscreen initially)
-        self.frame.origin.y = -80
+        // Position the banner below the tab bar
+        let tabBarHeight = view.safeAreaInsets.bottom
+        let bannerYPosition = view.bounds.height - tabBarHeight - self.frame.height - 10 // 10px above the tab bar
 
-        UIView.animate(withDuration: 0.5, animations: {
-            self.alpha = 1
-            self.frame.origin.y = view.safeAreaInsets.top + 10
-        }) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.hide()
-            }
+        self.frame.origin.y = bannerYPosition // Set the banner position instantly
+        self.alpha = 1 // Show the banner with instant fade-in effect
+
+        // Hide banner after 2 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.hide()
         }
     }
 
     private func hide() {
-        UIView.animate(withDuration: 0.5, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.alpha = 0
-            self.frame.origin.y = -80
         }) { _ in
             self.removeFromSuperview()
         }

@@ -12,48 +12,36 @@ import UIKit
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate {
     
     
-    private var bannerView: BannerView?
+  
    
     @IBOutlet var CartItem: UITableView!
     
     static var cartItems: [CartItem] = []
-    
-    
+   
     func didTapPlaceOrder() {
-        
         let order = createOrderFromCart(cartItems: CartViewController.cartItems)
         OrderDataController.shared.addOrder(order: order)
-        
-       
-        // Assuming "My Orders" is a tab in your UITabBarController
-        if let tabBarController = self.tabBarController {
-            tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
-            
-            
-        }
-        print("Order placed: \(order)")
-        
-       
-        DispatchQueue.main.async {
-                   self.bannerView?.show(in: self.view, message: "Order Placed Successfully!")
-               }
 
-        
+        let banner = CustomBannerView()
+           banner.show(in: self.view, message: "Order Placed Successfully!")
+           
+        // Clear cart items and reload table view
         CartViewController.cartItems.removeAll() // Clear cart items after order
         CartItem.reloadData() // Reload cart table view
-        
-
+       
+        // Add a delay before changing the tab, to allow the user to see the pop-up
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
+                if let tabBarController = self.tabBarController {
+                    tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
+                }
+            }
     }
-    
-     
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cart"
         
-        
-        setupBannerView()
-               
-        
+     
         
         CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
         
@@ -72,18 +60,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
-    private func setupBannerView() {
-            bannerView = BannerView()
-            if let bannerView = bannerView {
-                view.addSubview(bannerView)
-            }
-        }
-    
-   
-    
-   
-    
-    
+  
     
     func createOrderFromCart(cartItems: [CartItem]) -> Order {
             // Create order items from cart items
