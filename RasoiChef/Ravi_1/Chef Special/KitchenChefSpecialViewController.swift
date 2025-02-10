@@ -9,27 +9,61 @@ import UIKit
 
 class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate,ChefSpecialMenuDetailsCellDelegate{
     
+//    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
+//                guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
+//                let selectedItem = KitchenDataController.menuItems[indexPath.row]
+//                print("Add button tapped for meal: \(selectedItem.name)")
+//        
+//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+//                    detailVC.selectedItem = selectedItem
+//        
+//                    detailVC.modalPresentationStyle = .pageSheet
+//        
+//                    if let sheet = detailVC.sheetPresentationController {
+//                        sheet.detents = [.medium(), .large()]
+//                        sheet.prefersGrabberVisible = true
+//                    }
+//        
+//                    present(detailVC, animated: true, completion: nil)
+//                } else {
+//                    print("Error: Could not instantiate AddItemModallyViewController")
+//                }
+//    }
     func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
-                guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
-                let selectedItem = KitchenDataController.menuItems[indexPath.row]
-                print("Add button tapped for meal: \(selectedItem.name)")
-        
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-                    detailVC.selectedItem = selectedItem
-        
-                    detailVC.modalPresentationStyle = .pageSheet
-        
-                    if let sheet = detailVC.sheetPresentationController {
-                        sheet.detents = [.medium(), .large()]
-                        sheet.prefersGrabberVisible = true
-                    }
-        
-                    present(detailVC, animated: true, completion: nil)
-                } else {
-                    print("Error: Could not instantiate AddItemModallyViewController")
-                }
+        guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
+
+        var selectedMenuItem: MenuItem? = nil
+        var selectedChefSpecialtyDish: ChefSpecialtyDish? = nil
+
+        if indexPath.section == 0 {
+            // Section 0 contains Chef Specialty Dishes
+            selectedChefSpecialtyDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
+            print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish?.name ?? "Unknown")")
+        } else if indexPath.section == 1 {
+            // Section 1 contains Regular Menu Items
+            selectedMenuItem = KitchenDataController.menuItems[indexPath.row]
+            print("Add button tapped for Menu Item: \(selectedMenuItem?.name ?? "Unknown")")
+        }
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            detailVC.selectedItem = selectedMenuItem
+            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish // Pass the Chef Special dish
+
+            detailVC.modalPresentationStyle = .pageSheet
+
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
     }
+
     
    
 //    func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {

@@ -15,8 +15,10 @@ protocol AddItemDelegate: AnyObject {
 class AddItemModallyViewController: UIViewController, UIViewControllerTransitioningDelegate {
     weak var delegate: AddItemDelegate?
     
-    
     var selectedItem: MenuItem?
+    var selectedChefSpecialtyDish: ChefSpecialtyDish?
+
+//    var selectedItem: MenuItem?
     var menuItems: [MenuItem] = []
     
     
@@ -35,26 +37,52 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBOutlet var AddIncreaseDishButton: UIStepper!
     
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureModalSize()
-        AddDishButton.layer.cornerRadius = 11
-        guard let item = selectedItem else {
-            print("Error: No item data passed.")
-            return}
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        configureModalSize()
+//        AddDishButton.layer.cornerRadius = 11
+//        guard let item = selectedItem else {
+//            print("Error: No item data passed.")
+//            return}
         
-        AddDishNameLabel.text = item.name
-        AddDishRatingLabel.text = "⭐ \(item.rating)"
-        AddDishPriceLabel.text = "₹\(item.price)"
-        DishDescriptionLabel.text = item.description
-        
-       
-        AddDishRequestTextField.text = ""
-        AddDishItemCounterLabel.text = "1"
-        AddIncreaseDishButton.value = 1
+//        AddDishNameLabel.text = item.name
+//        AddDishRatingLabel.text = "⭐ \(item.rating)"
+//        AddDishPriceLabel.text = "₹\(item.price)"
+//        DishDescriptionLabel.text = item.description
+//        
+//       
+//        AddDishRequestTextField.text = ""
+//        AddDishItemCounterLabel.text = "1"
+//        AddIncreaseDishButton.value = 1
     
        
-    }
+//    }
+    override func viewDidLoad() {
+            super.viewDidLoad()
+            configureModalSize()
+            AddDishButton.layer.cornerRadius = 11
+            
+            // Check whether we have a MenuItem or ChefSpecialtyDish and populate UI
+            if let item = selectedItem {
+                AddDishNameLabel.text = item.name
+                AddDishRatingLabel.text = "⭐ \(item.rating)"
+                AddDishPriceLabel.text = "₹\(item.price)"
+                DishDescriptionLabel.text = item.description
+            } else if let chefDish = selectedChefSpecialtyDish {
+                AddDishNameLabel.text = chefDish.name
+                AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
+                AddDishPriceLabel.text = "₹\(chefDish.price)"
+                DishDescriptionLabel.text = chefDish.description
+            } else {
+                print("Error: No data passed.")
+            }
+
+            // Default values
+            AddDishRequestTextField.text = ""
+            AddDishItemCounterLabel.text = "1"
+            AddIncreaseDishButton.value = 1
+        }
+
     private func configureModalSize() {
         // Set the modal presentation style
         self.modalPresentationStyle = .custom
@@ -202,6 +230,15 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 }
             }
         }
+    func presentAddItemModally(selectedItem: MenuItem?, selectedChefSpecialtyDish: ChefSpecialtyDish?) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            addItemVC.selectedItem = selectedItem
+            addItemVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
+            self.present(addItemVC, animated: true, completion: nil)
+        }
+    }
+
     }
 
 
