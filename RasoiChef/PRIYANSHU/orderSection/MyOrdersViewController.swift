@@ -34,7 +34,7 @@ class MyOrdersViewController: UIViewController {
         
         
         tableView.sectionHeaderTopPadding = 10
-        
+        tableView.reloadData()
         loadData()
         
     }
@@ -211,6 +211,11 @@ extension MyOrdersViewController: MyOrderTableViewCellDelegate {
     }
     
 }
+
+
+
+
+
 
 
 

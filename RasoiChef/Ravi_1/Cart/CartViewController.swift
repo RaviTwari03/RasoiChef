@@ -13,10 +13,19 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     
     func didTapPlaceOrder() {
+        
+        let order = createOrderFromCart(cartItems: CartViewController.cartItems)
+        OrderDataController.shared.addOrder(order: order)
         // Assuming "My Orders" is a tab in your UITabBarController
         if let tabBarController = self.tabBarController {
             tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
+            
+            
         }
+        print("Order placed: \(order)")
+        CartViewController.cartItems.removeAll() // Clear cart items after order
+        CartItem.reloadData() // Reload cart table view
+
     }
     
     
@@ -25,8 +34,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     @IBOutlet var CartItem: UITableView!
     
     static var cartItems: [CartItem] = []
-    
-    
+     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cart"
@@ -45,9 +53,47 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
+    
+    
+    func createOrderFromCart(cartItems: [CartItem]) -> Order {
+            // Create order items from cart items
+            let orderItems = cartItems.map { cartItem -> OrderItem in
+                return OrderItem(
+                    menuItemID: cartItem.menuItem.itemID,
+                    quantity: cartItem.quantity,
+                    price: cartItem.menuItem.price * Double(cartItem.quantity)
+                )
+            }
+            
+            // Calculate the total amount from all cart items
+            let totalAmount = cartItems.reduce(0.0) { $0 + ($1.menuItem.price * Double($1.quantity)) }
+            
+            // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
+           // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
+            
+            // Create the Order object
+            let order = Order(
+                orderID: UUID().uuidString,  // Generate a unique order ID
+                userID: "user123",           // Replace with actual user ID
+                kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
+                kitchenID: cartItems.first?.menuItem.kitchenID ?? "",    // Pass the kitchen name here
+                items: orderItems,
+                status: .placed,
+                totalAmount: totalAmount,
+                deliveryAddress: cartItems.first?.userAdress ?? "Unknown Address",
+                deliveryDate: Date(),  // Use the actual delivery date selected by the user
+                deliveryType: "Delivery"  // Specify the delivery type (e.g., delivery or pickup)
+            )
+            
+            return order
+        }
+        
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4 // Four sections: Address, Cart Items, Bill, and Payment
     }
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
