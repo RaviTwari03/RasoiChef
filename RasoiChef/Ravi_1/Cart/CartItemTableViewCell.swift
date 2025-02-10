@@ -68,22 +68,63 @@ class CartItemTableViewCell: UITableViewCell {
             print("Index out of range: \(indexpath.row) exceeds number of cart items")
             return
         }
-        
+//        
+//        let cartItem = KitchenDataController.cartItems[indexpath.row]
+//        CartDishLabel.text = cartItem.menuItem?.name
+//        CartDishDescription.text = cartItem.menuItem?.description
+//        CartDishPriceLabel.text = "₹\(cartItem.menuItem?.price)"
+//        CartItemQuantityLabel.text = "\(cartItem.quantity)"
+//        CartIncreaseCounter.value = Double(cartItem.quantity)
+//        
+//    }
+//    func configure(with item: CartItem) {
+//        CartDishLabel.text = item.menuItem?.name
+//        CartDishDescription.text = item.menuItem?.description
+//        CartDishPriceLabel.text = "₹\(item.menuItem?.price)"
+//        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
+//      }
+//    }
         let cartItem = KitchenDataController.cartItems[indexpath.row]
-        CartDishLabel.text = cartItem.menuItem.name
-        CartDishDescription.text = cartItem.menuItem.description
-        CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"
+
+        if let menuItem = cartItem.menuItem {
+            // Regular menu item
+            CartDishLabel.text = menuItem.name
+            CartDishDescription.text = menuItem.description
+            CartDishPriceLabel.text = "₹\(menuItem.price)"
+        } else if let chefSpecialtyDish = cartItem.chefSpecial {
+            // Chef specialty dish
+            CartDishLabel.text = chefSpecialtyDish.name
+            CartDishDescription.text = chefSpecialtyDish.description
+            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
+        } else {
+            CartDishLabel.text = "Unknown Item"
+            CartDishDescription.text = "No description available"
+            CartDishPriceLabel.text = "₹0.0"
+        }
+
         CartItemQuantityLabel.text = "\(cartItem.quantity)"
         CartIncreaseCounter.value = Double(cartItem.quantity)
-        
     }
+
     func configure(with item: CartItem) {
-        CartDishLabel.text = item.menuItem.name
-        CartDishDescription.text = item.menuItem.description
-        CartDishPriceLabel.text = "₹\(item.menuItem.price)"
+        if let menuItem = item.menuItem {
+            CartDishLabel.text = menuItem.name
+            CartDishDescription.text = menuItem.description
+            CartDishPriceLabel.text = "₹\(menuItem.price)"
+        } else if let chefSpecialtyDish = item.chefSpecial {
+            CartDishLabel.text = chefSpecialtyDish.name
+            CartDishDescription.text = chefSpecialtyDish.description
+            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
+        } else {
+            CartDishLabel.text = "Unknown Item"
+            CartDishDescription.text = "No description available"
+            CartDishPriceLabel.text = "₹0.0"
+        }
+        
         CartItemQuantityLabel.text = "Qty: \(item.quantity)"
-      }
+        CartIncreaseCounter.value = Double(item.quantity)
     }
+}
 
 
 
