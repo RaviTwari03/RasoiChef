@@ -11,7 +11,7 @@ protocol ChefSpeacialityHeaderDelegate: AnyObject {
     func didTapSeeMore1()
 }
 
-class ChefSpecialityDishCollectionViewCell: UICollectionViewCell {
+class ChefSpecialityDishesHeaderCell: UICollectionViewCell {
    
     weak var delegate: ChefSpeacialityHeaderDelegate?
 

@@ -95,7 +95,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             return cell
             
         case 3:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialityDishesHeader", for: indexPath) as! ChefSpecialityDishCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialityDishesHeader", for: indexPath) as! ChefSpecialityDishesHeaderCell
             cell.delegate = self
             return cell
         case 4:

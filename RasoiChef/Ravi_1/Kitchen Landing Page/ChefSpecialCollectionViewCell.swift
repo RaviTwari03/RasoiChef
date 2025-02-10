@@ -7,7 +7,14 @@
 
 import UIKit
 
+protocol ChefSpecialLandingPageMenuDetailsCellDelegate: AnyObject {
+    func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell)
+}
+
+
 class ChefSpecialCollectionViewCell: UICollectionViewCell {
+    
+    weak var delegate : ChefSpecialLandingPageMenuDetailsCellDelegate?
     
     @IBOutlet var specialDishNameLabel: UILabel!
     @IBOutlet var specialDishRating: UILabel!
