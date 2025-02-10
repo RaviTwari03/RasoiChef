@@ -18,7 +18,23 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
         }
     }
-    
+    struct CartItem1 {
+        var userAdress: String
+        var quantity: Int
+        var specialRequest: String?
+        var menuItem: MenuItem? // Now optional
+        var chefSpecialtyDish: ChefSpecialtyDish? // Added this property to store chef's special dish
+
+        // Initializer that can accept either menu item or chef specialty dish
+        init(userAdress: String, quantity: Int, specialRequest: String? = nil, menuItem: MenuItem? = nil, chefSpecialtyDish: ChefSpecialtyDish? = nil) {
+            self.userAdress = userAdress
+            self.quantity = quantity
+            self.specialRequest = specialRequest
+            self.menuItem = menuItem
+            self.chefSpecialtyDish = chefSpecialtyDish
+        }
+    }
+
     
     
     
@@ -184,15 +200,34 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
+//    func didAddItemToCart(_ item: CartItem) {
+//        KitchenDataController.cartItems.append(item)
+//        updateTabBarBadge()
+//        CartItem.reloadData()
+//        //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
+//    }
+//    
     func didAddItemToCart(_ item: CartItem) {
-        KitchenDataController.cartItems.append(item)
-        updateTabBarBadge()
-        CartItem.reloadData()
-        //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
-    }
+        // Add the item to the cart
+        // Add the item to the cart
+               KitchenDataController.cartItems.append(item)
+
+               // Log details based on item type (MenuItem or ChefSpecialtyDish)
+        if let menuItem = item.menuItem {
+                   print("Added MenuItem to cart: \(menuItem.name), Total items: \(KitchenDataController.cartItems.count)")
+               } else if let chefSpecialtyDish = item.chefSpecialtyDish {
+                   print("Added ChefSpecialtyDish to cart: \(chefSpecialtyDish.name), Total items: \(KitchenDataController.cartItems.count)")
+               }
+
+               // Update the tab bar badge
+               updateTabBarBadge()
+
+               // Reload data (if applicable, this might be for UI updates)
+               CartItem.reloadData()
+           }
     
-    
-    
+
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

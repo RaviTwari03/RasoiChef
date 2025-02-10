@@ -38,31 +38,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     
 
 
-//    override func viewDidLoad() {
-//            super.viewDidLoad()
-//            configureModalSize()
-//            AddDishButton.layer.cornerRadius = 11
-//            
-//            // Check whether we have a MenuItem or ChefSpecialtyDish and populate UI
-//            if let item = selectedItem {
-//                AddDishNameLabel.text = item.name
-//                AddDishRatingLabel.text = "⭐ \(item.rating)"
-//                AddDishPriceLabel.text = "₹\(item.price)"
-//                DishDescriptionLabel.text = item.description
-//            } else if let chefDish = selectedChefSpecialtyDish {
-//                AddDishNameLabel.text = chefDish.name
-//                AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
-//                AddDishPriceLabel.text = "₹\(chefDish.price)"
-//                DishDescriptionLabel.text = chefDish.description
-//            } else {
-//                print("Error: No data passed.")
-//            }
-//
-//            // Default values
-//            AddDishRequestTextField.text = ""
-//            AddDishItemCounterLabel.text = "1"
-//            AddIncreaseDishButton.value = 1
-//        }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureModalSize()
