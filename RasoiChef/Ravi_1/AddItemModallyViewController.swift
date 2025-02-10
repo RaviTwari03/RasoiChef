@@ -129,8 +129,8 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                    userAdress: "Galgotias University", // Replace with an actual address if needed
                    quantity: quantity,
                    specialRequest: specialRequest,
-                   menuItem: item,
-                   chefSpecial: nil
+                   menuItem: item
+                   //chefSpecial: nil
                )
            } else if let chefDish = selectedChefSpecialtyDish {
                // If it's a Chef Specialty dish
@@ -141,6 +141,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                  //  menuItem: chefDish,
                    chefSpecial: chefDish
                )
+               print("\(chefDish.price)")
            }
 
            // Ensure cartItem is not nil before proceeding

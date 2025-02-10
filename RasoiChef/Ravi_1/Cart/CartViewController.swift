@@ -343,22 +343,27 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
 
     func didAddItemToCart(_ item: CartItem) {
-        // Add item to cart
-               // KitchenDataController.cartItems.append!
-                
-//                // Log based on item type
-//                if let menuItem = item.menuItem {
-//                    print("Added MenuItem to cart: \(menuItem.name), Total items: \(KitchenDataController.cartItems.count)")
-//                } else if let chefSpecialtyDish = item.chefSpecialtyDish {
-//                    print("Added ChefSpecialtyDish to cart: \(chefSpecialtyDish.name), Total items: \(KitchenDataController.cartItems.count)")
-//                }
-                
-                // Update tab bar badge and reload table
-                updateTabBarBadge()
-                CartItem.reloadData()
+           KitchenDataController.cartItems.append(item)
+
+           // Log based on item type
+           if let menuItem = item.menuItem {
+               print("Added MenuItem to cart: \(menuItem.name), Total items: \(KitchenDataController.cartItems.count)")
+           } else if let chefSpecialtyDish = item.chefSpecial {
+               print("Added ChefSpecialtyDish to cart: \(chefSpecialtyDish.name), Total items: \(KitchenDataController.cartItems.count)")
+           }
+
+           // Update tab bar badge
+           updateTabBarBadge()
+
+           // Reload the table view (Ensure you have a reference to the correct table view)
+           NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+        updateTabBarBadge()
+        CartItem.reloadData()
+       }
+               
     }
     
 
 
     
-}
+
