@@ -12,10 +12,19 @@ import UIKit
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate {
     
     
+    private var bannerView: BannerView?
+   
+    @IBOutlet var CartItem: UITableView!
+    
+    static var cartItems: [CartItem] = []
+    
+    
     func didTapPlaceOrder() {
         
         let order = createOrderFromCart(cartItems: CartViewController.cartItems)
         OrderDataController.shared.addOrder(order: order)
+        
+       
         // Assuming "My Orders" is a tab in your UITabBarController
         if let tabBarController = self.tabBarController {
             tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
@@ -23,21 +32,29 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
         }
         print("Order placed: \(order)")
+        
+       
+        DispatchQueue.main.async {
+                   self.bannerView?.show(in: self.view, message: "Order Placed Successfully!")
+               }
+
+        
         CartViewController.cartItems.removeAll() // Clear cart items after order
         CartItem.reloadData() // Reload cart table view
+        
 
     }
     
-    
-    
-    
-    @IBOutlet var CartItem: UITableView!
-    
-    static var cartItems: [CartItem] = []
      
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cart"
+        
+        
+        setupBannerView()
+               
+        
+        
         CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
         
         CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
@@ -51,7 +68,20 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.dataSource = self
         CartItem.reloadData()
         
+        
+        
     }
+    
+    private func setupBannerView() {
+            bannerView = BannerView()
+            if let bannerView = bannerView {
+                view.addSubview(bannerView)
+            }
+        }
+    
+   
+    
+   
     
     
     
