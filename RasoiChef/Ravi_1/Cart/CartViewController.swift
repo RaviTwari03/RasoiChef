@@ -12,47 +12,37 @@ import UIKit
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate {
     
     
-    
-    func didTapPlaceOrder() {
-        
-        let order = createOrderFromCart(cartItems: CartViewController.cartItems)
-        OrderDataController.shared.addOrder(order: order)
-        // Assuming "My Orders" is a tab in your UITabBarController
-        if let tabBarController = self.tabBarController {
-            tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
-            
-            
-        }
-        print("Order placed: \(order)")
-        CartViewController.cartItems.removeAll() // Clear cart items after order
-        CartItem.reloadData() // Reload cart table view
-
-    }
-    struct CartItem1 {
-            var userAdress: String
-            var quantity: Int
-            var specialRequest: String?
-            var menuItem: MenuItem? // Optional MenuItem
-            var chefSpecialtyDish: ChefSpecialtyDish? // Optional ChefSpecialtyDish
-
-            // Initializer for CartItem
-            init(userAdress: String, quantity: Int, specialRequest: String? = nil, menuItem: MenuItem? = nil, chefSpecialtyDish: ChefSpecialtyDish? = nil) {
-                self.userAdress = userAdress
-                self.quantity = quantity
-                self.specialRequest = specialRequest
-                self.menuItem = menuItem
-                self.chefSpecialtyDish = chefSpecialtyDish
-            }
-        }
-    
-    
+  
+   
     @IBOutlet var CartItem: UITableView!
     
     static var cartItems: [CartItem] = []
-     
+   
+    func didTapPlaceOrder() {
+        let order = createOrderFromCart(cartItems: CartViewController.cartItems)
+        OrderDataController.shared.addOrder(order: order)
+
+        let banner = CustomBannerView()
+           banner.show(in: self.view, message: "Order Placed Successfully!")
+           
+        // Clear cart items and reload table view
+        CartViewController.cartItems.removeAll() // Clear cart items after order
+        CartItem.reloadData() // Reload cart table view
+       
+        // Add a delay before changing the tab, to allow the user to see the pop-up
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
+                if let tabBarController = self.tabBarController {
+                    tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
+                }
+            }
+    }
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cart"
+        
+     
+        
         CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
         
         CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
@@ -66,22 +56,24 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.dataSource = self
         CartItem.reloadData()
         
+        
+        
     }
     
-    
+  
     
     func createOrderFromCart(cartItems: [CartItem]) -> Order {
             // Create order items from cart items
             let orderItems = cartItems.map { cartItem -> OrderItem in
                 return OrderItem(
-                    menuItemID: cartItem.menuItem?.itemID ?? "",
+                    menuItemID: cartItem.menuItem.itemID,
                     quantity: cartItem.quantity,
-                    price: (cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity)
+                    price: cartItem.menuItem.price * Double(cartItem.quantity)
                 )
             }
             
             // Calculate the total amount from all cart items
-        let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0) * Double($1.quantity)) }
+            let totalAmount = cartItems.reduce(0.0) { $0 + ($1.menuItem.price * Double($1.quantity)) }
             
             // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
            // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
@@ -90,8 +82,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             let order = Order(
                 orderID: UUID().uuidString,  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
-                kitchenName: cartItems.first?.menuItem?.kitchenName ?? "",
-                kitchenID: cartItems.first?.menuItem?.kitchenID ?? "",    // Pass the kitchen name here
+                kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
+                kitchenID: cartItems.first?.menuItem.kitchenID ?? "",    // Pass the kitchen name here
                 items: orderItems,
                 status: .placed,
                 totalAmount: totalAmount,
@@ -245,31 +237,15 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
-//    func didAddItemToCart(_ item: CartItem) {
-//        KitchenDataController.cartItems.append(item)
-//        updateTabBarBadge()
-//        CartItem.reloadData()
-//        //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
-//    }
-//    
-    func didAddItemToCart(_ item: CartItem1) {
-        // Add item to cart
-               // KitchenDataController.cartItems.append!
-                
-                // Log based on item type
-                if let menuItem = item.menuItem {
-                    print("Added MenuItem to cart: \(menuItem.name), Total items: \(KitchenDataController.cartItems.count)")
-                } else if let chefSpecialtyDish = item.chefSpecialtyDish {
-                    print("Added ChefSpecialtyDish to cart: \(chefSpecialtyDish.name), Total items: \(KitchenDataController.cartItems.count)")
-                }
-                
-                // Update tab bar badge and reload table
-                updateTabBarBadge()
-                CartItem.reloadData()
-           }
+    func didAddItemToCart(_ item: CartItem) {
+        KitchenDataController.cartItems.append(item)
+        updateTabBarBadge()
+        CartItem.reloadData()
+        //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
+    }
     
     
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -292,7 +268,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     //    }
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
-            total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
+            total + (cartItem.menuItem.price * Double(cartItem.quantity))
         }
     }
     
@@ -315,6 +291,46 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
         }
     }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//        
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        if let indexPath = CartItem.indexPath(for: cell) {
+//            KitchenDataController.cartItems.remove(at: indexPath.row)
+//            CartItem.deleteRows(at: [indexPath], with: .fade)
+//            updateTabBarBadge() // Update the cart badge count
+//        }
+//    }
+//    func didTapRemoveButton(cell: CartItemTableViewCell) {
+//        guard let indexPath = CartItem.indexPath(for: cell),
+//              indexPath.row < KitchenDataController.cartItems.count else {
+//            print("Invalid indexPath: \(String(describing: CartItem.indexPath(for: cell)))")
+//            return
+//        }
+//
+//        // Safely remove the item from the data source
+//        KitchenDataController.cartItems.remove(at: indexPath.row)
+//
+//        if KitchenDataController.cartItems.isEmpty {
+//            // If cart is empty, reload the table to show "Cart is empty"
+//            CartItem.reloadData()
+//        } else {
+//            // Otherwise, delete the row smoothly
+//            CartItem.deleteRows(at: [indexPath], with: .fade)
+//        }
+//
+//        updateTabBarBadge() // Update badge count
+//    }
 
     func didTapRemoveButton(cell: CartItemTableViewCell) {
         guard let indexPath = CartItem.indexPath(for: cell) else {
@@ -342,28 +358,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         updateTabBarBadge() // Update the cart badge count
     }
 
-    func didAddItemToCart(_ item: CartItem) {
-           KitchenDataController.cartItems.append(item)
 
-           // Log based on item type
-           if let menuItem = item.menuItem {
-               print("Added MenuItem to cart: \(menuItem.name), Total items: \(KitchenDataController.cartItems.count)")
-           } else if let chefSpecialtyDish = item.chefSpecial {
-               print("Added ChefSpecialtyDish to cart: \(chefSpecialtyDish.name), Total items: \(KitchenDataController.cartItems.count)")
-           }
-
-           // Update tab bar badge
-           updateTabBarBadge()
-
-           // Reload the table view (Ensure you have a reference to the correct table view)
-           NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
-        updateTabBarBadge()
-        CartItem.reloadData()
-       }
-               
-    }
-    
 
 
     
-
+}
