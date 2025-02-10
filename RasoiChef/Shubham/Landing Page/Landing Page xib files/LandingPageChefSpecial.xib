@@ -43,19 +43,19 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QTp-yw-7P0">
-                                <rect key="frame" x="133" y="33" width="37.333333333333343" height="18"/>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <rect key="frame" x="133" y="33" width="39" height="18"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qrk-DI-RUB">
-                                <rect key="frame" x="133" y="56" width="31" height="14.333333333333329"/>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
+                                <rect key="frame" x="133" y="56" width="33" height="15.666666666666671"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RQk-N1-kET">
-                                <rect key="frame" x="133" y="76" width="37.333333333333343" height="18"/>
+                                <rect key="frame" x="133" y="77.333333333333329" width="37.333333333333343" height="18"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -91,11 +91,18 @@
                                 </userDefinedRuntimeAttributes>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNt-QS-WUL">
-                                <rect key="frame" x="239" y="7" width="33" height="16"/>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                <rect key="frame" x="234.66666666666666" y="7" width="37.333333333333343" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="vZe-7U-6zA">
+                                <rect key="frame" x="211.66666666666666" y="6" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="1gF-Hw-mUk"/>
+                                    <constraint firstAttribute="height" constant="20" id="li6-WU-Sbb"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -107,11 +114,13 @@
                             <constraint firstItem="Qrk-DI-RUB" firstAttribute="leading" secondItem="QTp-yw-7P0" secondAttribute="leading" id="CC1-Ww-B0n"/>
                             <constraint firstItem="QTp-yw-7P0" firstAttribute="top" secondItem="Tik-QF-MYS" secondAttribute="bottom" constant="7.9999999999999893" id="F7Z-lU-aaj"/>
                             <constraint firstItem="Vr4-EO-43S" firstAttribute="leading" secondItem="Tik-QF-MYS" secondAttribute="trailing" constant="6" id="L19-QV-LPB"/>
+                            <constraint firstItem="rNt-QS-WUL" firstAttribute="leading" secondItem="vZe-7U-6zA" secondAttribute="trailing" constant="3" id="N1z-Ai-oKt"/>
                             <constraint firstItem="rNt-QS-WUL" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="7" id="N4B-M3-6Ll"/>
                             <constraint firstItem="bZB-fA-Ybm" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="5" id="Roj-yf-LH4"/>
                             <constraint firstItem="RQk-N1-kET" firstAttribute="top" secondItem="Qrk-DI-RUB" secondAttribute="bottom" constant="5.6666666666666856" id="SRp-nr-YjP"/>
                             <constraint firstAttribute="bottom" secondItem="Z6n-BO-h3n" secondAttribute="bottom" constant="6" id="SYg-0n-zif"/>
                             <constraint firstItem="Vr4-EO-43S" firstAttribute="top" secondItem="Tik-QF-MYS" secondAttribute="top" id="Ttt-ES-UaB"/>
+                            <constraint firstItem="vZe-7U-6zA" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="6" id="Ug0-vA-TZh"/>
                             <constraint firstItem="Tik-QF-MYS" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="5" id="k7M-NY-bgf"/>
                             <constraint firstItem="RQk-N1-kET" firstAttribute="leading" secondItem="Qrk-DI-RUB" secondAttribute="leading" id="mrD-AB-ocX"/>
                             <constraint firstItem="Qrk-DI-RUB" firstAttribute="top" secondItem="QTp-yw-7P0" secondAttribute="bottom" constant="5" id="qHh-rv-z9F"/>
@@ -142,6 +151,7 @@
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="StarRatings" width="128" height="128"/>
         <image name="dot.square" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

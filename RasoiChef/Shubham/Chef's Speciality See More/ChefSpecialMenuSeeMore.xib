@@ -45,8 +45,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IZ8-hp-kn3">
-                                <rect key="frame" x="305.66666666666669" y="220" width="41.333333333333314" height="20"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <rect key="frame" x="308.66666666666669" y="220" width="38.333333333333314" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -81,7 +81,7 @@
                                 </userDefinedRuntimeAttributes>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCD-Be-xi4">
-                                <rect key="frame" x="305.66666666666669" y="252" width="41.333333333333314" height="21"/>
+                                <rect key="frame" x="305.66666666666669" y="250" width="41.333333333333314" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -129,6 +129,13 @@
                                 </constraints>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="bold"/>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="JYg-jm-xNp">
+                                <rect key="frame" x="283" y="220" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="BNw-tf-7sX"/>
+                                    <constraint firstAttribute="height" constant="20" id="Qmo-VX-VCp"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -148,6 +155,7 @@
                             <constraint firstItem="ghN-Ga-emp" firstAttribute="leading" secondItem="uA5-r1-1fA" secondAttribute="trailing" constant="4" id="OY0-Tp-Qiw"/>
                             <constraint firstAttribute="trailing" secondItem="IZ8-hp-kn3" secondAttribute="trailing" constant="13" id="SGv-wO-TsU"/>
                             <constraint firstAttribute="bottom" secondItem="1WB-Dh-mab" secondAttribute="bottom" constant="10" id="UDI-2Z-eYd"/>
+                            <constraint firstItem="IZ8-hp-kn3" firstAttribute="leading" secondItem="JYg-jm-xNp" secondAttribute="trailing" constant="5.6666666666666856" id="Zpw-BL-wv9"/>
                             <constraint firstAttribute="bottom" secondItem="uA5-r1-1fA" secondAttribute="bottom" constant="10" id="aSE-Cy-G3J"/>
                             <constraint firstItem="LCD-Be-xi4" firstAttribute="top" secondItem="IZ8-hp-kn3" secondAttribute="bottom" constant="12" id="c2I-cn-VfR"/>
                             <constraint firstItem="ghN-Ga-emp" firstAttribute="top" secondItem="uA5-r1-1fA" secondAttribute="top" id="osy-SQ-Vr5"/>
@@ -157,6 +165,7 @@
                             <constraint firstItem="VNi-A3-0ux" firstAttribute="leading" secondItem="ghN-Ga-emp" secondAttribute="trailing" constant="4" id="sYJ-hK-rrx"/>
                             <constraint firstItem="IZ8-hp-kn3" firstAttribute="top" secondItem="6ch-uA-AhM" secondAttribute="bottom" constant="10" id="tto-g5-5Vv"/>
                             <constraint firstAttribute="trailing" secondItem="LCD-Be-xi4" secondAttribute="trailing" constant="13" id="vRb-pe-1Ff"/>
+                            <constraint firstItem="JYg-jm-xNp" firstAttribute="top" secondItem="6ch-uA-AhM" secondAttribute="bottom" constant="10" id="vWT-63-ZGP"/>
                             <constraint firstAttribute="trailing" secondItem="1WB-Dh-mab" secondAttribute="trailing" constant="13" id="vdH-ay-jvF"/>
                             <constraint firstItem="hdx-eI-yOD" firstAttribute="leading" secondItem="VNi-A3-0ux" secondAttribute="trailing" constant="6" id="vs1-1X-acI"/>
                         </constraints>
@@ -190,6 +199,7 @@
         <image name="DinnerIcon" width="512" height="512"/>
         <image name="LunchIcon" width="512" height="512"/>
         <image name="SnacksIcon" width="512" height="512"/>
+        <image name="StarRatings" width="128" height="128"/>
         <image name="dot.square" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
