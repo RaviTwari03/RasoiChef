@@ -9,7 +9,8 @@ import UIKit
 
 class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate {
     
-    
+    var menuItems: [MenuItem] = []
+
     
     @IBOutlet weak var MealCategories: UICollectionView!
     

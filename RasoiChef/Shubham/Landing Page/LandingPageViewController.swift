@@ -224,12 +224,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 { // Section 0 corresponds to "LandingPageBanner"
-            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
+           let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
             if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
                 
                 // Pass data if necessary, for example:
                 // mealCategoriesVC.selectedBannerData = KitchenDataController.mealBanner[indexPath.item]
-                
+             
+
                 self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
             }
         } else if indexPath.section == 2 { // Existing logic for "LandingPageKitchen"

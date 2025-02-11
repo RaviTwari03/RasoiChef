@@ -26,12 +26,12 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var Ratings: UILabel!
     
     func updateMealDetails(with indexPath: IndexPath) {
-        guard indexPath.row < KitchenDataController.GloballunchMenuItems.count else {
-            print("Error: Index \(indexPath.row) is out of range. Available items: \(KitchenDataController.GloballunchMenuItems.count)")
+        guard indexPath.row < KitchenDataController.GlobaldinnerMenuItems.count else {
+            print("Error: Index \(indexPath.row) is out of range. Available items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
             return
         }
         
-        let menuItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
+        let menuItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
         
         mealNameLabel.text = menuItem.name
         mealImage.image = UIImage(named: menuItem.imageURL)
