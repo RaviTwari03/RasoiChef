@@ -192,9 +192,10 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .absolute(260))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        //        group.interItemSpacing = .fixed(5)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 8, trailing: 0.0)
+//                group.interItemSpacing = .fixed(5)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 8.0, trailing: 5.0)
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 5)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
@@ -230,8 +231,9 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(180))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(5)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 8.0, trailing: 0.0)
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
         section.orthogonalScrollingBehavior = .groupPaging
         return section
         
@@ -250,7 +252,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         group.interItemSpacing = .fixed(5)
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 20.0, trailing: 8.0) // No insets on
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         return section
     }
     

@@ -29,7 +29,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAU-a8-nUg">
                                 <rect key="frame" x="0.0" y="0.0" width="81" height="34.333333333333336"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Explore"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Explore">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="14"/>
+                                </buttonConfiguration>
                                 <connections>
                                     <action selector="seeMoreTapped:" destination="TPr-v8-wys" eventType="touchUpInside" id="HO0-ia-gvf"/>
                                 </connections>
