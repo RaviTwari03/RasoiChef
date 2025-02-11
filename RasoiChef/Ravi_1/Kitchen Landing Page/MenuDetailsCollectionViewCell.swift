@@ -51,7 +51,7 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         expectedDeliveryLabel.text = "Delivery Expected By 6 pm"
         mealNameLabel.text = menuItem.name
         mealPriceLabel.text = "₹\(menuItem.price)"
-        mealRatingLabel.text = "⭐ \(menuItem.rating)"
+        mealRatingLabel.text = "\(menuItem.rating)"
         mealImageView.image = UIImage(named: menuItem.imageURL)
         availabiltyLabel.text = "\(menuItem.availability.map { $0.rawValue.capitalized }.joined(separator: ", "))"
 

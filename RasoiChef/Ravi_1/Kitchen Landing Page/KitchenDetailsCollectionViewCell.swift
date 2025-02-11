@@ -23,7 +23,7 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         kitchenName.text = restaurant.name
         kitchenDistance.text = "\(restaurant.distance) km"
         kitchenCuisine.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
-        kitchenRatings.text = "⭐ \(restaurant.rating)"
+        kitchenRatings.text = "\(restaurant.rating)"
         kitchenProfileImage.image = UIImage(named: "KitchenImage")
     }
 }
