@@ -103,7 +103,7 @@ extension MyOrdersTableViewCell:CartPayCellDelegate{
         orderIDLabel.text = "Order ID - \(order.orderID)"
         dateLabel.text = formatDate(order.deliveryDate)
         locationLabel.text = order.deliveryAddress
-        kitchenName.text = order.kitchenID
+        kitchenName.text = order.kitchenName
     }
     
 }
