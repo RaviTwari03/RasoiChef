@@ -116,6 +116,11 @@
                                     <constraint firstAttribute="width" constant="120" id="Los-D4-dCM"/>
                                     <constraint firstAttribute="height" constant="120" id="rmX-kF-vTf"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="15"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="2Ns-Fs-ecs">
                                 <rect key="frame" x="10" y="170.66666666666666" width="18" height="18"/>
@@ -131,6 +136,7 @@
                             <constraint firstItem="Pd6-vn-3gW" firstAttribute="top" secondItem="XO8-69-Cee" secondAttribute="bottom" constant="7" id="4ww-ql-0bP"/>
                             <constraint firstItem="2Ns-Fs-ecs" firstAttribute="leading" secondItem="Pd6-vn-3gW" secondAttribute="leading" id="7yR-rR-mTm"/>
                             <constraint firstItem="RlV-2S-MXz" firstAttribute="top" secondItem="Ul5-vU-K6m" secondAttribute="bottom" constant="5" id="8Lc-mX-Ldk"/>
+                            <constraint firstItem="Wfe-9g-44v" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="XO8-69-Cee" secondAttribute="trailing" constant="5" id="APw-8p-WUP"/>
                             <constraint firstAttribute="trailing" secondItem="j2p-rj-Ukn" secondAttribute="trailing" id="ExQ-ki-jF8"/>
                             <constraint firstItem="CWf-qv-QOZ" firstAttribute="leading" secondItem="2Ns-Fs-ecs" secondAttribute="trailing" constant="2" id="JDE-3h-9dN"/>
                             <constraint firstItem="XO8-69-Cee" firstAttribute="leading" secondItem="GSj-qm-GlN" secondAttribute="leading" constant="10" id="Kho-dd-AmF"/>
