@@ -19,6 +19,16 @@ class MyOrdersViewController: UIViewController {
         var displayedOrders: [Order] = [] // Orders shown based on the selected segment
         static var shared = MyOrdersViewController()
     
+    private let noActiveOrdersLabel: UILabel = {
+           let label = UILabel()
+           label.text = "No Active Orders"
+          label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+           label.textColor = .gray
+          label.textAlignment = .center
+          label.translatesAutoresizingMaskIntoConstraints = false
+         return label
+       }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -34,6 +44,20 @@ class MyOrdersViewController: UIViewController {
         
         
         tableView.sectionHeaderTopPadding = 10
+        
+        // Add the noActiveOrdersLabel to the view
+              view.addSubview(noActiveOrdersLabel)
+        
+               // Set up constraints for the label
+                NSLayoutConstraint.activate([
+                    noActiveOrdersLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    noActiveOrdersLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                    noActiveOrdersLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                    noActiveOrdersLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+               ])
+        // Initially hide the label
+             noActiveOrdersLabel.isHidden = true
+        
         tableView.reloadData()
         loadData()
         
@@ -42,7 +66,18 @@ class MyOrdersViewController: UIViewController {
             let allOrders = OrderDataController.shared.getOrders()
             currentOrders = allOrders.filter { $0.status != .delivered }
             pastOrders = allOrders.filter { $0.status == .delivered }
-            tableView.reloadData()
+        
+        // Show or hide the "No Active Orders" label and table view
+               if currentOrders.isEmpty {
+                   noActiveOrdersLabel.isHidden = false
+                   tableView.isHidden = true // Hide the table view if there are no current orders
+                } else {
+                   noActiveOrdersLabel.isHidden = true
+                   tableView?.isHidden = false // Show the table view if there are current orders
+                }
+        
+
+            tableView?.reloadData()
         }
     
     func showPricePopup(for order: Order) {

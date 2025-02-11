@@ -28,6 +28,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         // Clear cart items and reload table view
         CartViewController.cartItems.removeAll() // Clear cart items after order
         CartItem.reloadData() // Reload cart table view
+        
+        // Notify MyOrdersViewController to reload data
+               MyOrdersViewController.shared.loadData() 
        
         // Add a delay before changing the tab, to allow the user to see the pop-up
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
