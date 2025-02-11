@@ -69,22 +69,7 @@ class CartItemTableViewCell: UITableViewCell {
             print("Index out of range: \(indexpath.row) exceeds number of cart items")
             return
         }
-//        
-//        let cartItem = KitchenDataController.cartItems[indexpath.row]
-//        CartDishLabel.text = cartItem.menuItem?.name
-//        CartDishDescription.text = cartItem.menuItem?.description
-//        CartDishPriceLabel.text = "₹\(cartItem.menuItem?.price)"
-//        CartItemQuantityLabel.text = "\(cartItem.quantity)"
-//        CartIncreaseCounter.value = Double(cartItem.quantity)
-//        
-//    }
-//    func configure(with item: CartItem) {
-//        CartDishLabel.text = item.menuItem?.name
-//        CartDishDescription.text = item.menuItem?.description
-//        CartDishPriceLabel.text = "₹\(item.menuItem?.price)"
-//        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
-//      }
-//    }
+        
         let cartItem = KitchenDataController.cartItems[indexpath.row]
 
         if let menuItem = cartItem.menuItem {
@@ -106,47 +91,6 @@ class CartItemTableViewCell: UITableViewCell {
         CartItemQuantityLabel.text = "\(cartItem.quantity)"
         CartIncreaseCounter.value = Double(cartItem.quantity)
     }
-
-//    func configure(with item: CartItem) {
-//        if let menuItem = item.menuItem {
-//            CartDishLabel.text = menuItem.name
-//            CartDishDescription.text = menuItem.description
-//           // CartDishPriceLabel.text = "₹\(menuItem.price)"
-//        } else if let chefSpecialtyDish = item.chefSpecial {
-//            CartDishLabel.text = chefSpecialtyDish.name
-//            CartDishDescription.text = chefSpecialtyDish.description
-//            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
-//            print("\(chefSpecialtyDish.price)")
-//        } else {
-//            CartDishLabel.text = "Unknown Item"
-//            CartDishDescription.text = "No description available"
-//            CartDishPriceLabel.text = "₹0.0"
-////            print("\(chefSpecialtyDish.price)")
-//        }
-//        
-//        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
-//        CartIncreaseCounter.value = Double(item.quantity)
-//    }
-//    func configure(with item: CartItem) {
-//        if let menuItem = item.menuItem {
-//            CartDishLabel.text = menuItem.name
-//            CartDishDescription.text = menuItem.description
-//            CartDishPriceLabel.text = "₹\(menuItem.price)"
-//        } else if let chefSpecial = item.chefSpecial {  // ✅ Use correct property name
-//            CartDishLabel.text = chefSpecial.name
-//            CartDishDescription.text = chefSpecial.description
-//            CartDishPriceLabel.text = "₹\(chefSpecial.price)" // ✅ Should now display correctly
-//        } else {
-////            CartDishLabel.text = "Unknown Item"
-////            CartDishDescription.text = "No description available"
-////            CartDishPriceLabel.text = "₹0.0"
-//            print("hello")
-//        }
-//
-//        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
-//        CartIncreaseCounter.value = Double(item.quantity)
-//    }
-
 }
 
 
