@@ -56,16 +56,6 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        if section == 0  {
-        //            return 1 // Number of days in the week
-        //        } else {
-        //            return weeklyMeals.count // Section 1 has no rows, only a footer
-        //        }
-        //        if section == 2 {
-        //            return 1 // Number of days in the week
-        //        } else {
-        //            return weeklyMeals.count // Section 1 has no rows, only a footer
-        //        }
         switch section {
         case 0:
             return 1
