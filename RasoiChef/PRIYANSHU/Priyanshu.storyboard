@@ -75,7 +75,7 @@
         <scene sceneID="ybi-mH-up8">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ESf-EO-cLD" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Orders" image="pencil.circle" catalog="system" selectedImage="pencil.circle.fill" id="wJ0-hb-olg"/>
+                    <tabBarItem key="tabBarItem" title="My Orders" image="list.bullet.clipboard" catalog="system" selectedImage="list.bullet.clipboard.fill" id="wJ0-hb-olg"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="lZO-3q-ifp">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
@@ -134,8 +134,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="pencil.circle" catalog="system" width="128" height="123"/>
-        <image name="pencil.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="list.bullet.clipboard" catalog="system" width="98" height="128"/>
+        <image name="list.bullet.clipboard.fill" catalog="system" width="98" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
