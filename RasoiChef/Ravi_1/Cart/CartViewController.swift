@@ -66,7 +66,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             // Create order items from cart items
             let orderItems = cartItems.map { cartItem -> OrderItem in
                 return OrderItem(
-                    menuItemID: cartItem.menuItem.itemID,
+                    menuItemID: cartItem.menuItem.name,
                     quantity: cartItem.quantity,
                     price: cartItem.menuItem.price * Double(cartItem.quantity)
                 )
@@ -83,7 +83,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 orderID: UUID().uuidString,  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
                 kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
-                kitchenID: cartItems.first?.menuItem.kitchenID ?? "",    // Pass the kitchen name here
+                kitchenID: cartItems.first?.menuItem.kitchenName ?? "",    // Pass the kitchen name here
                 items: orderItems,
                 status: .placed,
                 totalAmount: totalAmount,
