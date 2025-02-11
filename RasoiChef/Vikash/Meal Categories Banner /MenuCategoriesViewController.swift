@@ -11,6 +11,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     
     var menuItems: [MenuItem] = []
 
+    var mealTiming : MealTiming = .breakfast
     
     @IBOutlet weak var MealCategories: UICollectionView!
     
@@ -212,6 +213,7 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         cell.layer.shadowRadius = 2.5
         cell.layer.shadowOpacity = 0.5
         cell.layer.masksToBounds = false
+        cell.mealTiming = mealTiming
         cell.updateMealDetails(with: indexPath)
 
 

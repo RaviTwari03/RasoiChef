@@ -121,6 +121,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
             return cell
             
+            
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
@@ -224,12 +225,24 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 { // Section 0 corresponds to "LandingPageBanner"
+            
            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
             if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
                 
                 // Pass data if necessary, for example:
                 // mealCategoriesVC.selectedBannerData = KitchenDataController.mealBanner[indexPath.item]
-             
+                switch indexPath.row {
+                case 0:
+                    mealCategoriesVC.mealTiming = .breakfast
+                case 1:
+                    mealCategoriesVC.mealTiming = .lunch
+                case 2:
+                    mealCategoriesVC.mealTiming = .snacks
+                case 3:
+                    mealCategoriesVC.mealTiming = .dinner
+                default:
+                    mealCategoriesVC.mealTiming = .snacks
+                }
 
                 self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
             }
