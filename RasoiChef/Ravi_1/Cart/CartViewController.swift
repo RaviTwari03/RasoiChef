@@ -80,7 +80,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
             // Create the Order object
             let order = Order(
-                orderID: UUID().uuidString,  // Generate a unique order ID
+                orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
                 kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
                 kitchenID: cartItems.first?.menuItem.kitchenName ?? "",    // Pass the kitchen name here
