@@ -339,29 +339,6 @@ class KitchenDataController {
         )
     ]
 
-//    static var subscriptionPlan: [SubscriptionPlan] = [
-//        SubscriptionPlan(
-//            planID: "001",
-//            userID: "001",
-//            kitchenID: "kitchen001",
-//            startDate: "2025-02-10",
-//            endDate: "2025-02-16",
-//            totalPrice: 1400.0,
-//            details: "Weekly Plan",
-//            mealCountPerDay: 4,
-//            planImage: "PlanImage",
-//            weeklyMeals: [
-//                .monday: [.breakfast: menuItems.first(where: { $0.itemID == "item201" }),.lunch: "item101", .snacks: "item301", .dinner: "menu001"],
-//                .tuesday: [.breakfast: "item202", .lunch: "item102", .snacks: "item302", .dinner: "item401"],
-//                .wednesday: [.breakfast: "item203", .lunch: "item103", .snacks: "item303", .dinner: "item402"],
-//                .thursday: [.breakfast: "item204", .lunch: "item104", .snacks: "item304", .dinner: "item403"],
-//                .friday: [.breakfast: "item205", .lunch: "item105", .snacks: "item305", .dinner: "item404"],
-//                .saturday: [.breakfast: "item206", .lunch: "item106", .snacks: "item306", .dinner: "item405"],
-//                .sunday: [.breakfast: "item207", .lunch: "item107", .snacks: "item307", .dinner: "item406"]
-//            ]
-//        )
-//    ]
-   
 
     static var subscriptionPlan: [SubscriptionPlan] = [
         SubscriptionPlan(
