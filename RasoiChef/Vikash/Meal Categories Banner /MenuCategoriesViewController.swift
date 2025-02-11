@@ -7,7 +7,12 @@
 
 import UIKit
 
-class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate {
+
+protocol MealCategoriesCollectionViewCellDelegate: AnyObject {
+    func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell)
+}
+
+class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate,MealCategoriesCollectionViewCellDelegate {
     
     var menuItems: [MenuItem] = []
 
@@ -216,10 +221,35 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         cell.mealTiming = mealTiming
         cell.updateMealDetails(with: indexPath)
 
-
+        cell.delegate = self
         return cell
     }
-    
+    func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell) {
+        guard let indexPath = MealCategories.indexPath(for: cell) else { return }
+
+        let selectedItem: MenuItem
+        switch mealTiming {
+        case .breakfast:
+            selectedItem = KitchenDataController.GlobalbreakfastMenuItems[indexPath.row]
+        case .lunch:
+            selectedItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
+        case .snacks:
+            selectedItem = KitchenDataController.GlobalsnacksMenuItems[indexPath.row]
+        case .dinner:
+            selectedItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
+        }
+
+        print("Add button tapped for meal: \(selectedItem.name)")
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            detailVC.selectedItem = selectedItem
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
+    }
+
     
     
      func generateLayout() -> UICollectionViewLayout {

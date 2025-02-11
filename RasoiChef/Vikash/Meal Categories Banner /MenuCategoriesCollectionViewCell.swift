@@ -11,7 +11,8 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         
     var mealTiming:MealTiming = .breakfast
     
-    
+    weak var delegate: MealCategoriesCollectionViewCellDelegate?
+
     @IBOutlet weak var mealImage: UIImageView!
     
     @IBOutlet weak var mealNameLabel: UILabel!
@@ -23,6 +24,7 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    @IBOutlet weak var addButton: UIButton!
     @IBOutlet weak var KitchenDistance: UILabel!
     
     @IBOutlet weak var Ratings: UILabel!
@@ -75,6 +77,15 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
         priceLabel.text = "₹\(menuItem.price)"
         descriptionLabel.text = menuItem.description
+    }
+    
+    
+    
+    
+
+    
+    @IBAction func addButtonTapped(_ sender: Any) {
+        delegate?.MealcategoriesButtonTapped(in: self)
     }
 }
 //}
