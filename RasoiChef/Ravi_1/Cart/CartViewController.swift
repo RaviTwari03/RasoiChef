@@ -271,7 +271,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     //    }
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
-            total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
+            print(cartItem.menuItem?.name)
+            return total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
         }
     }
     
