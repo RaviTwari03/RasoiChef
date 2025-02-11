@@ -16,41 +16,38 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" spacing="-24" translatesAutoresizingMaskIntoConstraints="NO" id="MIL-k9-exU">
-                        <rect key="frame" x="272" y="7" width="116.66666666666669" height="34.333333333333336"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ker-Xy-F7b">
-                                <rect key="frame" x="0.0" y="0.0" width="101" height="34.333333333333336"/>
-                                <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="See More "/>
-                                <connections>
-                                    <action selector="seeMoreTapped:" destination="kQu-Sk-ont" eventType="touchUpInside" id="RSA-S4-qb3"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jxy-qx-Ykf">
-                                <rect key="frame" x="77" y="0.0" width="39.666666666666657" height="34.333333333333336"/>
-                                <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
-                            </button>
-                        </subviews>
-                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jxy-qx-Ykf">
+                        <rect key="frame" x="348" y="8" width="40" height="34.333333333333336"/>
+                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
+                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Menu List" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tui-PI-def">
                         <rect key="frame" x="16" y="11.999999999999998" width="100" height="26.333333333333329"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ker-Xy-F7b">
+                        <rect key="frame" x="283" y="11" width="85" height="29.666666666666664"/>
+                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" title="See More ">
+                            <fontDescription key="titleFontDescription" type="system" pointSize="13"/>
+                        </buttonConfiguration>
+                        <connections>
+                            <action selector="seeMoreTapped:" destination="kQu-Sk-ont" eventType="touchUpInside" id="RSA-S4-qb3"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="MIL-k9-exU" firstAttribute="leading" secondItem="Tui-PI-def" secondAttribute="trailing" constant="156" id="2ED-Kb-Kh8"/>
                     <constraint firstItem="Tui-PI-def" firstAttribute="top" secondItem="s6V-by-CSL" secondAttribute="top" constant="12" id="3xo-iM-9T4"/>
+                    <constraint firstItem="Ker-Xy-F7b" firstAttribute="centerY" secondItem="Tui-PI-def" secondAttribute="centerY" id="boi-bD-sjn"/>
                     <constraint firstAttribute="bottom" secondItem="Tui-PI-def" secondAttribute="bottom" constant="11.67" id="dF6-Nm-qb5"/>
+                    <constraint firstAttribute="trailing" secondItem="jxy-qx-Ykf" secondAttribute="trailing" constant="5" id="fR3-Ft-BWL"/>
+                    <constraint firstItem="jxy-qx-Ykf" firstAttribute="leading" secondItem="Ker-Xy-F7b" secondAttribute="trailing" constant="-20" id="hfZ-bk-W7d"/>
                     <constraint firstItem="Tui-PI-def" firstAttribute="leading" secondItem="s6V-by-CSL" secondAttribute="leading" constant="16" id="ktL-i9-bgE"/>
-                    <constraint firstAttribute="trailing" secondItem="MIL-k9-exU" secondAttribute="trailing" constant="4.3300000000000001" id="ocd-Aq-pgV"/>
-                    <constraint firstItem="MIL-k9-exU" firstAttribute="top" secondItem="s6V-by-CSL" secondAttribute="top" constant="7" id="rlA-jG-qHY"/>
-                    <constraint firstAttribute="bottom" secondItem="MIL-k9-exU" secondAttribute="bottom" constant="8.6699999999999999" id="wOF-J6-0dk"/>
+                    <constraint firstItem="jxy-qx-Ykf" firstAttribute="centerY" secondItem="Ker-Xy-F7b" secondAttribute="centerY" id="wFr-Gg-NqH"/>
                 </constraints>
             </collectionViewCellContentView>
             <size key="customSize" width="335" height="54"/>
