@@ -17,6 +17,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     var buttonClickCount = 0 // To track the number of button clicks
     
     var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
+    //var totalPrice = KitchenDataController.subscriptionPlans[0].totalPrice
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
     
@@ -56,6 +57,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //        if section == 0  {
+        //            return 1 // Number of days in the week
+        //        } else {
+        //            return weeklyMeals.count // Section 1 has no rows, only a footer
+        //        }
+        //        if section == 2 {
+        //            return 1 // Number of days in the week
+        //        } else {
+        //            return weeklyMeals.count // Section 1 has no rows, only a footer
+        //        }
         switch section {
         case 0:
             return 1
