@@ -521,7 +521,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="j4Z-bT-3tQ">
-                                <rect key="frame" x="0.0" y="174" width="430" height="724"/>
+                                <rect key="frame" x="0.0" y="209" width="430" height="689"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="O8S-09-JxW">
                                     <size key="itemSize" width="128" height="128"/>
@@ -544,8 +544,8 @@
                         <viewLayoutGuide key="safeArea" id="KzN-f7-1Jq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="j4Z-bT-3tQ" firstAttribute="top" secondItem="KzN-f7-1Jq" secondAttribute="top" constant="150" id="GfJ-KR-gMz"/>
                             <constraint firstItem="KzN-f7-1Jq" firstAttribute="trailing" secondItem="j4Z-bT-3tQ" secondAttribute="trailing" id="HUB-pl-bSE"/>
-                            <constraint firstItem="j4Z-bT-3tQ" firstAttribute="top" secondItem="KzN-f7-1Jq" secondAttribute="top" constant="115" id="PJJ-Yi-7aD"/>
                             <constraint firstItem="j4Z-bT-3tQ" firstAttribute="leading" secondItem="KzN-f7-1Jq" secondAttribute="leading" id="cCk-6L-LQC"/>
                             <constraint firstItem="KzN-f7-1Jq" firstAttribute="bottom" secondItem="j4Z-bT-3tQ" secondAttribute="bottom" id="lZk-Ue-7Fc"/>
                         </constraints>
@@ -1052,7 +1052,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
