@@ -9,6 +9,7 @@ import UIKit
 protocol CartItemTableViewCellDelegate: AnyObject {
     func didTapRemoveButton(cell: CartItemTableViewCell)
 }
+
 class CartItemTableViewCell: UITableViewCell {
 
     weak var delegate: CartItemTableViewCellDelegate?
@@ -70,20 +71,27 @@ class CartItemTableViewCell: UITableViewCell {
         }
         
         let cartItem = KitchenDataController.cartItems[indexpath.row]
-        CartDishLabel.text = cartItem.menuItem.name
-        CartDishDescription.text = cartItem.menuItem.description
-        CartDishPriceLabel.text = "₹\(cartItem.menuItem.price)"
+
+        if let menuItem = cartItem.menuItem {
+            // Regular menu item
+            CartDishLabel.text = menuItem.name
+            CartDishDescription.text = menuItem.description
+            CartDishPriceLabel.text = "₹\(menuItem.price)"
+        } else if let chefSpecialtyDish = cartItem.chefSpecial {
+            // Chef specialty dish
+            CartDishLabel.text = chefSpecialtyDish.name
+            CartDishDescription.text = chefSpecialtyDish.description
+            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
+        } else {
+            CartDishLabel.text = "Unknown Item"
+            CartDishDescription.text = "No description available"
+            CartDishPriceLabel.text = "₹0.0"
+        }
+
         CartItemQuantityLabel.text = "\(cartItem.quantity)"
         CartIncreaseCounter.value = Double(cartItem.quantity)
-        
     }
-    func configure(with item: CartItem) {
-        CartDishLabel.text = item.menuItem.name
-        CartDishDescription.text = item.menuItem.description
-        CartDishPriceLabel.text = "₹\(item.menuItem.price)"
-        CartItemQuantityLabel.text = "Qty: \(item.quantity)"
-      }
-    }
+}
 
 
 

@@ -12,32 +12,40 @@ import UIKit
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate {
     
     
-    func didTapPlaceOrder() {
-        
-        let order = createOrderFromCart(cartItems: CartViewController.cartItems)
-        OrderDataController.shared.addOrder(order: order)
-        // Assuming "My Orders" is a tab in your UITabBarController
-        if let tabBarController = self.tabBarController {
-            tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
-            
-            
-        }
-        print("Order placed: \(order)")
-        CartViewController.cartItems.removeAll() // Clear cart items after order
-        CartItem.reloadData() // Reload cart table view
-
-    }
-    
-    
-    
-    
+  
+   
     @IBOutlet var CartItem: UITableView!
     
     static var cartItems: [CartItem] = []
-     
+   
+    func didTapPlaceOrder() {
+        let order = createOrderFromCart(cartItems: CartViewController.cartItems)
+        OrderDataController.shared.addOrder(order: order)
+
+        let banner = CustomBannerView()
+           banner.show(in: self.view, message: "Order Placed Successfully!")
+           
+        // Clear cart items and reload table view
+        CartViewController.cartItems.removeAll() // Clear cart items after order
+        CartItem.reloadData() // Reload cart table view
+        
+        // Notify MyOrdersViewController to reload data
+               MyOrdersViewController.shared.loadData() 
+       
+        // Add a delay before changing the tab, to allow the user to see the pop-up
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
+                if let tabBarController = self.tabBarController {
+                    tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
+                }
+            }
+    }
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cart"
+        
+     
+        
         CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
         
         CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
@@ -51,32 +59,34 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         CartItem.dataSource = self
         CartItem.reloadData()
         
+        
+        
     }
     
-    
+  
     
     func createOrderFromCart(cartItems: [CartItem]) -> Order {
             // Create order items from cart items
             let orderItems = cartItems.map { cartItem -> OrderItem in
                 return OrderItem(
-                    menuItemID: cartItem.menuItem.itemID,
+                    menuItemID: cartItem.menuItem?.name ?? " ",
                     quantity: cartItem.quantity,
-                    price: cartItem.menuItem.price * Double(cartItem.quantity)
+                    price: (cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity)
                 )
             }
             
             // Calculate the total amount from all cart items
-            let totalAmount = cartItems.reduce(0.0) { $0 + ($1.menuItem.price * Double($1.quantity)) }
+        let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0) * Double($1.quantity)) }
             
             // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
            // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
             
             // Create the Order object
             let order = Order(
-                orderID: UUID().uuidString,  // Generate a unique order ID
+                orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
-                kitchenName: cartItems.first?.menuItem.kitchenName ?? "",
-                kitchenID: cartItems.first?.menuItem.kitchenID ?? "",    // Pass the kitchen name here
+                kitchenName: cartItems.first?.menuItem?.kitchenName ?? "",
+                kitchenID: cartItems.first?.menuItem?.kitchenName ?? "",    // Pass the kitchen name here
                 items: orderItems,
                 status: .placed,
                 totalAmount: totalAmount,
@@ -261,7 +271,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     //    }
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
-            total + (cartItem.menuItem.price * Double(cartItem.quantity))
+            print(cartItem.menuItem?.name)
+            return total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
         }
     }
     

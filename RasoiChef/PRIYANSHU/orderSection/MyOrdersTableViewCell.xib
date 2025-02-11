@@ -89,57 +89,53 @@
                                     <action selector="infoButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vhi-bu-M7Y"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWp-2n-UKf">
-                                <rect key="frame" x="263" y="168" width="80" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="Ghg-BF-Q7r"/>
-                                    <constraint firstAttribute="height" constant="35" id="hNb-0Z-qBK"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Track" cornerStyle="capsule">
-                                    <backgroundConfiguration key="background">
-                                        <color key="backgroundColor" red="0.88235294819999999" green="0.92156863209999995" blue="0.99607843159999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                    </backgroundConfiguration>
-                                    <fontDescription key="titleFontDescription" style="UICTFontTextStyleTitle2"/>
-                                    <color key="baseForegroundColor" systemColor="tintColor"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="trackButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="sx3-DW-oIP"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hI8-cZ-BUj">
                                 <rect key="frame" x="8" y="159" width="337" height="1"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="Tvg-vh-kbb"/>
+                                    <constraint firstAttribute="height" constant="1" id="7PJ-Mn-TMV"/>
+                                    <constraint firstAttribute="width" constant="337" id="gpe-LV-XQS"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ar-RN-KLL">
+                                <rect key="frame" x="270" y="170" width="75" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="Nc5-eL-jpq"/>
+                                    <constraint firstAttribute="width" constant="75" id="Zw0-sO-8YE"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Track">
+                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="20"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="trackButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Dqj-2c-zWh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="d7q-X0-VjG" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="0Fm-0V-Ccm"/>
-                            <constraint firstAttribute="trailing" secondItem="vWp-2n-UKf" secondAttribute="trailing" constant="5" id="17F-7K-CaV"/>
+                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="159" id="5FW-Qg-H87"/>
+                            <constraint firstAttribute="bottom" secondItem="7ar-RN-KLL" secondAttribute="bottom" constant="5" id="8Tn-6I-TGd"/>
                             <constraint firstItem="Ls0-Hj-Y3C" firstAttribute="top" secondItem="nHO-Pb-2Be" secondAttribute="bottom" constant="4" id="9DV-f7-Qxr"/>
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="BcL-H2-jHv"/>
                             <constraint firstItem="dHB-uZ-cc1" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="51" id="GAX-VN-StS"/>
                             <constraint firstItem="HEf-py-kwh" firstAttribute="leading" secondItem="nHO-Pb-2Be" secondAttribute="trailing" constant="60" id="OA0-xh-T3V"/>
-                            <constraint firstAttribute="trailing" secondItem="vWp-2n-UKf" secondAttribute="trailing" constant="10" id="Qkh-n8-PQ7"/>
                             <constraint firstItem="Ls0-Hj-Y3C" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="Unq-Lc-HsZ"/>
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="10" id="Vf1-9A-rOV"/>
                             <constraint firstItem="HEf-py-kwh" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="10" id="b79-Cq-qgt"/>
-                            <constraint firstAttribute="bottom" secondItem="vWp-2n-UKf" secondAttribute="bottom" constant="7" id="cW9-hs-HK2"/>
                             <constraint firstAttribute="trailing" secondItem="hI8-cZ-BUj" secondAttribute="trailing" constant="8" id="dGC-8k-Hx9"/>
                             <constraint firstItem="P7N-n4-Gmj" firstAttribute="top" secondItem="d7q-X0-VjG" secondAttribute="bottom" constant="3" id="f4C-6t-IdK"/>
                             <constraint firstAttribute="bottom" secondItem="HqV-eF-K19" secondAttribute="bottom" constant="4" id="fh6-F6-fYj"/>
                             <constraint firstItem="dHB-uZ-cc1" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="gKu-Qg-c3v"/>
-                            <constraint firstItem="vWp-2n-UKf" firstAttribute="top" secondItem="hI8-cZ-BUj" secondAttribute="bottom" constant="8" id="mH3-De-NsC"/>
                             <constraint firstItem="HqV-eF-K19" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="141" id="nfF-n7-kcM"/>
                             <constraint firstItem="P7N-n4-Gmj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="s8f-Bs-YV9"/>
                             <constraint firstAttribute="bottom" secondItem="7Xi-ro-JlI" secondAttribute="bottom" constant="12" id="v3d-eY-1HI"/>
                             <constraint firstItem="7Xi-ro-JlI" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="vlR-5g-ahO"/>
                             <constraint firstItem="d7q-X0-VjG" firstAttribute="top" secondItem="dHB-uZ-cc1" secondAttribute="bottom" constant="4" id="y9u-md-oZj"/>
                             <constraint firstItem="hI8-cZ-BUj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="8" id="yO9-El-sBa"/>
+                            <constraint firstAttribute="trailing" secondItem="7ar-RN-KLL" secondAttribute="trailing" constant="8" id="zbH-tU-bh4"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -168,7 +164,7 @@
                 <outlet property="kitchenName" destination="Ls0-Hj-Y3C" id="3xl-KL-E6u"/>
                 <outlet property="locationLabel" destination="dHB-uZ-cc1" id="aQb-Xm-V96"/>
                 <outlet property="orderIDLabel" destination="nHO-Pb-2Be" id="0wF-oJ-Trv"/>
-                <outlet property="trackButton" destination="vWp-2n-UKf" id="23G-fI-9Ln"/>
+                <outlet property="trackButton" destination="7ar-RN-KLL" id="RRW-Ah-s0B"/>
             </connections>
             <point key="canvasLocation" x="-189" y="-22"/>
         </tableViewCell>
@@ -178,9 +174,6 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="tableCellBlueTextColor">
-            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="tintColor">
             <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>

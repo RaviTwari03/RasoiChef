@@ -22,7 +22,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Customise Table" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vwf-12-w8h">
-                        <rect key="frame" x="20" y="194" width="142.33333333333334" height="21.666666666666657"/>
+                        <rect key="frame" x="20" y="202" width="142.33333333333334" height="21.666666666666657"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -34,7 +34,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click on each cell to modify your plan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gio-qN-5Nb">
-                        <rect key="frame" x="20.333333333333329" y="219" width="184.66666666666669" height="20"/>
+                        <rect key="frame" x="20.333333333333329" y="227" width="184.66666666666669" height="12"/>
                         <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="10"/>
                         <nil key="textColor"/>
@@ -64,13 +64,6 @@
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="9v4-om-cSy"/>
                             <constraint firstAttribute="height" constant="29" id="KPW-rB-b1x"/>
-                        </constraints>
-                    </datePicker>
-                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="OJz-lo-IzV">
-                        <rect key="frame" x="20" y="139" width="124" height="29"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="29" id="rfX-oA-sJz"/>
-                            <constraint firstAttribute="width" constant="124" id="y3P-mF-Q9i"/>
                         </constraints>
                     </datePicker>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="-5" translatesAutoresizingMaskIntoConstraints="NO" id="5qc-C4-tV9">
@@ -119,12 +112,17 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0XO-gX-3zu">
+                        <rect key="frame" x="30.000000000000004" y="147" width="35.333333333333343" height="22"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="5qc-C4-tV9" firstAttribute="top" secondItem="V7h-8o-aNd" secondAttribute="bottom" constant="100" id="1wV-Wu-wCC"/>
                     <constraint firstItem="0uu-pt-jG3" firstAttribute="top" secondItem="uyD-RN-DB9" secondAttribute="top" constant="41" id="3WJ-5E-VHQ"/>
                     <constraint firstItem="TBD-0A-OUf" firstAttribute="leading" secondItem="4tq-eR-dbK" secondAttribute="trailing" constant="20.669998168945312" id="4bi-ZR-g4P"/>
-                    <constraint firstItem="OJz-lo-IzV" firstAttribute="top" secondItem="Rcx-6d-Rl7" secondAttribute="bottom" constant="8.3300000000000001" id="6GD-Nc-qS0"/>
                     <constraint firstAttribute="trailing" secondItem="V7h-8o-aNd" secondAttribute="trailing" constant="19" id="6pM-VK-Wp2"/>
                     <constraint firstAttribute="trailing" secondItem="HoK-kM-ccG" secondAttribute="trailing" constant="15.329999923706055" id="8ZH-Qh-MaJ"/>
                     <constraint firstAttribute="trailing" secondItem="V7h-8o-aNd" secondAttribute="trailing" constant="19" id="93Q-uU-GOz"/>
@@ -132,7 +130,7 @@
                     <constraint firstAttribute="bottom" secondItem="HoK-kM-ccG" secondAttribute="bottom" constant="11" id="9ch-ha-acO"/>
                     <constraint firstItem="Rcx-6d-Rl7" firstAttribute="top" secondItem="pdt-4C-pWs" secondAttribute="bottom" constant="20" id="AxU-Av-kTI"/>
                     <constraint firstItem="5qc-C4-tV9" firstAttribute="leading" secondItem="gio-qN-5Nb" secondAttribute="trailing" constant="31.329999999999998" id="BRc-ee-BGG"/>
-                    <constraint firstItem="OJz-lo-IzV" firstAttribute="top" secondItem="Rcx-6d-Rl7" secondAttribute="bottom" constant="8.3300000000000001" id="CQv-Gq-URy"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="0XO-gX-3zu" secondAttribute="trailing" constant="20" id="CR9-04-8x1"/>
                     <constraint firstItem="TBD-0A-OUf" firstAttribute="top" secondItem="5qc-C4-tV9" secondAttribute="bottom" constant="29.670000000000002" id="D7K-Zc-k0K"/>
                     <constraint firstItem="5qc-C4-tV9" firstAttribute="leading" secondItem="Vwf-12-w8h" secondAttribute="trailing" constant="74" id="DIa-ij-IHW"/>
                     <constraint firstAttribute="trailingMargin" secondItem="5qc-C4-tV9" secondAttribute="trailing" constant="5" id="DPv-vc-GLG"/>
@@ -141,8 +139,8 @@
                     <constraint firstItem="Cl5-v8-shR" firstAttribute="leading" secondItem="Sam-sw-bcB" secondAttribute="trailing" constant="30" id="J7Y-Oi-KLT"/>
                     <constraint firstItem="0uu-pt-jG3" firstAttribute="leading" secondItem="Mas-BW-xxp" secondAttribute="trailing" constant="200" id="JXa-JA-oBK"/>
                     <constraint firstItem="gio-qN-5Nb" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leadingMargin" constant="0.33000000000000002" id="KBZ-2e-Zl1"/>
-                    <constraint firstItem="OJz-lo-IzV" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leadingMargin" id="KRF-7E-9eV"/>
                     <constraint firstItem="Sam-sw-bcB" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leading" constant="11" id="KiW-VP-Lf3"/>
+                    <constraint firstItem="0XO-gX-3zu" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leadingMargin" constant="10" id="LLv-KT-Vnb"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Rcx-6d-Rl7" secondAttribute="trailing" constant="229" id="Mig-k3-duN"/>
                     <constraint firstItem="Sam-sw-bcB" firstAttribute="top" secondItem="gio-qN-5Nb" secondAttribute="bottom" constant="20" id="Mjd-Pi-OWZ"/>
                     <constraint firstItem="Vwf-12-w8h" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leadingMargin" id="RO1-0p-ht4"/>
@@ -156,7 +154,6 @@
                     <constraint firstItem="Rcx-6d-Rl7" firstAttribute="top" secondItem="pdt-4C-pWs" secondAttribute="bottom" constant="20" id="eDQ-af-sH1"/>
                     <constraint firstItem="gio-qN-5Nb" firstAttribute="top" secondItem="Vwf-12-w8h" secondAttribute="bottom" constant="3.3300000000000001" id="ggT-Ln-MsI"/>
                     <constraint firstItem="Rcx-6d-Rl7" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leadingMargin" id="hQQ-PZ-stQ"/>
-                    <constraint firstItem="Vwf-12-w8h" firstAttribute="top" secondItem="OJz-lo-IzV" secondAttribute="bottom" constant="26" id="hb5-fJ-WTD"/>
                     <constraint firstAttribute="bottom" secondItem="Cl5-v8-shR" secondAttribute="bottom" constant="11" id="hiZ-fi-Cdg"/>
                     <constraint firstItem="V7h-8o-aNd" firstAttribute="top" secondItem="0uu-pt-jG3" secondAttribute="bottom" constant="9.3300000000000001" id="hsd-Ml-Jfb"/>
                     <constraint firstItem="Sam-sw-bcB" firstAttribute="top" secondItem="gio-qN-5Nb" secondAttribute="bottom" constant="20" id="i31-Ax-JLy"/>
@@ -168,16 +165,17 @@
                     <constraint firstItem="HoK-kM-ccG" firstAttribute="top" secondItem="5qc-C4-tV9" secondAttribute="bottom" constant="29.670000000000002" id="nFa-tW-XUL"/>
                     <constraint firstAttribute="bottom" secondItem="4tq-eR-dbK" secondAttribute="bottom" constant="11" id="nzF-RO-Drv"/>
                     <constraint firstAttribute="bottom" secondItem="TBD-0A-OUf" secondAttribute="bottom" constant="11" id="oVZ-s2-lJO"/>
+                    <constraint firstItem="0XO-gX-3zu" firstAttribute="top" secondItem="Rcx-6d-Rl7" secondAttribute="bottom" constant="16.329999999999998" id="qjc-S2-2ox"/>
                     <constraint firstItem="4tq-eR-dbK" firstAttribute="top" secondItem="gio-qN-5Nb" secondAttribute="bottom" constant="20" id="r7v-J3-Q26"/>
                     <constraint firstItem="pdt-4C-pWs" firstAttribute="leading" secondItem="uyD-RN-DB9" secondAttribute="leading" constant="20" symbolic="YES" id="tcR-wv-xaJ"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="OJz-lo-IzV" secondAttribute="trailing" constant="229" id="uP8-32-d1L"/>
+                    <constraint firstItem="Vwf-12-w8h" firstAttribute="top" secondItem="0XO-gX-3zu" secondAttribute="bottom" constant="33" id="tzY-do-afq"/>
                     <constraint firstItem="4tq-eR-dbK" firstAttribute="leading" secondItem="Cl5-v8-shR" secondAttribute="trailing" constant="30.330001831054688" id="yVn-Vn-9N7"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="endDateCalender" destination="V7h-8o-aNd" id="VAc-Cc-NdB"/>
-                <outlet property="expectedRangeCalender" destination="OJz-lo-IzV" id="RnW-25-Doj"/>
                 <outlet property="pricesAlert" destination="scx-84-ssb" id="dec-su-3Ea"/>
+                <outlet property="selectedRangeLabel" destination="0XO-gX-3zu" id="PQj-vZ-2xW"/>
                 <outlet property="startDateCalender" destination="pdt-4C-pWs" id="xkw-9K-PGP"/>
             </connections>
             <point key="canvasLocation" x="301.52671755725191" y="69.366197183098592"/>

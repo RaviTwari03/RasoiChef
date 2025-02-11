@@ -12,7 +12,7 @@ class OrderDataController{
 //    private var pastOrders:[Order] = []
     
     private init(){
-        loadDummyOrders()
+       // loadDummyOrders()
 //        pastOrdersdummyData()
     }
     

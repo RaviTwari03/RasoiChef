@@ -17,6 +17,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     var buttonClickCount = 0 // To track the number of button clicks
     
     var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
+    //var totalPrice = KitchenDataController.subscriptionPlans[0].totalPrice
     
     @IBOutlet var MealSubscriptionPlan: UITableView!
     

@@ -41,7 +41,7 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         
         specialDishNameLabel.text = specialDish.name
         specialDishPriceLabel.text = "₹\(specialDish.price)"
-        specialDishRating.text = "⭐ \(specialDish.rating)"
+        specialDishRating.text = "\(specialDish.rating)"
 //        specialDishImage.image = UIImage(named: "CholeBhature")
 //            specialDishImage.image = UIImage(named: "CholeBhature")
         specialDishImage.image = UIImage(named: specialDish.imageURL)
