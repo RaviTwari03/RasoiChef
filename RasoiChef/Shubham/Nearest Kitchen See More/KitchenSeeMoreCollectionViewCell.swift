@@ -25,7 +25,7 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
         Kitchen_Name.text = restaurant.name
         DistanceLabel.text = "\(restaurant.distance) km"
         Cuisine_Label.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
-        Ratings_Label.text = "⭐ \(restaurant.rating)"
+        Ratings_Label.text = "\(restaurant.rating)"
 //        KichenImage.image = UIImage(named: "KitchenImage 1")
         Kichen_Image.image = UIImage(named: restaurant.kitchenImage)
         

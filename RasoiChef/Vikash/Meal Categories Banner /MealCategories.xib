@@ -70,9 +70,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2G-NL-bRc" userLabel="Rating">
-                                <rect key="frame" x="169" y="10" width="37" height="18"/>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2G-NL-bRc" userLabel="Rating">
+                                <rect key="frame" x="166" y="10" width="40" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -121,7 +121,7 @@
                                 </userDefinedRuntimeAttributes>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="9uo-tp-ueP">
-                                <rect key="frame" x="145" y="9" width="20" height="20"/>
+                                <rect key="frame" x="145.33333333333334" y="9" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="SXV-9P-TbY"/>
                                     <constraint firstAttribute="width" constant="20" id="khq-15-3Dg"/>
@@ -130,6 +130,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="g2G-NL-bRc" firstAttribute="leading" secondItem="9uo-tp-ueP" secondAttribute="trailing" constant="3.3333333333333712" id="95C-dY-txz"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="leading" secondItem="IcH-Kp-7ce" secondAttribute="leading" id="9sR-fD-Z0W"/>
                             <constraint firstItem="TQX-SV-13y" firstAttribute="top" secondItem="dC9-61-viy" secondAttribute="bottom" constant="5" id="CW4-BB-s0v"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TQX-SV-13y" secondAttribute="trailing" constant="30" id="CjL-bL-y8R"/>
@@ -152,7 +153,6 @@
                             <constraint firstAttribute="trailing" secondItem="bqk-kA-EkK" secondAttribute="trailing" constant="5" id="qwn-WQ-gMi"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="top" secondItem="ido-ef-KSW" secondAttribute="top" constant="5" id="xF8-5u-X4e"/>
                             <constraint firstItem="U1X-P8-j1b" firstAttribute="leading" secondItem="yma-fl-V7r" secondAttribute="leading" id="xW7-3D-wto"/>
-                            <constraint firstItem="g2G-NL-bRc" firstAttribute="leading" secondItem="9uo-tp-ueP" secondAttribute="trailing" constant="4" id="yyf-QY-N5U"/>
                             <constraint firstItem="IcH-Kp-7ce" firstAttribute="top" secondItem="J1I-9Q-j62" secondAttribute="bottom" constant="4" id="zUI-6G-TWI"/>
                             <constraint firstItem="9uo-tp-ueP" firstAttribute="top" secondItem="ido-ef-KSW" secondAttribute="top" constant="9" id="zei-iX-mU2"/>
                         </constraints>

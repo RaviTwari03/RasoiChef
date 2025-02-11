@@ -91,7 +91,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f6y-UY-kd8">
-                                <rect key="frame" x="337.66666666666669" y="117" width="37.333333333333314" height="18"/>
+                                <rect key="frame" x="336.66666666666669" y="117" width="38.333333333333314" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -118,16 +118,25 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="Lvr-1L-8WG">
+                                <rect key="frame" x="313" y="116" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="Ksr-on-rQs"/>
+                                    <constraint firstAttribute="height" constant="20" id="ylV-UG-pdJ"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="qCj-XX-X2O" firstAttribute="top" secondItem="8lj-qF-Czv" secondAttribute="top" id="0cL-pE-SWN"/>
+                            <constraint firstItem="f6y-UY-kd8" firstAttribute="leading" secondItem="Lvr-1L-8WG" secondAttribute="trailing" constant="3.6666666666666856" id="2F9-Cy-ui3"/>
                             <constraint firstItem="caU-lT-Hgm" firstAttribute="top" secondItem="LSr-ZL-q9y" secondAttribute="top" id="58y-sw-Yum"/>
                             <constraint firstAttribute="bottom" secondItem="qNz-6L-zuS" secondAttribute="bottom" id="6kH-an-Kbr"/>
                             <constraint firstItem="6J5-6J-y2F" firstAttribute="leading" secondItem="i4E-mb-NoM" secondAttribute="trailing" constant="2" id="7U0-25-YJE"/>
                             <constraint firstItem="i4E-mb-NoM" firstAttribute="top" secondItem="025-48-sIM" secondAttribute="bottom" constant="4.3333333333333357" id="Ank-Gk-w9H"/>
                             <constraint firstItem="pWx-Ok-ugD" firstAttribute="top" secondItem="8lj-qF-Czv" secondAttribute="top" constant="10" id="Blf-Kh-KBc"/>
                             <constraint firstAttribute="bottom" secondItem="f6y-UY-kd8" secondAttribute="bottom" constant="10" id="Cuq-Cw-RgH"/>
+                            <constraint firstAttribute="bottom" secondItem="Lvr-1L-8WG" secondAttribute="bottom" constant="9" id="DIo-cn-B8W"/>
                             <constraint firstItem="025-48-sIM" firstAttribute="top" secondItem="pWx-Ok-ugD" secondAttribute="bottom" constant="5" id="DVr-xl-2FD"/>
                             <constraint firstItem="Ldp-YK-72L" firstAttribute="top" secondItem="caU-lT-Hgm" secondAttribute="top" id="K0s-p7-3AR"/>
                             <constraint firstItem="caU-lT-Hgm" firstAttribute="leading" secondItem="LSr-ZL-q9y" secondAttribute="trailing" constant="4" id="PS0-7v-NlQ"/>
@@ -178,6 +187,7 @@
         <image name="DinnerIcon" width="512" height="512"/>
         <image name="LunchIcon" width="512" height="512"/>
         <image name="SnacksIcon" width="512" height="512"/>
+        <image name="StarRatings" width="128" height="128"/>
         <image name="chevron.right" catalog="system" width="97" height="128"/>
         <image name="dot.square" catalog="system" width="128" height="114"/>
         <image name="location.circle" catalog="system" width="128" height="123"/>
@@ -188,10 +198,10 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

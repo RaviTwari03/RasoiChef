@@ -28,7 +28,7 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         PriceOfDish.text = "₹\(specialDish.price)"
         AvailableOnDays.text = "S, Th" // Update this based on real data if
         
-        Ratings.text = "⭐ \(String(describing: specialDish.rating))"
+        Ratings.text = "\(String(describing: specialDish.rating))"
         LimitLeft.text = "Max Limit: 50"             // Update dynamically if data exists
         DishImage.image = UIImage(named: specialDish.imageURL ) 
     }
