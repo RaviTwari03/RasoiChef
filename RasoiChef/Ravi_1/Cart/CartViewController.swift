@@ -28,6 +28,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         // Clear cart items and reload table view
         CartViewController.cartItems.removeAll() // Clear cart items after order
         CartItem.reloadData() // Reload cart table view
+        
+        // Notify MyOrdersViewController to reload data
+               MyOrdersViewController.shared.loadData() 
        
         // Add a delay before changing the tab, to allow the user to see the pop-up
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
@@ -66,24 +69,24 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             // Create order items from cart items
             let orderItems = cartItems.map { cartItem -> OrderItem in
                 return OrderItem(
-                    menuItemID: cartItem.menuItem?.itemID ?? "",
+                    menuItemID: cartItem.menuItem?.name ?? " ",
                     quantity: cartItem.quantity,
                     price: (cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity)
                 )
             }
             
             // Calculate the total amount from all cart items
-        let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0.0) * Double($1.quantity)) }
+        let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0) * Double($1.quantity)) }
             
             // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
            // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
             
             // Create the Order object
             let order = Order(
-                orderID: UUID().uuidString,  // Generate a unique order ID
+                orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
                 userID: "user123",           // Replace with actual user ID
                 kitchenName: cartItems.first?.menuItem?.kitchenName ?? "",
-                kitchenID: cartItems.first?.menuItem?.kitchenID ?? "",    // Pass the kitchen name here
+                kitchenID: cartItems.first?.menuItem?.kitchenName ?? "",    // Pass the kitchen name here
                 items: orderItems,
                 status: .placed,
                 totalAmount: totalAmount,
@@ -255,24 +258,24 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     @objc func updateCart() {
         CartItem.reloadData()
     }
-    //    func calculateTotalItemPrice() -> Double {
-    //        return CartViewController.cartItems.reduce(0) { $0 + ($1.MenuItem.price * Double($1.quantity)) }
-    //    }
-    //    func calculateTotalItemPrice() -> Double {
-    //        return CartViewController.cartItems.reduce(into: 0) { total, cartItem in
-    //            if let menuItem = fetchMenuItem(by: cartItem.MenuItem) {
-    //                return total + (menuItem.price * Double(cartItem.quantity))
-    //            }
-    //            return total
-    //        }
-    //    }
+   
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
-            total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
+            switch (cartItem.menuItem, cartItem.chefSpecial) {
+            case let (menuItem?, nil):
+                print(menuItem.name)
+                return total + (menuItem.price * Double(cartItem.quantity))
+                
+            case let (nil, chefDish?):
+                print(chefDish.name)
+                return total + (chefDish.price * Double(cartItem.quantity))
+                
+            default:
+                return total
+            }
         }
     }
-    
-    
+
     // Example function to fetch a MenuItem by ID
     func fetchMenuItem(by id: Int) -> MenuItem? {
         return KitchenDataController.menuItems.first /*{ $0.id == id }*/

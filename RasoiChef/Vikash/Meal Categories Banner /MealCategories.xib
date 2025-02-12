@@ -119,6 +119,9 @@
                                         <size key="value" width="0.0" height="2"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addButtonTapped:" destination="I5q-NF-SIw" eventType="touchUpInside" id="ZT7-Aa-J1d"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="9uo-tp-ueP">
                                 <rect key="frame" x="145.33333333333334" y="9" width="20" height="20"/>
@@ -174,6 +177,7 @@
             <connections>
                 <outlet property="KitchenDistance" destination="Vb3-ha-qEP" id="sP9-tE-94s"/>
                 <outlet property="Ratings" destination="g2G-NL-bRc" id="6oN-ud-nak"/>
+                <outlet property="addButton" destination="n9Y-rG-PUS" id="HYg-7U-QMA"/>
                 <outlet property="descriptionLabel" destination="TQX-SV-13y" id="U64-WJ-zA9"/>
                 <outlet property="kitchenNameLabel" destination="IcH-Kp-7ce" id="3dp-bu-B6V"/>
                 <outlet property="mealImage" destination="bqk-kA-EkK" id="3BO-q6-SEg"/>

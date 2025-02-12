@@ -7,9 +7,16 @@
 
 import UIKit
 
-class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate {
+
+protocol MealCategoriesCollectionViewCellDelegate: AnyObject {
+    func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell)
+}
+
+class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate,MealCategoriesCollectionViewCellDelegate {
     
-    
+    var menuItems: [MenuItem] = []
+
+    var mealTiming : MealTiming = .breakfast
     
     @IBOutlet weak var MealCategories: UICollectionView!
     
@@ -28,11 +35,13 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
 
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
+        super.viewDidLoad()
         self.view.backgroundColor = .white
         self.navigationItem.largeTitleDisplayMode = .never
-        self.title = "Menu Categories"
+        
+        updateTitleBasedOnMealTiming ()
+        
         
         // Register the custom cell XIB
         let menuCategoriesNib = UINib(nibName: "MealCategories", bundle: nil)
@@ -67,6 +76,21 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     }
     
     
+    
+    
+    
+    func updateTitleBasedOnMealTiming() {
+        switch mealTiming {
+        case .breakfast: self.title = "Breakfast"
+        case .lunch: self.title = "Lunch"
+        case .snacks: self.title = "Snacks"
+        case .dinner: self.title = "Dinner"
+        }
+    }
+    
+    
+    
+    
     func configureSearchBar() {
         searchBar = UISearchBar()
         searchBar.delegate = self
@@ -84,6 +108,8 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             searchBar.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+    
+    
     
     func configureFilterStackView() {
         filterScrollView = UIScrollView()
@@ -123,6 +149,9 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
         ])
     }
+    
+    
+    
     
 // MARK: - Configure Item Count Label
 func configureItemCountLabel() {
@@ -211,12 +240,45 @@ func configureItemCountLabel() {
         cell.layer.shadowRadius = 2.5
         cell.layer.shadowOpacity = 0.5
         cell.layer.masksToBounds = false
+        cell.mealTiming = mealTiming
         cell.updateMealDetails(with: indexPath)
 
-
+        cell.delegate = self
         return cell
     }
     
+    
+    
+    func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell) {
+        guard let indexPath = MealCategories.indexPath(for: cell) else { return }
+
+        let selectedItem: MenuItem
+        switch mealTiming {
+        case .breakfast:
+            selectedItem = KitchenDataController.GlobalbreakfastMenuItems[indexPath.row]
+            self.title = "Breakfast"
+        case .lunch:
+            selectedItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
+            self.title = "Lunch"
+        case .snacks:
+            selectedItem = KitchenDataController.GlobalsnacksMenuItems[indexPath.row]
+            self.title = "Snacks"
+        case .dinner:
+            selectedItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
+            self.title = "Dinner"
+        }
+
+        print("Add button tapped for meal: \(selectedItem.name)")
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            detailVC.selectedItem = selectedItem
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
+    }
+
     
     
      func generateLayout() -> UICollectionViewLayout {
