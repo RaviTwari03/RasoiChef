@@ -79,6 +79,9 @@
                                         <size key="value" width="0.0" height="2"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="ChefSpecialAddButtonTapped:" destination="bsU-X5-Q8s" eventType="touchUpInside" id="1HH-9P-PoF"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="svq-hf-KlP">
                                 <rect key="frame" x="305.66666666666669" y="250" width="41.333333333333314" height="21"/>

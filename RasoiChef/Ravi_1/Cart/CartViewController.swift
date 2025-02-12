@@ -258,25 +258,24 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     @objc func updateCart() {
         CartItem.reloadData()
     }
-    //    func calculateTotalItemPrice() -> Double {
-    //        return CartViewController.cartItems.reduce(0) { $0 + ($1.MenuItem.price * Double($1.quantity)) }
-    //    }
-    //    func calculateTotalItemPrice() -> Double {
-    //        return CartViewController.cartItems.reduce(into: 0) { total, cartItem in
-    //            if let menuItem = fetchMenuItem(by: cartItem.MenuItem) {
-    //                return total + (menuItem.price * Double(cartItem.quantity))
-    //            }
-    //            return total
-    //        }
-    //    }
+   
     func calculateTotalItemPrice() -> Double {
         return CartViewController.cartItems.reduce(0) { total, cartItem in
-            print(cartItem.menuItem?.name)
-            return total + ((cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity))
+            switch (cartItem.menuItem, cartItem.chefSpecial) {
+            case let (menuItem?, nil):
+                print(menuItem.name)
+                return total + (menuItem.price * Double(cartItem.quantity))
+                
+            case let (nil, chefDish?):
+                print(chefDish.name)
+                return total + (chefDish.price * Double(cartItem.quantity))
+                
+            default:
+                return total
+            }
         }
     }
-    
-    
+
     // Example function to fetch a MenuItem by ID
     func fetchMenuItem(by id: Int) -> MenuItem? {
         return KitchenDataController.menuItems.first /*{ $0.id == id }*/
