@@ -207,7 +207,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         override func viewDidLoad() {
             super.viewDidLoad()
             self.view.backgroundColor = .white
-            self.title = "Menu"
+            self.title = " Plan Menu"
             
             let seeMoreButton = UIBarButtonItem(title: "Subscribe", style: .plain, target: self, action: #selector(didTapSeeMoreToSubscriptionPlans))
             self.navigationItem.rightBarButtonItem = seeMoreButton
@@ -264,11 +264,12 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 
             case 1:  // Menu Items
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-                let meals = getMenuForSelectedDay()
-                let mealKey = Array(meals.keys)[indexPath.item]
-                let mealValue = meals[mealKey] ?? ""
-                
-                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
+                cell.updateMenuDetails(with: indexPath)
+//                let meals = getMenuForSelectedDay()
+//                let mealKey = Array(meals.keys)[indexPath.item]
+//                let mealValue = meals[mealKey] ?? ""
+//                
+//                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
                 return cell
           
             default:
