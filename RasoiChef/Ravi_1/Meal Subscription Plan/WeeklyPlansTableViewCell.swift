@@ -27,6 +27,7 @@ class WeeklyPlansTableViewCell: UITableViewCell {
         
         // Initially, hide the label
         selectedRangeLabel.isHidden = true
+        self.selectionStyle = .none
     }
     
     private func configureDatePickers() {
