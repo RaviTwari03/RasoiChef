@@ -35,11 +35,13 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
 
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
+        super.viewDidLoad()
         self.view.backgroundColor = .white
         self.navigationItem.largeTitleDisplayMode = .never
-        self.title = "Menu Categories"
+        
+        updateTitleBasedOnMealTiming ()
+        
         
         // Register the custom cell XIB
         let menuCategoriesNib = UINib(nibName: "MealCategories", bundle: nil)
@@ -74,6 +76,21 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     }
     
     
+    
+    
+    
+    func updateTitleBasedOnMealTiming() {
+        switch mealTiming {
+        case .breakfast: self.title = "Breakfast"
+        case .lunch: self.title = "Lunch"
+        case .snacks: self.title = "Snacks"
+        case .dinner: self.title = "Dinner"
+        }
+    }
+    
+    
+    
+    
     func configureSearchBar() {
         searchBar = UISearchBar()
         searchBar.delegate = self
@@ -91,6 +108,8 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             searchBar.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+    
+    
     
     func configureFilterStackView() {
         filterScrollView = UIScrollView()
@@ -130,6 +149,9 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
         ])
     }
+    
+    
+    
     
 // MARK: - Configure Item Count Label
 func configureItemCountLabel() {
@@ -224,6 +246,9 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         cell.delegate = self
         return cell
     }
+    
+    
+    
     func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell) {
         guard let indexPath = MealCategories.indexPath(for: cell) else { return }
 
@@ -231,12 +256,16 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         switch mealTiming {
         case .breakfast:
             selectedItem = KitchenDataController.GlobalbreakfastMenuItems[indexPath.row]
+            self.title = "Breakfast"
         case .lunch:
             selectedItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
+            self.title = "Lunch"
         case .snacks:
             selectedItem = KitchenDataController.GlobalsnacksMenuItems[indexPath.row]
+            self.title = "Snacks"
         case .dinner:
             selectedItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
+            self.title = "Dinner"
         }
 
         print("Add button tapped for meal: \(selectedItem.name)")
