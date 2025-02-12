@@ -7,8 +7,11 @@
 
 import UIKit
 
+//protocol CustomiseTableDelegate: AnyObject {
+//    func buttonClicked(withTag tag: Int)
+//}
 protocol CustomiseTableDelegate: AnyObject {
-    func buttonClicked(withTag tag: Int)
+    func buttonClicked(inSection section: Int, withTag tag: Int)
 }
 
 
@@ -79,26 +82,33 @@ class CustomiseTableTableViewCell: UITableViewCell {
 
 
     @IBAction func buttonClicked(_ sender: UIButton) {
-        print("Button clicked: \(sender)")
-              print("Tag: \(sender.tag)")
-              delegate?.buttonClicked(withTag: sender.tag)
+         
+            guard let tableView = self.superview as? UITableView,
+                  let indexPath = tableView.indexPath(for: self) else {
+                return
+            }
 
-              switch sender {
-              case Breakfastbutton:
-                  buttonStates[0].toggle()
-              case LunchButton:
-                  buttonStates[1].toggle()
-              case SnacksButton:
-                  buttonStates[2].toggle()
-              case DinnerButton:
-                  buttonStates[3].toggle()
-              default:
-                  print("Unknown button clicked")
-                  return
-              }
+            let section = indexPath.section
+            print("Button clicked in section: \(section), Tag: \(sender.tag)")
+            
+            delegate?.buttonClicked(inSection: section, withTag: sender.tag)
 
-              updateButtonAppearance()
-              print("Button visibility toggled")
+            switch sender {
+            case Breakfastbutton:
+                buttonStates[0].toggle()
+            case LunchButton:
+                buttonStates[1].toggle()
+            case SnacksButton:
+                buttonStates[2].toggle()
+            case DinnerButton:
+                buttonStates[3].toggle()
+            default:
+                print("Unknown button clicked")
+                return
+            }
+
+            updateButtonAppearance()
+            print("Button visibility toggled")
           }
 
           private func resetButtonStates() {
