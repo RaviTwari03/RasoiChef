@@ -21,10 +21,12 @@ class CartItemTableViewCell: UITableViewCell {
     @IBOutlet var CartIncreaseCounter: UIStepper!
     @IBOutlet var crossbutton: UIButton!
     
+    @IBOutlet weak var cartItemView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization \code
+        setupCellAppearance()
     }
     
     
@@ -91,6 +93,34 @@ class CartItemTableViewCell: UITableViewCell {
         CartItemQuantityLabel.text = "\(cartItem.quantity)"
         CartIncreaseCounter.value = Double(cartItem.quantity)
     }
+    
+    
+    
+    private func setupCellAppearance() {
+        // Apply corner radius
+        cartItemView.layer.cornerRadius = 15
+        cartItemView.layer.masksToBounds = true
+            // Add shadow to create a card-like appearance
+        cartItemView.layer.shadowColor = UIColor.black.cgColor
+        cartItemView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cartItemView.layer.shadowRadius = 2.5
+        cartItemView.layer.shadowOpacity = 0.4
+        cartItemView.layer.masksToBounds = false
+            // Add padding by adjusting the content insets
+        cartItemView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
+            
+            // Optionally, you can add a background color for the card
+        cartItemView.backgroundColor = .white
+    }
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let inset: CGFloat = 10 // Set leading and trailing insets
+        contentView.frame = contentView.frame.insetBy(dx: inset, dy: 0)
+    }
+    
 }
 
 
