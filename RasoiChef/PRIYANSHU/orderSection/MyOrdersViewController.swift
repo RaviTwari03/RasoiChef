@@ -142,7 +142,7 @@ extension MyOrdersViewController:UITableViewDataSource {
 
             let titleLabel = UILabel()
             titleLabel.text = section == 0 ? "Current Orders" : "Past Orders"
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 25)
             titleLabel.textColor = .black
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
