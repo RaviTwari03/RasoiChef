@@ -329,73 +329,33 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
         }
     }
-//    func didTapRemoveButton(cell: CartItemTableViewCell) {
-//        if let indexPath = tableView.indexPath(for: cell) {
-//            KitchenDataController.cartItems.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//        }
-//        
-//    }
-//    func didTapRemoveButton(cell: CartItemTableViewCell) {
-//        if let indexPath = tableView.indexPath(for: cell) {
-//            KitchenDataController.cartItems.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//        }
-//    }
-//    func didTapRemoveButton(cell: CartItemTableViewCell) {
-//        if let indexPath = CartItem.indexPath(for: cell) {
-//            KitchenDataController.cartItems.remove(at: indexPath.row)
-//            CartItem.deleteRows(at: [indexPath], with: .fade)
-//            updateTabBarBadge() // Update the cart badge count
-//        }
-//    }
-//    func didTapRemoveButton(cell: CartItemTableViewCell) {
-//        guard let indexPath = CartItem.indexPath(for: cell),
-//              indexPath.row < KitchenDataController.cartItems.count else {
-//            print("Invalid indexPath: \(String(describing: CartItem.indexPath(for: cell)))")
-//            return
-//        }
-//
-//        // Safely remove the item from the data source
-//        KitchenDataController.cartItems.remove(at: indexPath.row)
-//
-//        if KitchenDataController.cartItems.isEmpty {
-//            // If cart is empty, reload the table to show "Cart is empty"
-//            CartItem.reloadData()
-//        } else {
-//            // Otherwise, delete the row smoothly
-//            CartItem.deleteRows(at: [indexPath], with: .fade)
-//        }
-//
-//        updateTabBarBadge() // Update badge count
-//    }
+
 
     func didTapRemoveButton(cell: CartItemTableViewCell) {
         guard let indexPath = CartItem.indexPath(for: cell) else {
-            print("⚠️ Invalid indexPath: Cell not found in tableView")
-            return
+                print("⚠️ Invalid indexPath: Cell not found in tableView")
+                return
+            }
+
+            guard indexPath.row < CartViewController.cartItems.count else {
+                print("⚠️ Index out of bounds: \(indexPath.row), cart count: \(CartViewController.cartItems.count)")
+                return
+            }
+
+            // Remove the item from cart
+            CartViewController.cartItems.remove(at: indexPath.row)
+
+            // Check if the cart is empty after removal
+            if CartViewController.cartItems.isEmpty {
+                print("🛒 Cart is now empty, reloading table to show placeholder and other sections.")
+                CartItem.reloadData() // Reload table to reflect empty cart
+            } else {
+                print("✅ Item removed, updating UI")
+                CartItem.deleteRows(at: [indexPath], with: .fade)
+            }
+
+            updateTabBarBadge() // Update the cart badge count
         }
-
-        guard indexPath.row < KitchenDataController.cartItems.count else {
-            print("⚠️ Index out of bounds: \(indexPath.row), cart count: \(KitchenDataController.cartItems.count)")
-            return
-        }
-
-        // Remove the item from cart
-        KitchenDataController.cartItems.remove(at: indexPath.row)
-
-        // Check if the cart is empty after removal
-        if KitchenDataController.cartItems.isEmpty {
-            print("🛒 Cart is now empty, reloading table to show placeholder and other sections.")
-            CartItem.reloadData() // Reload table to reflect empty cart
-        } else {
-            print("✅ Item removed, updating UI")
-            CartItem.deleteRows(at: [indexPath], with: .fade)
-        }
-
-        updateTabBarBadge() // Update the cart badge count
-    }
-
 
 
 
