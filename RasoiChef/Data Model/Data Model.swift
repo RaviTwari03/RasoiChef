@@ -233,11 +233,11 @@ struct MealBanner {
     let mealType: String
 }
 
-
-
-
-
-
-
-
-
+struct SubscriptionMenuItem {
+    let itemName: String
+    let itemDescription: String
+    let imageURL: String
+    let kitchenID: String
+    let availableMealTypes : [MealType]
+    let availableDays : [WeekDay]
+}
