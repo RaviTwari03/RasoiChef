@@ -22,6 +22,7 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     @IBOutlet var addButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.selectionStyle = .none
         // Initialization code
     }
 

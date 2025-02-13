@@ -39,12 +39,12 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     func updateMealDetails(with indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         vegImage.image = UIImage(named: "vegImage")
-        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+//        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         ratingLabel.text = "⭐ \(menuItem.rating)"
         dishNameLabel.text = menuItem.name
         dishDescription.text = menuItem.description
         dishDeliveryExpected.text = menuItem.orderDeadline
-        dishImge.image = UIImage(named: menuItem.imageURL)
+        dishImge.image = UIImage(named: menuItem.imageURL ?? "")
         dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
        applyCardStyle1()
         addButton.layer.cornerRadius = 11

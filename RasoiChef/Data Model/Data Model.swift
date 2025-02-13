@@ -146,6 +146,7 @@ struct CartItem {
     var specialRequest: String?
     var menuItem: MenuItem?
     var chefSpecial : ChefSpecialtyDish?
+    var subscriptionDetails : SubscriptionPlan?
 }
 
 // Order
@@ -188,7 +189,7 @@ struct SubscriptionPlan {
             meals.compactMap { mealType, menuItem in
                 // Only add valid MenuItems to the meal list
                 guard let menuItem = menuItem else { return nil }
-                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID)
+                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID ?? "0")
             }
         }
     }

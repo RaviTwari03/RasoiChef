@@ -10,7 +10,7 @@ import UIKit
 class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate {
     
     
-    
+    var totalPrice: Int = 1400  // 🔥 Start total price at 1400
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
     var isModificationBlocked = false
@@ -200,175 +200,80 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     }
     func didTapSeeMorePlanYourMeal() {
         let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
-        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
-            self.navigationController?.pushViewController(firstScreenVC, animated: true)
+        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
+            
+            // Collect selected meals into the weeklyMeals dictionary
+            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
+
+            for (section, selectedTags) in selectedButtons {
+                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
+
+                if selectedWeeklyMeals[day] == nil {
+                    selectedWeeklyMeals[day] = [:]
+                }
+
+                for tag in selectedTags {
+                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
+                        let menuItem = MenuItem(
+                            itemID: "\(section)-\(tag)",
+                            kitchenID: "kitchen001",
+                            kitchenName: "Kanha Ji Rasoi",
+                            distance: 0.0,  // Default or calculated value
+                            name: mealType.rawValue,
+                            description: "Delicious \(mealType.rawValue) meal",
+                            price: Double(tag),  // Placeholder price, update accordingly
+                            rating: 4.5,  // Default rating
+                            availableMealTypes: [mealType],
+                            portionSize: "Medium",  // Placeholder
+                            intakeLimit: 1,  // Default limit
+                            imageURL: "",  // Placeholder or actual image URL
+                            orderDeadline: "10:00 AM",  // Default deadline
+                            availability: [],
+                            availableDays: [day],
+                            mealCategory: []
+                        )
+
+                        selectedWeeklyMeals[day]?[mealType] = menuItem
+                    }
+                }
+            }
+
+            // Create SubscriptionPlan object
+            let subscriptionPlan = SubscriptionPlan(
+                planID: UUID().uuidString,
+                userID: "user001",
+                kitchenID: "kitchen001",
+                startDate: "2025-02-13", // Provide actual start date
+                endDate: "2025-02-20",   // Provide actual end date
+                totalPrice: Double(totalPrice), // Use calculated total price
+                details: "Your customized meal plan",
+                mealCountPerDay: 4,
+                planImage: "",
+                weeklyMeals: selectedWeeklyMeals
+            )
+
+            // Create cart item with subscription details
+            let cartItem = CartItem(
+                userAdress: "User's Address",
+                quantity: 1,
+                specialRequest: nil,
+                menuItem: nil,
+                chefSpecial: nil,
+                subscriptionDetails: subscriptionPlan
+            )
+
+            // Pass data to CartViewController
+            cartVC.cartItems.append(cartItem)
+
+            self.navigationController?.pushViewController(cartVC, animated: true)
         }
     }
-    //    var selectedButtons: [Int: Set<Int>] = [:]
-    //    var buttonClickCountPerSection: [Int: Int] = [:]
-    //
-    //    func buttonClicked(inSection section: Int, withTag tag: Int) {
-    //        print("Button Clicked! Section: \(section), Tag: \(tag)")
-    //
-    //        // Ensure there's a set for the section
-    //        if selectedButtons[section] == nil {
-    //            selectedButtons[section] = []
-    //        }
-    //
-    //        // Ensure button count tracking per section
-    //        if buttonClickCountPerSection[section] == nil {
-    //            buttonClickCountPerSection[section] = 0
-    //        }
-    //
-    //        // Toggle button state
-    //        if selectedButtons[section]!.contains(tag) {
-    //            print("Button with tag \(tag) was already selected in section \(section). Removing it...")
-    //            selectedButtons[section]!.remove(tag)
-    //            totalPrice += tag
-    //            buttonClickCountPerSection[section]! -= 1
-    //        } else {
-    //            print("Button with tag \(tag) is newly selected in section \(section). Adding it...")
-    //            if buttonClickCountPerSection[section]! >= 4 {
-    //                print("Limit exceeded in section \(section). Showing alert.")
-    //                showAlert()
-    //                return
-    //            }
-    //            selectedButtons[section]!.insert(tag)
-    //            totalPrice -= tag
-    //            buttonClickCountPerSection[section]! += 1
-    //        }
-    //
-    //        print("Updated totalPrice: \(totalPrice)")
-    //        print("Button count in section \(section): \(buttonClickCountPerSection[section]!)")
-    //        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
-    //
-    //        // Update footer price dynamically
-    //        updateFooterPrice()
-    //
-    //        // Reload only the row where the button was clicked
-    //        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
-    //            hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
-    //            print("Reloading row at index path: \(selectedIndexPath)")
-    //            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-    //        } else {
-    //            print("No selected row found in MealSubscriptionPlan.")
-    //        }
-    //    }
-    //
-    //}
-//    var selectedButtons: [Int: Set<Int>] = [:]  // Keeps track of selected buttons per section
-//    var buttonClickCountPerSection: [Int: Int] = [:]  // Keeps count per section
-//    var totalPricePerSection: [Int: Int] = [:]  // NEW: Track total price per section
-//
-//    func buttonClicked(inSection section: Int, withTag tag: Int) {
-//        print("Button Clicked! Section: \(section), Tag: \(tag)")
-//
-//        // Ensure section-specific tracking exists
-//        if selectedButtons[section] == nil {
-//            selectedButtons[section] = []
-//        }
-//        
-//        if buttonClickCountPerSection[section] == nil {
-//            buttonClickCountPerSection[section] = 0
-//        }
-//        
-//        if totalPricePerSection[section] == nil {
-//            totalPricePerSection[section] = 0
-//        }
-//
-//        // Toggle button state
-//        if selectedButtons[section]!.contains(tag) {
-//            print("Button with tag \(tag) was already selected in section \(section). Removing it...")
-//            selectedButtons[section]!.remove(tag)
-//            totalPricePerSection[section]! += tag  // Restore price for the section
-//            buttonClickCountPerSection[section]! -= 1
-//        } else {
-//            print("Button with tag \(tag) is newly selected in section \(section). Adding it...")
-//            if buttonClickCountPerSection[section]! >= 4 {
-//                print("Limit exceeded in section \(section). Showing alert.")
-//                showAlert()
-//                return
-//            }
-//            selectedButtons[section]!.insert(tag)
-//            totalPricePerSection[section]! -= tag  // Deduct from section-specific price
-//            buttonClickCountPerSection[section]! += 1
-//        }
-//        
-//        print("Updated totalPrice for section \(section): \(totalPricePerSection[section]!)")
-//        print("Button count in section \(section): \(buttonClickCountPerSection[section]!)")
-//        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
-//
-//        // Update footer price dynamically for the section
-//        updateFooterPrice()
-//        
-//        // Reload only the row where the button was clicked
-//        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
-//            hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
-//            print("Reloading row at index path: \(selectedIndexPath)")
-//            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-//        } else {
-//            print("No selected row found in MealSubscriptionPlan.")
-//        }
-//    }
-//    var selectedButtons: [Int: Set<Int>] = [:]   // Tracks selected buttons per section
-//    var buttonClickCountPerSection: [Int: Int] = [:]  // Tracks count per section
-//    var totalPrice: Int = 1400  // 🔥 Start total price at 1400
-//    var totalPricePerSection: [Int: Int] = [:]  // Tracks deducted price per section
-//
-//    func buttonClicked(inSection section: Int, withTag tag: Int) {
-//        print("Button Clicked! Section: \(section), Tag: \(tag)")
-//
-//        // Ensure tracking for the section
-//        if selectedButtons[section] == nil {
-//            selectedButtons[section] = []
-//        }
-//        if buttonClickCountPerSection[section] == nil {
-//            buttonClickCountPerSection[section] = 0
-//        }
-//        if totalPricePerSection[section] == nil {
-//            totalPricePerSection[section] = 0
-//        }
-//
-//        // Toggle button selection for that section only
-//        if selectedButtons[section]!.contains(tag) {
-//            print("Button \(tag) deselected in section \(section). Not adding value back.")
-//            selectedButtons[section]!.remove(tag)
-//            buttonClickCountPerSection[section]! -= 1
-//        } else {
-//            print("Button \(tag) selected in section \(section). Deducting its value.")
-//
-//            if buttonClickCountPerSection[section]! >= 4 {
-//                print("Limit exceeded in section \(section). Showing alert.")
-//                showAlert()
-//                return
-//            }
-//
-//            selectedButtons[section]!.insert(tag)
-//            totalPrice -= tag  // ✅ Deduct only once per section
-//            totalPricePerSection[section]! += tag
-//            buttonClickCountPerSection[section]! += 1
-//        }
-//
-//        // 🔥 Debugging Info
-//        print("Total Price: \(totalPrice)")
-//        print("Section \(section) Total: \(totalPricePerSection[section]!)")
-//        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
-//
-//        // Update footer price dynamically
-//        updateFooterPrice()
-//
-//        // Reload only the row where the button was clicked
-//        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
-//            hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
-//            print("Reloading row at index path: \(selectedIndexPath)")
-//            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-//        } else {
-//            print("No selected row found in MealSubscriptionPlan.")
-//        }
-//    }
+
+
+   
     var selectedButtons: [Int: Set<Int>] = [:]   // Tracks selected buttons per section
         var buttonClickCountPerSection: [Int: Int] = [:]  // Tracks count per section
-        var totalPrice: Int = 1400  // 🔥 Start total price at 1400
+      
         var totalPricePerSection: [Int: Int] = [:]  // Tracks deducted price per section
 
         func buttonClicked(inSection section: Int, withTag tag: Int) {

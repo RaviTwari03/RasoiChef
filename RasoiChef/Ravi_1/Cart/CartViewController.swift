@@ -15,7 +15,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
   
    
     @IBOutlet var CartItem: UITableView!
-    
+    var cartItems: [CartItem] = []
+    var totalPrice: Int = 0
+
     static var cartItems: [CartItem] = []
    
     func didTapPlaceOrder() {
@@ -50,6 +52,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
         CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
         CartItem.register(UINib(nibName: "CartItems", bundle: nil), forCellReuseIdentifier: "CartItems")
+        CartItem.register(UINib(nibName: "SubscriptionCartItems", bundle: nil), forCellReuseIdentifier: "SubscriptionCartItems")
         CartItem.register(UINib(nibName: "CartDelivery", bundle: nil), forCellReuseIdentifier: "CartDelivery")
         CartItem.register(UINib(nibName: "CartBill", bundle: nil), forCellReuseIdentifier: "CartBill")
         CartItem.register(UINib(nibName: "AddItemInCart", bundle: nil), forCellReuseIdentifier: "AddItemInCart")
@@ -100,7 +103,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4 // Four sections: Address, Cart Items, Bill, and Payment
+        return 5 // Four sections: Address, Cart Items, Bill, and Payment
     }
     
     
@@ -115,6 +118,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             return CartViewController.cartItems.isEmpty ? 0 : 1 // Bill Section (1 row)
         case 3:
             return CartViewController.cartItems.isEmpty ? 0 : 1
+        case 4:
+            return 1
         default:
             return 0
         }
@@ -191,7 +196,33 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             cell.delegate = self
             
             return cell
-            
+        case 4:
+          
+            guard indexPath.row < cartItems.count else {
+                    let cell = UITableViewCell()
+                    cell.textLabel?.text = "Invalid Item"
+                    return cell
+                }
+
+                let item = cartItems[indexPath.row]
+
+                if let subscription = item.subscriptionDetails {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionCartItems", for: indexPath) as? SubscriptionCartItemsCollectionTableViewCell else {
+                        fatalError("Could not dequeue SubscriptionCartItemsCollectionTableViewCell")
+                    }
+                    cell.configure(with: item)
+                    return cell
+                } else if let menuItem = item.menuItem {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath)
+                    cell.textLabel?.text = menuItem.name
+                    return cell
+                }
+
+                let cell = UITableViewCell()
+                cell.textLabel?.text = "Unknown Item"
+                return cell
+
+           
         default:
             return UITableViewCell()
         }
@@ -202,11 +233,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 0:
             return 70 // Address Section Height
         case 1:
-            return 110 // Cart Item Section Height
+            return 120 // Cart Item Section Height
         case 2:
             return 250 // Bill Section Height
         case 3:
             return 70// Payment Section Height
+        case 4:
+            return 120
         default:
             return 44
         }
@@ -222,6 +255,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             return CartViewController.cartItems.isEmpty ? nil : "Bill Summary"
         case 3:
             return CartViewController.cartItems.isEmpty ? nil : "Payment"
+        case 4:
+            return "Order Details"
         default:
             return nil
         }
@@ -264,7 +299,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             switch (cartItem.menuItem, cartItem.chefSpecial) {
             case let (menuItem?, nil):
                 print(menuItem.name)
-                return total + (menuItem.price * Double(cartItem.quantity))
+                return total + ((menuItem.price ?? 0) * Double(cartItem.quantity))
                 
             case let (nil, chefDish?):
                 print(chefDish.name)
