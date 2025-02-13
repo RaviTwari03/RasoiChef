@@ -32,6 +32,14 @@ class MyOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
+            ])
+        
+        
         tableView.dataSource = self
         tableView.delegate = self
         // Do any additional setup after loading the view.
