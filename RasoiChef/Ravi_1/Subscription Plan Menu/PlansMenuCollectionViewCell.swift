@@ -22,7 +22,7 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
     
     func updateMenuDetails(with indexPath: IndexPath) {
         
-        let menuItem = KitchenDataController.subscriptionMenuItem[indexPath.row]
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
         MenuTiming.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         MealDescription.text = menuItem.description
         MealImage.image = UIImage(named: menuItem.imageURL)
