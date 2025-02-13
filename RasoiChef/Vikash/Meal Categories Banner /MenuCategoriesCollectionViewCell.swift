@@ -70,7 +70,7 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         }
         
         mealNameLabel.text = menuItem.name
-        mealImage.image = UIImage(named: menuItem.imageURL)
+        mealImage.image = UIImage(named: menuItem.imageURL ?? "")
         kitchenNameLabel.text = menuItem.kitchenName
         KitchenDistance.text = "\(menuItem.distance) km"
         Ratings.text = "\(menuItem.rating)"
