@@ -20,15 +20,15 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
     
     
     
-//    func updateMenuDetails(with indexPath: IndexPath) {
-//        applyCardStyle2()
-//        let menuItem = KitchenDataController.menuItems[indexPath.row]
-//        MenuTiming.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-//        MealDescription.text = menuItem.description
-//        MealImage.image = UIImage(named: menuItem.imageURL)
-//
-//        
-//    }
+    func updateMenuDetails(with indexPath: IndexPath) {
+        
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        MenuTiming.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+        MealDescription.text = menuItem.description
+        MealImage.image = UIImage(named: menuItem.imageURL)
+        MealName.text = menuItem.name
+        applyCardStyle2()
+    }
 //    func applyCardStyle2() {
 //        subscriptionView.layer.cornerRadius = 16
 //        subscriptionView.layer.masksToBounds = false
@@ -40,18 +40,18 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
 //   }
 //
 //}
-    func updateMenuDetails(mealType: String, mealName: String, mealDescription : String) {
-            applyCardStyle2()
-            
-            MenuTiming.text = mealType
-            MealName.text = mealName
-            MealDescription.text = "\(mealName)"
-            
-            // Set default image if no image is available
-            let imageName = mealName.replacingOccurrences(of: " ", with: "_").lowercased()
-            MealImage.image = UIImage(named: imageName) ?? UIImage(named: "default_meal")
-        
-        }
+//    func updateMenuDetails(mealType: String, mealName: String, mealDescription : String) {
+//            applyCardStyle2()
+//            
+//            MenuTiming.text = mealType
+//            MealName.text = mealName
+//            MealDescription.text = "\(mealName)"
+//            
+//            // Set default image if no image is available
+//            let imageName = mealName.replacingOccurrences(of: " ", with: "_").lowercased()
+//            MealImage.image = UIImage(named: imageName) ?? UIImage(named: "default_meal")
+//        
+//        }
 
    
 
