@@ -271,12 +271,20 @@ func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
         print("Add button tapped for meal: \(selectedItem.name)")
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-            detailVC.selectedItem = selectedItem
-            present(detailVC, animated: true, completion: nil)
-        } else {
-            print("Error: Could not instantiate AddItemModallyViewController")
-        }
+           if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+               detailVC.selectedItem = selectedItem
+
+               // Present as a bottom sheet
+               if let sheet = detailVC.sheetPresentationController {
+                   sheet.detents = [.medium(), .large()] // Medium-sized sheet
+                   sheet.prefersGrabberVisible = true   // Show a grabber handle
+               }
+
+               detailVC.modalPresentationStyle = .pageSheet
+               present(detailVC, animated: true, completion: nil)
+           } else {
+               print("Error: Could not instantiate AddItemModallyViewController")
+           }
     }
 
     
