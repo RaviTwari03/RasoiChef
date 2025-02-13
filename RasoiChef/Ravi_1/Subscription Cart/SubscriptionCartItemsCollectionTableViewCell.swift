@@ -33,7 +33,7 @@ class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
            cartItem = item  // Store reference for later updates
            
            SubscriptionName1.text = "Subscription Plan"
-           selectedRange1.text = "Start: \(subscription.startDate ?? "N/A") - End: \(subscription.endDate ?? "N/A")"
+           selectedRange1.text = "\(subscription.startDate ?? "N/A") - \(subscription.endDate ?? "N/A")"
            subscriptionPrice1.text = "₹\(subscription.totalPrice ?? 0.0)"
            quantityLabel1.text = "\(item.quantity)"
            increaseStepper1.value = Double(item.quantity)
