@@ -120,7 +120,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let weekDayEnum = selectedDayEnum.toWeekDay()
         
         // Fetch the meals for the selected day
-        guard let mealsForDay = plan.weeklyMeals[weekDayEnum] else { return [:] }
+        guard let mealsForDay = plan.weeklyMeals?[weekDayEnum] else { return [:] }
         
         // Map MenuItem? to its name string, filtering out nil values
         return mealsForDay.compactMapValues { menuItem in

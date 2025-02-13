@@ -9,10 +9,11 @@ import UIKit
 
 protocol SubscribeYourPlanButtonDelegate: AnyObject {
     func didTapSeeMorePlanYourMeal()
+    
     }
 
 class SubscriptionFooterTableViewCell: UITableViewCell {
-
+    var subscriptionItem : SubscriptionPlan?
     weak var delegate : SubscribeYourPlanButtonDelegate?
     var footerCell: SubscriptionFooterTableViewCell?
 
@@ -22,6 +23,7 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     @IBOutlet var addButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.selectionStyle = .none
         // Initialization code
     }
 
@@ -36,5 +38,13 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     
     @IBAction func subscribePlansButtonClicked(_ sender: Any) {
         delegate?.didTapSeeMorePlanYourMeal()
+           }
     }
-}
+   
+    
+  
+   
+       
+        
+    
+
