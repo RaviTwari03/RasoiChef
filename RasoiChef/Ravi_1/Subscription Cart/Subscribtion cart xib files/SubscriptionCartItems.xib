@@ -15,8 +15,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4c2-zS-k0B">
-                        <rect key="frame" x="12" y="7" width="47" height="22"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Labelbfcug" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4c2-zS-k0B">
+                        <rect key="frame" x="12" y="7" width="96.666666666666671" height="22"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -81,11 +81,11 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="SubscriptionName" destination="4c2-zS-k0B" id="g4K-9L-Hk4"/>
-                <outlet property="increaseStepper" destination="2cT-22-VB4" id="pAH-9U-gQU"/>
-                <outlet property="quantityLabel" destination="pjB-AO-6qh" id="VU3-5H-MD9"/>
-                <outlet property="selectedRange" destination="r9p-2u-Kgh" id="PvT-dL-P4c"/>
-                <outlet property="subscriptionPrice" destination="Ats-Ea-Fcr" id="Pwg-cG-Fx9"/>
+                <outlet property="SubscriptionName1" destination="4c2-zS-k0B" id="ZYQ-BL-eO3"/>
+                <outlet property="increaseStepper1" destination="2cT-22-VB4" id="UvI-6O-Jdz"/>
+                <outlet property="quantityLabel1" destination="pjB-AO-6qh" id="jIR-m6-W0P"/>
+                <outlet property="selectedRange1" destination="r9p-2u-Kgh" id="PGW-87-QRN"/>
+                <outlet property="subscriptionPrice1" destination="Ats-Ea-Fcr" id="KTs-zO-VZ4"/>
             </connections>
             <point key="canvasLocation" x="92" y="6"/>
         </tableViewCell>

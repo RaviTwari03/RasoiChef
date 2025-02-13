@@ -116,7 +116,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 1:
             return CartViewController.cartItems.isEmpty ? 1 : CartViewController.cartItems.count
         case 2:
-            return CartViewController.subscriptionPlan1.isEmpty ? 0 : CartViewController.subscriptionPlan1.count
+            return 1
         case 3:
             return CartViewController.cartItems.isEmpty ? 0 : 1 // Bill Section (1 row)
         case 4:

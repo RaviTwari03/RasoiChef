@@ -10,11 +10,11 @@ import UIKit
 class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
 
     
-    @IBOutlet weak var SubscriptionName: UILabel!
-    @IBOutlet weak var selectedRange: UILabel!
-    @IBOutlet weak var subscriptionPrice: UILabel!
-    @IBOutlet weak var quantityLabel: UILabel!
-    @IBOutlet weak var increaseStepper: UIStepper!
+    @IBOutlet weak var SubscriptionName1: UILabel!
+    @IBOutlet weak var selectedRange1: UILabel!
+    @IBOutlet weak var subscriptionPrice1: UILabel!
+    @IBOutlet weak var quantityLabel1: UILabel!
+    @IBOutlet weak var increaseStepper1: UIStepper!
     
     
     var cartItem: CartItem?  // Store reference for updates
@@ -22,9 +22,9 @@ class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
        override func awakeFromNib() {
            super.awakeFromNib()
            
-           // Configure stepper
-           increaseStepper.minimumValue = 1
-           increaseStepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
+          //  Configure stepper
+           increaseStepper1.minimumValue = 1
+           increaseStepper1.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
        }
 
        func configure(with item: CartItem) {
@@ -32,18 +32,18 @@ class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
 
            cartItem = item  // Store reference for later updates
            
-           SubscriptionName.text = "Subscription Plan"
-           selectedRange.text = "Start: \(subscription.startDate ?? "N/A") - End: \(subscription.endDate ?? "N/A")"
-           subscriptionPrice.text = "₹\(subscription.totalPrice ?? 0.0)"
-           quantityLabel.text = "\(item.quantity)"
-           increaseStepper.value = Double(item.quantity)
+           SubscriptionName1.text = "Subscription Plan"
+           selectedRange1.text = "Start: \(subscription.startDate ?? "N/A") - End: \(subscription.endDate ?? "N/A")"
+           subscriptionPrice1.text = "₹\(subscription.totalPrice ?? 0.0)"
+           quantityLabel1.text = "\(item.quantity)"
+           increaseStepper1.value = Double(item.quantity)
        }
 
        @objc func stepperValueChanged(_ sender: UIStepper) {
            guard var cartItem = cartItem else { return }
 
            let newQuantity = Int(sender.value)
-           quantityLabel.text = "\(newQuantity)"
+           quantityLabel1.text = "\(newQuantity)"
            
            // Update quantity in the cartItem model
            cartItem.quantity = newQuantity
