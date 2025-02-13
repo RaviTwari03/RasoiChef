@@ -199,11 +199,139 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
+//    func didTapSeeMorePlanYourMeal() {
+//        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
+//        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
+//            
+//            // Collect selected meals into the weeklyMeals dictionary
+//            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
+//
+//            for (section, selectedTags) in selectedButtons {
+//                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
+//
+//                if selectedWeeklyMeals[day] == nil {
+//                    selectedWeeklyMeals[day] = [:]
+//                }
+//
+//                for tag in selectedTags {
+//                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
+//                        let menuItem = MenuItem(
+//                            itemID: "\(section)-\(tag)",
+//                            kitchenID: "kitchen001",
+//                            kitchenName: "Kanha Ji Rasoi",
+//                            distance: 0.0,  // Default or calculated value
+//                            name: mealType.rawValue,
+//                            description: "Delicious \(mealType.rawValue) meal",
+//                            price: Double(tag),  // Placeholder price, update accordingly
+//                            rating: 4.5,  // Default rating
+//                            availableMealTypes: [mealType],
+//                            portionSize: "Medium",  // Placeholder
+//                            intakeLimit: 1,  // Default limit
+//                            imageURL: "",  // Placeholder or actual image URL
+//                            orderDeadline: "10:00 AM",  // Default deadline
+//                            availability: [],
+//                            availableDays: [day],
+//                            mealCategory: []
+//                        )
+//
+//                        selectedWeeklyMeals[day]?[mealType] = menuItem
+//                    }
+//                }
+//            }
+//
+//            // Create SubscriptionPlan object
+//            let subscriptionPlan = SubscriptionPlan(
+//                planID: UUID().uuidString,
+//                userID: "user001",
+//                kitchenID: "kitchen001",
+//                startDate: "2025-02-13", // Provide actual start date
+//                endDate: "2025-02-20",   // Provide actual end date
+//                totalPrice: Double(totalPrice), // Use calculated total price
+//                details: "Your customized meal plan",
+//                mealCountPerDay: 4,
+//                planImage: "",
+//                weeklyMeals: selectedWeeklyMeals
+//            )
+//
+//            // Create cart item with subscription details
+//            let cartItem = CartItem(
+//                userAdress: "User's Address",
+//                quantity: 1,
+//                specialRequest: nil,
+//                menuItem: nil,
+//                chefSpecial: nil,
+//                subscriptionDetails: subscriptionPlan
+//            )
+//
+//            // Pass data to CartViewController
+//            cartVC.cartItems.append(cartItem)
+//
+//            self.navigationController?.pushViewController(cartVC, animated: true)
+//        }
+//    }
+//    func didTapSeeMorePlanYourMeal() {
+//        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
+//        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
+//            
+//            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
+//
+//            for (section, selectedTags) in selectedButtons {
+//                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
+//
+//                if selectedWeeklyMeals[day] == nil {
+//                    selectedWeeklyMeals[day] = [:]
+//                }
+//
+//                for tag in selectedTags {
+//                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
+//                        let menuItem = MenuItem(
+//                            itemID: "\(section)-\(tag)",
+//                            kitchenID: "kitchen001",
+//                            kitchenName: "Kanha Ji Rasoi",
+//                            distance: 0.0,
+//                            name: mealType.rawValue,
+//                            description: "Delicious \(mealType.rawValue) meal",
+//                            price: Double(tag),
+//                            rating: 4.5,
+//                            availableMealTypes: [mealType],
+//                            portionSize: "Medium",
+//                            intakeLimit: 1,
+//                            imageURL: "",
+//                            orderDeadline: "10:00 AM",
+//                            availability: [],
+//                            availableDays: [day],
+//                            mealCategory: []
+//                        )
+//
+//                        selectedWeeklyMeals[day]?[mealType] = menuItem
+//                    }
+//                }
+//            }
+//
+//            let subscriptionPlan = SubscriptionPlan(
+//                planID: UUID().uuidString,
+//                userID: "user001",
+//                kitchenID: "kitchen001",
+//                startDate: "2025-02-13",
+//                endDate: "2025-02-20",
+//                totalPrice: Double(totalPrice),
+//                details: "Your customized meal plan",
+//                mealCountPerDay: 4,
+//                planImage: "",
+//                weeklyMeals: selectedWeeklyMeals
+//            )
+//
+//            CartViewController.subscriptionPlan1.append(subscriptionPlan) // ✅ Add Subscription Plan
+//            cartVC.CartItem.reloadData() // ✅ Reload to show new item
+//            
+//            self.navigationController?.tabBarController?.selectedIndex = 1 // ✅ Switch to Cart Tab
+//        }
+//    }
+
     func didTapSeeMorePlanYourMeal() {
         let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
         if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
             
-            // Collect selected meals into the weeklyMeals dictionary
             var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
 
             for (section, selectedTags) in selectedButtons {
@@ -219,16 +347,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                             itemID: "\(section)-\(tag)",
                             kitchenID: "kitchen001",
                             kitchenName: "Kanha Ji Rasoi",
-                            distance: 0.0,  // Default or calculated value
+                            distance: 0.0,
                             name: mealType.rawValue,
                             description: "Delicious \(mealType.rawValue) meal",
-                            price: Double(tag),  // Placeholder price, update accordingly
-                            rating: 4.5,  // Default rating
+                            price: Double(tag),
+                            rating: 4.5,
                             availableMealTypes: [mealType],
-                            portionSize: "Medium",  // Placeholder
-                            intakeLimit: 1,  // Default limit
-                            imageURL: "",  // Placeholder or actual image URL
-                            orderDeadline: "10:00 AM",  // Default deadline
+                            portionSize: "Medium",
+                            intakeLimit: 1,
+                            imageURL: "",
+                            orderDeadline: "10:00 AM",
                             availability: [],
                             availableDays: [day],
                             mealCategory: []
@@ -239,39 +367,29 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 }
             }
 
-            // Create SubscriptionPlan object
             let subscriptionPlan = SubscriptionPlan(
                 planID: UUID().uuidString,
                 userID: "user001",
                 kitchenID: "kitchen001",
-                startDate: "2025-02-13", // Provide actual start date
-                endDate: "2025-02-20",   // Provide actual end date
-                totalPrice: Double(totalPrice), // Use calculated total price
+                startDate: "2025-02-13",
+                endDate: "2025-02-20",
+                totalPrice: Double(totalPrice),
                 details: "Your customized meal plan",
                 mealCountPerDay: 4,
                 planImage: "",
                 weeklyMeals: selectedWeeklyMeals
             )
 
-            // Create cart item with subscription details
-            let cartItem = CartItem(
-                userAdress: "User's Address",
-                quantity: 1,
-                specialRequest: nil,
-                menuItem: nil,
-                chefSpecial: nil,
-                subscriptionDetails: subscriptionPlan
-            )
+            // ✅ Update the CartViewController with the new subscription plan
+            cartVC.addSubscriptionPlan(subscriptionPlan)
 
-            // Pass data to CartViewController
-            cartVC.cartItems.append(cartItem)
-
-            self.navigationController?.pushViewController(cartVC, animated: true)
+            // ✅ Switch to the Cart tab to reflect the update
+            self.navigationController?.tabBarController?.selectedIndex = 2
         }
     }
 
 
-   
+
     var selectedButtons: [Int: Set<Int>] = [:]   // Tracks selected buttons per section
         var buttonClickCountPerSection: [Int: Int] = [:]  // Tracks count per section
       
