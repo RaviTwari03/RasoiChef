@@ -52,7 +52,11 @@
                         </connections>
                     </stepper>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ci-JE-VC7">
-                        <rect key="frame" x="326" y="1" width="50" height="35"/>
+                        <rect key="frame" x="344" y="1" width="35" height="35"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="35" id="gFz-3w-mgT"/>
+                            <constraint firstAttribute="width" constant="35" id="xIb-HD-bB2"/>
+                        </constraints>
                         <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="multiply.circle" catalog="system"/>
@@ -70,19 +74,18 @@
                     <constraint firstItem="2cT-22-VB4" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="57" id="F8w-eb-Fzx"/>
                     <constraint firstAttribute="bottom" secondItem="Ats-Ea-Fcr" secondAttribute="bottom" constant="14.67" id="FdQ-lm-hQU"/>
                     <constraint firstItem="2cT-22-VB4" firstAttribute="leading" secondItem="pjB-AO-6qh" secondAttribute="trailing" constant="15" id="INa-Rt-5Xj"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4c2-zS-k0B" secondAttribute="trailing" constant="33" id="JHM-se-aEs"/>
                     <constraint firstItem="4c2-zS-k0B" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="LK9-MB-kVK"/>
-                    <constraint firstAttribute="trailing" secondItem="9Ci-JE-VC7" secondAttribute="trailing" constant="17" id="N5N-Nx-BP2"/>
                     <constraint firstAttribute="bottom" secondItem="pjB-AO-6qh" secondAttribute="bottom" constant="16" id="PgO-wa-FuJ"/>
+                    <constraint firstAttribute="trailing" secondItem="9Ci-JE-VC7" secondAttribute="trailing" constant="14" id="RJ8-k1-TCn"/>
                     <constraint firstItem="9Ci-JE-VC7" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="1" id="Shy-gj-oIH"/>
                     <constraint firstItem="r9p-2u-Kgh" firstAttribute="top" secondItem="4c2-zS-k0B" secondAttribute="bottom" constant="4" id="UnY-X2-Idu"/>
                     <constraint firstItem="Ats-Ea-Fcr" firstAttribute="top" secondItem="r9p-2u-Kgh" secondAttribute="bottom" constant="11.67" id="aKE-n8-cUY"/>
                     <constraint firstItem="pjB-AO-6qh" firstAttribute="leading" secondItem="GUQ-VB-Md7" secondAttribute="trailing" constant="9" id="bhb-g3-aZ6"/>
                     <constraint firstItem="Ats-Ea-Fcr" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="cFL-Dx-QTc"/>
                     <constraint firstItem="r9p-2u-Kgh" firstAttribute="leading" secondItem="PSI-bJ-h99" secondAttribute="leading" constant="12" id="ehu-cU-Qa7"/>
-                    <constraint firstItem="2cT-22-VB4" firstAttribute="top" secondItem="9Ci-JE-VC7" secondAttribute="bottom" constant="21" id="hDs-rL-HkB"/>
                     <constraint firstAttribute="bottom" secondItem="2cT-22-VB4" secondAttribute="bottom" constant="16" id="nNy-f5-JZl"/>
                     <constraint firstAttribute="bottom" secondItem="GUQ-VB-Md7" secondAttribute="bottom" constant="17" id="sfT-7o-Tl0"/>
+                    <constraint firstItem="9Ci-JE-VC7" firstAttribute="top" secondItem="PSI-bJ-h99" secondAttribute="top" constant="1" id="vMZ-rB-tUn"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="r9p-2u-Kgh" secondAttribute="trailing" constant="30" id="xsf-7p-iha"/>
                 </constraints>
             </tableViewCellContentView>

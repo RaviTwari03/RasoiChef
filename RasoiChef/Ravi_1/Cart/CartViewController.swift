@@ -129,108 +129,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        switch indexPath.section {
-//        case 0:
-//            // Address Section
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCartAddress", for: indexPath) as? UserCartAddressTableViewCell else {
-//                return UITableViewCell()
-//            }
-//            cell.updateAddress(with: indexPath)
-//            return cell
-//            
-//        case 1:
-//            // Cart Items Section
-//            if CartViewController.cartItems.isEmpty {
-//                // Placeholder cell for an empty cart
-//                let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCartPlaceholder", for: indexPath)
-//                cell.textLabel?.text = "Your cart is empty. Add some items!🙁"
-//                cell.textLabel?.textAlignment = .center
-//                cell.textLabel?.textColor = .gray
-//                
-//                return cell
-//            } else {
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartItems", for: indexPath) as? CartItemTableViewCell else {
-//                    
-//                    return UITableViewCell()
-//                }
-//                cell.delegate = self
-////                cell.updateCartItem(for: indexPath)
-//                cell.updateCartItem(for: indexPath)
-//                return cell
-//            }
-//            
-//        case 2:
-//            
-//            if CartViewController.cartItems.isEmpty {
-//                return UITableViewCell() // No cell needed when the cart is empty
-//            } else {
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartBill", for: indexPath) as? CartBillTableViewCell else {
-//                    return UITableViewCell()
-//                }
-//                let totalPrice = calculateTotalItemPrice()
-//                cell.itemPriceLabel.text = String(format: "₹ %.2f", totalPrice)
-//                
-//                // Example: Update other labels like GST, delivery charges, etc.
-//                let gst = totalPrice * 0.18 // 18% GST
-//                cell.gstLabel.text = String(format: "₹ %.2f", gst)
-//                cell.deliveryChargesLabel.text = "₹ 50.00" // Example static delivery charge
-//                cell.discountLabel.text = "-₹ 20.00" // Example static discount
-//                cell.totalAmount.text = String(format: "₹ %.2f", totalPrice + gst + 50 - 20)
-//                
-//                return cell
-//            }
-//            
-//        case 3:
-//            // Payment Section
-//            //            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
-//            //                    return UITableViewCell()
-//            //                }
-//            //                let totalPrice = calculateTotalItemPrice()
-//            //                cell.TotalAmountLabel.text = String(format: "₹%.2f", totalPrice)
-//            //                cell.delegate = self // Assign delegate to handle button action
-//            //                return cell
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath) as? CartPayTableViewCell else {
-//                return UITableViewCell()
-//            }
-//            cell.addButtonUpdate()
-//            let grandTotal = calculateGrandTotal()
-//            cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
-//            cell.delegate = self
-//            
-//            return cell
-//        case 4:
-//          
-//            guard indexPath.row < cartItems.count else {
-//                    let cell = UITableViewCell()
-//                    cell.textLabel?.text = "Invalid Item"
-//                    return cell
-//                }
-//
-//                let item = cartItems[indexPath.row]
-//
-//                if let subscription = item.subscriptionDetails {
-//                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionCartItems", for: indexPath) as? SubscriptionCartItemsCollectionTableViewCell else {
-//                        fatalError("Could not dequeue SubscriptionCartItemsCollectionTableViewCell")
-//                    }
-//                    cell.configure(with: item)
-//                    return cell
-//                } else if let menuItem = item.menuItem {
-//                    let cell = tableView.dequeueReusableCell(withIdentifier: "CartPay", for: indexPath)
-//                    cell.textLabel?.text = menuItem.name
-//                    return cell
-//                }
-//
-//                let cell = UITableViewCell()
-//                cell.textLabel?.text = "Unknown Item"
-//                return cell
-//
-//           
-//        default:
-//            return UITableViewCell()
-//        }
-//    }
-//
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
@@ -337,13 +236,14 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         case 2:
             return 120 // Bill Section Height
         case 3:
-            return 250// Payment Section Height
+            return 240// Payment Section Height
         case 4:
             return 70
         default:
             return 44
         }
     }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
@@ -482,25 +382,3 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 
     
 }
-//extension CartViewController: SubscribeYourPlanButtonDelegate {
-//    func didTapSeeMorePlanYourMeal() {
-//        // Handle navigation or UI update when "See More Plans" is clicked
-//        print("See More Plans tapped")
-//    }
-//
-//    func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
-//        // Convert SubscriptionPlan to CartItem
-//        let cartItem = RasoiChef.CartItem(userAdress: "", quantity: 1, menuItem: nil, subscriptionDetails: item)
-//
-//        // Add to cart
-//        CartViewController.cartItems.append(cartItem)
-//
-//        // Reload table to reflect changes
-//        CartItem.reloadData()
-//        
-//        // Update Tab Bar Badge
-//        updateTabBarBadge()
-//        
-//        print("Subscription plan added to cart: \(item.planID)")
-//    }
-//}
