@@ -9,10 +9,11 @@ import UIKit
 
 protocol SubscribeYourPlanButtonDelegate: AnyObject {
     func didTapSeeMorePlanYourMeal()
+    func didAddItemToSubscriptionCart(_ item : SubscriptionPlan)
     }
 
 class SubscriptionFooterTableViewCell: UITableViewCell {
-
+    var subscriptionItem : SubscriptionPlan?
     weak var delegate : SubscribeYourPlanButtonDelegate?
     var footerCell: SubscriptionFooterTableViewCell?
 
@@ -37,5 +38,30 @@ class SubscriptionFooterTableViewCell: UITableViewCell {
     
     @IBAction func subscribePlansButtonClicked(_ sender: Any) {
         delegate?.didTapSeeMorePlanYourMeal()
+        
+        //var subscriptionCartItem : SubscriptionPlan?
+        let subscriptionCartItem = SubscriptionPlan(
+                   planID: UUID().uuidString,
+                   userID: "user001",
+                   kitchenID: "kitchen001",
+                   startDate: "2025-02-13",
+                   endDate: "2025-02-20",
+                   totalPrice: 1400.0, // Example price, replace as needed
+                   details: "Your customized meal plan",
+                   mealCountPerDay: 3, // Example meal count, replace as needed
+                   planImage: nil,
+                   weeklyMeals: nil
+               )
+
+               // Pass subscriptionCartItem to the delegate (CartViewController)
+               delegate?.didAddItemToSubscriptionCart(subscriptionCartItem)
+           }
     }
-}
+   
+    
+  
+   
+       
+        
+    
+

@@ -10,6 +10,7 @@ import UIKit
 class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate {
     
     
+    
     var totalPrice: Int = 1400  // 🔥 Start total price at 1400
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
@@ -327,5 +328,26 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 print("No selected row found in MealSubscriptionPlan.")
             }
         }
+//    func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
+//        // Handle navigation or UI update when "See More Plans" is clicked
+//                print("See More Plans tapped")
+//            }
 
-}
+            func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
+                // Convert SubscriptionPlan to CartItem
+                let cartItem = CartItem(userAdress: "", quantity: 1, menuItem: nil, subscriptionDetails: item)
+
+                // Add to cart
+                CartViewController.cartItems.append(cartItem)
+
+                // Reload table to reflect changes
+                MealSubscriptionPlan.reloadData()
+                
+                // Update Tab Bar Badge
+                //updateTabBarBadge()
+                
+                print("Subscription plan added to cart: \(item.planID)")
+            }
+    }
+    
+
