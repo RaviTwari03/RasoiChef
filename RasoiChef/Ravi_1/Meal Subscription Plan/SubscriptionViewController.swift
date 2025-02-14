@@ -7,8 +7,27 @@
 
 import UIKit
 
-class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate {
+class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate,WeeklyPlansDelegate {
+//    func didSelectStartAndEndDate() {
+////        print("✅ Both start and end dates selected. Showing Sections 1 & 2.")
+////                
+////                // Add weeklyMeals data (Example Data)
+////                weeklyMeals = [
+////                    DayMeal(day: "Monday", meals: ["Breakfast", "Lunch"]),
+////                    DayMeal(day: "Tuesday", meals: ["Lunch", "Dinner"]),
+////                ]
+////                
+////        MealSubscriptionPlan.reloadData() // Refresh UI to show Sections 1 & 2
+//        func didSelectStartAndEndDate() {
+//                isDateSelected = true
+//            MealSubscriptionPlan.reloadData() // Refresh table to show Sections 1 & 2
+//            }
+//    }
     
+
+    
+    var isDateSelected = false
+
     
     
     var totalPrice: Int = 1400  // 🔥 Start total price at 1400
@@ -57,37 +76,123 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         return 3 // Two sections
     }
     
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        switch section {
+//        case 0:
+//            return 1
+//        case 1:
+//            return weeklyMeals.count
+//        case 2:
+//            return 1
+//        default:
+//            return 0
+//        }
+//    }
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        switch section {
+//        case 0:
+//            return 1 // Weekly Meal Plan Section always visible
+//        case 1:
+//            return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
+//        case 2:
+//            return isDateSelected ? 1 : 0 // Show only if date is selected
+//        default:
+//            return 0
+//        }
+//    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 1
-        case 1:
-            return weeklyMeals.count
-        case 2:
-            return 1
-        default:
-            return 0
+            switch section {
+            case 0:
+                return 1
+            case 1:
+                return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
+            case 2:
+                return isDateSelected ? 1 : 0 // Show only if date is selected
+            default:
+                return 0
+            }
         }
-    }
-    
-    
+
+//        func didSelectStartAndEndDate() {
+//            isDateSelected = true
+//            tableView.reloadData() // Refresh table to show Sections 1 & 2
+//        }
+//    }
+
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        switch indexPath.section {
+//        case 0: // Weekly Meal Plan Section
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as? WeeklyPlansTableViewCell else {
+//                fatalError("CustomiseTableCell not found")
+//            }
+//            return cell
+//            
+//            
+//        case 1: // Customize Table Section
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
+//                fatalError("CustomiseTableTableViewCell not found")
+//            }
+//            
+//            let dayMeal = weeklyMeals[indexPath.row]
+//            cell.dayLabel.text = dayMeal.day
+//            
+//            // Provide icons for each meal
+//            let icons = dayMeal.meals.map { meal in
+//                switch meal {
+//                case "Breakfast": return "BreakfastIcon"
+//                case "Lunch": return "LunchIcon"
+//                case "Snacks": return "SnacksIcon"
+//                case "Dinner": return "DinnerIcon"
+//                default: return nil
+//                }
+//            }.compactMap { $0 } // Filter out nil values
+//            
+//            print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
+//            cell.configureRow(withIcons: icons)
+//            cell.delegate = self
+//            return cell
+//        case 2:
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
+//                fatalError("CustomiseTableCell not found")
+//            }
+//            footerCell = cell // Store reference for updating price
+//            footerCell?.PaymentLabel.text = "\(totalPrice)"
+//            cell.updateButton()
+//            cell.delegate = self
+//            return cell
+//            
+//            
+//        default:
+//            fatalError("Unexpected section index")
+//        }
+//    }
+//    
+//    
+//    
+//    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0: // Weekly Meal Plan Section
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as? WeeklyPlansTableViewCell else {
-                fatalError("CustomiseTableCell not found")
+                fatalError("WeeklyPlansTableViewCell not found")
             }
+            cell.delegate = self // Set delegate to handle date selection
             return cell
+
+        case 1: // Customize Table Section (Only visible after date selection)
+            guard isDateSelected else { // Hide section if date is not selected
+                return UITableViewCell()
+            }
             
-            
-        case 1: // Customize Table Section
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
                 fatalError("CustomiseTableTableViewCell not found")
             }
             
             let dayMeal = weeklyMeals[indexPath.row]
             cell.dayLabel.text = dayMeal.day
-            
+
             // Provide icons for each meal
             let icons = dayMeal.meals.map { meal in
                 switch meal {
@@ -97,32 +202,33 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 case "Dinner": return "DinnerIcon"
                 default: return nil
                 }
-            }.compactMap { $0 } // Filter out nil values
-            
+            }.compactMap { $0 } // Remove nil values
+
             print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
             cell.configureRow(withIcons: icons)
             cell.delegate = self
             return cell
-        case 2:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
-                fatalError("CustomiseTableCell not found")
+            
+        case 2: // Subscription Footer (Only visible after date selection)
+            guard isDateSelected else { // Hide section if date is not selected
+                return UITableViewCell()
             }
+            
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
+                fatalError("SubscriptionFooterTableViewCell not found")
+            }
+            
             footerCell = cell // Store reference for updating price
             footerCell?.PaymentLabel.text = "\(totalPrice)"
             cell.updateButton()
             cell.delegate = self
             return cell
             
-            
         default:
             fatalError("Unexpected section index")
         }
     }
-    
-    
-    
-    
-    
+
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 1 {
@@ -199,134 +305,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-//    func didTapSeeMorePlanYourMeal() {
-//        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
-//        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
-//            
-//            // Collect selected meals into the weeklyMeals dictionary
-//            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
-//
-//            for (section, selectedTags) in selectedButtons {
-//                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
-//
-//                if selectedWeeklyMeals[day] == nil {
-//                    selectedWeeklyMeals[day] = [:]
-//                }
-//
-//                for tag in selectedTags {
-//                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
-//                        let menuItem = MenuItem(
-//                            itemID: "\(section)-\(tag)",
-//                            kitchenID: "kitchen001",
-//                            kitchenName: "Kanha Ji Rasoi",
-//                            distance: 0.0,  // Default or calculated value
-//                            name: mealType.rawValue,
-//                            description: "Delicious \(mealType.rawValue) meal",
-//                            price: Double(tag),  // Placeholder price, update accordingly
-//                            rating: 4.5,  // Default rating
-//                            availableMealTypes: [mealType],
-//                            portionSize: "Medium",  // Placeholder
-//                            intakeLimit: 1,  // Default limit
-//                            imageURL: "",  // Placeholder or actual image URL
-//                            orderDeadline: "10:00 AM",  // Default deadline
-//                            availability: [],
-//                            availableDays: [day],
-//                            mealCategory: []
-//                        )
-//
-//                        selectedWeeklyMeals[day]?[mealType] = menuItem
-//                    }
-//                }
-//            }
-//
-//            // Create SubscriptionPlan object
-//            let subscriptionPlan = SubscriptionPlan(
-//                planID: UUID().uuidString,
-//                userID: "user001",
-//                kitchenID: "kitchen001",
-//                startDate: "2025-02-13", // Provide actual start date
-//                endDate: "2025-02-20",   // Provide actual end date
-//                totalPrice: Double(totalPrice), // Use calculated total price
-//                details: "Your customized meal plan",
-//                mealCountPerDay: 4,
-//                planImage: "",
-//                weeklyMeals: selectedWeeklyMeals
-//            )
-//
-//            // Create cart item with subscription details
-//            let cartItem = CartItem(
-//                userAdress: "User's Address",
-//                quantity: 1,
-//                specialRequest: nil,
-//                menuItem: nil,
-//                chefSpecial: nil,
-//                subscriptionDetails: subscriptionPlan
-//            )
-//
-//            // Pass data to CartViewController
-//            cartVC.cartItems.append(cartItem)
-//
-//            self.navigationController?.pushViewController(cartVC, animated: true)
-//        }
-//    }
-//    func didTapSeeMorePlanYourMeal() {
-//        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
-//        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
-//            
-//            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
-//
-//            for (section, selectedTags) in selectedButtons {
-//                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
-//
-//                if selectedWeeklyMeals[day] == nil {
-//                    selectedWeeklyMeals[day] = [:]
-//                }
-//
-//                for tag in selectedTags {
-//                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
-//                        let menuItem = MenuItem(
-//                            itemID: "\(section)-\(tag)",
-//                            kitchenID: "kitchen001",
-//                            kitchenName: "Kanha Ji Rasoi",
-//                            distance: 0.0,
-//                            name: mealType.rawValue,
-//                            description: "Delicious \(mealType.rawValue) meal",
-//                            price: Double(tag),
-//                            rating: 4.5,
-//                            availableMealTypes: [mealType],
-//                            portionSize: "Medium",
-//                            intakeLimit: 1,
-//                            imageURL: "",
-//                            orderDeadline: "10:00 AM",
-//                            availability: [],
-//                            availableDays: [day],
-//                            mealCategory: []
-//                        )
-//
-//                        selectedWeeklyMeals[day]?[mealType] = menuItem
-//                    }
-//                }
-//            }
-//
-//            let subscriptionPlan = SubscriptionPlan(
-//                planID: UUID().uuidString,
-//                userID: "user001",
-//                kitchenID: "kitchen001",
-//                startDate: "2025-02-13",
-//                endDate: "2025-02-20",
-//                totalPrice: Double(totalPrice),
-//                details: "Your customized meal plan",
-//                mealCountPerDay: 4,
-//                planImage: "",
-//                weeklyMeals: selectedWeeklyMeals
-//            )
-//
-//            CartViewController.subscriptionPlan1.append(subscriptionPlan) // ✅ Add Subscription Plan
-//            cartVC.CartItem.reloadData() // ✅ Reload to show new item
-//            
-//            self.navigationController?.tabBarController?.selectedIndex = 1 // ✅ Switch to Cart Tab
-//        }
-//    }
+
 
     func didTapSeeMorePlanYourMeal() {
         let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
@@ -446,10 +425,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 print("No selected row found in MealSubscriptionPlan.")
             }
         }
-//    func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
-//        // Handle navigation or UI update when "See More Plans" is clicked
-//                print("See More Plans tapped")
-//            }
+
 
             func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
                 // Convert SubscriptionPlan to CartItem
@@ -466,6 +442,10 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 
                 print("Subscription plan added to cart: \(item.planID)")
             }
+    func didSelectStartAndEndDate() {
+            isDateSelected = true
+        MealSubscriptionPlan.reloadData() // Refresh table to show Sections 1 & 2
+        }
     }
     
 
