@@ -6,42 +6,54 @@
 //
 
 import Foundation
+import UIKit
 
 class OrderDataController{
     private var orders:[Order] = []
-//    private var pastOrders:[Order] = []
+    //    private var pastOrders:[Order] = []
     
-    private init(){
-       // loadDummyOrders()
-//        pastOrdersdummyData()
-    }
+//    private init(){
+//        // loadDummyOrders()
+//        //        pastOrdersdummyData()
+//    }
+    
+  
     
     static var shared = OrderDataController()
     
-//    static var sharedPastOrders = OrderDataController()
+    //    static var sharedPastOrders = OrderDataController()
+    
     
     func getOrders() -> [Order] {
-            return orders
-        }
-        
-        func getOrderCount() -> Int {
-            return orders.count
-        }
+        return orders
+    }
+    
+    func getOrderCount() -> Int {
+        return orders.count
+    }
     func addOrder(order: Order) {
-            orders.append(order)
-            // After adding the new order, re-sort them by status (current orders first)
-            sortOrdersByStatus()
-        }
+        orders.append(order)
+        
+        // After adding the new order, re-sort them by status (current orders first)
+        sortOrdersByStatus()
+       
+    }
     
     
     // Sort orders into current and past orders based on their status
-        func sortOrdersByStatus() {
-            MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
-            MyOrdersViewController.shared.pastOrders = orders.filter { $0.status == .delivered }
-        }
-
+    func sortOrdersByStatus() {
+        MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
+        MyOrdersViewController.shared.pastOrders = orders.filter { $0.status == .delivered }
+    }
     
-    func loadDummyOrders() {
+    func getActiveOrdersCount() -> Int {
+        return orders.filter { $0.status == .placed || $0.status == .delivered }.count
+    }
+    
+   
+        
+        
+        func loadDummyOrders() {
             // Dummy orders with different statuses
             orders = [
                 Order(orderID: "1", userID: "1", kitchenName: "Kanha Ji Rasoi", kitchenID: "Kanha Ji Rasoi", items: [OrderItem(menuItemID: "gulab jamun", quantity: 2, price: 500),OrderItem(menuItemID: "veg thali", quantity: 2, price: 600)], status: .placed, totalAmount: 500, deliveryAddress: "abc 123", deliveryDate: Date(), deliveryType: "delivery"),
@@ -54,7 +66,10 @@ class OrderDataController{
         }
     
 
-}
+        
+        
+    }
     
     
-            
+    
+
