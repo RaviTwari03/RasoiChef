@@ -255,17 +255,19 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        }
        
        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+           
            switch section {
+               
            case 0:
                return "Delivery Address"
            case 1:
                return "Cart Items"
            case 2:
-               return CartViewController.cartItems.isEmpty ? nil : "Bill Summary"
+               return CartViewController.subscriptionPlan1.isEmpty ? nil : "Subscription Details"
            case 3:
                return CartViewController.cartItems.isEmpty ? nil : "Payment"
-           case 4:
-               return "Order Details"
+//           case 4:
+//               return "Order Details"
            default:
                return nil
            }
