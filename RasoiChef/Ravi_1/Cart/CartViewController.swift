@@ -9,7 +9,8 @@ import UIKit
 
 
 
-class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate {
+class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate,SubscriptionCartItemTableViewCellDelegate {
+    
  
     
   
@@ -189,6 +190,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                    if let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionCartItems", for: indexPath) as? SubscriptionCartItemsCollectionTableViewCell {
                        cell.configureWithSubscription(subscriptionPlan)
                        cell.separatorInset = .zero
+                       cell.delegate = self
                        return cell
                    }
 
@@ -415,7 +417,33 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                print("Subscription plan added to cart: \(item.planID)")
            }
        
-       
+    func SubscriptioncartdidTapRemoveButton(cell: SubscriptionCartItemsCollectionTableViewCell) {
+        guard let indexPath = CartItem.indexPath(for: cell) else {
+            print("⚠️ Invalid indexPath: Cell not found in tableView")
+            return
+        }
+
+        guard indexPath.row < CartViewController.subscriptionPlan1.count else {
+            print("⚠️ Index out of bounds: \(indexPath.row), subscription count: \(CartViewController.subscriptionPlan1.count)")
+            return
+        }
+
+        // Remove the subscription plan
+        CartViewController.subscriptionPlan1.remove(at: indexPath.row)
+
+        // Check if subscriptions are empty
+        if CartViewController.subscriptionPlan1.isEmpty {
+            print("📦 Subscription list is empty, reloading table to show empty state.")
+            CartItem.reloadData() // Reload entire table to reflect empty state
+        } else {
+            print("✅ Subscription removed, updating UI")
+            CartItem.deleteRows(at: [indexPath], with: .fade)
+        }
+
+        updateTabBarBadge() // Update the tab bar badge
+    }
+
+    
 
        
    }

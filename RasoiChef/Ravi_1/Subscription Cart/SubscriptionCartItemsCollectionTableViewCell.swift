@@ -7,8 +7,12 @@
 
 import UIKit
 
-class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
+protocol SubscriptionCartItemTableViewCellDelegate: AnyObject {
+    func SubscriptioncartdidTapRemoveButton(cell: SubscriptionCartItemsCollectionTableViewCell)
+}
 
+class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
+weak var delegate: SubscriptionCartItemTableViewCellDelegate?
     
     @IBOutlet weak var SubscriptionName1: UILabel!
     @IBOutlet weak var selectedRange1: UILabel!
@@ -62,7 +66,11 @@ class SubscriptionCartItemsCollectionTableViewCell: UITableViewCell {
     }
 
 
+    @IBAction func crossButtonTapped(_ sender: Any) {
+        delegate?.SubscriptioncartdidTapRemoveButton(cell: self)
 
+    }
+    
        @objc func stepperValueChanged(_ sender: UIStepper) {
            guard var cartItem = cartItem else { return }
 
