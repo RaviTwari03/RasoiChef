@@ -32,11 +32,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-VR-jPA">
-                                <rect key="frame" x="171.66666666666663" y="4" width="178.33333333333337" height="38"/>
+                                <rect key="frame" x="174.66666666666663" y="4" width="167.33333333333337" height="38"/>
                                 <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Subscribe Plans">
+                                <buttonConfiguration key="configuration" style="plain" title="Subscribe Plan">
                                     <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
                                 </buttonConfiguration>
                                 <connections>
@@ -48,16 +48,14 @@
                         <constraints>
                             <constraint firstItem="bdp-Gh-SAm" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="11" id="5LY-4z-ksY"/>
                             <constraint firstItem="bdp-Gh-SAm" firstAttribute="leading" secondItem="cCA-9S-sdL" secondAttribute="leading" constant="8" id="ADP-xJ-8s7"/>
-                            <constraint firstItem="qg7-nC-9ZJ" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="11" id="Ab9-et-nXO"/>
                             <constraint firstAttribute="bottom" secondItem="bdp-Gh-SAm" secondAttribute="bottom" constant="21" id="Fxd-oK-rxi"/>
-                            <constraint firstAttribute="trailing" secondItem="fPw-VR-jPA" secondAttribute="trailing" id="Ghs-nI-Nki"/>
                             <constraint firstAttribute="bottom" secondItem="fPw-VR-jPA" secondAttribute="bottom" constant="14" id="PKs-LF-BMe"/>
-                            <constraint firstItem="fPw-VR-jPA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qg7-nC-9ZJ" secondAttribute="trailing" constant="22" id="QgU-iW-DAX"/>
                             <constraint firstItem="fPw-VR-jPA" firstAttribute="top" secondItem="cCA-9S-sdL" secondAttribute="top" constant="4" id="UGs-bO-zF7"/>
+                            <constraint firstAttribute="trailing" secondItem="fPw-VR-jPA" secondAttribute="trailing" constant="8" id="Wdq-An-De3"/>
                             <constraint firstAttribute="width" constant="350" id="Wyl-bK-Wke"/>
                             <constraint firstAttribute="height" constant="56" id="aQX-58-360"/>
+                            <constraint firstItem="qg7-nC-9ZJ" firstAttribute="centerY" secondItem="bdp-Gh-SAm" secondAttribute="centerY" id="crn-Ms-BmT"/>
                             <constraint firstItem="qg7-nC-9ZJ" firstAttribute="leading" secondItem="bdp-Gh-SAm" secondAttribute="trailing" constant="8" symbolic="YES" id="i9y-fD-GT4"/>
-                            <constraint firstAttribute="bottom" secondItem="qg7-nC-9ZJ" secondAttribute="bottom" constant="21" id="yKA-JA-gzP"/>
                         </constraints>
                     </view>
                 </subviews>
