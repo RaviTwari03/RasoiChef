@@ -7,9 +7,7 @@
 
 import UIKit
 
-//protocol CustomiseTableDelegate: AnyObject {
-//    func buttonClicked(withTag tag: Int)
-//}
+
 protocol CustomiseTableDelegate: AnyObject {
     func buttonClicked(inSection section: Int, withTag tag: Int)
 }
