@@ -19,7 +19,7 @@ class AddItemCartTableViewCell: UITableViewCell {
            // Apply corner radius
            contentView.layer.cornerRadius = 15
            contentView.layer.masksToBounds = true
-
+            
            // Add border
            contentView.layer.borderWidth = 1
         contentView.layer.borderColor = UIColor.black.cgColor
