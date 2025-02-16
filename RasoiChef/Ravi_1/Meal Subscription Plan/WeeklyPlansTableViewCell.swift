@@ -7,13 +7,9 @@
 
 import UIKit
 
-//protocol WeeklyPlansDelegate: AnyObject {
-//    func didSelectStartAndEndDate()
-//}
 protocol WeeklyPlansDelegate: AnyObject {
-    func didSelectStartAndEndDate(dayCount: Int)
+    func didSelectStartAndEndDate(startDate: String, endDate: String, dayCount: Int)
 }
-
 
 class WeeklyPlansTableViewCell: UITableViewCell {
     
@@ -100,13 +96,18 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     }
 
     private func checkIfEndDateIsSelected() {
-        if endDateCalender.date != nil {
-            let totalDays = dayCount + 1 // Ensure it includes the selected end date
-            delegate?.didSelectStartAndEndDate(dayCount: totalDays)
-            print("End date selection confirmed. Selected date: \(endDateCalender.date)")
-            print("Total days count: \(totalDays)")
-        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy"
+        
+        let startDateString = dateFormatter.string(from: startDateCalender.date)
+        let endDateString = dateFormatter.string(from: endDateCalender.date)
+        let totalDays = dayCount + 1  // Ensures end date is included
+
+        delegate?.didSelectStartAndEndDate(startDate: startDateString, endDate: endDateString, dayCount: totalDays)
+        
+        print("Start Date: \(startDateString), End Date: \(endDateString), Total Days: \(totalDays)")
     }
+
 
     
     @objc private func showPriceAlert() {
