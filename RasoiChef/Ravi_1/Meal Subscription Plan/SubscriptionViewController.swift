@@ -8,21 +8,7 @@
 import UIKit
 
 class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate,WeeklyPlansDelegate {
-//    func didSelectStartAndEndDate() {
-////        print("✅ Both start and end dates selected. Showing Sections 1 & 2.")
-////                
-////                // Add weeklyMeals data (Example Data)
-////                weeklyMeals = [
-////                    DayMeal(day: "Monday", meals: ["Breakfast", "Lunch"]),
-////                    DayMeal(day: "Tuesday", meals: ["Lunch", "Dinner"]),
-////                ]
-////                
-////        MealSubscriptionPlan.reloadData() // Refresh UI to show Sections 1 & 2
-//        func didSelectStartAndEndDate() {
-//                isDateSelected = true
-//            MealSubscriptionPlan.reloadData() // Refresh table to show Sections 1 & 2
-//            }
-//    }
+
     
 
     
@@ -37,9 +23,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     var isModificationBlocked = false
     var buttonClickCount = 0 // To track the number of button clicks
     
-  //  var totalPrice: Int = 1400 // Initial total price (40 + 60 + 40 + 60)
-    //var totalPrice = KitchenDataController.subscriptionPlans[0].totalPrice
-    
+  
     @IBOutlet var MealSubscriptionPlan: UITableView!
     
     struct DayMeal {
@@ -69,6 +53,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         // Set the dataSource and delegate
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
+        MealSubscriptionPlan.reloadData()
     }
     
     
@@ -115,7 +100,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 //            }
 //        }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard isDateSelected else { return 0 } // Only show rows if a date is selected
+       // guard isDateSelected else { return 0 } // Only show rows if a date is selected
 
         switch section {
         case 0:
@@ -129,68 +114,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         }
     }
 
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return min(dayCount, 3) // Ensure it does not exceed 3 sections
-//    }
 
-//        func didSelectStartAndEndDate() {
-//            isDateSelected = true
-//            tableView.reloadData() // Refresh table to show Sections 1 & 2
-//        }
-//    }
-
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        switch indexPath.section {
-//        case 0: // Weekly Meal Plan Section
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeeklyPlans", for: indexPath) as? WeeklyPlansTableViewCell else {
-//                fatalError("CustomiseTableCell not found")
-//            }
-//            return cell
-//            
-//            
-//        case 1: // Customize Table Section
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "CustomiseTable2", for: indexPath) as? CustomiseTableTableViewCell else {
-//                fatalError("CustomiseTableTableViewCell not found")
-//            }
-//            
-//            let dayMeal = weeklyMeals[indexPath.row]
-//            cell.dayLabel.text = dayMeal.day
-//            
-//            // Provide icons for each meal
-//            let icons = dayMeal.meals.map { meal in
-//                switch meal {
-//                case "Breakfast": return "BreakfastIcon"
-//                case "Lunch": return "LunchIcon"
-//                case "Snacks": return "SnacksIcon"
-//                case "Dinner": return "DinnerIcon"
-//                default: return nil
-//                }
-//            }.compactMap { $0 } // Filter out nil values
-//            
-//            print("Setting up cell for day: \(cell.dayLabel.text ?? "Unknown")")
-//            cell.configureRow(withIcons: icons)
-//            cell.delegate = self
-//            return cell
-//        case 2:
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
-//                fatalError("CustomiseTableCell not found")
-//            }
-//            footerCell = cell // Store reference for updating price
-//            footerCell?.PaymentLabel.text = "\(totalPrice)"
-//            cell.updateButton()
-//            cell.delegate = self
-//            return cell
-//            
-//            
-//        default:
-//            fatalError("Unexpected section index")
-//        }
-//    }
-//    
-//    
-//    
-//    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0: // Weekly Meal Plan Section
