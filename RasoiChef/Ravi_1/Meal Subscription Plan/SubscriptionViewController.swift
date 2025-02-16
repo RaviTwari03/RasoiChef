@@ -16,7 +16,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     var selectedDayCount: Int = 0
 
     
-    
+    var finalPrice : Int = 0
     var totalPrice: Int = 1400  // 🔥 Start total price at 1400
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
@@ -234,7 +234,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 kitchenID: "kitchen001",
                 startDate: "14 Feb 2025",
                 endDate: "20 feb 2025",
-                totalPrice: Double(totalPrice),
+                totalPrice: Double(finalPrice),
                 details: "Your customized meal plan",
                 mealCountPerDay: 4,
                 planImage: "",
