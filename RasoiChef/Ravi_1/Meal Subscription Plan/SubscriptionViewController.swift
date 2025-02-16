@@ -14,9 +14,10 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     
     var isDateSelected = false
     var selectedDayCount: Int = 0
-
+    var selectedStartDate: String = ""  // e.g., "14 Feb 2025"
+    var selectedEndDate: String = ""    // e.g., "20 Feb 2025"
     
-    var finalPrice : Int = 0
+    var finalPrice: Double = 0.0  // Store final price globally
     var totalPrice: Int = 1400  // 🔥 Start total price at 1400
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
@@ -115,21 +116,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             cell.configureRow(withIcons: icons)
             cell.delegate = self
             return cell
-            
-        //case 2: // Subscription Footer (Only visible after date selection)
-//            guard isDateSelected else { // Hide section if date is not selected
-//                return UITableViewCell()
-//            }
-//            
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
-//                fatalError("SubscriptionFooterTableViewCell not found")
-//            }
-//            
-//            footerCell = cell // Store reference for updating price
-//            footerCell?.PaymentLabel.text = "\(totalPrice)"
-//            cell.updateButton()
-//            cell.delegate = self
-//            return cell
+
         case 2:
             // Subscription Footer (Only visible after date selection)
             guard isDateSelected else { // Hide section if date is not selected
@@ -228,13 +215,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 }
             }
 
+            updateFooterPrice()  // Ensure the final price is recalculated
+            print("Final Price before passing: \(finalPrice)") // Debugging
+
             let subscriptionPlan = SubscriptionPlan(
                 planID: UUID().uuidString,
                 userID: "user001",
                 kitchenID: "kitchen001",
                 startDate: "14 Feb 2025",
-                endDate: "20 feb 2025",
-                totalPrice: Double(finalPrice),
+                endDate: "20 Feb 2025",
+                totalPrice: finalPrice,  // ✅ Pass updated final price
                 details: "Your customized meal plan",
                 mealCountPerDay: 4,
                 planImage: "",
@@ -350,15 +340,18 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 //    }
 
 
-    private func updateFooterPrice() {
-        let baseDayPrice = 180  // Assuming ₹200 per day
-        let baseTotalPrice = selectedDayCount * baseDayPrice  // Base price based on selected days
-        
-        let totalDeductions = totalPricePerSection.values.reduce(0, +)  // Sum of deducted prices
-        let finalPrice = baseTotalPrice - totalDeductions  // Compute final price
-        
-        footerCell?.PaymentLabel.text = "₹\(finalPrice)"
+    func updateFooterPrice() {
+        let baseDayPrice = 180
+        let baseTotalPrice = selectedDayCount * baseDayPrice
+        let totalDeductions = totalPricePerSection.values.reduce(0, +)
+        finalPrice = Double(baseTotalPrice - totalDeductions)  // Store final price
+
+        DispatchQueue.main.async {
+            self.footerCell?.PaymentLabel.text = "₹\(self.finalPrice)"
+        }
+        print("Final Price before passing: \(finalPrice)")
     }
+
 
             func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
                 // Convert SubscriptionPlan to CartItem
