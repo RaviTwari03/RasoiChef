@@ -7,7 +7,14 @@
 
 import UIKit
 
+protocol ChefSpecialMenuSeeMoreDetailsCellDelegate: AnyObject {
+    func ChefSpecialaddButtonTapped(in cell: ChefSeeMoreCollectionViewCell)
+}
+
+
 class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
+    
+    weak var delegate : ChefSpecialMenuSeeMoreDetailsCellDelegate?
     
     
     @IBOutlet var DishImage: UIImageView!
@@ -33,6 +40,8 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         DishImage.image = UIImage(named: specialDish.imageURL ) 
     }
     
-    
+    @IBAction func addButtonTapped(_ sender: Any) {
+        delegate?.ChefSpecialaddButtonTapped(in: self)
+    }
 
 }
