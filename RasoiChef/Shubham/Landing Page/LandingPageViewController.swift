@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating {
+class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate{
 
     @IBOutlet var LandingPage: UICollectionView!
     
@@ -125,6 +125,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
+            cell.delegate = self
             cell.layer.cornerRadius = 15.0    // Rounded corners
 
             return cell
@@ -293,6 +294,37 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     }
     
 
+    
+    
+    func ChefSpecialaddButtonTapped(in cell: LandingPageChefSpecialCollectionViewCell) {
+        guard let indexPath = LandingPage.indexPath(for: cell) else { return }
+        
+        // Fetch the Chef Specialty Dish from the data controller
+        let selectedChefSpecialtyDish = KitchenDataController.globalChefSpecial[indexPath.row]
+        print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
+        
+        // Instantiate the detail view controller
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            // Pass the selected Chef Specialty Dish to the detailVC
+            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
+            
+            // Set the modal presentation style
+            detailVC.modalPresentationStyle = .pageSheet
+            
+            // Customize the presentation style for iPad/large screens
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            // Present the modal view controller
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
+    }
+    
     
     
     

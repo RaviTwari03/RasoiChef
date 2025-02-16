@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol LandingPageChefSpecialDetailsCellDelegate: AnyObject {
+    func ChefSpecialaddButtonTapped(in cell: LandingPageChefSpecialCollectionViewCell)
+}
+
 class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
+    
+    weak var delegate : LandingPageChefSpecialDetailsCellDelegate?
     
     @IBOutlet var specialDishImage: UIImageView!
     
@@ -67,6 +73,9 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         
     }
     
+    @IBAction func addButtonTapped(_ sender: Any) {
+        delegate?.ChefSpecialaddButtonTapped(in: self)
+    }
     
     
 }

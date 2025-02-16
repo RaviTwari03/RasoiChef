@@ -249,8 +249,8 @@ class KitchenDataController {
             )
         ]
     
-    static var globalChefSpecial: [GlobalChefSpeciality] = [
-        GlobalChefSpeciality(
+    static var globalChefSpecial: [ChefSpecialtyDish] = [
+        ChefSpecialtyDish(
             kitchenName: "Flavors of Punjab",
             dishID: "special003",
             kitchenID: "kitchen003",
@@ -261,7 +261,7 @@ class KitchenDataController {
             imageURL: "ButterChicken",
             mealCategory: [.nonVeg]
         ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Mumbai Spices",
             dishID: "special004",
             kitchenID: "kitchen004",
@@ -272,7 +272,7 @@ class KitchenDataController {
             imageURL: "PavBhaji",
             mealCategory: [.veg]
         ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Delhi Zaika",
             dishID: "special005",
             kitchenID: "kitchen005",
@@ -293,7 +293,7 @@ class KitchenDataController {
 //            rating: 4.8,
 //            imageURL: "MasalaDosa"
 //        ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Spice Aroma",
             dishID: "special007",
             kitchenID: "kitchen007",
@@ -304,7 +304,7 @@ class KitchenDataController {
             imageURL: "PaneerTikka",
             mealCategory: [.veg]
         ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Royal Rajasthan",
             dishID: "special008",
             kitchenID: "kitchen008",
@@ -315,7 +315,7 @@ class KitchenDataController {
             imageURL: "DalBaatiChurma",
             mealCategory: [.veg]
         ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Biryani Bliss",
             dishID: "special009",
             kitchenID: "kitchen009",
@@ -326,7 +326,7 @@ class KitchenDataController {
             imageURL: "HyderabadiBiryani",
             mealCategory: [.veg]
         ),
-        GlobalChefSpeciality(
+        ChefSpecialtyDish(
             kitchenName: "Street Food Junction",
             dishID: "special010",
             kitchenID: "kitchen010",

@@ -127,17 +127,17 @@ struct ChefSpecialtyDish {
     var imageURL: String
     var mealCategory : [MealCategory]
 }
-struct GlobalChefSpeciality{
-    let kitchenName : String
-    let dishID: String
-    let kitchenID: String
-    var name: String
-    var description: String
-    var price: Double
-    var rating: Float
-    var imageURL: String
-    var mealCategory : [MealCategory]
-}
+//struct GlobalChefSpeciality{
+//    let kitchenName : String
+//    let dishID: String
+//    let kitchenID: String
+//    var name: String
+//    var description: String
+//    var price: Double
+//    var rating: Float
+//    var imageURL: String
+//    var mealCategory : [MealCategory]
+//}
 
 // Cart Item
 struct CartItem {
