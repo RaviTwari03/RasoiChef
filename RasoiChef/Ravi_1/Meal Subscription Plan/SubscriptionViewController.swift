@@ -62,43 +62,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         return 3 // Two sections
     }
     
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        switch section {
-//        case 0:
-//            return 1
-//        case 1:
-//            return weeklyMeals.count
-//        case 2:
-//            return 1
-//        default:
-//            return 0
-//        }
-//    }
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        switch section {
-//        case 0:
-//            return 1 // Weekly Meal Plan Section always visible
-//        case 1:
-//            return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
-//        case 2:
-//            return isDateSelected ? 1 : 0 // Show only if date is selected
-//        default:
-//            return 0
-//        }
-//    }
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//            switch section {
-//            case 0:
-//                return 1
-//            case 1:
-//                return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
-//            case 2:
-//                return isDateSelected ? 1 : 0 // Show only if date is selected
-//            default:
-//                return 0
-//            }
-//        }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
        // guard isDateSelected else { return 0 } // Only show rows if a date is selected
 
@@ -152,7 +116,22 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             cell.delegate = self
             return cell
             
-        case 2: // Subscription Footer (Only visible after date selection)
+        //case 2: // Subscription Footer (Only visible after date selection)
+//            guard isDateSelected else { // Hide section if date is not selected
+//                return UITableViewCell()
+//            }
+//            
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SubscriptionFooter", for: indexPath) as? SubscriptionFooterTableViewCell else {
+//                fatalError("SubscriptionFooterTableViewCell not found")
+//            }
+//            
+//            footerCell = cell // Store reference for updating price
+//            footerCell?.PaymentLabel.text = "\(totalPrice)"
+//            cell.updateButton()
+//            cell.delegate = self
+//            return cell
+        case 2:
+            // Subscription Footer (Only visible after date selection)
             guard isDateSelected else { // Hide section if date is not selected
                 return UITableViewCell()
             }
@@ -162,7 +141,14 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             }
             
             footerCell = cell // Store reference for updating price
-            footerCell?.PaymentLabel.text = "\(totalPrice)"
+            
+            // 🔥 Calculate the final price dynamically
+            let baseDayPrice = 180  // Assuming ₹200 per day
+            let baseTotalPrice = selectedDayCount * baseDayPrice  // Base price based on selected days
+            let totalDeductions = totalPricePerSection.values.reduce(0, +)  // Sum of deducted prices
+            let finalPrice = baseTotalPrice - totalDeductions  // Compute final price
+
+            footerCell?.PaymentLabel.text = "₹\(finalPrice)"  // ✅ Update UI with the latest price
             cell.updateButton()
             cell.delegate = self
             return cell
@@ -191,58 +177,11 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             return 0
         }
     }
-    
-    
-    
-    
-    
-    private func updateFooterPrice() {
-        footerCell?.PaymentLabel.text = "₹\(totalPrice)"
-    }
-    //    var selectedButtons: [Int: Set<Int>] = [:]
-    //    var buttonClickCountPerSection: [Int: Int] = [:]
-    //
-    //    func buttonClicked(inSection section: Int, withTag tag: Int) {
-    //        // Ensure there's a set for the section
-    //        if selectedButtons[section] == nil {
-    //            selectedButtons[section] = []
-    //        }
-    //
-    //        // Ensure button count tracking per section
-    //        if buttonClickCountPerSection[section] == nil {
-    //            buttonClickCountPerSection[section] = 0
-    //        }
-    //
-    //        // Toggle button state
-    //        if selectedButtons[section]!.contains(tag) {
-    //            // If button was already selected, remove it and add back the price
-    //            selectedButtons[section]!.remove(tag)
-    //            totalPrice += tag
-    //            buttonClickCountPerSection[section]! -= 1
-    //        } else {
-    //            // If button is newly selected, subtract the price
-    //            if buttonClickCountPerSection[section]! >= 4 {
-    //                showAlert()
-    //                return
-    //            }
-    //            selectedButtons[section]!.insert(tag)
-    //            totalPrice -= tag
-    //            buttonClickCountPerSection[section]! += 1
-    //        }
-    //
-    //        print("Received button tag: \(tag) in section: \(section)")
-    //
-    //        // Update footer price dynamically
-    //        updateFooterPrice()
-    //
-    //        // Reload only the row where the button was clicked
-    //        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
-    //            hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
-    //            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-    //        }
-    //    }
-    
-    
+  
+//    private func updateFooterPrice() {
+//        footerCell?.PaymentLabel.text = "₹\(totalPrice)"
+//    }
+   
     func showAlert() {
         let alert = UIAlertController(title: "Limit Exceeded", message: "You have exceeded the limit of modification.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -368,7 +307,58 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 print("No selected row found in MealSubscriptionPlan.")
             }
         }
+//    func buttonClicked(inSection section: Int, withTag tag: Int) {
+//        print("Button Clicked! Section: \(section), Tag: \(tag)")
+//
+//        // Ensure tracking for the section
+//        if selectedButtons[section] == nil {
+//            selectedButtons[section] = []
+//        }
+//        if totalPricePerSection[section] == nil {
+//            totalPricePerSection[section] = 0
+//        }
+//
+//        // Toggle button selection
+//        if selectedButtons[section]!.contains(tag) {
+//            print("Button \(tag) deselected in section \(section). Adding back price.")
+//            selectedButtons[section]!.remove(tag)
+//            totalPricePerSection[section]! -= tag  // Add back price when deselected
+//        } else {
+//            print("Button \(tag) selected in section \(section). Deducting its value.")
+//            
+//            if selectedButtons[section]!.count >= 4 {
+//                print("Limit exceeded in section \(section). Showing alert.")
+//                showAlert()
+//                return
+//            }
+//            
+//            selectedButtons[section]!.insert(tag)
+//            totalPricePerSection[section]! += tag  // Deduct price when selected
+//        }
+//
+//        // 🔥 Debugging Info
+//        print("Selected Days: \(selectedDayCount)")
+//        print("Total Deducted Price: \(totalPricePerSection.values.reduce(0, +))")
+//        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
+//
+//        // Update footer price dynamically
+//        updateFooterPrice()
+//
+//        // Reload only the footer section to avoid unnecessary UI updates
+//        let footerIndexPath = IndexPath(row: 0, section: 2)
+//        MealSubscriptionPlan.reloadRows(at: [footerIndexPath], with: .none)
+//    }
 
+
+    private func updateFooterPrice() {
+        let baseDayPrice = 180  // Assuming ₹200 per day
+        let baseTotalPrice = selectedDayCount * baseDayPrice  // Base price based on selected days
+        
+        let totalDeductions = totalPricePerSection.values.reduce(0, +)  // Sum of deducted prices
+        let finalPrice = baseTotalPrice - totalDeductions  // Compute final price
+        
+        footerCell?.PaymentLabel.text = "₹\(finalPrice)"
+    }
 
             func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
                 // Convert SubscriptionPlan to CartItem

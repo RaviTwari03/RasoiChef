@@ -27,168 +27,7 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     @IBOutlet var pricesAlert: UIButton!
     
     
-    //    override func awakeFromNib() {
-    //        super.awakeFromNib()
-    //        configureStartDatePicker()
-    //        configureEndDatePicker()
-    //        configurePriceAlertButton()
-    //        selectedRangeLabel.isHidden = true
-    //        self.selectionStyle = .none
-    //    }
-    //
-    //    private func configureStartDatePicker() {
-    //        let currentDate = Date()
-    //        let calendar = Calendar.current
-    //        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: currentDate) ?? currentDate
-    //
-    //        startDateCalender.minimumDate = currentDate
-    //        startDateCalender.maximumDate = sevenDaysLater
-    //        startDateCalender.date = currentDate
-    //        startDateCalender.addTarget(self, action: #selector(startDateSelected), for: .valueChanged)
-    //    }
-    //
-    //    private func configureEndDatePicker() {
-    //        let currentDate = Date()
-    //        let calendar = Calendar.current
-    //        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: currentDate) ?? currentDate
-    //
-    //        endDateCalender.minimumDate = currentDate
-    //        endDateCalender.maximumDate = sevenDaysLater
-    //        endDateCalender.date = currentDate
-    //        endDateCalender.addTarget(self, action: #selector(endDateSelected), for: .valueChanged)
-    //    }
-    //
-    //    private func configurePriceAlertButton() {
-    //        pricesAlert.addTarget(self, action: #selector(showPriceAlert), for: .touchUpInside)
-    //    }
-    //
-    //    @objc private func startDateSelected() {
-    //        let selectedStartDate = startDateCalender.date
-    //        let calendar = Calendar.current
-    //        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: selectedStartDate)
-    //
-    //        endDateCalender.minimumDate = selectedStartDate
-    //        endDateCalender.maximumDate = sevenDaysLater
-    //        endDateCalender.date = sevenDaysLater ?? selectedStartDate
-    //    }
-    //
-    //    @objc private func endDateSelected(_ sender: UIDatePicker) {
-    //        updateSelectedRangeLabel()
-    //        checkIfEndDateIsSelected()
-    //        print("End date selected: \(endDateCalender.date)")
-    //    }
-    //
-    //    private func updateSelectedRangeLabel() {
-    //        let dateFormatter = DateFormatter()
-    //        dateFormatter.dateFormat = "dd MMM yyyy"
-    //
-    //        let startDateString = dateFormatter.string(from: startDateCalender.date)
-    //        let endDateString = dateFormatter.string(from: endDateCalender.date)
-    //        let dayCount = Calendar.current.dateComponents([.day], from: startDateCalender.date, to: endDateCalender.date).day ?? 0
-    //        let startDate = startDateCalender.date
-    //        let endDate = endDateCalender.date
-    //        selectedRangeLabel.text = "\(startDateString) - \(endDateString) (Total Days: \(dayCount + 1))"
-    //        selectedRangeLabel.isHidden = false
-    //        let calendar = Calendar.current
-    //        if let daysCount = calendar.dateComponents([.day], from: startDate, to: endDate).day {
-    //            print("Selected range: \(startDateString) - \(endDateString) (\(daysCount + 1) days)")
-    //            print("Total days count: \(daysCount + 1)")
-    //        }
-    //    }
-    //
-    ////    private func checkIfEndDateIsSelected() {
-    ////        if endDateCalender.date != nil {
-    ////
-    ////            delegate?.didSelectStartAndEndDate()
-    ////        }
-    ////    }
-    ////
-    //    private func checkIfEndDateIsSelected() {
-    //        if endDateCalender.date != nil {
-    //            delegate?.didSelectStartAndEndDate()
-    //            print("End date selection confirmed. Selected date: \(endDateCalender.date)")
-    //        }
-    //    }
-    //    @objc private func showPriceAlert() {
-    //        guard let parentVC = self.parentViewController else { return }
-    //
-    //        let alertController = UIAlertController(title: "Meal Prices", message: nil, preferredStyle: .alert)
-    //        let customView = createMealPricesView()
-    //        alertController.view.addSubview(customView)
-    //
-    //        customView.translatesAutoresizingMaskIntoConstraints = false
-    //        NSLayoutConstraint.activate([
-    //            customView.topAnchor.constraint(equalTo: alertController.view.topAnchor, constant: 60),
-    //            customView.bottomAnchor.constraint(equalTo: alertController.view.bottomAnchor, constant: -70),
-    //            customView.leadingAnchor.constraint(equalTo: alertController.view.leadingAnchor, constant: 0),
-    //            customView.trailingAnchor.constraint(equalTo: alertController.view.trailingAnchor, constant: -20),
-    //        ])
-    //
-    //        alertController.addAction(UIAlertAction(title: "OK", style: .default))
-    //        parentVC.present(alertController, animated: true)
-    //    }
-    //
-    //    private func createMealPricesView() -> UIView {
-    //        let meals = [
-    //            ("Breakfast", "sun.max", "₹40"),
-    //            ("Lunch", "fork.knife", "₹60"),
-    //            ("Snacks", "cup.and.saucer", "₹40"),
-    //            ("Dinner", "moon", "₹60")
-    //        ]
-    //
-    //        let stackView = UIStackView()
-    //        stackView.axis = .vertical
-    //        stackView.alignment = .fill
-    //        stackView.spacing = 10
-    //
-    //        for (meal, iconName, price) in meals {
-    //            let mealRow = createMealRow(title: meal, iconName: iconName, price: price)
-    //            stackView.addArrangedSubview(mealRow)
-    //        }
-    //
-    //        return stackView
-    //    }
-    //
-    //    private func createMealRow(title: String, iconName: String, price: String) -> UIView {
-    //        let iconImageView = UIImageView()
-    //        iconImageView.image = UIImage(systemName: iconName)
-    //        iconImageView.contentMode = .scaleAspectFit
-    //        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-    //        iconImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-    //        iconImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-    //
-    //        let titleLabel = UILabel()
-    //        titleLabel.text = title
-    //        titleLabel.font = UIFont.systemFont(ofSize: 16)
-    //        titleLabel.textColor = .black
-    //
-    //        let priceLabel = UILabel()
-    //        priceLabel.text = price
-    //        priceLabel.font = UIFont.systemFont(ofSize: 16)
-    //        priceLabel.textColor = .black
-    //
-    //        let horizontalStack = UIStackView(arrangedSubviews: [iconImageView, titleLabel, priceLabel])
-    //        horizontalStack.axis = .horizontal
-    //        horizontalStack.alignment = .center
-    //        horizontalStack.spacing = 10
-    //        horizontalStack.distribution = .fill
-    //
-    //        return horizontalStack
-    //    }}
-    //
-    //extension UIView {
-    //    var parentViewController: UIViewController? {
-    //        var parentResponder: UIResponder? = self
-    //        while parentResponder != nil {
-    //            parentResponder = parentResponder?.next
-    //            if let viewController = parentResponder as? UIViewController {
-    //                return viewController
-    //            }
-    //        }
-    //        return nil
-    //    }
-    //
-    //}
+   
     var dayCount: Int = 0
     
     override func awakeFromNib() {
@@ -259,14 +98,7 @@ class WeeklyPlansTableViewCell: UITableViewCell {
             print("Total days count: \(daysCount + 1)")
         }
     }
-    
-//    private func checkIfEndDateIsSelected() {
-//        if endDateCalender.date != nil {
-//            delegate?.didSelectStartAndEndDate()
-//            print("End date selection confirmed. Selected date: \(endDateCalender.date)")
-//            print("Total days count: \(dayCount + 1)")
-//        }
-//    }
+
     private func checkIfEndDateIsSelected() {
         if endDateCalender.date != nil {
             let totalDays = dayCount + 1 // Ensure it includes the selected end date
@@ -298,9 +130,9 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     
     private func createMealPricesView() -> UIView {
         let meals = [
-            ("Breakfast", "sun.max", "₹40"),
-            ("Lunch", "fork.knife", "₹60"),
-            ("Snacks", "cup.and.saucer", "₹40"),
+            ("Breakfast", "sun.max", "₹30"),
+            ("Lunch", "fork.knife", "₹40"),
+            ("Snacks", "cup.and.saucer", "₹50"),
             ("Dinner", "moon", "₹60")
         ]
         
