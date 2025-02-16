@@ -27,6 +27,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 
     
     var isDateSelected = false
+    var selectedDayCount: Int = 0
 
     
     
@@ -101,18 +102,36 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 //            return 0
 //        }
 //    }
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//            switch section {
+//            case 0:
+//                return 1
+//            case 1:
+//                return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
+//            case 2:
+//                return isDateSelected ? 1 : 0 // Show only if date is selected
+//            default:
+//                return 0
+//            }
+//        }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            switch section {
-            case 0:
-                return 1
-            case 1:
-                return isDateSelected ? weeklyMeals.count : 0 // Show only if date is selected
-            case 2:
-                return isDateSelected ? 1 : 0 // Show only if date is selected
-            default:
-                return 0
-            }
+        guard isDateSelected else { return 0 } // Only show rows if a date is selected
+
+        switch section {
+        case 0:
+            return 1 // First section always has 1 row
+        case 1:
+            return min(selectedDayCount, weeklyMeals.count) // Show meals only for selected days
+        case 2:
+            return selectedDayCount > 1 ? 1 : 0 // Show this section if more than 1 day is selected
+        default:
+            return 0
         }
+    }
+
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return min(dayCount, 3) // Ensure it does not exceed 3 sections
+//    }
 
 //        func didSelectStartAndEndDate() {
 //            isDateSelected = true
@@ -442,10 +461,12 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 
                 print("Subscription plan added to cart: \(item.planID)")
             }
-    func didSelectStartAndEndDate() {
-            isDateSelected = true
-        MealSubscriptionPlan.reloadData() // Refresh table to show Sections 1 & 2
-        }
+    func didSelectStartAndEndDate(dayCount: Int) {
+           isDateSelected = true
+           selectedDayCount = dayCount
+           print("Received total days count: \(dayCount)")
+           MealSubscriptionPlan.reloadData() // Refresh table based on selected days
+       }
     }
     
 
