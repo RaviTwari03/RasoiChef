@@ -216,7 +216,9 @@ struct SubscriptionPlan {
                     day: day.rawValue,
                     mealType: mealType,
                     menuItemID: menuItem.itemID ?? "0",
-                    description: menuItem.description // ✅ Include description
+                    description: menuItem.description ,
+                    planDishImage : menuItem.imageURL// ✅ Include description
+                    
                 )
             }
         }
@@ -230,7 +232,8 @@ struct SubscriptionMeal {
     var day: String
     var mealType: MealType
     var menuItemID: String
-    var description: String // ✅ Added description field
+    var description: String
+    var planDishImage : String// ✅ Added description field
 }
 
 // Feedback

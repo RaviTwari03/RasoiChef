@@ -30,31 +30,42 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
 //            let imageName = mealName.replacingOccurrences(of: " ", with: "_").lowercased()
 //            MealImage.image = UIImage(named: imageName) ?? UIImage(named: "default_meal")
 //        }
-    func updateMenuDetails(mealType: String, mealName: String, mealDescription: String, mealImageURL: String) {
+//    func updateMenuDetails(mealType: String, mealName: String, mealDescription: String, mealImageURL: String) {
+//        applyCardStyle2()
+//        
+//        MenuTiming.text = mealType
+//        MealName.text = mealName
+//        MealDescription.text = mealDescription
+//
+//        print("Meal Image URL: \(mealImageURL)") // Debugging
+//
+//        // Load image from URL (Use default if missing)
+//        if let url = URL(string: mealImageURL), !mealImageURL.isEmpty {
+//            DispatchQueue.global().async {
+//                if let data = try? Data(contentsOf: url) {
+//                    DispatchQueue.main.async {
+//                        self.MealImage.image = UIImage(data: data)
+//                    }
+//                } else {
+//                    print("Failed to load image data from: \(mealImageURL)")
+//                }
+//            }
+//        } else {
+//            MealImage.image = UIImage(named: "default_meal")
+//            print("Invalid URL, using default image")
+//        }
+//    }
+    func updateMenuDetails(mealType: String, mealName: String, mealDescription: String, mealImageName: String) {
         applyCardStyle2()
         
         MenuTiming.text = mealType
         MealName.text = mealName
         MealDescription.text = mealDescription
-
-        print("Meal Image URL: \(mealImageURL)") // Debugging
-
-        // Load image from URL (Use default if missing)
-        if let url = URL(string: mealImageURL), !mealImageURL.isEmpty {
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url) {
-                    DispatchQueue.main.async {
-                        self.MealImage.image = UIImage(data: data)
-                    }
-                } else {
-                    print("Failed to load image data from: \(mealImageURL)")
-                }
-            }
-        } else {
-            MealImage.image = UIImage(named: "default_meal")
-            print("Invalid URL, using default image")
-        }
+        
+        // Load from assets
+        MealImage.image = UIImage(named: mealImageName) ?? UIImage(named: "default_meal")
     }
+
 
         func applyCardStyle2() {
             subscriptionView.layer.cornerRadius = 16
