@@ -36,8 +36,10 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBOutlet var AddDishItemCounterLabel: UILabel!
     @IBOutlet var AddIncreaseDishButton: UIStepper!
     
-
-
+    @IBOutlet weak var AddDishImage: UIImageView!
+    
+    @IBOutlet weak var kitchenName: UILabel!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,21 +50,25 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         if let item = selectedItem {
             print("Selected MenuItem: \(item.name)")  // Debugging print
             AddDishNameLabel.text = item.name
-            AddDishRatingLabel.text = "⭐ \(item.rating)"
+            AddDishRatingLabel.text = "\(item.rating)"
             AddDishPriceLabel.text = "₹\(item.price)"
             DishDescriptionLabel.text = item.description
             AddDishRequestTextField.text = ""
             AddDishItemCounterLabel.text = "1"
             AddIncreaseDishButton.value = 1
+            AddDishImage.image = UIImage(named: item.imageURL)
+            kitchenName.text = item.kitchenName
         } else if let chefDish = selectedChefSpecialtyDish {
             print("Selected ChefSpecialtyDish: \(chefDish.name)")  // Debugging print
             AddDishNameLabel.text = chefDish.name
-            AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
+            AddDishRatingLabel.text = "\(chefDish.rating)"
             AddDishPriceLabel.text = "₹\(chefDish.price)"
             DishDescriptionLabel.text = chefDish.description
             AddDishRequestTextField.text = ""
             AddDishItemCounterLabel.text = "1"
             AddIncreaseDishButton.value = 1
+            AddDishImage.image = UIImage(named: chefDish.imageURL)
+            kitchenName.text = chefDish.kitchenName
         } else {
             print("Error: No data passed.")
         }
