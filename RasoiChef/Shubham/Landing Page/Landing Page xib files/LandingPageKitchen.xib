@@ -119,10 +119,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="Lvr-1L-8WG">
-                                <rect key="frame" x="313" y="116" width="20" height="20"/>
+                                <rect key="frame" x="315" y="118" width="18" height="18"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="Ksr-on-rQs"/>
-                                    <constraint firstAttribute="height" constant="20" id="ylV-UG-pdJ"/>
+                                    <constraint firstAttribute="width" constant="18" id="Ksr-on-rQs"/>
+                                    <constraint firstAttribute="height" constant="18" id="ylV-UG-pdJ"/>
                                 </constraints>
                             </imageView>
                         </subviews>
