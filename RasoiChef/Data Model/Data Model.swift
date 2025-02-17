@@ -15,10 +15,10 @@ enum MealCategory: String {
 
 
 enum MealType: String {
-    case breakfast
-    case lunch
-    case snacks
-    case dinner
+    case breakfast = "Breakfast"
+    case lunch = "Lunch"
+    case snacks = "Snacks"
+    case dinner = "Dinner"
 }
 enum Availabiltiy : String {
     case Available
@@ -171,6 +171,29 @@ struct OrderItem {
 }
 
 
+//struct SubscriptionPlan {
+//    var planID: String?
+//    var userID: String?
+//    var kitchenID: String?
+//    var startDate: String?
+//    var endDate: String?
+//    var totalPrice: Double?
+//    var details: String?
+//    var mealCountPerDay: Int
+//    var planImage: String?
+//    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Made optional
+//
+//    // Computed property to generate meals dynamically
+//    var meals: [SubscriptionMeal]? {
+//        return weeklyMeals?.flatMap { day, meals in
+//            meals.compactMap { mealType, menuItem in
+//                // Only add valid MenuItems to the meal list
+//                guard let menuItem = menuItem else { return nil }
+//                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID ?? "0")
+//            }
+//        }
+//    }
+//}
 struct SubscriptionPlan {
     var planID: String?
     var userID: String?
@@ -179,21 +202,27 @@ struct SubscriptionPlan {
     var endDate: String?
     var totalPrice: Double?
     var details: String?
-    var mealCountPerDay: Int
+    var PlanIntakeLimit: Int
     var planImage: String?
-    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Made optional
+    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Uses subscriptionMenuItems
 
-    // Computed property to generate meals dynamically
+    // Computed property to generate meals dynamically with description
     var meals: [SubscriptionMeal]? {
         return weeklyMeals?.flatMap { day, meals in
             meals.compactMap { mealType, menuItem in
-                // Only add valid MenuItems to the meal list
+                // Only add valid Subscription MenuItems to the meal list
                 guard let menuItem = menuItem else { return nil }
-                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID ?? "0")
+                return SubscriptionMeal(
+                    day: day.rawValue,
+                    mealType: mealType,
+                    menuItemID: menuItem.itemID ?? "0",
+                    description: menuItem.description // ✅ Include description
+                )
             }
         }
     }
 }
+
 
 
 // Subscription Meal (Nested within SubscriptionPlan)
@@ -201,6 +230,7 @@ struct SubscriptionMeal {
     var day: String
     var mealType: MealType
     var menuItemID: String
+    var description: String // ✅ Added description field
 }
 
 // Feedback

@@ -218,7 +218,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                 endDate: selectedEndDate,
                 totalPrice: finalPrice,
                 details: "Your customized meal plan",
-                mealCountPerDay: 4,
+                PlanIntakeLimit: 4,
                 planImage: "",
                 weeklyMeals: selectedWeeklyMeals
             )

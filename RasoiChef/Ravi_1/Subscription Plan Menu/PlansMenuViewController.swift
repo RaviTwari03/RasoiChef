@@ -67,69 +67,178 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         }
 
         // MARK: - Cell for Item at IndexPath
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            switch indexPath.section {
-            case 0:  // Week Days
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
-                let day = days[indexPath.item]
-                
-                cell.configure(with: day)
-                cell.delegate = self  // Assign delegate
-                cell.highlightSelection(day == selectedDay) // Highlight if selected
-                cell.layer.cornerRadius = 10.0
-                            cell.layer.borderWidth = 1.0
-                            cell.layer.borderColor = UIColor.orange.cgColor
-                          //  cell.layer.shadowColor = UIColor.black.cgColor
-                //            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-                         //   cell.layer.shadowRadius = 5.0
-                //            cell.layer.shadowOpacity = 0.2
-                        //    cell.layer.masksToBounds = false
-                //            cell.layer.shadowColor = UIColor.black.cgColor
-                return cell
-                
-            case 1:  // Menu Items
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-//                cell.updateMenuDetails(with: indexPath)
-                let meals = getMenuForSelectedDay()
-                let mealKey = Array(meals.keys)[indexPath.item]
-                let mealValue = meals[mealKey] ?? ""
-                
-                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
-                return cell
-          
-            default:
-                return UICollectionViewCell()
-            }
-        }
+//        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//            switch indexPath.section {
+//            case 0:  // Week Days
+//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
+//                let day = days[indexPath.item]
+//                
+//                cell.configure(with: day)
+//                cell.delegate = self  // Assign delegate
+//                cell.highlightSelection(day == selectedDay) // Highlight if selected
+//                cell.layer.cornerRadius = 10.0
+//                            cell.layer.borderWidth = 1.0
+//                            cell.layer.borderColor = UIColor.orange.cgColor
+//                          //  cell.layer.shadowColor = UIColor.black.cgColor
+//                //            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+//                         //   cell.layer.shadowRadius = 5.0
+//                //            cell.layer.shadowOpacity = 0.2
+//                        //    cell.layer.masksToBounds = false
+//                //            cell.layer.shadowColor = UIColor.black.cgColor
+//                return cell
+//                
+//            case 1:  // Menu Items
+//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
+////                cell.updateMenuDetails(with: indexPath)
+//                let meals = getMenuForSelectedDay()
+//                let mealKey = Array(meals.keys)[indexPath.item]
+//                let mealValue = meals[mealKey] ?? ""
+//                
+//                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
+//                return cell
+//          
+//            default:
+//                return UICollectionViewCell()
+//            }
+//        }
+//
+//        // MARK: - Handling Day Selection
+//        func didSelectDay(_ day: String) {
+//            selectedDay = day
+//            subscriptionPlan.reloadSections(IndexSet(integer: 0)) // Reload Days for Selection Highlight
+//            subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
+//        }
+//        
+//        
+//    private func getMenuForSelectedDay() -> [MealType: String] {
+//        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
+//        
+//        // Convert selectedDay string to DayOfWeek
+//        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
+//        
+//        // Convert DayOfWeek to WeekDay
+//        let weekDayEnum = selectedDayEnum.toWeekDay()
+//        
+//        // Fetch the meals for the selected day
+//        guard let mealsForDay = plan.weeklyMeals?[weekDayEnum] else { return [:] }
+//        
+//        // Map MenuItem? to its name string, filtering out nil values
+//        return mealsForDay.compactMapValues { menuItem in
+//            menuItem?.name ?? ""  // Return an empty string if MenuItem is nil
+//        }
+//    }
+//
 
-        // MARK: - Handling Day Selection
-        func didSelectDay(_ day: String) {
-            selectedDay = day
-            subscriptionPlan.reloadSections(IndexSet(integer: 0)) // Reload Days for Selection Highlight
-            subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
-        }
-        
-        
-    private func getMenuForSelectedDay() -> [MealType: String] {
-        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
-        
-        // Convert selectedDay string to DayOfWeek
-        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
-        
-        // Convert DayOfWeek to WeekDay
-        let weekDayEnum = selectedDayEnum.toWeekDay()
-        
-        // Fetch the meals for the selected day
-        guard let mealsForDay = plan.weeklyMeals?[weekDayEnum] else { return [:] }
-        
-        // Map MenuItem? to its name string, filtering out nil values
-        return mealsForDay.compactMapValues { menuItem in
-            menuItem?.name ?? ""  // Return an empty string if MenuItem is nil
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        switch indexPath.section {
+//            
+//        case 0:  // Week Days
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
+//            let day = days[indexPath.item]
+//            
+//            cell.configure(with: day)
+//            cell.delegate = self  // Assign delegate
+//            cell.highlightSelection(day == selectedDay) // Highlight if selected
+//            cell.layer.cornerRadius = 10.0
+//            cell.layer.borderWidth = 1.0
+//            cell.layer.borderColor = UIColor.orange.cgColor
+//            return cell
+//            
+//        case 1:  // Menu Items
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
+//            
+//            let meals = getMenuForSelectedDay()
+//            let mealKey = Array(meals.keys)[indexPath.item]
+//            let mealItem = meals[mealKey]  // Get full MenuItem object
+//
+//            // Extract meal details safely
+//            let mealName = mealItem??.name ?? "Unknown Meal"
+//            let mealDescription = mealItem??.description ?? "No description available."
+//
+//            cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealName, mealDescription: mealDescription)
+//            return cell
+//
+//        default:
+//            return UICollectionViewCell()
+//        }
+//    }
+//
+//    // MARK: - Handling Day Selection
+//    func didSelectDay(_ day: String) {
+//        selectedDay = day
+//        subscriptionPlan.reloadSections(IndexSet(integer: 0)) // Reload Days for Selection Highlight
+//        subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
+//    }
+//
+//    // ✅ FIXED: Returns full MenuItem instead of just meal name
+//    private func getMenuForSelectedDay() -> [MealType: MenuItem?] {
+//        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
+//
+//        // Convert selectedDay string to DayOfWeek
+//        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
+//
+//        // Convert DayOfWeek to WeekDay
+//        let weekDayEnum = selectedDayEnum.toWeekDay()
+//
+//        // Fetch meals for the selected day
+//        return plan.weeklyMeals?[weekDayEnum] ?? [:]  // Returns [MealType: MenuItem?]
+//    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.section {
+            
+        case 0:  // Week Days
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
+            let day = days[indexPath.item]
+            
+            cell.configure(with: day)
+            cell.delegate = self  // Assign delegate
+            cell.highlightSelection(day == selectedDay) // Highlight if selected
+            cell.layer.cornerRadius = 10.0
+            cell.layer.borderWidth = 1.0
+            cell.layer.borderColor = UIColor.orange.cgColor
+            return cell
+            
+        case 1:  // Menu Items
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
+            
+            let meals = getMenuForSelectedDay()
+            let mealKey = Array(meals.keys)[indexPath.item]
+            let mealItem = meals[mealKey]  // Get full MenuItem object
+
+            // Extract meal details safely
+            let mealName = mealItem??.name ?? "Unknown Meal"
+            let mealDescription = mealItem??.description ?? "No description available."
+            let mealImageURL = mealItem??.imageURL ?? "default_meal" // Use default if no image
+
+            cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealName, mealDescription: mealDescription, mealImageURL: mealImageURL)
+            return cell
+
+        default:
+            return UICollectionViewCell()
         }
     }
 
+    // MARK: - Handling Day Selection
+    func didSelectDay(_ day: String) {
+        selectedDay = day
+        subscriptionPlan.reloadSections(IndexSet(integer: 0)) // Reload Days for Selection Highlight
+        subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
+    }
 
-        
+    // ✅ FIXED: Returns full MenuItem instead of just meal name
+    private func getMenuForSelectedDay() -> [MealType: MenuItem?] {
+        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
+
+        // Convert selectedDay string to DayOfWeek
+        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
+
+        // Convert DayOfWeek to WeekDay
+        let weekDayEnum = selectedDayEnum.toWeekDay()
+
+        // Fetch meals for the selected day
+        return plan.weeklyMeals?[weekDayEnum] ?? [:]  // Returns [MealType: MenuItem?]
+    }
+
         // MARK: - Layout for Sections
         func generateLayout() -> UICollectionViewLayout {
             return UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
