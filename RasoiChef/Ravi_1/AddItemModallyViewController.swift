@@ -91,33 +91,6 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     //    MARK: - For cart
   
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
-//        guard let item = selectedItem else { return }
-//            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-//            let specialRequest = AddDishRequestTextField.text ?? ""
-//
-//            let cartItem = CartItem(
-//                userAdress: "Galgotias University", // Replace with an actual address if needed
-//                quantity: quantity,
-//                specialRequest: specialRequest,
-//                menuItem: item
-//            )
-//
-//            // Add the item to the cart
-//            KitchenDataController.cartItems.append(cartItem)
-//            CartViewController.cartItems.append(cartItem)
-//
-//            // Debugging: Print the cart items to verify
-//            print("Cart Items: \(CartViewController.cartItems)")
-//
-//            // Update the tab badge
-//            updateCartBadge() // Call the method to handle badge update
-//
-//            print("Item added to cart: \(cartItem)") // Log the added item
-//
-//            // Dismiss the current view controller if presented modally
-//            if self.presentingViewController != nil {
-//                self.dismiss(animated: true, completion: nil)
-//            }
         var cartItem: CartItem?
 
            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
@@ -174,27 +147,6 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     }
 }
 
-        // Helper function to update the badge
-//        func updateCartBadge() {
-//            DispatchQueue.main.async {
-//                if let tabItems = self.tabBarController?.tabBar.items {
-//                    let cartTabItem = tabItems[2] // Assuming "Cart" is the third tab
-//                    let itemCount = CartViewController.cartItems.count
-//                    cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
-//                    // Debugging: Print the badge value to verify
-//                    print("Badge Value: \(cartTabItem.badgeValue ?? "nil")")
-//                }
-//            }
-//        }
-//    func presentAddItemModally(selectedItem: MenuItem?, selectedChefSpecialtyDish: ChefSpecialtyDish?) {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-//            addItemVC.selectedItem = selectedItem
-//            addItemVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
-//            self.present(addItemVC, animated: true, completion: nil)
-//        }
-    
-
-    
+  
 
 

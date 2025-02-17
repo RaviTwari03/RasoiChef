@@ -89,12 +89,12 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 
             case 1:  // Menu Items
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-                cell.updateMenuDetails(with: indexPath)
-//                let meals = getMenuForSelectedDay()
-//                let mealKey = Array(meals.keys)[indexPath.item]
-//                let mealValue = meals[mealKey] ?? ""
-//                
-//                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
+//                cell.updateMenuDetails(with: indexPath)
+                let meals = getMenuForSelectedDay()
+                let mealKey = Array(meals.keys)[indexPath.item]
+                let mealValue = meals[mealKey] ?? ""
+                
+                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
                 return cell
           
             default:
