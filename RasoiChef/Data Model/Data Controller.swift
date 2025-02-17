@@ -810,9 +810,9 @@ class KitchenDataController {
     static var mealBanner : [MealBanner] =
     [MealBanner(
         title: "Rise and Shine Breakfast",
-        subtitle: "Order Before 6 am",
+        subtitle: "Order Before 7 am",
         deliveryTime: "Delivery expected by 9 am",
-        timer: "20 min",
+        timer: "00 min",
         icon: "BreakfastIcon",
         mealType: "Breakfast"
     ),
@@ -821,7 +821,7 @@ class KitchenDataController {
              title: "Taste the Noon Magic",
              subtitle: "Order Before 11 am",
              deliveryTime: "Delivery expected by 1 pm",
-             timer: "10 min",
+             timer: "00 min",
              icon: "LunchIcon",
              mealType: "Lunch"
          ),
@@ -829,15 +829,15 @@ class KitchenDataController {
              title: "Evening Snack Treat",
              subtitle: "Order Before 4 pm",
              deliveryTime: "Delivery expected by 6 pm",
-             timer: "15 min",
+             timer: "00 min",
              icon: "SnacksIcon",
              mealType: "Snacks"
          ),
          MealBanner(
              title: "Delightful Dinner",
-             subtitle: "Order Before 7 pm",
-             deliveryTime: "Delivery expected by 9 pm",
-             timer: "25 min",
+             subtitle: "Order Before 8 pm",
+             deliveryTime: "Delivery expected by 10 pm",
+             timer: "00 min",
              icon: "DinnerIcon",
              mealType: "Dinner"
          )
