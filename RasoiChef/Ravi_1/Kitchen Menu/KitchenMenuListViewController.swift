@@ -73,7 +73,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return KitchenDataController.dateItem.count
+            return 7/* KitchenDataController.dateItem.count*/
         case 1:
             return KitchenDataController.menuItems.count
         default:

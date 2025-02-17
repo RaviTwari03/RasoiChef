@@ -175,11 +175,11 @@ struct SubscriptionPlan {
     var planID: String?
     var userID: String?
     var kitchenID: String?
-    var startDate: String?  // Consider using Date for better calculations
+    var startDate: String?
     var endDate: String?
     var totalPrice: Double?
     var details: String?
-    var mealCountPerDay: Int?
+    var mealCountPerDay: Int
     var planImage: String?
     var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Made optional
 
@@ -218,13 +218,6 @@ struct Coupon {
     var code: String
     var discountPercentage: Float
     var expirationDate: Date
-}
-struct DateItem {
-    let date: Int
-    let dayOfWeek: String
-    let month : String
-    let isSelected: Bool
-    let isDisabled: Bool
 }
 struct MealBanner {
     let title: String

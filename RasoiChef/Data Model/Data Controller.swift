@@ -769,44 +769,7 @@ class KitchenDataController {
         "Nearest Kitchens"
     ]
 
-    static var dateItem : [DateItem] = [
-        DateItem(date: 22,
-                 dayOfWeek: "Wed",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 23,
-                 dayOfWeek: "Thurs",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 24,
-                 dayOfWeek: "Fri",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 25,
-                 dayOfWeek: "Sat",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 26,
-                 dayOfWeek: "Sun",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 27,
-                 dayOfWeek: "Mon",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                )
-    ]
+    
     static var mealBanner : [MealBanner] =
     [MealBanner(
         title: "Rise and Shine Breakfast",
