@@ -16,12 +16,6 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jxy-qx-Ykf">
-                        <rect key="frame" x="348" y="8" width="40" height="34.333333333333336"/>
-                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
-                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Menu List" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tui-PI-def">
                         <rect key="frame" x="16" y="11.999999999999998" width="100" height="26.333333333333329"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
@@ -29,11 +23,10 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ker-Xy-F7b">
-                        <rect key="frame" x="283" y="11" width="85" height="29.666666666666664"/>
-                        <color key="tintColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <rect key="frame" x="299.66666666666669" y="9" width="93.333333333333314" height="32"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" title="See More ">
-                            <fontDescription key="titleFontDescription" type="system" pointSize="13"/>
+                            <fontDescription key="titleFontDescription" type="system" pointSize="15"/>
                         </buttonConfiguration>
                         <connections>
                             <action selector="seeMoreTapped:" destination="kQu-Sk-ont" eventType="touchUpInside" id="RSA-S4-qb3"/>
@@ -44,17 +37,12 @@
                     <constraint firstItem="Tui-PI-def" firstAttribute="top" secondItem="s6V-by-CSL" secondAttribute="top" constant="12" id="3xo-iM-9T4"/>
                     <constraint firstItem="Ker-Xy-F7b" firstAttribute="centerY" secondItem="Tui-PI-def" secondAttribute="centerY" id="boi-bD-sjn"/>
                     <constraint firstAttribute="bottom" secondItem="Tui-PI-def" secondAttribute="bottom" constant="11.67" id="dF6-Nm-qb5"/>
-                    <constraint firstAttribute="trailing" secondItem="jxy-qx-Ykf" secondAttribute="trailing" constant="5" id="fR3-Ft-BWL"/>
-                    <constraint firstItem="jxy-qx-Ykf" firstAttribute="leading" secondItem="Ker-Xy-F7b" secondAttribute="trailing" constant="-20" id="hfZ-bk-W7d"/>
+                    <constraint firstAttribute="trailing" secondItem="Ker-Xy-F7b" secondAttribute="trailing" id="gSh-Kr-8ny"/>
                     <constraint firstItem="Tui-PI-def" firstAttribute="leading" secondItem="s6V-by-CSL" secondAttribute="leading" constant="16" id="ktL-i9-bgE"/>
-                    <constraint firstItem="jxy-qx-Ykf" firstAttribute="centerY" secondItem="Ker-Xy-F7b" secondAttribute="centerY" id="wFr-Gg-NqH"/>
                 </constraints>
             </collectionViewCellContentView>
             <size key="customSize" width="335" height="54"/>
             <point key="canvasLocation" x="119.84732824427481" y="-9.1549295774647899"/>
         </collectionViewCell>
     </objects>
-    <resources>
-        <image name="chevron.right" catalog="system" width="97" height="128"/>
-    </resources>
 </document>

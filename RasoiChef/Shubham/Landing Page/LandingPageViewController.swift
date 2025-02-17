@@ -99,7 +99,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             }
             
             header.headerLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-            header.actionButton.setTitle("See All", for: .normal)
+            header.actionButton.setTitle("See More", for: .normal)
 
         header.actionButton.tag = indexPath.section
         header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
