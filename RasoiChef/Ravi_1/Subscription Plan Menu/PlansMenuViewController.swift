@@ -85,8 +85,8 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 return cell
   
             case 1:  // Menu Items Section
+                
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-
                 let meals = getMenuForSelectedDay()
                 
                 // ✅ Define a fixed meal order

@@ -11,6 +11,9 @@ protocol AddItemDelegate: AnyObject {
     func didAddItemToCart(_ item: CartItem)
    
 }
+//protocol AddItemDelegate: AnyObject {
+//    func didAddItemToCart(_ item: CartItem, quantity: Int)
+//}
 
 class AddItemModallyViewController: UIViewController, UIViewControllerTransitioningDelegate {
     weak var delegate: AddItemDelegate?
@@ -122,7 +125,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                // Add the item to the cart
                KitchenDataController.cartItems.append(cartItem)
                CartViewController.cartItems.append(cartItem)
-               delegate?.didAddItemToCart(cartItem)
+               //delegate?.didAddItemToCart(cartItem)
 
 
                // Debugging: Print the cart items to verify
