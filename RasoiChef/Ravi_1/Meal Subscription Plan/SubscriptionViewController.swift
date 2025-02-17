@@ -70,6 +70,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             return 1
         case 1:
             return min(selectedDayCount, weeklyMeals.count)
+        case 2:
             return selectedDayCount > 1 ? 1 : 0
         default:
             return 0
