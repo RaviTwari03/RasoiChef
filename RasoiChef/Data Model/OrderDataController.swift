@@ -6,55 +6,63 @@
 //
 
 import Foundation
+import UIKit
 
 class OrderDataController{
-    private var orders:[Order] = []
-//    private var pastOrders:[Order] = []
-    
-    private init(){
-       // loadDummyOrders()
-//        pastOrdersdummyData()
+    // Current order data controller
+    private var orders: [Order] = []
+
+    static var shared = OrderDataController()
+
+    // Get all orders
+    func getOrders() -> [Order] {
+        return orders
+    }
+
+    // Get order count
+    func getOrderCount() -> Int {
+        return orders.count
+    }
+
+    // Add a new order
+    func addOrder(order: Order) {
+        orders.append(order)
+        
+        // After adding the new order, re-sort them by status (current orders first)
+        sortOrdersByStatus()
+    }
+
+    // Sort orders into current and past orders based on their status
+    func sortOrdersByStatus() {
+        MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
+        MyOrdersViewController.shared.pastOrders = orders.filter { $0.status == .delivered }
+    }
+
+    // Get count of active orders (placed or delivered)
+    func getActiveOrdersCount() -> Int {
+        return orders.filter { $0.status == .placed || $0.status == .delivered }.count
+    }
+
+    // Load dummy orders (currently empty)
+    func loadDummyOrders() {
+        // Dummy orders with different statuses
+        orders = []
+
+        sortOrdersByStatus()  // Ensure the orders are categorized correctly into current and past orders
     }
     
-    static var shared = OrderDataController()
     
-//    static var sharedPastOrders = OrderDataController()
+    // subscription plan data controller
     
-    func getOrders() -> [Order] {
-            return orders
-        }
+    
+    private var SubscriptionPlans: [SubscriptionPlan] = []
+
+  
+
         
-        func getOrderCount() -> Int {
-            return orders.count
-        }
-    func addOrder(order: Order) {
-            orders.append(order)
-            // After adding the new order, re-sort them by status (current orders first)
-            sortOrdersByStatus()
-        }
+        
+    }
     
     
-    // Sort orders into current and past orders based on their status
-        func sortOrdersByStatus() {
-            MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
-            MyOrdersViewController.shared.pastOrders = orders.filter { $0.status == .delivered }
-        }
-
-    
-    func loadDummyOrders() {
-            // Dummy orders with different statuses
-            orders = [
-                Order(orderID: "1", userID: "1", kitchenName: "Kanha Ji Rasoi", kitchenID: "Kanha Ji Rasoi", items: [OrderItem(menuItemID: "gulab jamun", quantity: 2, price: 500),OrderItem(menuItemID: "veg thali", quantity: 2, price: 600)], status: .placed, totalAmount: 500, deliveryAddress: "abc 123", deliveryDate: Date(), deliveryType: "delivery"),
-                Order(orderID: "2", userID: "1", kitchenName: "Kanha Ji Rasoi", kitchenID: "Kanha Ji Rasoi", items: [OrderItem(menuItemID: "cholle puri ", quantity: 1, price: 300)], status: .delivered, totalAmount: 300, deliveryAddress: "xyz 456", deliveryDate: Date().addingTimeInterval(-3600), deliveryType: "pickup"),
-                Order(orderID: "3", userID: "2", kitchenName: "Kanha Ji Rasoi", kitchenID: "Kanha Ji Rasoi", items: [OrderItem(menuItemID: "pveg thali", quantity: 3, price: 400)], status: .placed, totalAmount: 1200, deliveryAddress: "ghi 789", deliveryDate: Date(), deliveryType: "delivery"),
-                Order(orderID: "4", userID: "2", kitchenName: "Kanha Ji Rasoi", kitchenID: "Kanha Ji Rasoi", items: [OrderItem(menuItemID: "special veg thali", quantity: 1, price: 150)], status: .delivered, totalAmount: 150, deliveryAddress: "jkl 012", deliveryDate: Date().addingTimeInterval(-7200), deliveryType: "pickup")
-            ]
-            
-            sortOrdersByStatus()  // Ensure the orders are categorized correctly into current and past orders
-        }
     
 
-}
-    
-    
-            

@@ -36,20 +36,61 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     }
     weak var delegate: KitchenMenuDetailsCellDelegate?
     
+//    func updateMealDetails(with indexPath: IndexPath) {
+//        let menuItem = KitchenDataController.menuItems[indexPath.row]
+//        vegImage.image = UIImage(named: "vegImage")
+////        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+//        ratingLabel.text = "⭐ \(menuItem.rating)"
+//        dishNameLabel.text = menuItem.name
+//        dishDescription.text = menuItem.description
+//        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+//        dishDeliveryExpected.text = menuItem.orderDeadline
+//        dishImge.image = UIImage(named: menuItem.imageURL ?? "")
+//        dishprice.text = "₹\(menuItem.price)"
+//
+//        dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
+//       applyCardStyle1()
+//        addButton.layer.cornerRadius = 11
+//    }
+//
     func updateMealDetails(with indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         vegImage.image = UIImage(named: "vegImage")
-//        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         ratingLabel.text = "⭐ \(menuItem.rating)"
         dishNameLabel.text = menuItem.name
-        dishDescription.text = menuItem.description
+        
+        let words = menuItem.description.split(separator: " ")
+        if words.count > 9 {
+            let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
+            let attributedString = NSMutableAttributedString(string: truncatedText)
+            let readMoreRange = (truncatedText as NSString).range(of: "...read more")
+            
+            attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
+            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
+            
+            dishDescription.attributedText = attributedString
+            dishDescription.isUserInteractionEnabled = false
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
+            dishDescription.addGestureRecognizer(tapGesture)
+        } else {
+            dishDescription.text = menuItem.description
+        }
+
+        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         dishDeliveryExpected.text = menuItem.orderDeadline
         dishImge.image = UIImage(named: menuItem.imageURL ?? "")
+        dishprice.text = "₹\(menuItem.price)"
         dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
-       applyCardStyle1()
+
+        applyCardStyle1()
         addButton.layer.cornerRadius = 11
     }
-   
+
+    @objc func readMoreTapped() {
+        dishDescription.text = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description
+    }
+
          func applyCardStyle1() {
             cardViewKitchenMenu.layer.cornerRadius = 16
             cardViewKitchenMenu.layer.masksToBounds = false
@@ -62,6 +103,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
    
         
     @IBAction func addButtonTapped(_ sender: Any) {
+        
         delegate?.KitchenMenuListaddButtonTapped(in: self)
     }
 
