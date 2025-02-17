@@ -200,7 +200,7 @@ struct SubscriptionPlan {
     var kitchenID: String?
     var startDate: String?
     var endDate: String?
-    var totalPrice: Double?
+    var totalPrice: Int?
     var details: String?
     var PlanIntakeLimit: Int
     var planImage: String?

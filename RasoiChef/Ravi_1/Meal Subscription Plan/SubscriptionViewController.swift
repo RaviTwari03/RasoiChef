@@ -16,7 +16,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     var selectedDayCount: Int = 0
     var selectedStartDate: String = ""
     var selectedEndDate: String = ""
-    var finalPrice: Double = 0.0
+    var finalPrice: Int = 0
     var totalPrice: Int = 1400
     var hiddenButtons: [IndexPath: Bool] = [:]
     var footerCell: SubscriptionFooterTableViewCell?
@@ -152,7 +152,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         case 0:
             return 300
         case 1:
-            return 45
+            return 65
         case 2:
             return 65
         default:
@@ -293,7 +293,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         let baseDayPrice = 180
         let baseTotalPrice = selectedDayCount * baseDayPrice
         let totalDeductions = totalPricePerSection.values.reduce(0, +)
-        finalPrice = Double(baseTotalPrice - totalDeductions)  // Store final price
+        finalPrice = Int(baseTotalPrice - totalDeductions)  // Store final price
 
         DispatchQueue.main.async {
             self.footerCell?.PaymentLabel.text = "₹\(self.finalPrice)"

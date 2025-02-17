@@ -379,7 +379,7 @@ class KitchenDataController {
             kitchenID: "kitchen001",
             startDate: "2025-02-10",
             endDate: "2025-02-16",
-            totalPrice: 1400.0,
+            totalPrice: 1400,
             details: "Weekly Plan",
             PlanIntakeLimit: 4,
             planImage: "PlanImage",
