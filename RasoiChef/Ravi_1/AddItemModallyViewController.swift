@@ -169,7 +169,10 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
            }
         }
 
-        }
+    @IBAction func crossButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+}
 
         // Helper function to update the badge
 //        func updateCartBadge() {

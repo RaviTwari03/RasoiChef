@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol WeeklyPlansDelegate: AnyObject {
+    func didSelectStartAndEndDate(startDate: String, endDate: String, dayCount: Int)
+}
+
 class WeeklyPlansTableViewCell: UITableViewCell {
     
+    weak var delegate: WeeklyPlansDelegate?
     
     @IBOutlet var startDateCalender: UIDatePicker!
     @IBOutlet var endDateCalender: UIDatePicker!
@@ -19,31 +24,36 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     
     
    
+    var dayCount: Int = 0
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        configureDatePickers()
+        configureStartDatePicker()
+        configureEndDatePicker()
         configurePriceAlertButton()
-        
-        // Initially, hide the label
         selectedRangeLabel.isHidden = true
         self.selectionStyle = .none
     }
     
-    private func configureDatePickers() {
+    private func configureStartDatePicker() {
         let currentDate = Date()
         let calendar = Calendar.current
-        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: currentDate)
+        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: currentDate) ?? currentDate
         
-        // Configure startDateCalender
         startDateCalender.minimumDate = currentDate
+        startDateCalender.maximumDate = sevenDaysLater
         startDateCalender.date = currentDate
         startDateCalender.addTarget(self, action: #selector(startDateSelected), for: .valueChanged)
+    }
+    
+    private func configureEndDatePicker() {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let sevenDaysLater = calendar.date(byAdding: .day, value: 7, to: currentDate) ?? currentDate
         
-        // Configure endDateCalender
         endDateCalender.minimumDate = currentDate
         endDateCalender.maximumDate = sevenDaysLater
-        endDateCalender.date = sevenDaysLater ?? currentDate
+        endDateCalender.date = currentDate
         endDateCalender.addTarget(self, action: #selector(endDateSelected), for: .valueChanged)
     }
     
@@ -63,6 +73,8 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     
     @objc private func endDateSelected(_ sender: UIDatePicker) {
         updateSelectedRangeLabel()
+        checkIfEndDateIsSelected()
+        print("End date selected: \(endDateCalender.date)")
     }
     
     private func updateSelectedRangeLabel() {
@@ -71,22 +83,40 @@ class WeeklyPlansTableViewCell: UITableViewCell {
         
         let startDateString = dateFormatter.string(from: startDateCalender.date)
         let endDateString = dateFormatter.string(from: endDateCalender.date)
-        
-        selectedRangeLabel.text = "\(startDateString) - \(endDateString)"
-        selectedRangeLabel.isHidden = false  // Show the label when end date is selected
+        dayCount = Calendar.current.dateComponents([.day], from: startDateCalender.date, to: endDateCalender.date).day ?? 0
+        let startDate = startDateCalender.date
+        let endDate = endDateCalender.date
+        selectedRangeLabel.text = "\(startDateString) - \(endDateString) (Total Days: \(dayCount + 1))"
+        selectedRangeLabel.isHidden = false
+        let calendar = Calendar.current
+        if let daysCount = calendar.dateComponents([.day], from: startDate, to: endDate).day {
+            print("Selected range: \(startDateString) - \(endDateString) (\(daysCount + 1) days)")
+            print("Total days count: \(daysCount + 1)")
+        }
     }
+
+    private func checkIfEndDateIsSelected() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy"
+        
+        let startDateString = dateFormatter.string(from: startDateCalender.date)
+        let endDateString = dateFormatter.string(from: endDateCalender.date)
+        let totalDays = dayCount + 1  // Ensures end date is included
+
+        delegate?.didSelectStartAndEndDate(startDate: startDateString, endDate: endDateString, dayCount: totalDays)
+        
+        print("Start Date: \(startDateString), End Date: \(endDateString), Total Days: \(totalDays)")
+    }
+
+
     
     @objc private func showPriceAlert() {
         guard let parentVC = self.parentViewController else { return }
         
-        // Create a custom alert view
         let alertController = UIAlertController(title: "Meal Prices", message: nil, preferredStyle: .alert)
-        
-        // Create a custom view with a stack view
         let customView = createMealPricesView()
         alertController.view.addSubview(customView)
         
-        // Adjust layout for the custom view inside the alert
         customView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             customView.topAnchor.constraint(equalTo: alertController.view.topAnchor, constant: 60),
@@ -95,23 +125,18 @@ class WeeklyPlansTableViewCell: UITableViewCell {
             customView.trailingAnchor.constraint(equalTo: alertController.view.trailingAnchor, constant: -20),
         ])
         
-        // Add an OK button
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
-        
-        // Present the alert
         parentVC.present(alertController, animated: true)
     }
     
     private func createMealPricesView() -> UIView {
-        // Meals data: title, icon name, and price
         let meals = [
-            ("Breakfast", "BreakfastIcon", "₹40"),
-            ("Lunch", "LunchIcon", "₹60"),
-            ("Snacks", "SnacksIcon", "₹40"),
-            ("Dinner", "DinnerIcon", "₹60")
+            ("Breakfast", "sun.max", "₹30"),
+            ("Lunch", "fork.knife", "₹40"),
+            ("Snacks", "cup.and.saucer", "₹50"),
+            ("Dinner", "moon", "₹60")
         ]
         
-        // Stack view for the list of meals
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
@@ -126,27 +151,23 @@ class WeeklyPlansTableViewCell: UITableViewCell {
     }
     
     private func createMealRow(title: String, iconName: String, price: String) -> UIView {
-        // Image View
         let iconImageView = UIImageView()
-        iconImageView.image = UIImage(systemName: iconName) // Replace with custom image assets
+        iconImageView.image = UIImage(systemName: iconName)
         iconImageView.contentMode = .scaleAspectFit
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         iconImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         iconImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
-        // Title Label
         let titleLabel = UILabel()
         titleLabel.text = title
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         titleLabel.textColor = .black
         
-        // Price Label
         let priceLabel = UILabel()
         priceLabel.text = price
         priceLabel.font = UIFont.systemFont(ofSize: 16)
         priceLabel.textColor = .black
         
-        // Horizontal Stack View for each row
         let horizontalStack = UIStackView(arrangedSubviews: [iconImageView, titleLabel, priceLabel])
         horizontalStack.axis = .horizontal
         horizontalStack.alignment = .center
@@ -156,18 +177,16 @@ class WeeklyPlansTableViewCell: UITableViewCell {
         return horizontalStack
     }
 }
-    
-    extension UIView {
-        var parentViewController: UIViewController? {
-            var parentResponder: UIResponder? = self
-            while parentResponder != nil {
-                parentResponder = parentResponder?.next
-                if let viewController = parentResponder as? UIViewController {
-                    return viewController
-                }
+extension UIView {
+    var parentViewController: UIViewController? {
+        var parentResponder: UIResponder? = self
+        while parentResponder != nil {
+            parentResponder = parentResponder?.next
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
             }
-            return nil
         }
+        return nil
     }
-
-
+}
+    

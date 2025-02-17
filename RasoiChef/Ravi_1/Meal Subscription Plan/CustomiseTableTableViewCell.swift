@@ -7,9 +7,7 @@
 
 import UIKit
 
-//protocol CustomiseTableDelegate: AnyObject {
-//    func buttonClicked(withTag tag: Int)
-//}
+
 protocol CustomiseTableDelegate: AnyObject {
     func buttonClicked(inSection section: Int, withTag tag: Int)
 }
@@ -33,9 +31,9 @@ class CustomiseTableTableViewCell: UITableViewCell {
            resetButtonStates()
 
            // Assign custom tags
-           Breakfastbutton.tag = 40
-           LunchButton.tag = 60
-           SnacksButton.tag = 40
+           Breakfastbutton.tag = 30
+           LunchButton.tag = 40
+           SnacksButton.tag = 50
            DinnerButton.tag = 60
            self.selectionStyle = .none
        }
