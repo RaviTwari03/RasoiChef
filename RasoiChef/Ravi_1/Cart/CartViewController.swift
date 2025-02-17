@@ -363,7 +363,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                return total + (plan.totalPrice ?? 0) ?? 0 // ✅ Assuming totalPrice is non-optional
            }
 
-           return cartTotal + subscriptionTotal // ✅ Combined total
+           return cartTotal + Double(Int(subscriptionTotal)) // ✅ Combined total
        }
 
        // Example function to fetch a MenuItem by ID

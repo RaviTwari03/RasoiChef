@@ -26,7 +26,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nN3-2Y-c9W">
                         <rect key="frame" x="10" y="45" width="373" height="115"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DalBaatiChurma" translatesAutoresizingMaskIntoConstraints="NO" id="paw-dH-gcr">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VegThali" translatesAutoresizingMaskIntoConstraints="NO" id="paw-dH-gcr">
                                 <rect key="frame" x="258" y="0.0" width="115" height="115"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="115" id="w47-nw-wLB"/>
@@ -84,7 +84,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="DalBaatiChurma" width="800" height="533"/>
+        <image name="VegThali" width="3077" height="3090"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

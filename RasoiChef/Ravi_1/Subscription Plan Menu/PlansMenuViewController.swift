@@ -26,29 +26,31 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
 
     @IBOutlet var subscriptionPlan: UICollectionView!
 
-    private var selectedDay: String = "Monday" // Default to Monday
+    private var selectedDay: String = "Monday" // Default selection
         private var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         
         override func viewDidLoad() {
             super.viewDidLoad()
+            setupUI()
+        }
+        
+        // MARK: - Setup UI
+        private func setupUI() {
             self.view.backgroundColor = .white
-            self.title = " Plan Menu"
+            self.title = "Plan Menu"
             
-            let seeMoreButton = UIBarButtonItem(title: "Subscribe", style: .plain, target: self, action: #selector(didTapSeeMoreToSubscriptionPlans))
-            self.navigationItem.rightBarButtonItem = seeMoreButton
-
+            let subscribeButton = UIBarButtonItem(title: "Subscribe", style: .plain, target: self, action: #selector(didTapSeeMoreToSubscriptionPlans))
+            self.navigationItem.rightBarButtonItem = subscribeButton
+            
             // Registering Nibs for Cells
-            let plansMenuNib = UINib(nibName: "PlansMenu", bundle: nil)
-            let weekDaysNib = UINib(nibName: "WeekDays", bundle: nil)
-            
-            subscriptionPlan.register(plansMenuNib, forCellWithReuseIdentifier: "PlansMenu")
-            subscriptionPlan.register(weekDaysNib, forCellWithReuseIdentifier: "WeekDays")
+            subscriptionPlan.register(UINib(nibName: "PlansMenu", bundle: nil), forCellWithReuseIdentifier: "PlansMenu")
+            subscriptionPlan.register(UINib(nibName: "WeekDays", bundle: nil), forCellWithReuseIdentifier: "WeekDays")
             
             subscriptionPlan.setCollectionViewLayout(generateLayout(), animated: true)
             subscriptionPlan.dataSource = self
             subscriptionPlan.delegate = self
         }
-        
+
         // MARK: - Number of Sections
         func numberOfSections(in collectionView: UICollectionView) -> Int {
             return 2
@@ -66,37 +68,62 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             }
         }
 
-        // MARK: - Cell for Item at IndexPath
+        // MARK: - Cell Configuration
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             switch indexPath.section {
-            case 0:  // Week Days
+            case 0:  // Week Days Section
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
                 let day = days[indexPath.item]
                 
                 cell.configure(with: day)
-                cell.delegate = self  // Assign delegate
-                cell.highlightSelection(day == selectedDay) // Highlight if selected
-                cell.layer.cornerRadius = 10.0
-                            cell.layer.borderWidth = 1.0
-                            cell.layer.borderColor = UIColor.orange.cgColor
-                          //  cell.layer.shadowColor = UIColor.black.cgColor
-                //            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-                         //   cell.layer.shadowRadius = 5.0
-                //            cell.layer.shadowOpacity = 0.2
-                        //    cell.layer.masksToBounds = false
-                //            cell.layer.shadowColor = UIColor.black.cgColor
-                return cell
+                cell.delegate = self
+                cell.highlightSelection(day == selectedDay)
                 
-            case 1:  // Menu Items
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-                cell.updateMenuDetails(with: indexPath)
-//                let meals = getMenuForSelectedDay()
-//                let mealKey = Array(meals.keys)[indexPath.item]
-//                let mealValue = meals[mealKey] ?? ""
-//                
-//                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
+                cell.layer.cornerRadius = 10.0
+                cell.layer.borderWidth = 1.0
+                cell.layer.borderColor = UIColor.orange.cgColor
                 return cell
-          
+  
+            case 1:  // Menu Items Section
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
+                let meals = getMenuForSelectedDay()
+                
+                // ✅ Define a fixed meal order
+                let orderedMealTypes: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+                
+                // ✅ Get meals in fixed order (ignore missing ones)
+                let sortedMeals = orderedMealTypes.compactMap { mealType -> (MealType, MenuItem)? in
+                    if let mealItem = meals[mealType] ?? nil {  // ✅ Check for nil before using
+                        return (mealType, mealItem)
+                    }
+                    return nil
+                }
+
+                // ✅ Prevent out-of-bounds crash if no meals exist
+                guard indexPath.item < sortedMeals.count else {
+                    return UICollectionViewCell()
+                }
+
+                // ✅ Get the current meal for this cell
+                let (mealKey, mealItem) = sortedMeals[indexPath.item]
+
+                // ✅ Extract meal details safely
+                let mealName = mealItem.name
+                let mealDescription = mealItem.description
+                let mealImageName = mealItem.imageURL.isEmpty ? "default_meal" : mealItem.imageURL
+
+                // ✅ Update the cell with sorted meal details
+                cell.updateMenuDetails(
+                    mealType: mealKey.rawValue,
+                    mealName: mealName,
+                    mealDescription: mealDescription,
+                    mealImageName: mealImageName
+                )
+
+                return cell
+
+
             default:
                 return UICollectionViewCell()
             }
@@ -108,28 +135,21 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             subscriptionPlan.reloadSections(IndexSet(integer: 0)) // Reload Days for Selection Highlight
             subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
         }
-        
-        
-    private func getMenuForSelectedDay() -> [MealType: String] {
-        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
-        
-        // Convert selectedDay string to DayOfWeek
-        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
-        
-        // Convert DayOfWeek to WeekDay
-        let weekDayEnum = selectedDayEnum.toWeekDay()
-        
-        // Fetch the meals for the selected day
-        guard let mealsForDay = plan.weeklyMeals?[weekDayEnum] else { return [:] }
-        
-        // Map MenuItem? to its name string, filtering out nil values
-        return mealsForDay.compactMapValues { menuItem in
-            menuItem?.name ?? ""  // Return an empty string if MenuItem is nil
+
+        // ✅ FIXED: Returns full MenuItem instead of just meal name
+        private func getMenuForSelectedDay() -> [MealType: MenuItem?] {
+            guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
+
+            // Convert selectedDay string to DayOfWeek
+            let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
+
+            // Convert DayOfWeek to WeekDay
+            let weekDayEnum = selectedDayEnum.toWeekDay()
+
+            // Fetch meals for the selected day
+            return plan.weeklyMeals?[weekDayEnum] ?? [:]  // Returns [MealType: MenuItem?]
         }
-    }
 
-
-        
         // MARK: - Layout for Sections
         func generateLayout() -> UICollectionViewLayout {
             return UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in

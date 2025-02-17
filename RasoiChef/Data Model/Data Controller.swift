@@ -11,9 +11,9 @@ import Foundation
 
 class KitchenDataController {
     static let shared = KitchenDataController()
-
+    
     private init() {}
-
+    
     static var users: [User] = []
     static var kitchens: [Kitchen] = [
         Kitchen(
@@ -21,7 +21,7 @@ class KitchenDataController {
             name: "Kanha Ji Rasoi",
             location: "Sector 17A, India",
             cuisines: [.NorthIndian],
-//            profileImageName: "Kitchen_Image",
+            //            profileImageName: "Kitchen_Image",
             rating: 4.3,
             isOnline: true,
             distance: 2.6,
@@ -113,141 +113,182 @@ class KitchenDataController {
             availableDays: [.monday],
             mealCategory: [.veg]
         ),
-        //subscription menu
-//        MenuItem(
-//            itemID: "item201",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 1.4,
-//            name: "Pancakes with Honey",
-//            description: "Soft and fluffy pancakes served with organic honey.",
-//            price: 100.0,
-//            rating: 4.5,
-//            availableMealTypes: [.breakfast],
-//            portionSize: "300 gm",
-//            intakeLimit: 15,
-//            imageURL: "PancakesHoney",
-//            orderDeadline: "Order Before 6 am.",
-//            availability: [.Available],
-//            availableDays: [.monday],
-//            mealCategory: [.veg]
-//        ),
-//        MenuItem(
-//            itemID: "item202",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 2.3,
-//            name: "Oats & Fruits Bowl",
-//            description: "Healthy oats mixed with fresh seasonal fruits.",
-//            price: 120.0,
-//            rating: 4.3,
-//            availableMealTypes: [.breakfast],
-//            portionSize: "250 gm",
-//            intakeLimit: 10,
-//            imageURL: "OatsFruitsBowl",
-//            orderDeadline: "Order Before 6 am.",
-//            availability: [.Available],
-//            availableDays: [.tuesday, .thursday, .saturday],
-//            mealCategory: [.veg]
-//        ),
-//        MenuItem(
-//            itemID: "item203",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 4.3,
-//            name: "Poha with Peanuts",
-//            description: "Light and nutritious poha garnished with peanuts.",
-//            price: 90.0,
-//            rating: 4.0,
-//            availableMealTypes: [.breakfast],
-//            portionSize: "250 gm",
-//            intakeLimit: 20,
-//            imageURL: "PohaPeanuts",
-//            orderDeadline: "Order Before 6 am.",
-//            availability: [.Available],
-//            availableDays: [.wednesday, .friday, .sunday],
-//            mealCategory: [.veg]
-//        ),
-//        MenuItem(
-//            itemID: "item101",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 3.5,
-//            name: "Paneer Butter Masala with Roti",
-//            description: "Rich and creamy paneer butter masala with soft rotis.",
-//            price: 180.0,
-//            rating: 4.6,
-//            availableMealTypes: [.lunch],
-//            portionSize: "400 gm",
-//            intakeLimit: 25,
-//            imageURL: "PaneerButterMasala",
-//            orderDeadline: "Order Before 11 am.",
-//            availability: [.Available],
-//            availableDays: [.monday, .wednesday, .friday],
-//            mealCategory: [.veg]
-//        ),
-//        MenuItem(
-//            itemID: "item401",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 3.6,
-//            name: "Shahi Paneer with Naan",
-//            description: "Rich and creamy shahi paneer served with naan.",
-//            price: 210.0,
-//            rating: 4.7,
-//            availableMealTypes: [.dinner],
-//            portionSize: "350 gm",
-//            intakeLimit: 20,
-//            imageURL: "ShahiPaneer",
-//            orderDeadline: "Order Before 6 pm.",
-//            availability: [.Available],
-//            availableDays: [.monday, .thursday, .saturday],
-//            mealCategory: [.veg]
-//        ),
-//        MenuItem(
-//            itemID: "item404",
-//            kitchenID: "kitchen001",
-//            kitchenName: "Kanha Ji Rasoi",
-//            distance: 4.5,
-//            name: "Fish Curry with Roti",
-//            description: "Spicy and tangy fish curry served with fresh rotis.",
-//            price: 220.0,
-//            rating: 4.3,
-//            availableMealTypes: [.dinner],
-//            portionSize: "350 gm",
-//            intakeLimit: 15,
-//            imageURL: "FishCurry",
-//            orderDeadline: "Order Before 6 pm.",
-//            availability: [.Available],
-//            availableDays: [.friday, .sunday],
-//            mealCategory: [.nonVeg]
-//        )
+      ]
+    static var subscriptionMenuItems: [MenuItem] = [
+        // Monday
+        MenuItem(itemID: "item201", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 1.4, name: "Pancakes with Honey", description: "Soft and fluffy pancakes served with organic honey.",
+                 price: 100.0, rating: 4.5, availableMealTypes: [.breakfast], portionSize: "300 gm", intakeLimit: 15,
+                 imageURL: "ButterChicken", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item101", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.5, name: "Paneer Butter Masala with Roti", description: "Rich and creamy paneer butter masala with soft rotis.",
+                 price: 180.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "400 gm", intakeLimit: 25,
+                 imageURL: "PaneerButterMasala", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item301", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 2.1, name: "Samosa with Chutney", description: "Crispy samosa served with mint chutney.",
+                 price: 50.0, rating: 4.4, availableMealTypes: [.snacks], portionSize: "200 gm", intakeLimit: 30,
+                 imageURL: "SamosaChutney", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item401", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.6, name: "Shahi Paneer with Naan", description: "Rich and creamy shahi paneer served with naan.",
+                 price: 210.0, rating: 4.7, availableMealTypes: [.dinner], portionSize: "350 gm", intakeLimit: 20,
+                 imageURL: "ShahiPaneer", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
+
+        // Tuesday
+        MenuItem(itemID: "item202", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 2.3, name: "Oats & Fruits Bowl", description: "Healthy oats mixed with fresh seasonal fruits.",
+                 price: 120.0, rating: 4.3, availableMealTypes: [.breakfast], portionSize: "250 gm", intakeLimit: 10,
+                 imageURL: "OatsFruitsBowl", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.tuesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item102", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.0, name: "Dal Tadka with Rice", description: "Classic yellow dal tadka served with steamed rice.",
+                 price: 140.0, rating: 4.2, availableMealTypes: [.lunch], portionSize: "400 gm", intakeLimit: 20,
+                 imageURL: "DalTadkaRice", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.tuesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item302", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 2.7, name: "Veg Cutlet", description: "Crispy and delicious vegetable cutlet.",
+                 price: 80.0, rating: 4.1, availableMealTypes: [.snacks], portionSize: "200 gm", intakeLimit: 25,
+                 imageURL: "VegCutlet", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.tuesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item402", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.9, name: "Aloo Paratha with Curd", description: "Stuffed aloo paratha served with fresh curd.",
+                 price: 110.0, rating: 4.5, availableMealTypes: [.dinner], portionSize: "350 gm", intakeLimit: 15,
+                 imageURL: "AlooParatha", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.tuesday], mealCategory: [.veg]),
+
+        // Wednesday
+        MenuItem(itemID: "item203", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.3, name: "Poha with Peanuts", description: "Light and nutritious poha garnished with peanuts.",
+                 price: 90.0, rating: 4.0, availableMealTypes: [.breakfast], portionSize: "250 gm", intakeLimit: 20,
+                 imageURL: "PohaPeanuts", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item103", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.8, name: "Chole Bhature", description: "Spicy chole served with fluffy bhature.",
+                 price: 160.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
+                 imageURL: "CholeBhature", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item303", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 2.9, name: "Corn & Cheese Sandwich", description: "Toasted sandwich with corn and melted cheese.",
+                 price: 90.0, rating: 4.3, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 22,
+                 imageURL: "CornCheeseSandwich", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item403", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.1, name: "Mix Veg Curry with Roti", description: "Delicious mixed vegetable curry served with roti.",
+                 price: 180.0, rating: 4.4, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 20,
+                 imageURL: "MixVegCurry", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
+        // Thursday
+        MenuItem(itemID: "item204", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.5, name: "Idli Sambar", description: "Soft idlis served with flavorful sambar and coconut chutney.",
+                 price: 100.0, rating: 4.5, availableMealTypes: [.breakfast], portionSize: "300 gm", intakeLimit: 20,
+                 imageURL: "IdliSambar", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.thursday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item104", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.0, name: "Rajma Chawal", description: "Classic North Indian dish with kidney beans and rice.",
+                 price: 140.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
+                 imageURL: "RajmaChawal", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.thursday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item304", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.2, name: "Cheese Sandwich", description: "Grilled cheese sandwich with a crunchy golden crust.",
+                 price: 80.0, rating: 4.2, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 22,
+                 imageURL: "CheeseSandwich", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.thursday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item404", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.6, name: "Mutton Curry with Rice", description: "Spicy and flavorful mutton curry served with rice.",
+                 price: 250.0, rating: 4.7, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 18,
+                 imageURL: "MuttonCurryRice", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.thursday], mealCategory: [.nonVeg]),
+
+        // Friday
+        MenuItem(itemID: "item205", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.8, name: "Masala Dosa", description: "Crispy dosa filled with spiced potato masala, served with chutney.",
+                 price: 110.0, rating: 4.5, availableMealTypes: [.breakfast], portionSize: "300 gm", intakeLimit: 20,
+                 imageURL: "MasalaDosa", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.friday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item105", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.1, name: "Aloo Paratha with Curd", description: "Stuffed potato paratha served with curd and pickle.",
+                 price: 130.0, rating: 4.5, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
+                 imageURL: "AlooParatha", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.friday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item305", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.5, name: "Moong Dal Chilla", description: "Savory pancakes made with moong dal, served with chutney.",
+                 price: 90.0, rating: 4.3, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 22,
+                 imageURL: "MoongDalChilla", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.friday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item405", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.9, name: "Fish Curry with Rice", description: "Delicious fish curry cooked with aromatic spices, served with rice.",
+                 price: 220.0, rating: 4.6, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 18,
+                 imageURL: "FishCurryRice", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.friday], mealCategory: [.nonVeg]),
+
+        // Saturday
+        MenuItem(itemID: "item206", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.9, name: "Uttapam with Coconut Chutney", description: "Soft and fluffy uttapam served with chutney.",
+                 price: 120.0, rating: 4.5, availableMealTypes: [.breakfast], portionSize: "300 gm", intakeLimit: 20,
+                 imageURL: "UttapamChutney", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item106", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.2, name: "Veg Biryani with Raita", description: "Aromatic vegetable biryani served with raita.",
+                 price: 160.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
+                 imageURL: "VegBiryani", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item306", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.6, name: "Aloo Tikki", description: "Crispy and spiced potato patties served with chutney.",
+                 price: 80.0, rating: 4.2, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 22,
+                 imageURL: "AlooTikki", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item406", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.0, name: "Dal Makhani with Naan", description: "Rich and creamy black dal served with soft naan.",
+                 price: 200.0, rating: 4.7, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 18,
+                 imageURL: "DalMakhani", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
+
+        // Sunday
+        MenuItem(itemID: "item207", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.0, name: "Chia Seed Pudding", description: "Healthy chia seed pudding topped with fresh fruits.",
+                 price: 150.0, rating: 4.4, availableMealTypes: [.breakfast], portionSize: "250 gm", intakeLimit: 15,
+                 imageURL: "ChiaSeedPudding", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.sunday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item107", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.5, name: "Malai Kofta with Jeera Rice", description: "Rich and creamy malai kofta curry served with rice.",
+                 price: 190.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
+                 imageURL: "MalaiKofta", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.sunday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item307", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 3.7, name: "Veg Spring Rolls", description: "Crispy vegetable spring rolls served with spicy dip.",
+                 price: 100.0, rating: 4.4, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 20,
+                 imageURL: "VegSpringRolls", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.veg]),
+
+        MenuItem(itemID: "item407", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
+                 distance: 4.1, name: "Butter Chicken with Butter Naan", description: "Rich and creamy butter chicken served with butter naan.",
+                 price: 250.0, rating: 4.8, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 18,
+                 imageURL: "ButterChickenNaan", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.nonVeg]),
+
+
     ]
-    
+
+
     static var chefSpecialtyDishes: [ChefSpecialtyDish] = [
-            ChefSpecialtyDish(
-                kitchenName: "Kanjha Ji Rasoi",
-                dishID: "special001",
-                kitchenID: "kitchen001",
-                name: "Chole Bhature",
-                description: "A creamy and rich tomato-based curry with soft paneer cubes.",
-                price: 200.0,
-                rating: 4.7,
-                imageURL: "CholeBhature",
-                mealCategory: [.veg]
-            ),
-            ChefSpecialtyDish(
-                kitchenName: "Anjali's Kitchen",
-                dishID: "special002",
-                kitchenID: "kitchen002",
-                name: "Spring Roll",
-                description: "A spicy and flavorful South Indian chicken curry.",
-                price: 250.0,
-                rating: 4.8,
-                imageURL: "SpringRoll",
-                mealCategory: [.veg]
-            )
-        ]
+        ChefSpecialtyDish(
+            kitchenName: "Kanjha Ji Rasoi",
+            dishID: "special001",
+            kitchenID: "kitchen001",
+            name: "Chole Bhature",
+            description: "A creamy and rich tomato-based curry with soft paneer cubes.",
+            price: 200.0,
+            rating: 4.7,
+            imageURL: "CholeBhature",
+            mealCategory: [.veg]
+        ),
+        ChefSpecialtyDish(
+            kitchenName: "Anjali's Kitchen",
+            dishID: "special002",
+            kitchenID: "kitchen002",
+            name: "Spring Roll",
+            description: "A spicy and flavorful South Indian chicken curry.",
+            price: 250.0,
+            rating: 4.8,
+            imageURL: "SpringRoll",
+            mealCategory: [.veg]
+        )
+    ]
     
     static var globalChefSpecial: [ChefSpecialtyDish] = [
         ChefSpecialtyDish(
@@ -283,16 +324,7 @@ class KitchenDataController {
             imageURL: "RajmaChawal",
             mealCategory: [.veg]
         ),
-//        ChefSpecialtyDish(
-//            kitchenName: "South Indian Delights",
-//            dishID: "special006",
-//            kitchenID: "kitchen006",
-//            name: "Masala Dosa",
-//            description: "A crispy dosa filled with spiced potato masala, served with chutneys.",
-//            price: 120.0,
-//            rating: 4.8,
-//            imageURL: "MasalaDosa"
-//        ),
+     
         ChefSpecialtyDish(
             kitchenName: "Spice Aroma",
             dishID: "special007",
@@ -338,8 +370,8 @@ class KitchenDataController {
             mealCategory: [.veg]
         )
     ]
-
-
+    
+   
     static var subscriptionPlan: [SubscriptionPlan] = [
         SubscriptionPlan(
             planID: "001",
@@ -347,59 +379,57 @@ class KitchenDataController {
             kitchenID: "kitchen001",
             startDate: "2025-02-10",
             endDate: "2025-02-16",
-            totalPrice: 1400.0,
+            totalPrice: 1400,
             details: "Weekly Plan",
-            mealCountPerDay: 4,
+            PlanIntakeLimit: 4,
             planImage: "PlanImage",
             weeklyMeals: [
                 .monday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item201" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item101" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item301" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "menu001" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item201" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item101" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item301" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item401" })
                 ],
                 .tuesday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item202" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item102" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item302" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item401" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item202" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item102" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item302" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item402" })
                 ],
                 .wednesday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item203" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item103" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item303" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item402" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item203" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item103" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item303" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item403" })
                 ],
                 .thursday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item204" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item104" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item304" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item403" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item204" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item104" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item304" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item404" })
                 ],
                 .friday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item205" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item105" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item305" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item404" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item205" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item105" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item305" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item405" })
                 ],
                 .saturday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item206" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item106" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item306" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item405" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item206" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item106" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item306" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item406" })
                 ],
                 .sunday: [
-                    .breakfast: menuItems.first(where: { $0.itemID == "item207" }),
-                    .lunch: menuItems.first(where: { $0.itemID == "item107" }),
-                    .snacks: menuItems.first(where: { $0.itemID == "item307" }),
-                    .dinner: menuItems.first(where: { $0.itemID == "item406" })
+                    .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item207" }),
+                    .lunch: subscriptionMenuItems.first(where: { $0.itemID == "item107" }),
+                    .snacks: subscriptionMenuItems.first(where: { $0.itemID == "item307" }),
+                    .dinner: subscriptionMenuItems.first(where: { $0.itemID == "item407" })
                 ]
             ]
         )
     ]
 
-
-    
     // GlobalLunchMenu
     static var GloballunchMenuItems: [MenuItem] = [
         MenuItem(
@@ -769,44 +799,7 @@ class KitchenDataController {
         "Nearest Kitchens"
     ]
 
-    static var dateItem : [DateItem] = [
-        DateItem(date: 22,
-                 dayOfWeek: "Wed",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 23,
-                 dayOfWeek: "Thurs",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 24,
-                 dayOfWeek: "Fri",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 25,
-                 dayOfWeek: "Sat",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 26,
-                 dayOfWeek: "Sun",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                ),
-        DateItem(date: 27,
-                 dayOfWeek: "Mon",
-                 month: "Jan",
-                 isSelected: true,
-                 isDisabled: false
-                )
-    ]
+    
     static var mealBanner : [MealBanner] =
     [MealBanner(
         title: "Rise and Shine Breakfast",

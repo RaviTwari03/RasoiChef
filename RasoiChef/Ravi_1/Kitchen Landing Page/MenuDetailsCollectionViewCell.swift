@@ -37,10 +37,23 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
-        
-        
     }
     
+    var addedItemCount: Int = 0 { // Track how many items are added
+            didSet {
+                updateButtonAppearance()
+            }
+        }
+    
+    func updateButtonAppearance() {
+          if addedItemCount > 0 {
+              addButton.setTitle("Added (\(addedItemCount))", for: .normal)
+              addButton.backgroundColor = .systemBlue
+          } else {
+              addButton.setTitle("Add", for: .normal)
+              addButton.backgroundColor = .systemGreen
+          }
+      }
 //    var selectedItem: MenuItem?
     
     func updateMenuDetails(with indexPath: IndexPath) {
@@ -73,3 +86,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
 
 
 }
+//extension MenuDetailsCollectionViewCell: AddItemDelegate {
+//    func didAddItemToCart(_ item: CartItem, quantity: Int) {
+//        self.addedItemCount += quantity // Update item count
+//    }
+//}
