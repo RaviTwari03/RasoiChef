@@ -196,6 +196,7 @@ struct OrderItem {
 //}
 struct SubscriptionPlan {
     var planID: String?
+    var kitchenName : String?
     var userID: String?
     var kitchenID: String?
     var startDate: String?

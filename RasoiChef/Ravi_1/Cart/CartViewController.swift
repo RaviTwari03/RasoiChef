@@ -8,11 +8,16 @@
 import UIKit
 
 
+protocol SubscriptionPlanDelegate: AnyObject {
+    func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
+}
 
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate,SubscriptionCartItemTableViewCellDelegate {
     
  
-    
+    weak var delegate: SubscriptionPlanDelegate?
+        
+      //  static var subscriptionPlan1: [SubscriptionPlan] = []
   
    
     @IBOutlet var CartItem: UITableView!
@@ -348,12 +353,25 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        }
        
        
-       func addSubscriptionPlan(_ plan: SubscriptionPlan) {
-               CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
-               DispatchQueue.main.async {
-                   self.CartItem?.reloadData()  // ✅ Refresh table view
-               }
-           }
+//       func addSubscriptionPlan(_ plan: SubscriptionPlan) {
+//               CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
+//               DispatchQueue.main.async {
+//                   self.CartItem?.reloadData()  // ✅ Refresh table view
+//               }
+//           print(CartViewController.subscriptionPlan1)
+//           }
+    func addSubscriptionPlan(_ plan: SubscriptionPlan) {
+            CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
+            
+            DispatchQueue.main.async {
+                self.CartItem?.reloadData()  // ✅ Refresh table view
+            }
+            
+            print(CartViewController.subscriptionPlan1)
+            
+            // Notify delegate
+            delegate?.didAddSubscriptionPlan(plan)
+        }
        
        override func viewWillAppear(_ animated: Bool) {
            super.viewWillAppear(animated)
