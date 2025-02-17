@@ -124,10 +124,10 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="9uo-tp-ueP">
-                                <rect key="frame" x="145.33333333333334" y="9" width="20" height="20"/>
+                                <rect key="frame" x="147.33333333333334" y="9" width="18" height="18"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="SXV-9P-TbY"/>
-                                    <constraint firstAttribute="width" constant="20" id="khq-15-3Dg"/>
+                                    <constraint firstAttribute="height" constant="18" id="SXV-9P-TbY"/>
+                                    <constraint firstAttribute="width" constant="18" id="khq-15-3Dg"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -184,6 +184,7 @@
                 <outlet property="mealNameLabel" destination="J1I-9Q-j62" id="old-nx-lXj"/>
                 <outlet property="orderIntakeLimitLabel" destination="yma-fl-V7r" id="5cp-K5-IUq"/>
                 <outlet property="priceLabel" destination="U1X-P8-j1b" id="Ggz-4W-CuL"/>
+                <outlet property="vegNonVegIcon" destination="ZNv-a3-OBz" id="wwC-TG-miV"/>
             </connections>
             <point key="canvasLocation" x="619.08396946564881" y="2.8169014084507045"/>
         </collectionViewCell>
