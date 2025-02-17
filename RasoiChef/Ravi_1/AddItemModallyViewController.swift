@@ -22,7 +22,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     var selectedChefSpecialtyDish: ChefSpecialtyDish?
 
 //    var selectedItem: MenuItem?
-    var menuItems: [MenuItem] = []
+   // var menuItems: [MenuItem] = []
     
     
     

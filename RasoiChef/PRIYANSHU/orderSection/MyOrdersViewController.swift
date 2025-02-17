@@ -22,11 +22,11 @@ class MyOrdersViewController: UIViewController {
     private let noActiveOrdersLabel: UILabel = {
            let label = UILabel()
            label.text = "No Active Orders"
-          label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+           label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
            label.textColor = .gray
-          label.textAlignment = .center
-          label.translatesAutoresizingMaskIntoConstraints = false
-         return label
+           label.textAlignment = .center
+           label.translatesAutoresizingMaskIntoConstraints = false
+           return label
        }()
     
     override func viewDidLoad() {
