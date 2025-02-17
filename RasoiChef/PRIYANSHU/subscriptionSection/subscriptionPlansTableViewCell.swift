@@ -8,6 +8,9 @@
 import UIKit
 
 class subscriptionPlansTableViewCell: UITableViewCell {
+    
+    var Subscriptionplan:SubscriptionPlan?
+    
     @IBOutlet weak var orderIDLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var kitchenName: UILabel!
