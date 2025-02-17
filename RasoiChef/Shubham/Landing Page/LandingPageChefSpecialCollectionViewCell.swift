@@ -41,6 +41,14 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         timeIcon.image = UIImage(named: "LunchIcon")
         specialDishImage.layer.cornerRadius = 10
         
+        if specialDish.mealCategory.contains(.veg) {
+            vegicon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegicon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
+
+
+        
     }
     
     override func awakeFromNib() {

@@ -324,7 +324,7 @@ class KitchenDataController {
             price: 350.0,
             rating: 4.8,
             imageURL: "HyderabadiBiryani",
-            mealCategory: [.veg]
+            mealCategory: [.nonVeg]
         ),
         ChefSpecialtyDish(
             kitchenName: "Street Food Junction",
@@ -657,7 +657,7 @@ class KitchenDataController {
             orderDeadline: "Order Before 7 pm.",
             availability: [.Available],
             availableDays: [.monday],
-            mealCategory: [.veg]
+            mealCategory: [.nonVeg]
         ),
         MenuItem(
             itemID: "item403",

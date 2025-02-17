@@ -24,6 +24,7 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
     @IBOutlet var Ratings: UILabel!
     @IBOutlet var LimitLeft: UILabel!
     
+    @IBOutlet weak var vegNonvegIcon: UIImageView!
     
     
     func updateSpecialDishDetails(for indexPath: IndexPath) {
@@ -37,7 +38,14 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         
         Ratings.text = "\(String(describing: specialDish.rating))"
         LimitLeft.text = "Max Limit: 50"             // Update dynamically if data exists
-        DishImage.image = UIImage(named: specialDish.imageURL ) 
+        DishImage.image = UIImage(named: specialDish.imageURL )
+        
+        if specialDish.mealCategory.contains(.veg) {
+            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
+
     }
     
     @IBAction func addButtonTapped(_ sender: Any) {
