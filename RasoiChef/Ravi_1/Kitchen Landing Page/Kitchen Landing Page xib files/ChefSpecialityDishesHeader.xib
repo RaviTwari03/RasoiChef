@@ -22,20 +22,11 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ws0-ay-A4d">
-                        <rect key="frame" x="357" y="15.666666666666664" width="20" height="20"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="20" id="3P1-1t-4U6"/>
-                            <constraint firstAttribute="height" constant="20" id="xRj-9L-9js"/>
-                        </constraints>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
-                    </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fio-5b-ewO">
-                        <rect key="frame" x="287" y="10.666666666666666" width="82" height="29.666666666666671"/>
+                        <rect key="frame" x="299.66666666666669" y="9.6666666666666643" width="89.333333333333314" height="32"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" title="See More">
-                            <fontDescription key="titleFontDescription" type="system" pointSize="13"/>
+                            <fontDescription key="titleFontDescription" type="system" pointSize="15"/>
                         </buttonConfiguration>
                         <connections>
                             <action selector="seeMoreTapped:" destination="DLe-uV-bqt" eventType="touchUpInside" id="2Km-Dt-p8l"/>
@@ -44,19 +35,13 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="qXH-4A-6ni" firstAttribute="top" secondItem="mF8-QU-23F" secondAttribute="top" constant="12" id="4WJ-XN-tAF"/>
-                    <constraint firstItem="Ws0-ay-A4d" firstAttribute="leading" secondItem="fio-5b-ewO" secondAttribute="trailing" constant="-12" id="ChG-HU-eCz"/>
-                    <constraint firstItem="fio-5b-ewO" firstAttribute="leading" secondItem="qXH-4A-6ni" secondAttribute="trailing" constant="41" id="Cjm-Md-UoZ"/>
-                    <constraint firstAttribute="trailing" secondItem="Ws0-ay-A4d" secondAttribute="trailing" constant="16" id="K1C-7G-WoT"/>
+                    <constraint firstAttribute="trailing" secondItem="fio-5b-ewO" secondAttribute="trailing" constant="4" id="Yiq-9B-iT3"/>
                     <constraint firstItem="fio-5b-ewO" firstAttribute="centerY" secondItem="qXH-4A-6ni" secondAttribute="centerY" id="c9e-VN-dKv"/>
                     <constraint firstItem="qXH-4A-6ni" firstAttribute="leading" secondItem="mF8-QU-23F" secondAttribute="leading" constant="16" id="dCg-21-QBX"/>
                     <constraint firstAttribute="bottom" secondItem="qXH-4A-6ni" secondAttribute="bottom" constant="11" id="g0s-Ph-AqE"/>
-                    <constraint firstItem="Ws0-ay-A4d" firstAttribute="centerY" secondItem="fio-5b-ewO" secondAttribute="centerY" id="oSX-Dp-Xmk"/>
                 </constraints>
             </collectionViewCellContentView>
             <point key="canvasLocation" x="73" y="23"/>
         </collectionViewCell>
     </objects>
-    <resources>
-        <image name="chevron.right" catalog="system" width="97" height="128"/>
-    </resources>
 </document>

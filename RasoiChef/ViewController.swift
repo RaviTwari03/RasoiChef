@@ -252,7 +252,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         group.interItemSpacing = .fixed(5)
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8.0, bottom: 20.0, trailing: 8.0) // No insets on
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10)
         return section
     }
     
