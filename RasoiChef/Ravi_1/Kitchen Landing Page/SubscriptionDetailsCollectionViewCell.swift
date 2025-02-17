@@ -39,7 +39,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         
         // Update the meal intake limit (assuming meals count for intake)
         let remainingMeals = subscriptionPlan.meals?.count
-        orderIntakeLimit.text = "\(remainingMeals)"
+        orderIntakeLimit.text = "\(remainingMeals ?? 0)"
         planImage.image = UIImage(named: subscriptionPlan.planImage ?? "nil")
         planYourMealButton.layer.cornerRadius = 10
         
