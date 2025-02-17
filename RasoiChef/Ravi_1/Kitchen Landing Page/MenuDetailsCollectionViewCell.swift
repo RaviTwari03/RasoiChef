@@ -38,6 +38,7 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
         
+        
     }
     
 //    var selectedItem: MenuItem?

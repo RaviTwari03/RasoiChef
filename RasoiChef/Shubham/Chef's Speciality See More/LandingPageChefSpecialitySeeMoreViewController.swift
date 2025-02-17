@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate {
+class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate , ChefSpecialMenuSeeMoreDetailsCellDelegate {
     
     @IBOutlet var ChefsSpecialDishes: UICollectionView!
 
@@ -194,6 +194,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
             cell.updateSpecialDishDetails(for: indexPath)
+            cell.delegate = self
             cell.layer.cornerRadius = 15.0
             cell.layer.shadowColor = UIColor.black.cgColor
             cell.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -219,4 +220,33 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         }
     
     
+    func ChefSpecialaddButtonTapped(in cell: ChefSeeMoreCollectionViewCell) {
+        guard let indexPath = ChefsSpecialDishes.indexPath(for: cell) else { return }
+        
+        // Fetch the Chef Specialty Dish from the data controller
+        let selectedChefSpecialtyDish = KitchenDataController.globalChefSpecial[indexPath.row]
+        print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
+        
+        // Instantiate the detail view controller
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            // Pass the selected Chef Specialty Dish to the detailVC
+            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
+            
+            // Set the modal presentation style
+            detailVC.modalPresentationStyle = .pageSheet
+            
+            // Customize the presentation style for iPad/large screens
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            // Present the modal view controller
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
     }
+    
+}
