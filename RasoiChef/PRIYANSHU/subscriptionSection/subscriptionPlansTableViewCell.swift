@@ -26,25 +26,25 @@ class subscriptionPlansTableViewCell: UITableViewCell,SubscriptionPlanDelegate {
     @IBOutlet weak var cardView: UIView!
     
     
-//    private func applyCardStyle() {
-//        // Round the corners of the content view to make it appear as a card
-//        cardView.layer.cornerRadius = 16
-//        cardView.layer.masksToBounds = true
-//        // Add shadow to create a card-like appearance
-//        cardView.layer.shadowColor = UIColor.black.cgColor
-//        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
-//        cardView.layer.shadowRadius = 5
-//        cardView.layer.shadowOpacity = 0.4
-//        cardView.layer.masksToBounds = false
-//        // Add padding by adjusting the content insets
-//        cardView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
-//        
-//        // Optionally, you can add a background color for the card
-//        cardView.backgroundColor = .white
-//    }
+    private func applyCardStyle() {
+        // Round the corners of the content view to make it appear as a card
+        cardView.layer.cornerRadius = 16
+        cardView.layer.masksToBounds = true
+        // Add shadow to create a card-like appearance
+        cardView.layer.shadowColor = UIColor.black.cgColor
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        cardView.layer.shadowRadius = 5
+        cardView.layer.shadowOpacity = 0.4
+        cardView.layer.masksToBounds = false
+        // Add padding by adjusting the content insets
+        cardView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
+        
+        // Optionally, you can add a background color for the card
+        cardView.backgroundColor = .white
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
-        //applyCardStyle()
+        applyCardStyle()
         contentView.layer.cornerRadius = 10
     }
     

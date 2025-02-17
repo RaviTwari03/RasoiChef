@@ -186,7 +186,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="kitchenName" destination="sW3-qk-iqZ" id="BYH-xc-GuO"/>
+                <outlet property="cardView" destination="mei-Yp-Bgf" id="FeQ-Ec-HK1"/>
+                <outlet property="kitchenName" destination="sW3-qk-iqZ" id="xhg-mh-4o6"/>
                 <outlet property="planName" destination="sz1-zd-MvR" id="dQh-eq-zjB"/>
             </connections>
             <point key="canvasLocation" x="29.770992366412212" y="7.042253521126761"/>
@@ -201,7 +202,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBlueColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -156,6 +156,7 @@ struct Order {
     let kitchenName: String
     let kitchenID: String
     let items: [OrderItem]
+    var item: SubscriptionPlan?
     var status: OrderStatus
     var totalAmount: Double
     var deliveryAddress: String
