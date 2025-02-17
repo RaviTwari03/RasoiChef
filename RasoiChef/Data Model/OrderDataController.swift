@@ -74,38 +74,38 @@ class OrderDataController{
     }
      // load subscription
     func loadSubscriptionPlans() {
-        SubscriptionPlans = [
-                SubscriptionPlan(
-                    planID: "001",
-                    userID: "001",
-                    kitchenID: "kitchen001",
-                    startDate: "2025-02-10",
-                    endDate: "2025-02-16",
-                    totalPrice: 1400.0,
-                    details: "Weekly Plan",
-                    mealCountPerDay: 4,
-                    planImage: "PlanImage",
-                    weeklyMeals: [
-                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
-                        .friday: [:], .saturday: [:], .sunday: [:]
-                    ]
-                ),
-                SubscriptionPlan(
-                    planID: "002",
-                    userID: "001",
-                    kitchenID: "kitchen002",
-                    startDate: "2025-02-10",
-                    endDate: "2025-02-16",
-                    totalPrice: 1200.0,
-                    details: "Bi-weekly Plan",
-                    mealCountPerDay: 3,
-                    planImage: "PlanImage",
-                    weeklyMeals: [
-                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
-                        .friday: [:], .saturday: [:], .sunday: [:]
-                    ]
-                )
-            ]
+//        SubscriptionPlans = [
+//                SubscriptionPlan(
+//                    planID: "001",
+//                    userID: "001",
+//                    kitchenID: "kitchen001",
+//                    startDate: "2025-02-10",
+//                    endDate: "2025-02-16",
+//                    totalPrice: 1400.0,
+//                    details: "Weekly Plan",
+//                    mealCountPerDay: 4,
+//                    planImage: "PlanImage",
+//                    weeklyMeals: [
+//                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
+//                        .friday: [:], .saturday: [:], .sunday: [:]
+//                    ]
+//                ),
+//                SubscriptionPlan(
+//                    planID: "002",
+//                    userID: "001",
+//                    kitchenID: "kitchen002",
+//                    startDate: "2025-02-10",
+//                    endDate: "2025-02-16",
+//                    totalPrice: 1200.0,
+//                    details: "Bi-weekly Plan",
+//                    mealCountPerDay: 3,
+//                    planImage: "PlanImage",
+//                    weeklyMeals: [
+//                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
+//                        .friday: [:], .saturday: [:], .sunday: [:]
+//                    ]
+//                )
+//            ]
            
         
     }
