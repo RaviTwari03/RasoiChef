@@ -49,5 +49,31 @@ class subscriptionPlansTableViewCell: UITableViewCell {
             // Optionally, you can add a background color for the card
         cardView.backgroundColor = .white
         }
+    
+    
+    func configure(subscription: SubscriptionPlan) {
+        orderIDLabel.text = "Plan ID - \(subscription.planID ?? "N/A")"
+        dateLabel.text = formatDate(subscription.startDate) + " - " + formatDate(subscription.endDate)
+        locationLabel.text = "Kitchen: \(subscription.kitchenID ?? "N/A")"
+        kitchenName.text = subscription.details ?? "Subscription Plan"
+        planName.text = "Meals per Day: \(subscription.mealCountPerDay ?? 0)"
+        symbol.text = "🍽️" // You can update this to display icons dynamically
+        
+    }
+    private func formatDate(_ dateString: String?) -> String {
+        guard let dateString = dateString else { return "N/A" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd" // Adjust if needed
+        if let date = formatter.date(from: dateString) {
+            formatter.dateStyle = .medium
+            return formatter.string(from: date)
+        }
+        return "Invalid Date"
+    }
+
+
+    
+
+    
    
 }

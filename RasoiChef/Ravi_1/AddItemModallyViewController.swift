@@ -109,7 +109,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
 //            // Debugging: Print the cart items to verify
 //            print("Cart Items: \(CartViewController.cartItems)")
 //
-//            // Update the tab bar badge
+//            // Update the tab badge
 //            updateCartBadge() // Call the method to handle badge update
 //
 //            print("Item added to cart: \(cartItem)") // Log the added item
@@ -169,7 +169,10 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
            }
         }
 
-        }
+    @IBAction func crossButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+}
 
         // Helper function to update the badge
 //        func updateCartBadge() {

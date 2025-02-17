@@ -8,7 +8,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CartPay" id="dTr-Dq-RU0" customClass="CartPayTableViewCell" customModule="RasoiChef" customModuleProvider="target">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubscriptionCartPay" id="dTr-Dq-RU0" customClass="CartPayTableViewCell" customModule="RasoiChef" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="393" height="63"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dTr-Dq-RU0" id="Uja-u6-Qzz">
@@ -16,13 +16,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pay" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2XR-6J-0cw">
-                        <rect key="frame" x="19.999999999999996" y="21" width="34.666666666666657" height="21"/>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                        <rect key="frame" x="20" y="21" width="27.666666666666671" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="spe-Vr-cqs">
-                        <rect key="frame" x="248" y="14" width="125" height="35"/>
+                        <rect key="frame" x="228" y="14" width="125" height="35"/>
                         <color key="backgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="35" id="mB2-al-72T"/>
@@ -33,13 +33,10 @@
                         <buttonConfiguration key="configuration" style="plain" title="Place Order">
                             <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
                         </buttonConfiguration>
-                        <connections>
-                            <action selector="placeOrderButton:" destination="dTr-Dq-RU0" eventType="touchUpInside" id="HlS-u0-Ag7"/>
-                        </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sjw-qx-Qhx">
-                        <rect key="frame" x="65" y="21" width="40.666666666666657" height="21"/>
-                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                        <rect key="frame" x="58" y="21" width="42" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -49,19 +46,15 @@
                     <constraint firstAttribute="bottom" secondItem="Sjw-qx-Qhx" secondAttribute="bottom" constant="21" id="39y-dx-hUw"/>
                     <constraint firstAttribute="bottom" secondItem="spe-Vr-cqs" secondAttribute="bottom" constant="14" id="C7l-3P-oPc"/>
                     <constraint firstItem="spe-Vr-cqs" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sjw-qx-Qhx" secondAttribute="trailing" constant="13" id="FVp-qc-7fE"/>
+                    <constraint firstAttribute="trailing" secondItem="spe-Vr-cqs" secondAttribute="trailing" constant="40" id="K4Z-dt-YHA"/>
                     <constraint firstItem="Sjw-qx-Qhx" firstAttribute="leading" secondItem="2XR-6J-0cw" secondAttribute="trailing" constant="10.329999923706055" id="K9y-yI-TyA"/>
                     <constraint firstAttribute="bottom" secondItem="2XR-6J-0cw" secondAttribute="bottom" constant="21" id="KSI-W8-Gha"/>
                     <constraint firstAttribute="bottom" secondItem="spe-Vr-cqs" secondAttribute="bottom" constant="14" id="QjW-Ki-zyz"/>
                     <constraint firstItem="2XR-6J-0cw" firstAttribute="top" secondItem="Uja-u6-Qzz" secondAttribute="top" constant="21" id="SE8-SX-aYN"/>
-                    <constraint firstAttribute="trailing" secondItem="spe-Vr-cqs" secondAttribute="trailing" constant="20" id="eAX-rg-bab"/>
                     <constraint firstItem="spe-Vr-cqs" firstAttribute="top" secondItem="Uja-u6-Qzz" secondAttribute="top" constant="14" id="jPR-KX-V9x"/>
                     <constraint firstItem="2XR-6J-0cw" firstAttribute="leading" secondItem="Uja-u6-Qzz" secondAttribute="leading" constant="20" symbolic="YES" id="jdh-uV-2dE"/>
                 </constraints>
             </tableViewCellContentView>
-            <connections>
-                <outlet property="TotalAmountLabel" destination="Sjw-qx-Qhx" id="ain-0z-cWg"/>
-                <outlet property="addButton" destination="spe-Vr-cqs" id="3ap-di-DHD"/>
-            </connections>
             <point key="canvasLocation" x="138.1679389312977" y="48.943661971830991"/>
         </tableViewCell>
     </objects>

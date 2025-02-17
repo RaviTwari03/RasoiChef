@@ -79,6 +79,9 @@
                                         <size key="value" width="0.0" height="2"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addButtonTapped:" destination="bsU-X5-Q8s" eventType="touchUpInside" id="nph-dv-W1A"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCD-Be-xi4">
                                 <rect key="frame" x="305.66666666666669" y="250" width="41.333333333333314" height="21"/>
@@ -130,10 +133,10 @@
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="bold"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StarRatings" translatesAutoresizingMaskIntoConstraints="NO" id="JYg-jm-xNp">
-                                <rect key="frame" x="283" y="220" width="20" height="20"/>
+                                <rect key="frame" x="285" y="220" width="18" height="18"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="BNw-tf-7sX"/>
-                                    <constraint firstAttribute="height" constant="20" id="Qmo-VX-VCp"/>
+                                    <constraint firstAttribute="width" constant="18" id="BNw-tf-7sX"/>
+                                    <constraint firstAttribute="height" constant="18" id="Qmo-VX-VCp"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -190,6 +193,7 @@
                 <outlet property="PriceOfDish" destination="QS4-de-4b8" id="ofa-BJ-2sy"/>
                 <outlet property="Ratings" destination="IZ8-hp-kn3" id="2e3-r2-5Ha"/>
                 <outlet property="dishName" destination="jcA-JI-e0o" id="akx-2h-cCe"/>
+                <outlet property="vegNonvegIcon" destination="0UO-TT-Bah" id="BLD-NL-D6p"/>
             </connections>
             <point key="canvasLocation" x="-297.70992366412213" y="-10.563380281690142"/>
         </collectionViewCell>

@@ -104,6 +104,46 @@
             </objects>
             <point key="canvasLocation" x="10248" y="809"/>
         </scene>
+        <!--Subscription Cart View Controller-->
+        <scene sceneID="PJo-1X-ULe">
+            <objects>
+                <viewController storyboardIdentifier="SubscriptionCartViewController" id="adG-yT-9TL" customClass="SubscriptionCartViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VsU-Wf-oY3">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="sck-gW-OyN">
+                                <rect key="frame" x="0.0" y="59" width="430" height="839"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="FeU-Hv-Mw0">
+                                        <rect key="frame" x="0.0" y="50" width="430" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FeU-Hv-Mw0" id="Y3V-aK-Tj4">
+                                            <rect key="frame" x="0.0" y="0.0" width="430" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="SZ0-Mq-bza"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="sck-gW-OyN" firstAttribute="top" secondItem="SZ0-Mq-bza" secondAttribute="top" id="NnX-Us-LOh"/>
+                            <constraint firstItem="SZ0-Mq-bza" firstAttribute="trailing" secondItem="sck-gW-OyN" secondAttribute="trailing" id="WnY-gF-xg7"/>
+                            <constraint firstItem="sck-gW-OyN" firstAttribute="leading" secondItem="SZ0-Mq-bza" secondAttribute="leading" id="jSs-DJ-T71"/>
+                            <constraint firstItem="SZ0-Mq-bza" firstAttribute="bottom" secondItem="sck-gW-OyN" secondAttribute="bottom" id="sQ8-iD-zaP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="subscriptionCart" destination="sck-gW-OyN" id="W38-3F-2AA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RgM-ZG-mu9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="11315" y="807"/>
+        </scene>
         <!--Add Item Modally View Controller-->
         <scene sceneID="iBo-tC-4AI">
             <objects>
@@ -189,7 +229,11 @@
                                 <rect key="frame" x="0.0" y="53" width="430" height="44"/>
                                 <items>
                                     <navigationItem id="nFh-oh-i90">
-                                        <barButtonItem key="rightBarButtonItem" title="cancel" image="multiply.circle" catalog="system" id="ftz-xy-Z8U"/>
+                                        <barButtonItem key="rightBarButtonItem" title="cancel" image="multiply.circle" catalog="system" id="ftz-xy-Z8U">
+                                            <connections>
+                                                <action selector="crossButtonTapped:" destination="P3K-Hj-AEI" id="LaQ-Ga-5Bm"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>

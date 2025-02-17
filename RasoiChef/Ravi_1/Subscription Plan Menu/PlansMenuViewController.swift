@@ -13,9 +13,7 @@ enum LocalWeekDay: String {
 
 class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource , WeekDaysSelectionDelegate{
     
-    
-   
-
+ 
     enum DayOfWeek: String, CaseIterable {
         case sunday, monday, tuesday, wednesday, thursday, friday, saturday
         
@@ -27,8 +25,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
 
 
     @IBOutlet var subscriptionPlan: UICollectionView!
-//
-//}
+
     private var selectedDay: String = "Monday" // Default to Monday
         private var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         
@@ -82,13 +79,23 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 cell.layer.cornerRadius = 10.0
                             cell.layer.borderWidth = 1.0
                             cell.layer.borderColor = UIColor.orange.cgColor
-               
+                          //  cell.layer.shadowColor = UIColor.black.cgColor
+                //            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
+                         //   cell.layer.shadowRadius = 5.0
+                //            cell.layer.shadowOpacity = 0.2
+                        //    cell.layer.masksToBounds = false
+                //            cell.layer.shadowColor = UIColor.black.cgColor
                 return cell
                 
             case 1:  // Menu Items
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
                 cell.updateMenuDetails(with: indexPath)
-            return cell
+//                let meals = getMenuForSelectedDay()
+//                let mealKey = Array(meals.keys)[indexPath.item]
+//                let mealValue = meals[mealKey] ?? ""
+//                
+//                cell.updateMenuDetails(mealType: mealKey.rawValue, mealName: mealValue, mealDescription: "iii")
+                return cell
           
             default:
                 return UICollectionViewCell()
@@ -102,7 +109,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             subscriptionPlan.reloadSections(IndexSet(integer: 1)) // Reload Menu
         }
         
-
+        
     private func getMenuForSelectedDay() -> [MealType: String] {
         guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
         
@@ -113,7 +120,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let weekDayEnum = selectedDayEnum.toWeekDay()
         
         // Fetch the meals for the selected day
-        guard let mealsForDay = plan.weeklyMeals[weekDayEnum] else { return [:] }
+        guard let mealsForDay = plan.weeklyMeals?[weekDayEnum] else { return [:] }
         
         // Map MenuItem? to its name string, filtering out nil values
         return mealsForDay.compactMapValues { menuItem in

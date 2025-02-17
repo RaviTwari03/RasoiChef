@@ -16,6 +16,14 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        tableViewSubscriptionPlan.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                tableViewSubscriptionPlan.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+                tableViewSubscriptionPlan.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
+            ])
+        
+        
         tableViewSubscriptionPlan.delegate = self
         tableViewSubscriptionPlan.dataSource = self
         

@@ -40,12 +40,12 @@ class MyOrdersTableViewCell: UITableViewCell {
     }
     private func applyCardStyle() {
             // Round the corners of the content view to make it appear as a card
-        cardView.layer.cornerRadius = 16
+        cardView.layer.cornerRadius = 15
         cardView.layer.masksToBounds = true
             // Add shadow to create a card-like appearance
         cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
-        cardView.layer.shadowRadius = 5
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cardView.layer.shadowRadius = 2.5
         cardView.layer.shadowOpacity = 0.4
         cardView.layer.masksToBounds = false
             // Add padding by adjusting the content insets

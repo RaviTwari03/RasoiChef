@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Fbf-Ke-DVv">
-                                <rect key="frame" x="10" y="165" width="373" height="32"/>
+                                <rect key="frame" x="16" y="165" width="361" height="32"/>
                                 <segments>
                                     <segment title="Orders"/>
                                     <segment title="Subscribed Plans"/>
@@ -52,12 +52,12 @@
                         <viewLayoutGuide key="safeArea" id="9jl-YG-SdF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" constant="10" id="AxU-z7-cFT"/>
+                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="Fbf-Ke-DVv" secondAttribute="trailing" constant="16" id="1WM-qk-BqN"/>
                             <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="0Br-s5-7Yv" secondAttribute="trailing" id="WqU-ZJ-7zy"/>
                             <constraint firstItem="0Br-s5-7Yv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" id="XCd-q9-7tm"/>
+                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" constant="16" id="agQ-69-A9t"/>
                             <constraint firstItem="Fbf-Ke-DVv" firstAttribute="top" secondItem="9jl-YG-SdF" secondAttribute="top" constant="10" id="hSJ-QN-0nP"/>
                             <constraint firstItem="0Br-s5-7Yv" firstAttribute="top" secondItem="Fbf-Ke-DVv" secondAttribute="bottom" constant="5" id="mmt-h0-Ej1"/>
-                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="Fbf-Ke-DVv" secondAttribute="trailing" constant="10" id="vTH-C7-3DH"/>
                             <constraint firstItem="9jl-YG-SdF" firstAttribute="bottom" secondItem="0Br-s5-7Yv" secondAttribute="bottom" id="zt2-sW-3N2"/>
                         </constraints>
                     </view>

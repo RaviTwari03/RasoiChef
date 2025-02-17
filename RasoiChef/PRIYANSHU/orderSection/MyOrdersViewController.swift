@@ -32,6 +32,14 @@ class MyOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
+            ])
+        
+        
         tableView.dataSource = self
         tableView.delegate = self
         // Do any additional setup after loading the view.
@@ -107,6 +115,14 @@ class MyOrdersViewController: UIViewController {
     
     
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadData()
+        tableView.reloadData()
+    }
+    
+    
+    
 
 }
 
@@ -134,7 +150,7 @@ extension MyOrdersViewController:UITableViewDataSource {
 
             let titleLabel = UILabel()
             titleLabel.text = section == 0 ? "Current Orders" : "Past Orders"
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 25)
             titleLabel.textColor = .black
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
 

@@ -127,17 +127,17 @@ struct ChefSpecialtyDish {
     var imageURL: String
     var mealCategory : [MealCategory]
 }
-struct GlobalChefSpeciality{
-    let kitchenName : String
-    let dishID: String
-    let kitchenID: String
-    var name: String
-    var description: String
-    var price: Double
-    var rating: Float
-    var imageURL: String
-    var mealCategory : [MealCategory]
-}
+//struct GlobalChefSpeciality{
+//    let kitchenName : String
+//    let dishID: String
+//    let kitchenID: String
+//    var name: String
+//    var description: String
+//    var price: Double
+//    var rating: Float
+//    var imageURL: String
+//    var mealCategory : [MealCategory]
+//}
 
 // Cart Item
 struct CartItem {
@@ -146,6 +146,7 @@ struct CartItem {
     var specialRequest: String?
     var menuItem: MenuItem?
     var chefSpecial : ChefSpecialtyDish?
+    var subscriptionDetails : SubscriptionPlan?
 }
 
 // Order
@@ -171,28 +172,29 @@ struct OrderItem {
 
 
 struct SubscriptionPlan {
-    var planID: String
-    var userID: String
-    var kitchenID: String
+    var planID: String?
+    var userID: String?
+    var kitchenID: String?
     var startDate: String?  // Consider using Date for better calculations
     var endDate: String?
     var totalPrice: Double?
-    var details: String
+    var details: String?
     var mealCountPerDay: Int?
-    var planImage: String
-    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]  // Updated to store MenuItem instead of String
+    var planImage: String?
+    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Made optional
 
     // Computed property to generate meals dynamically
-    var meals: [SubscriptionMeal] {
-        return weeklyMeals.flatMap { day, meals in
+    var meals: [SubscriptionMeal]? {
+        return weeklyMeals?.flatMap { day, meals in
             meals.compactMap { mealType, menuItem in
                 // Only add valid MenuItems to the meal list
                 guard let menuItem = menuItem else { return nil }
-                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID)
+                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID ?? "0")
             }
         }
     }
 }
+
 
 // Subscription Meal (Nested within SubscriptionPlan)
 struct SubscriptionMeal {

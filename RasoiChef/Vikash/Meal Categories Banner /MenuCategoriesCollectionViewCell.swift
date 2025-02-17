@@ -29,6 +29,14 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var Ratings: UILabel!
     
+    @IBOutlet weak var vegNonVegIcon: UIImageView!
+    
+    
+    
+    
+    
+
+    
     func updateMealDetails(with indexPath: IndexPath) {
 //        guard indexPath.row < KitchenDataController.GlobaldinnerMenuItems.count else {
 //            print("Error: Index \(indexPath.row) is out of range. Available items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
@@ -70,13 +78,22 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         }
         
         mealNameLabel.text = menuItem.name
-        mealImage.image = UIImage(named: menuItem.imageURL)
+        mealImage.image = UIImage(named: menuItem.imageURL ?? "")
         kitchenNameLabel.text = menuItem.kitchenName
         KitchenDistance.text = "\(menuItem.distance) km"
         Ratings.text = "\(menuItem.rating)"
         orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
         priceLabel.text = "₹\(menuItem.price)"
         descriptionLabel.text = menuItem.description
+        
+        
+        if menuItem.mealCategory.contains(.veg) {
+            vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
+        
+        
     }
     
     

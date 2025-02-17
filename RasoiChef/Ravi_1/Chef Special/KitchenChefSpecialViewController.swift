@@ -164,39 +164,39 @@ func configureItemCountLabel() {
 }
 
 
-func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-    let button = UIButton(type: .system)
-    
-    if withChevron {
-        let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-        let attachment = NSTextAttachment()
-        attachment.image = chevronImage
-        attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
+    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
+        let button = UIButton(type: .system)
         
-        let attributedString = NSMutableAttributedString(string: title + " ")
-        attributedString.append(NSAttributedString(attachment: attachment))
+        if withChevron {
+            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
+            let attachment = NSTextAttachment()
+            attachment.image = chevronImage
+            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
+            
+            let attributedString = NSMutableAttributedString(string: title + " ")
+            attributedString.append(NSAttributedString(attachment: attachment))
+            
+            // Apply medium font style with increased size
+            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
+            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
+            
+            button.setAttributedTitle(attributedString, for: .normal)
+        } else {
+            // Apply medium font with increased size
+            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
+            button.setAttributedTitle(regularTitle, for: .normal)
+        }
         
-        // Apply bold font style with increased size
-        let boldFont = UIFont.boldSystemFont(ofSize: 18) // Increased size
-        attributedString.addAttribute(.font, value: boldFont, range: NSRange(location: 0, length: attributedString.length))
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .white
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.cornerRadius = 10
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
         
-        button.setAttributedTitle(attributedString, for: .normal)
-    } else {
-        // Apply bold font with increased size
-        let boldTitle = NSAttributedString(string: title, attributes: [.font: UIFont.boldSystemFont(ofSize: 18)]) // Increased size
-        button.setAttributedTitle(boldTitle, for: .normal)
+        return button
     }
-    
-    button.setTitleColor(.black, for: .normal)
-    button.backgroundColor = .white
-    button.layer.borderWidth = 1.0
-    button.layer.borderColor = UIColor.gray.cgColor
-    button.layer.cornerRadius = 10
-    button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-    button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-    
-    return button
-}
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {

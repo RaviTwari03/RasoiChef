@@ -96,14 +96,6 @@
                                     <constraint firstAttribute="height" constant="1" id="ycl-t5-ZXI"/>
                                 </constraints>
                             </view>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="79J-Bm-15G">
-                                <rect key="frame" x="16" y="109" width="42" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.98879178280000002" blue="0.55803180289999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="FaO-Sh-4dC"/>
-                                    <constraint firstAttribute="width" constant="42" id="xTm-18-x3q"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoDark" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="DtW-13-dY6">
                                 <rect key="frame" x="142" y="169" width="50" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -124,6 +116,39 @@
                                     <color key="baseForegroundColor" systemColor="systemBlueColor"/>
                                 </buttonConfiguration>
                             </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NKH-iD-1Ze">
+                                <rect key="frame" x="15" y="101" width="187" height="50"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BreakfastIcon" translatesAutoresizingMaskIntoConstraints="NO" id="7g4-kG-fdB">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="CCH-4a-PL3"/>
+                                            <constraint firstAttribute="width" constant="50" id="sD2-gi-R1y"/>
+                                        </constraints>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Wf1-ni-qVX">
+                                        <rect key="frame" x="54" y="15" width="40" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="Ogs-RA-oGX"/>
+                                            <constraint firstAttribute="width" constant="40" id="xAE-Fx-i35"/>
+                                        </constraints>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SnacksIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Rwi-pC-0GI">
+                                        <rect key="frame" x="98" y="0.0" width="50" height="50"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DinnerIcon" translatesAutoresizingMaskIntoConstraints="NO" id="mn3-Zf-592">
+                                        <rect key="frame" x="152" y="20" width="35" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="Wkc-vv-6VA"/>
+                                            <constraint firstAttribute="width" constant="35" id="wU4-r8-CRB"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="3bD-Nh-LTM"/>
+                                    <constraint firstAttribute="width" constant="187" id="F4O-2s-2z1"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -137,13 +162,13 @@
                             <constraint firstAttribute="bottom" secondItem="nFI-8X-qmh" secondAttribute="bottom" constant="18" id="Gfh-tt-r8u"/>
                             <constraint firstAttribute="bottom" secondItem="Pio-3y-Fh8" secondAttribute="bottom" constant="14" id="IeS-Rt-OTl"/>
                             <constraint firstItem="wL4-8I-Rb2" firstAttribute="leading" secondItem="mei-Yp-Bgf" secondAttribute="leading" constant="15" id="JFV-4W-mH7"/>
-                            <constraint firstItem="79J-Bm-15G" firstAttribute="top" secondItem="wL4-8I-Rb2" secondAttribute="bottom" id="ORQ-u5-Ugm"/>
                             <constraint firstAttribute="trailing" secondItem="Pio-3y-Fh8" secondAttribute="trailing" constant="5" id="Ons-wQ-wvi"/>
-                            <constraint firstItem="79J-Bm-15G" firstAttribute="leading" secondItem="mei-Yp-Bgf" secondAttribute="leading" constant="15" id="PHz-H0-Yrv"/>
                             <constraint firstItem="DtW-13-dY6" firstAttribute="top" secondItem="nmk-0e-7Ej" secondAttribute="bottom" constant="12" id="ZFw-Hk-Nwa"/>
                             <constraint firstItem="4l2-Yi-n14" firstAttribute="top" secondItem="sW3-qk-iqZ" secondAttribute="bottom" constant="2" id="cXw-fU-c8Q"/>
                             <constraint firstItem="sW3-qk-iqZ" firstAttribute="top" secondItem="lgl-WF-ZMU" secondAttribute="bottom" constant="3" id="cjm-4K-htZ"/>
                             <constraint firstItem="lgl-WF-ZMU" firstAttribute="top" secondItem="mei-Yp-Bgf" secondAttribute="top" constant="10" id="eVQ-K0-qYL"/>
+                            <constraint firstItem="NKH-iD-1Ze" firstAttribute="leading" secondItem="mei-Yp-Bgf" secondAttribute="leading" constant="15" id="egF-O3-7Oj"/>
+                            <constraint firstItem="NKH-iD-1Ze" firstAttribute="top" secondItem="wL4-8I-Rb2" secondAttribute="bottom" id="fdh-Od-Cta"/>
                             <constraint firstItem="sz1-zd-MvR" firstAttribute="leading" secondItem="wL4-8I-Rb2" secondAttribute="trailing" constant="2" id="swE-rj-kMw"/>
                             <constraint firstItem="sW3-qk-iqZ" firstAttribute="leading" secondItem="mei-Yp-Bgf" secondAttribute="leading" constant="15" id="swf-qf-iIM"/>
                             <constraint firstItem="nmk-0e-7Ej" firstAttribute="leading" secondItem="mei-Yp-Bgf" secondAttribute="leading" id="syt-Ck-lyU"/>
@@ -163,10 +188,14 @@
             <connections>
                 <outlet property="cardView" destination="mei-Yp-Bgf" id="q4v-gH-Ekh"/>
             </connections>
-            <point key="canvasLocation" x="138.1679389312977" y="19.366197183098592"/>
+            <point key="canvasLocation" x="29.770992366412212" y="7.042253521126761"/>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="BreakfastIcon" width="512" height="512"/>
+        <image name="DinnerIcon" width="512" height="512"/>
+        <image name="LunchIcon" width="512" height="512"/>
+        <image name="SnacksIcon" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

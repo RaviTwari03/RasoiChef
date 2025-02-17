@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol LandingPageChefSpecialDetailsCellDelegate: AnyObject {
+    func ChefSpecialaddButtonTapped(in cell: LandingPageChefSpecialCollectionViewCell)
+}
+
 class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
+    
+    weak var delegate : LandingPageChefSpecialDetailsCellDelegate?
     
     @IBOutlet var specialDishImage: UIImageView!
     
@@ -34,6 +40,14 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         
         timeIcon.image = UIImage(named: "LunchIcon")
         specialDishImage.layer.cornerRadius = 10
+        
+        if specialDish.mealCategory.contains(.veg) {
+            vegicon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegicon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
+
+
         
     }
     
@@ -67,6 +81,9 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         
     }
     
+    @IBAction func addButtonTapped(_ sender: Any) {
+        delegate?.ChefSpecialaddButtonTapped(in: self)
+    }
     
     
 }

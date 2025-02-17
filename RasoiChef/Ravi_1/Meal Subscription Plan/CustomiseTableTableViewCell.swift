@@ -7,8 +7,9 @@
 
 import UIKit
 
+
 protocol CustomiseTableDelegate: AnyObject {
-    func buttonClicked(withTag tag: Int)
+    func buttonClicked(inSection section: Int, withTag tag: Int)
 }
 
 
@@ -24,35 +25,37 @@ class CustomiseTableTableViewCell: UITableViewCell {
     @IBOutlet var dayLabel: UILabel!
     @IBOutlet var DinnerButton: UIButton!
     
+
     override func awakeFromNib() {
-        super.awakeFromNib()
-        resetButtonStates()
+           super.awakeFromNib()
+           resetButtonStates()
 
-        // Assign custom tags
-        Breakfastbutton.tag = 40
-        LunchButton.tag = 60
-        SnacksButton.tag = 40
-        DinnerButton.tag = 60
-        self.selectionStyle = .none
-    }
-    // Tracks button visibility states
-        private var buttonStates: [Bool] = [true, true, true, true]
+           // Assign custom tags
+           Breakfastbutton.tag = 30
+           LunchButton.tag = 40
+           SnacksButton.tag = 50
+           DinnerButton.tag = 60
+           self.selectionStyle = .none
+       }
+       // Tracks button visibility states
+       private var buttonStates: [Bool] = [true, true, true, true]
 
-        
-    func configureRow(withIcons icons: [String]) {
-           Breakfastbutton.isHidden = false
-           LunchButton.isHidden = false
-           SnacksButton.isHidden = false
-           DinnerButton.isHidden = false
-
+       func configureRow(withIcons icons: [String]) {
+           updateButtonAppearance()
            setButtonImage(button: Breakfastbutton, iconName: icons[0])
            setButtonImage(button: LunchButton, iconName: icons[1])
            setButtonImage(button: SnacksButton, iconName: icons[2])
            setButtonImage(button: DinnerButton, iconName: icons[3])
        }
 
+       private func updateButtonAppearance() {
+           Breakfastbutton.alpha = buttonStates[0] ? 1.0 : 0.1
+           LunchButton.alpha = buttonStates[1] ? 1.0 : 0.1
+           SnacksButton.alpha = buttonStates[2] ? 1.0 : 0.1
+           DinnerButton.alpha = buttonStates[3] ? 1.0 : 0.1
+       }
 
-    private func setButtonImage(button: UIButton, iconName: String) {
+       private func setButtonImage(button: UIButton, iconName: String) {
            guard let image = UIImage(named: iconName) else { return }
            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 30, height: 30))
            button.setImage(resizedImage, for: .normal)
@@ -60,58 +63,59 @@ class CustomiseTableTableViewCell: UITableViewCell {
            button.setTitle(nil, for: .normal)
        }
 
-        private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-            let size = image.size
-            let widthRatio = targetSize.width / size.width
-            let heightRatio = targetSize.height / size.height
-            let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
+       private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+           let size = image.size
+           let widthRatio = targetSize.width / size.width
+           let heightRatio = targetSize.height / size.height
+           let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
 
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
+           UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+           image.draw(in: CGRect(origin: .zero, size: newSize))
+           let newImage = UIGraphicsGetImageFromCurrentImageContext()
+           UIGraphicsEndImageContext()
 
-            return newImage ?? image
-        }
+           return newImage ?? image
+       }
+
 
 
     @IBAction func buttonClicked(_ sender: UIButton) {
-        print("Button clicked: \(sender)")
-        print("Tag: \(sender.tag)")
-        delegate?.buttonClicked(withTag: sender.tag)
-        switch sender {
-        case Breakfastbutton:
-            print("Breakfast button clicked")
-            buttonStates[0] = false
-        case LunchButton:
-            print("Lunch button clicked")
-            buttonStates[1] = false
-        case SnacksButton:
-            print("Snacks button clicked")
-            buttonStates[2] = false
-        case DinnerButton:
-            print("Dinner button clicked")
-            buttonStates[3] = false
-        default:
-            print("Unknown button clicked")
-            return
-        }
+         
+            guard let tableView = self.superview as? UITableView,
+                  let indexPath = tableView.indexPath(for: self) else {
+                return
+            }
 
-        sender.isHidden = true
-        print("Button hidden: \(sender.isHidden)")
-        
-    }
+            let section = indexPath.section
+            print("Button clicked in section: \(section), Tag: \(sender.tag)")
+            
+            delegate?.buttonClicked(inSection: section, withTag: sender.tag)
 
-        private func resetButtonStates() {
-            buttonStates = [true, true, true, true]
-            Breakfastbutton.isHidden = false
-            LunchButton.isHidden = false
-            SnacksButton.isHidden = false
-            DinnerButton.isHidden = false
-        }
+            switch sender {
+            case Breakfastbutton:
+                buttonStates[0].toggle()
+            case LunchButton:
+                buttonStates[1].toggle()
+            case SnacksButton:
+                buttonStates[2].toggle()
+            case DinnerButton:
+                buttonStates[3].toggle()
+            default:
+                print("Unknown button clicked")
+                return
+            }
 
-        override func prepareForReuse() {
-            super.prepareForReuse()
-            resetButtonStates()
-        }
-    }
+            updateButtonAppearance()
+            print("Button visibility toggled")
+          }
+
+          private func resetButtonStates() {
+              buttonStates = [true, true, true, true]
+              updateButtonAppearance()
+          }
+
+          override func prepareForReuse() {
+              super.prepareForReuse()
+              resetButtonStates()
+          }
+      }
