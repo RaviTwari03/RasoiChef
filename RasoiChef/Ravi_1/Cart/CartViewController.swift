@@ -36,14 +36,21 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            
            // Notify MyOrdersViewController to reload data
                   MyOrdersViewController.shared.loadData()
+           
+           // ✅ Update the badge on My Orders tab
+               updateMyOrdersBadge()
           
-           // Add a delay before changing the tab, to allow the user to see the pop-up
-           DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // After banner is gone
-                   if let tabBarController = self.tabBarController {
-                       tabBarController.selectedIndex = 1 // Change this to the index of the "My Orders" tab
-                   }
-               }
+
        }
+    // Function to update the badge count on My Orders tab
+    func updateMyOrdersBadge() {
+        if let tabItems = self.tabBarController?.tabBar.items {
+            let myOrdersTabItem = tabItems[1] // Assuming My Orders is at index 1
+            let activeOrdersCount = OrderDataController.shared.getActiveOrdersCount()
+            myOrdersTabItem.badgeValue = activeOrdersCount > 0 ? "\(activeOrdersCount)" : nil
+        }
+    }
+    
     
        override func viewDidLoad() {
            super.viewDidLoad()
@@ -68,6 +75,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            
            
        }
+    
+    
        
      
        
@@ -282,6 +291,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                addItemVC.selectedItem = item
                addItemVC.delegate = self // Set the delegate
                self.present(addItemVC, animated: true, completion: nil)
+               
            }
            
        }
@@ -289,7 +299,11 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        func didAddItemToCart(_ item: CartItem) {
            KitchenDataController.cartItems.append(item)
            updateTabBarBadge()
+           
            CartItem.reloadData()
+           /// Use the navigation controller's view if available, otherwise self.view.
+           
+          
            //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
        }
        
@@ -363,6 +377,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            let discount = 20.0
            return totalPrice + gst + deliveryCharges - discount
        }
+    
+    
        func updateTabBarBadge() {
            if let tabItems = self.tabBarController?.tabBar.items {
                let cartTabItem = tabItems[2] // Replace with the correct index for the "Cart" tab

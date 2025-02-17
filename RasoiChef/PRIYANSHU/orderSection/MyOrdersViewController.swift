@@ -115,6 +115,14 @@ class MyOrdersViewController: UIViewController {
     
     
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadData()
+        tableView.reloadData()
+    }
+    
+    
+    
 
 }
 
