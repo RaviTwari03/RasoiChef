@@ -27,12 +27,17 @@
                                     <constraint firstAttribute="width" constant="20" id="cuj-At-YWN"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="u1Q-Wa-rW5">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="u1Q-Wa-rW5">
                                 <rect key="frame" x="240.33333333333337" y="2.6666666666666572" width="130" height="130"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="130" id="8V5-cp-peT"/>
                                     <constraint firstAttribute="width" constant="130" id="xQh-vu-WXe"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="15"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7DO-bH-KaI">
                                 <rect key="frame" x="14" y="36" width="47" height="21.666666666666671"/>
@@ -129,7 +134,6 @@
                     <constraint firstItem="hWM-I7-L7f" firstAttribute="top" secondItem="wdX-6d-cg9" secondAttribute="bottom" constant="12.999999999999986" id="9D9-z9-n9Y"/>
                     <constraint firstItem="hWM-I7-L7f" firstAttribute="leading" secondItem="wdX-6d-cg9" secondAttribute="leading" id="C87-pf-Sed"/>
                     <constraint firstAttribute="bottom" secondItem="crm-FF-J2Q" secondAttribute="bottom" constant="18" id="E1U-j1-sJv"/>
-                    <constraint firstItem="crm-FF-J2Q" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="bottom" constant="8" symbolic="YES" id="IZd-qa-CAA"/>
                     <constraint firstItem="1Pm-sk-Uet" firstAttribute="top" secondItem="U8z-FW-WHG" secondAttribute="top" constant="50" id="K3D-iw-Jns"/>
                     <constraint firstItem="crm-FF-J2Q" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="bottom" constant="8" symbolic="YES" id="Kgb-tB-BTa"/>
                     <constraint firstItem="Frd-VB-lQx" firstAttribute="leading" secondItem="U8z-FW-WHG" secondAttribute="leading" constant="10" id="MUE-Qx-OmO"/>

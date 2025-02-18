@@ -121,17 +121,16 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     }
     // Calendar Section Layout
     func generateMenuCalenderSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.20), heightDimension: .absolute(100))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        group.interItemSpacing = .fixed(0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading:5.0, bottom: 8.0, trailing: 0.0)
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 8.0, bottom: 10.0, trailing: 8.0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 15.0, leading: 15.0, bottom: 10.0, trailing: 10.0)
 
         return section
     }
