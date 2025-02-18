@@ -8,12 +8,14 @@
 import UIKit
 
 
+protocol SubscriptionPlanDelegate: AnyObject {
+    func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
+}
 
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate,SubscriptionCartItemTableViewCellDelegate {
     
  
-    
-  
+    weak var delegate: SubscriptionPlanDelegate?
    
     @IBOutlet var CartItem: UITableView!
 
@@ -303,27 +305,34 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }
        }
        
-       func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-           
-           switch section {
-               
-           case 0:
-               return "Delivery Address"
-           case 1:
-               return "Cart Items"
-           case 2:
-               return CartViewController.subscriptionPlan1.isEmpty ? nil : "Subscription Details"
-           case 3:
-               return CartViewController.cartItems.isEmpty ? nil : "Payment"
-//           case 4:
-//               return "Order Details"
-           default:
-               return nil
-           }
-       }
+
        
-       
-       
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let hasCartItems = !CartViewController.cartItems.isEmpty
+        let hasSubscriptions = !CartViewController.subscriptionPlan1.isEmpty
+        let hasAnyItems = hasCartItems || hasSubscriptions
+
+        switch section {
+            case 0:
+                return "Delivery Address"  // ✅ Always shown
+            
+            case 1:
+                return hasCartItems ? "Cart Items" : (hasSubscriptions && CartViewController.subscriptionPlan1.count == 1 ? nil : "Your Cart is Empty")
+            
+            case 2:
+                return hasSubscriptions ? "Subscription Details" : nil
+            
+            case 3:
+                return hasAnyItems ? "Payment" : nil  // ✅ Show only if there are cart items or subscriptions
+            
+            case 4:
+                return hasAnyItems ? "Order Details" : nil  // ✅ Show only if cart or subscription exists
+            
+            default:
+                return nil
+        }
+    }
+
        
        func presentAddItemModal(with item: MenuItem) {
            let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -341,19 +350,21 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            updateTabBarBadge()
            
            CartItem.reloadData()
-           /// Use the navigation controller's view if available, otherwise self.view.
-           
-          
-           //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
        }
        
-       
-       func addSubscriptionPlan(_ plan: SubscriptionPlan) {
-               CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
-               DispatchQueue.main.async {
-                   self.CartItem?.reloadData()  // ✅ Refresh table view
-               }
-           }
+
+    func addSubscriptionPlan(_ plan: SubscriptionPlan) {
+            CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
+            
+            DispatchQueue.main.async {
+                self.CartItem?.reloadData()  // ✅ Refresh table view
+            }
+            
+            print(CartViewController.subscriptionPlan1)
+            
+            // Notify delegate
+            delegate?.didAddSubscriptionPlan(plan)
+        }
        
        override func viewWillAppear(_ animated: Bool) {
            super.viewWillAppear(animated)
@@ -366,22 +377,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartItem.reloadData()
        }
       
-   //    func calculateTotalItemPrice() -> Double {
-   //        return CartViewController.cartItems.reduce(0) { total, cartItem in
-   //            switch (cartItem.menuItem, cartItem.chefSpecial) {
-   //            case let (menuItem?, nil):
-   //                print(menuItem.name)
-   //                return total + ((menuItem.price ?? 0) * Double(cartItem.quantity))
-   //
-   //            case let (nil, chefDish?):
-   //                print(chefDish.name)
-   //                return total + (chefDish.price * Double(cartItem.quantity))
-   //
-   //            default:
-   //                return total
-   //            }
-   //        }
-   //    }
+
        func calculateTotalItemPrice() -> Double {
            // Calculate total from cart items
            let cartTotal = CartViewController.cartItems.reduce(0) { total, cartItem in

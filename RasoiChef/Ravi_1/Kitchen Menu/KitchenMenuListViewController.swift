@@ -88,15 +88,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenuCalender", for: indexPath) as! KitchenMenuCalenderCollectionViewCell
             cell.updateMenuListDate(for: indexPath)
-//            cell.layer.cornerRadius = 10.0
-//            cell.layer.borderWidth = 1.0
-//            cell.layer.borderColor = UIColor.gray.cgColor
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 5.0
-//            cell.layer.shadowOpacity = 0.2
-//            cell.layer.masksToBounds = false
-//            cell.layer.shadowColor = UIColor.black.cgColor
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell

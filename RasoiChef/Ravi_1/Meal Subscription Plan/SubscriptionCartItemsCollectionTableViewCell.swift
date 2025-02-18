@@ -36,24 +36,6 @@ weak var delegate: SubscriptionCartItemTableViewCellDelegate?
            increaseStepper1.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
        }
 
-//       func configure(with item: CartItem) {
-//           guard let subscription = item.subscriptionDetails else { return }
-//
-//           cartItem = item  // Store reference for later updates
-//           
-//           SubscriptionName1.text = "Subscription Plan"
-//           selectedRange1.text = "\(subscription.startDate ?? "N/A") - \(subscription.endDate ?? "N/A")"
-//           subscriptionPrice1.text = "₹\(subscription.totalPrice ?? 0.0)"
-//           quantityLabel1.text = "\(item.quantity)"
-//           increaseStepper1.value = Double(item.quantity)
-//       }
-//    func configureWithSubscription(_ subscription: SubscriptionPlan) {
-//        SubscriptionName1.text = "Subscription Plan"
-//        selectedRange1.text = "\(subscription.startDate) - \(subscription.endDate)"
-//        subscriptionPrice1.text = "₹\(subscription.totalPrice ?? 0.0)"
-//        quantityLabel1.text = "1" // Default to 1 for subscription
-//        increaseStepper1.value = 1
-//    }
     func configureWithSubscription(_ subscription: SubscriptionPlan) {
         SubscriptionName1.text = "Subscription Plan"
         

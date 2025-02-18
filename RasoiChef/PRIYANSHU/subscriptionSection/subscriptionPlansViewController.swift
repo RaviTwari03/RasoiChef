@@ -31,8 +31,11 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
         tableViewSubscriptionPlan.dataSource = self
         
         
-        let subscriptionPlan=UINib(nibName: "subscriptionPlansTableViewCell", bundle: nil)
-        tableViewSubscriptionPlan.register(subscriptionPlan, forCellReuseIdentifier: "subscriptionPlansTableViewCell")
+//        let subscriptionPlan=UINib(nibName: "subscriptionPlansTableViewCell", bundle: nil)
+//        tableViewSubscriptionPlan.register(SubscriptionPlans, forCellReuseIdentifier: "subscriptionPlansTableViewCell")
+
+        tableViewSubscriptionPlan.register(UINib(nibName: "subscriptionPlansTableViewCell", bundle: nil), forCellReuseIdentifier: "subscriptionPlansTableViewCell")
+//        CartItem.register(UINib(nibName: "CartPay", bundle: nil), forCellReuseIdentifier: "CartPay")
 
         // Do any additional setup after loading the view.
         tableViewSubscriptionPlan.reloadData()
@@ -55,18 +58,33 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
     }
-    
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//         let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as! subscriptionPlansTableViewCell
+//        
+//        if Subscriptionplan.count > 0 {
+//                    let allSubscription1 = Subscriptionplan[indexPath.row]
+//                    cell.configureWithSubscription(subscription: allSubscription1)
+//                }
+//        
+//        return cell
+//    }
+//
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-         let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as! subscriptionPlansTableViewCell
+        // Dequeue the cell
+        guard let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as? subscriptionPlansTableViewCell else {
+            fatalError("Cell not found!")
+        }
         
+        // Check if the array has data
         if Subscriptionplan.count > 0 {
-                    let allSubscription1 = Subscriptionplan[indexPath.row]
-                    cell.configure(subscription: allSubscription1)
-                }
-        
+            let allSubscription1 = Subscriptionplan[indexPath.row]
+            cell.configureWithSubscription(allSubscription1) // Passing the subscription directly to the cell
+        }
+
         return cell
     }
-    
+
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         230

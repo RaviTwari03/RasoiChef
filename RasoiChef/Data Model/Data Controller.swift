@@ -82,6 +82,7 @@ class KitchenDataController {
             kitchenID: "kitchen001",
             kitchenName: "Kanha Ji Rasoi",
             distance: 3.9,
+            availableDate: Date(),
             name: "Spring Roll",
             description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
             price: 50.0,
