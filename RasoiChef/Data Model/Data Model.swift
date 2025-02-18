@@ -84,6 +84,7 @@ struct MenuItem {
     let kitchenID: String
     let kitchenName :String
     var distance: Double
+    var availableDate: Date?
     var name: String
     var description: String
     var price: Double

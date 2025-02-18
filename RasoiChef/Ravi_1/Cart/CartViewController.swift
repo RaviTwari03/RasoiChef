@@ -16,9 +16,6 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
  
     weak var delegate: SubscriptionPlanDelegate?
-        
-      //  static var subscriptionPlan1: [SubscriptionPlan] = []
-  
    
     @IBOutlet var CartItem: UITableView!
 
@@ -353,20 +350,9 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            updateTabBarBadge()
            
            CartItem.reloadData()
-           /// Use the navigation controller's view if available, otherwise self.view.
-           
-          
-           //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
        }
        
-       
-//       func addSubscriptionPlan(_ plan: SubscriptionPlan) {
-//               CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
-//               DispatchQueue.main.async {
-//                   self.CartItem?.reloadData()  // ✅ Refresh table view
-//               }
-//           print(CartViewController.subscriptionPlan1)
-//           }
+
     func addSubscriptionPlan(_ plan: SubscriptionPlan) {
             CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
             
@@ -391,22 +377,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartItem.reloadData()
        }
       
-   //    func calculateTotalItemPrice() -> Double {
-   //        return CartViewController.cartItems.reduce(0) { total, cartItem in
-   //            switch (cartItem.menuItem, cartItem.chefSpecial) {
-   //            case let (menuItem?, nil):
-   //                print(menuItem.name)
-   //                return total + ((menuItem.price ?? 0) * Double(cartItem.quantity))
-   //
-   //            case let (nil, chefDish?):
-   //                print(chefDish.name)
-   //                return total + (chefDish.price * Double(cartItem.quantity))
-   //
-   //            default:
-   //                return total
-   //            }
-   //        }
-   //    }
+
        func calculateTotalItemPrice() -> Double {
            // Calculate total from cart items
            let cartTotal = CartViewController.cartItems.reduce(0) { total, cartItem in
