@@ -308,27 +308,34 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }
        }
        
-       func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-           
-           switch section {
-               
-           case 0:
-               return "Delivery Address"
-           case 1:
-               return "Cart Items"
-           case 2:
-               return CartViewController.subscriptionPlan1.isEmpty ? nil : "Subscription Details"
-           case 3:
-               return CartViewController.cartItems.isEmpty ? nil : "Payment"
-//           case 4:
-//               return "Order Details"
-           default:
-               return nil
-           }
-       }
+
        
-       
-       
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let hasCartItems = !CartViewController.cartItems.isEmpty
+        let hasSubscriptions = !CartViewController.subscriptionPlan1.isEmpty
+        let hasAnyItems = hasCartItems || hasSubscriptions
+
+        switch section {
+            case 0:
+                return "Delivery Address"  // ✅ Always shown
+            
+            case 1:
+                return hasCartItems ? "Cart Items" : (hasSubscriptions && CartViewController.subscriptionPlan1.count == 1 ? nil : "Your Cart is Empty")
+            
+            case 2:
+                return hasSubscriptions ? "Subscription Details" : nil
+            
+            case 3:
+                return hasAnyItems ? "Payment" : nil  // ✅ Show only if there are cart items or subscriptions
+            
+            case 4:
+                return hasAnyItems ? "Order Details" : nil  // ✅ Show only if cart or subscription exists
+            
+            default:
+                return nil
+        }
+    }
+
        
        func presentAddItemModal(with item: MenuItem) {
            let storyboard = UIStoryboard(name: "Main", bundle: nil)
