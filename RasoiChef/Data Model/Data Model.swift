@@ -271,5 +271,5 @@ struct SubscriptionMenuItem {
     let availableMealTypes : [MealType]
     let availableDays : [WeekDay]
 }
-/*
- session link: https://infosys.webex.com/infosys/j.php?MTID=mf090e2cc484fd96b7ad8998d9f63c8db/*
+
+// session link: https://infosys.webex.com/infosys/j.php?MTID=mf090e2cc484fd96b7ad8998d9f63c8db/
