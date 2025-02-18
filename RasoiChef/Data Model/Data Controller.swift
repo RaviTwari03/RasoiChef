@@ -33,7 +33,7 @@ class KitchenDataController {
             location: "Sector 22, India",
             cuisines: [.SouthIndian, .Continental],
             rating: 4.6,
-            isOnline: true,
+            isOnline: false,
             distance: 3.1,
             kitchenImage: "KitchenImage2"
         )
