@@ -11,6 +11,9 @@ protocol AddItemDelegate: AnyObject {
     func didAddItemToCart(_ item: CartItem)
    
 }
+//protocol AddItemDelegate: AnyObject {
+//    func didAddItemToCart(_ item: CartItem, quantity: Int)
+//}
 
 class AddItemModallyViewController: UIViewController, UIViewControllerTransitioningDelegate {
     weak var delegate: AddItemDelegate?
@@ -19,7 +22,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     var selectedChefSpecialtyDish: ChefSpecialtyDish?
 
 //    var selectedItem: MenuItem?
-    var menuItems: [MenuItem] = []
+   // var menuItems: [MenuItem] = []
     
     
     
@@ -36,8 +39,10 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     @IBOutlet var AddDishItemCounterLabel: UILabel!
     @IBOutlet var AddIncreaseDishButton: UIStepper!
     
-
-
+    @IBOutlet weak var AddDishImage: UIImageView!
+    
+    @IBOutlet weak var kitchenName: UILabel!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,21 +53,25 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         if let item = selectedItem {
             print("Selected MenuItem: \(item.name)")  // Debugging print
             AddDishNameLabel.text = item.name
-            AddDishRatingLabel.text = "⭐ \(item.rating)"
+            AddDishRatingLabel.text = "\(item.rating)"
             AddDishPriceLabel.text = "₹\(item.price)"
             DishDescriptionLabel.text = item.description
             AddDishRequestTextField.text = ""
             AddDishItemCounterLabel.text = "1"
             AddIncreaseDishButton.value = 1
+            AddDishImage.image = UIImage(named: item.imageURL)
+            kitchenName.text = item.kitchenName
         } else if let chefDish = selectedChefSpecialtyDish {
             print("Selected ChefSpecialtyDish: \(chefDish.name)")  // Debugging print
             AddDishNameLabel.text = chefDish.name
-            AddDishRatingLabel.text = "⭐ \(chefDish.rating)"
+            AddDishRatingLabel.text = "\(chefDish.rating)"
             AddDishPriceLabel.text = "₹\(chefDish.price)"
             DishDescriptionLabel.text = chefDish.description
             AddDishRequestTextField.text = ""
             AddDishItemCounterLabel.text = "1"
             AddIncreaseDishButton.value = 1
+            AddDishImage.image = UIImage(named: chefDish.imageURL)
+            kitchenName.text = chefDish.kitchenName
         } else {
             print("Error: No data passed.")
         }
@@ -91,33 +100,6 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     //    MARK: - For cart
   
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
-//        guard let item = selectedItem else { return }
-//            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-//            let specialRequest = AddDishRequestTextField.text ?? ""
-//
-//            let cartItem = CartItem(
-//                userAdress: "Galgotias University", // Replace with an actual address if needed
-//                quantity: quantity,
-//                specialRequest: specialRequest,
-//                menuItem: item
-//            )
-//
-//            // Add the item to the cart
-//            KitchenDataController.cartItems.append(cartItem)
-//            CartViewController.cartItems.append(cartItem)
-//
-//            // Debugging: Print the cart items to verify
-//            print("Cart Items: \(CartViewController.cartItems)")
-//
-//            // Update the tab badge
-//            updateCartBadge() // Call the method to handle badge update
-//
-//            print("Item added to cart: \(cartItem)") // Log the added item
-//
-//            // Dismiss the current view controller if presented modally
-//            if self.presentingViewController != nil {
-//                self.dismiss(animated: true, completion: nil)
-//            }
         var cartItem: CartItem?
 
            let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
@@ -149,7 +131,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                // Add the item to the cart
                KitchenDataController.cartItems.append(cartItem)
                CartViewController.cartItems.append(cartItem)
-               delegate?.didAddItemToCart(cartItem)
+               //delegate?.didAddItemToCart(cartItem)
 
 
                // Debugging: Print the cart items to verify
@@ -174,27 +156,6 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     }
 }
 
-        // Helper function to update the badge
-//        func updateCartBadge() {
-//            DispatchQueue.main.async {
-//                if let tabItems = self.tabBarController?.tabBar.items {
-//                    let cartTabItem = tabItems[2] // Assuming "Cart" is the third tab
-//                    let itemCount = CartViewController.cartItems.count
-//                    cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
-//                    // Debugging: Print the badge value to verify
-//                    print("Badge Value: \(cartTabItem.badgeValue ?? "nil")")
-//                }
-//            }
-//        }
-//    func presentAddItemModally(selectedItem: MenuItem?, selectedChefSpecialtyDish: ChefSpecialtyDish?) {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        if let addItemVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-//            addItemVC.selectedItem = selectedItem
-//            addItemVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish
-//            self.present(addItemVC, animated: true, completion: nil)
-//        }
-    
-
-    
+  
 
 

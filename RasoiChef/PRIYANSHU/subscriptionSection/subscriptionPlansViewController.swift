@@ -13,6 +13,9 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     
     @IBOutlet weak var tableViewSubscriptionPlan: UITableView!
     
+    
+    var Subscriptionplan:[SubscriptionPlan]=[]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,6 +35,16 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
         tableViewSubscriptionPlan.register(subscriptionPlan, forCellReuseIdentifier: "subscriptionPlansTableViewCell")
 
         // Do any additional setup after loading the view.
+        tableViewSubscriptionPlan.reloadData()
+        loadSubscriptionPlan( )
+    }
+    
+    func loadSubscriptionPlan(){
+        let allSubscription = OrderDataController.shared.getSubscription()
+        print("Loaded Subscription Data: \(allSubscription)")
+        Subscriptionplan = allSubscription
+        
+       tableViewSubscriptionPlan.reloadData()
     }
     
     
@@ -46,6 +59,11 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as! subscriptionPlansTableViewCell
         
+        if Subscriptionplan.count > 0 {
+                    let allSubscription1 = Subscriptionplan[indexPath.row]
+                    cell.configure(subscription: allSubscription1)
+                }
+        
         return cell
     }
     
@@ -57,6 +75,11 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
         
         
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadSubscriptionPlan()
+    }
+
     
     
 

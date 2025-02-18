@@ -26,17 +26,80 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         BannerHeaderLAbel.text = bannerData.title
         MealDeadline.text = bannerData.subtitle
         deliveryExpected.text = bannerData.deliveryTime
-        TimeRemainingLabel.text = bannerData.timer
         BannerImage.image = UIImage(named: bannerData.icon)
         timerIcon.image = UIImage(systemName: "timer")
-        timerIcon.tintColor = .systemRed
-        TimeRemainingLabel.tintColor = .systemRed
         mealCategoryLabel.text = bannerData.mealType
         
-        let config = UIImage.SymbolConfiguration(weight: .medium)
         
-        timerIcon.image = UIImage(systemName: "timer", withConfiguration: config)
-    }
+        // Get current date and time
+            let currentDate = Date()
+            
+            // If current time is past 9 PM, adjust the date to the next day
+            let calendar = Calendar.current
+            let ninePM = calendar.date(bySettingHour: 21, minute: 0, second: 0, of: currentDate)!
+            var effectiveDate = currentDate
+            
+            if currentDate > ninePM {
+                effectiveDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+            }
+            
+            var deadlineDate: Date?
+            var deadlineTime: String?
+            var timerTextColor: UIColor = .systemGreen
+            var iconColor: UIColor = .systemGreen
+            
+            switch bannerData.mealType {
+            case "Breakfast":
+                deadlineDate = getDeadlineTime(for: effectiveDate, hour: 7, minute: 0) // 7 AM
+                deadlineTime = "7 am"
+                
+            case "Lunch":
+                deadlineDate = getDeadlineTime(for: effectiveDate, hour: 11, minute: 0) // 12 AM
+                deadlineTime = "11 am"
+                
+            case "Snacks":
+                deadlineDate = getDeadlineTime(for: effectiveDate, hour: 16, minute: 0) // 4 PM
+                deadlineTime = "4 pm"
+                
+            case "Dinner":
+                deadlineDate = getDeadlineTime(for: effectiveDate, hour: 20, minute: 0) // 8 PM
+                deadlineTime = "8 pm"
+                
+            default:
+                break
+            }
+            
+            guard let deadline = deadlineDate else { return }
+
+            // Time difference
+            let timeRemaining = deadline.timeIntervalSince(currentDate)
+            
+            if timeRemaining <= 0 {
+                // Time has passed
+                TimeRemainingLabel.text = "00 min"
+                timerTextColor = .gray
+                iconColor = .gray
+            } else {
+                let minutesRemaining = Int(timeRemaining / 60) % 60
+                let hoursRemaining = Int(timeRemaining / 3600)
+                
+                TimeRemainingLabel.text = "\(hoursRemaining)h \(minutesRemaining) min"
+                
+                if currentDate >= deadline.addingTimeInterval(-60 * 60) { // One hour before deadline
+                    timerTextColor = .red
+                    iconColor = .red
+                }
+            }
+            
+            // Update label colors based on remaining time
+            TimeRemainingLabel.textColor = timerTextColor
+            timerIcon.tintColor = iconColor
+            
+            // Set the timer icon
+            let config = UIImage.SymbolConfiguration(weight: .medium)
+            timerIcon.image = UIImage(systemName: "timer", withConfiguration: config)
+        }
+
     
     
     override func awakeFromNib() {
@@ -75,5 +138,17 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: BannerView.layer.cornerRadius).cgPath
         
         
+    }
+    
+    
+    func getDeadlineTime(for date: Date, hour: Int, minute: Int) -> Date {
+        let calendar = Calendar.current
+        let currentYear = calendar.component(.year, from: date)
+        let currentMonth = calendar.component(.month, from: date)
+        let currentDay = calendar.component(.day, from: date)
+
+        // Create a date for the deadline for the specified time of the day
+        let deadlineComponents = DateComponents(year: currentYear, month: currentMonth, day: currentDay, hour: hour, minute: minute)
+        return calendar.date(from: deadlineComponents)!
     }
 }

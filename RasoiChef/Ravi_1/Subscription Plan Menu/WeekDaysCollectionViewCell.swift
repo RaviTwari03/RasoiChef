@@ -16,25 +16,6 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
     weak var delegate: WeekDaysSelectionDelegate?
     @IBOutlet var weekDaysLabel: UILabel!
     
-//
-//    var onTap: (() -> Void)? // Closure to handle tap events
-//
-//        override func awakeFromNib() {
-//            super.awakeFromNib()
-//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-//            self.addGestureRecognizer(tapGesture)
-//        }
-//
-//        @objc func handleTap() {
-//            onTap?() // Trigger the closure when the cell is tapped
-//        }
-//
-//        func weekDay(day: String) {
-//            weekDays.text = String(day.prefix(1))
-//            weekDays.font = UIFont.boldSystemFont(ofSize: 18)
-//            weekDays.textAlignment = .center
-//        }
-//    }
 
     private var day: String = ""
 
@@ -50,7 +31,7 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
         func configure(with day: String) {
             self.day = day
             weekDaysLabel.text = String(day.prefix(1)) // Show only the first letter
-            weekDaysLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            weekDaysLabel.font = UIFont.boldSystemFont(ofSize: 20)
             weekDaysLabel.textAlignment = .center
         }
 
@@ -60,7 +41,7 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
         }
 
         func highlightSelection(_ isSelected: Bool) {
-            self.contentView.backgroundColor = isSelected ? UIColor.orange : UIColor.clear
+            self.contentView.backgroundColor = isSelected ? UIColor.accent : UIColor.clear
             weekDaysLabel.textColor = isSelected ? .white : .black
         }
 

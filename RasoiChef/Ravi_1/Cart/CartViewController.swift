@@ -26,7 +26,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        func didTapPlaceOrder() {
            let order = createOrderFromCart(cartItems: CartViewController.cartItems)
            OrderDataController.shared.addOrder(order: order)
-
+           
            let banner = CustomBannerView()
               banner.show(in: self.view, message: "Order Placed Successfully!")
               
@@ -78,41 +78,81 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     
        
-     
-       
-       func createOrderFromCart(cartItems: [CartItem]) -> Order {
-               // Create order items from cart items
-               let orderItems = cartItems.map { cartItem -> OrderItem in
-                   return OrderItem(
-                       menuItemID: cartItem.menuItem?.name ?? " ",
-                       quantity: cartItem.quantity,
-                       price: (cartItem.menuItem?.price ?? 0) * Double(cartItem.quantity)
-                   )
-               }
-               
-               // Calculate the total amount from all cart items
-           let totalAmount = cartItems.reduce(0.0) { $0 + (($1.menuItem?.price ?? 0) * Double($1.quantity)) }
-               
-               // Get the kitchen name from the first cart item (assuming all items come from the same kitchen)
-              // let kitchenName = cartItems.first?.menuItem.kitchenName ?? "Unknown Kitchen"
-               
-               // Create the Order object
-               let order = Order(
-                   orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
-                   userID: "user123",           // Replace with actual user ID
-                   kitchenName: cartItems.first?.menuItem?.kitchenName ?? "",
-                   kitchenID: cartItems.first?.menuItem?.kitchenName ?? "",    // Pass the kitchen name here
-                   items: orderItems,
-                   status: .placed,
-                   totalAmount: totalAmount,
-                   deliveryAddress: cartItems.first?.userAdress ?? "Unknown Address",
-                   deliveryDate: Date(),  // Use the actual delivery date selected by the user
-                   deliveryType: "Delivery"  // Specify the delivery type (e.g., delivery or pickup)
-               )
-               
-               return order
-           }
-           
+
+    func createOrderFromCart(cartItems: [CartItem]) -> Order {
+        // Create order items from cart items
+        let orderItems = cartItems.map { cartItem -> OrderItem in
+            var menuItemID = "Unknown Item"
+            var price: Double = 0.0
+            var kitchenName = "Unknown Kitchen"
+            var kitchenID = ""
+
+            switch (cartItem.menuItem, cartItem.chefSpecial) {
+            case let (menuItem?, nil):
+                menuItemID = menuItem.name
+                price = menuItem.price
+                kitchenName = menuItem.kitchenName
+                kitchenID = menuItem.kitchenID
+            case let (nil, chefSpecial?):
+                menuItemID = chefSpecial.name
+                price = chefSpecial.price
+                kitchenName = chefSpecial.kitchenName
+                kitchenID = chefSpecial.kitchenID
+            case let (menuItem?, chefSpecial?):
+                menuItemID = "\(menuItem.name) / \(chefSpecial.name)"
+                price = menuItem.price + chefSpecial.price
+                kitchenName = menuItem.kitchenName // Assuming the same kitchen for both
+                kitchenID = menuItem.kitchenID
+            default:
+                break
+            }
+
+            return OrderItem(
+                menuItemID: menuItemID,
+                quantity: cartItem.quantity,
+                price: price * Double(cartItem.quantity)
+            )
+        }
+
+        // Calculate total amount for the entire order
+        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price }
+        
+        // Determine the kitchen details from the first cart item
+        let firstCartItem = cartItems.first
+        var kitchenName = "Unknown Kitchen"
+        var kitchenID = ""
+
+        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
+        case let (menuItem?, nil):
+            kitchenName = menuItem.kitchenName
+            kitchenID = menuItem.kitchenID
+        case let (nil, chefSpecial?):
+            kitchenName = chefSpecial.kitchenName
+            kitchenID = chefSpecial.kitchenID
+        case let (menuItem?, chefSpecial?):
+            kitchenName = menuItem.kitchenName
+            kitchenID = menuItem.kitchenID
+        default:
+            break
+        }
+
+        // Create the Order object
+        let order = Order(
+            orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
+            userID: "user123",  // Replace with actual user ID
+            kitchenName: kitchenName,
+            kitchenID: kitchenName,
+            items: orderItems,
+            status: .placed,
+            totalAmount: totalAmount,
+            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+            deliveryDate: Date(),  // Use the actual delivery date selected by the user
+            deliveryType: "Delivery"  // Specify the delivery type (e.g., delivery or pickup)
+        )
+
+        return order
+    }
+
        
        func numberOfSections(in tableView: UITableView) -> Int {
            return 5 // Four sections: Address, Cart Items, Bill, and Payment
@@ -363,7 +403,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                return total + (plan.totalPrice ?? 0) ?? 0 // ✅ Assuming totalPrice is non-optional
            }
 
-           return cartTotal + subscriptionTotal // ✅ Combined total
+           return cartTotal + Double(Int(subscriptionTotal)) // ✅ Combined total
        }
 
        // Example function to fetch a MenuItem by ID

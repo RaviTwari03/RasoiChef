@@ -8,6 +8,9 @@
 import UIKit
 
 class subscriptionPlansTableViewCell: UITableViewCell {
+    
+    var Subscriptionplan:SubscriptionPlan?
+    
     @IBOutlet weak var orderIDLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var kitchenName: UILabel!
@@ -56,7 +59,7 @@ class subscriptionPlansTableViewCell: UITableViewCell {
         dateLabel.text = formatDate(subscription.startDate) + " - " + formatDate(subscription.endDate)
         locationLabel.text = "Kitchen: \(subscription.kitchenID ?? "N/A")"
         kitchenName.text = subscription.details ?? "Subscription Plan"
-        planName.text = "Meals per Day: \(subscription.mealCountPerDay ?? 0)"
+        planName.text = "Meals per Day: \(subscription.PlanIntakeLimit ?? 0)"
         symbol.text = "🍽️" // You can update this to display icons dynamically
         
     }
