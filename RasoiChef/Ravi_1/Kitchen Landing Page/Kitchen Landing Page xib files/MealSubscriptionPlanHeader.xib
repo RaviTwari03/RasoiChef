@@ -36,9 +36,6 @@
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="menucard" catalog="system"/>
-                                <connections>
-                                    <action selector="menuPlans:" destination="TPr-v8-wys" eventType="touchUpInside" id="NZm-Uc-5Ct"/>
-                                </connections>
                             </button>
                         </subviews>
                         <constraints>

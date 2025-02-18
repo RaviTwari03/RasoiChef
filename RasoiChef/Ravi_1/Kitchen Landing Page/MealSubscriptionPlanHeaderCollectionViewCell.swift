@@ -16,9 +16,6 @@ class MealSubscriptionPlanHeaderCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: MealSubscriptionPlanHeaderDelegate?
     
-    @IBAction func menuPlans(_ sender: UIButton) {
-        delegate?.didTapSeeMorePlansMenu()
-    }
     
     @IBAction func seeMoreTapped(_ sender: UIButton) {
         delegate?.didTapSeeMoreToSubscriptionPlans()
