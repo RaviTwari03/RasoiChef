@@ -18,7 +18,7 @@ class SupabaseAuthenticationManager {
     
     var shared = SupabaseAuthenticationManager()
     
-    var supabaseClient:SupabaseClient = SupabaseClient(supabaseURL:URL(string :"https://nndvzirldpnnnbajkylb.supabase.co")!, supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5uZHZ6aXJsZHBubm5iYWpreWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk4MDI2NTksImV4cCI6MjA1NTM3ODY1OX0.sh3mwRT8FwkS7Epwm3OesfZBXD4LkZgxsk6HNa_4pV4")
+    var supabaseClient:SupabaseClient = SupabaseClient(supabaseURL:URL(string :"https://lplftokvbtoqqietgujl.supabase.co")!, supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbGZ0b2t2YnRvcXFpZXRndWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk4NzA2NzQsImV4cCI6MjA1NTQ0NjY3NH0.2EOleVodMu4KFH2Zn6jMyXniMckbTdKlf45beahOlHM")
     
     
 }
