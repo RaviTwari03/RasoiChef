@@ -31,7 +31,7 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
         func configure(with day: String) {
             self.day = day
             weekDaysLabel.text = String(day.prefix(1)) // Show only the first letter
-            weekDaysLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            weekDaysLabel.font = UIFont.boldSystemFont(ofSize: 20)
             weekDaysLabel.textAlignment = .center
         }
 
@@ -41,7 +41,7 @@ class WeekDaysCollectionViewCell: UICollectionViewCell {
         }
 
         func highlightSelection(_ isSelected: Bool) {
-            self.contentView.backgroundColor = isSelected ? UIColor.orange : UIColor.clear
+            self.contentView.backgroundColor = isSelected ? UIColor.accent : UIColor.clear
             weekDaysLabel.textColor = isSelected ? .white : .black
         }
 
