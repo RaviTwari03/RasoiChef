@@ -27,8 +27,7 @@ class SectionHeaderLandingCollectionReusableView: UICollectionReusableView {
         headerLabel.textColor = .black
         
         actionButton.translatesAutoresizingMaskIntoConstraints = false
-        actionButton.setTitle("See All", for: .normal)
-        actionButton.setTitleColor(.systemBlue, for: .normal)
+        actionButton.setTitleColor(.accent, for: .normal)
         
         addSubview(headerLabel)
         addSubview(actionButton)

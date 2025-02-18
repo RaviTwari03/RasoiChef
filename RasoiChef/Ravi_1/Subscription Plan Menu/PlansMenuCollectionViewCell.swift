@@ -32,11 +32,11 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
 
 
         func applyCardStyle2() {
-            subscriptionView.layer.cornerRadius = 16
+            subscriptionView.layer.cornerRadius = 15
             subscriptionView.layer.masksToBounds = false
             subscriptionView.layer.shadowColor = UIColor.black.cgColor
-            subscriptionView.layer.shadowOffset = CGSize(width: 0, height: 4)
-            subscriptionView.layer.shadowRadius = 5
+            subscriptionView.layer.shadowOffset = CGSize(width: 0, height: 2)
+            subscriptionView.layer.shadowRadius = 2.5
             subscriptionView.layer.shadowOpacity = 0.4
             subscriptionView.backgroundColor = .white
         }

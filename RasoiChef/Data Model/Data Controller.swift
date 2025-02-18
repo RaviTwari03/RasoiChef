@@ -120,7 +120,7 @@ class KitchenDataController {
         MenuItem(itemID: "item201", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 1.4, name: "Pancakes with Honey", description: "Soft and fluffy pancakes served with organic honey.",
                  price: 100.0, rating: 4.5, availableMealTypes: [.breakfast], portionSize: "300 gm", intakeLimit: 15,
-                 imageURL: "ButterChicken", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
+                 imageURL: "PanCakes", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.monday], mealCategory: [.veg]),
 
         MenuItem(itemID: "item101", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 3.5, name: "Paneer Butter Masala with Roti", description: "Rich and creamy paneer butter masala with soft rotis.",
@@ -162,7 +162,7 @@ class KitchenDataController {
         MenuItem(itemID: "item203", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 4.3, name: "Poha with Peanuts", description: "Light and nutritious poha garnished with peanuts.",
                  price: 90.0, rating: 4.0, availableMealTypes: [.breakfast], portionSize: "250 gm", intakeLimit: 20,
-                 imageURL: "PohaPeanuts", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
+                 imageURL: "VegetablePoha", orderDeadline: "Order Before 6 am.", availability: [.Available], availableDays: [.wednesday], mealCategory: [.veg]),
 
         MenuItem(itemID: "item103", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 3.8, name: "Chole Bhature", description: "Spicy chole served with fluffy bhature.",
@@ -229,7 +229,7 @@ class KitchenDataController {
         MenuItem(itemID: "item106", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 4.2, name: "Veg Biryani with Raita", description: "Aromatic vegetable biryani served with raita.",
                  price: 160.0, rating: 4.6, availableMealTypes: [.lunch], portionSize: "450 gm", intakeLimit: 18,
-                 imageURL: "VegBiryani", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
+                 imageURL: "HyderabadiBiryani", orderDeadline: "Order Before 11 am.", availability: [.Available], availableDays: [.saturday], mealCategory: [.veg]),
 
         MenuItem(itemID: "item306", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 3.6, name: "Aloo Tikki", description: "Crispy and spiced potato patties served with chutney.",
@@ -255,12 +255,12 @@ class KitchenDataController {
         MenuItem(itemID: "item307", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 3.7, name: "Veg Spring Rolls", description: "Crispy vegetable spring rolls served with spicy dip.",
                  price: 100.0, rating: 4.4, availableMealTypes: [.snacks], portionSize: "250 gm", intakeLimit: 20,
-                 imageURL: "VegSpringRolls", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.veg]),
+                 imageURL: "SpringRoll", orderDeadline: "Order Before 3 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.veg]),
 
         MenuItem(itemID: "item407", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
                  distance: 4.1, name: "Butter Chicken with Butter Naan", description: "Rich and creamy butter chicken served with butter naan.",
                  price: 250.0, rating: 4.8, availableMealTypes: [.dinner], portionSize: "400 gm", intakeLimit: 18,
-                 imageURL: "ButterChickenNaan", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.nonVeg]),
+                 imageURL: "ButterChicken", orderDeadline: "Order Before 6 pm.", availability: [.Available], availableDays: [.sunday], mealCategory: [.nonVeg]),
 
 
     ]

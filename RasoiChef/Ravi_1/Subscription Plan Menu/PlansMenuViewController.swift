@@ -81,7 +81,7 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
                 
                 cell.layer.cornerRadius = 10.0
                 cell.layer.borderWidth = 1.0
-                cell.layer.borderColor = UIColor.orange.cgColor
+                cell.layer.borderColor = UIColor.accent.cgColor
                 return cell
   
             case 1:  // Menu Items Section
@@ -169,11 +169,12 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.20), heightDimension: .absolute(80))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.18), heightDimension: .absolute(70))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
+            group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 8.0, trailing: 5.0)
 
             let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 0, trailing: 15)
             section.orthogonalScrollingBehavior = .continuous
             return section
         }
@@ -183,9 +184,11 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(180))
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
+
             return section
         }
 

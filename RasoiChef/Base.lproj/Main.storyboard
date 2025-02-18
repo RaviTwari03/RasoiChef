@@ -158,7 +158,7 @@
                                             <constraint firstAttribute="width" constant="18" id="z5n-4D-qx4"/>
                                         </constraints>
                                     </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sLu-a1-ZFm">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sLu-a1-ZFm">
                                         <rect key="frame" x="288" y="0.0" width="110" height="110"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="110" id="Dbj-fT-vTV"/>
