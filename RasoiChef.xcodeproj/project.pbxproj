@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E33905502D648EB3008B85AB /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = E339054F2D648EB3008B85AB /* Auth */; };
+		E33905522D648EB3008B85AB /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = E33905512D648EB3008B85AB /* Functions */; };
+		E33905542D648EB3008B85AB /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = E33905532D648EB3008B85AB /* PostgREST */; };
+		E33905562D648EB3008B85AB /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = E33905552D648EB3008B85AB /* Realtime */; };
+		E33905582D648EB3008B85AB /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = E33905572D648EB3008B85AB /* Storage */; };
+		E339055A2D648EB3008B85AB /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = E33905592D648EB3008B85AB /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0599B1462D35112A00F8CEE0 /* RasoiChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RasoiChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +45,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E33905542D648EB3008B85AB /* PostgREST in Frameworks */,
+				E33905522D648EB3008B85AB /* Functions in Frameworks */,
+				E339055A2D648EB3008B85AB /* Supabase in Frameworks */,
+				E33905502D648EB3008B85AB /* Auth in Frameworks */,
+				E33905582D648EB3008B85AB /* Storage in Frameworks */,
+				E33905562D648EB3008B85AB /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +93,12 @@
 			);
 			name = RasoiChef;
 			packageProductDependencies = (
+				E339054F2D648EB3008B85AB /* Auth */,
+				E33905512D648EB3008B85AB /* Functions */,
+				E33905532D648EB3008B85AB /* PostgREST */,
+				E33905552D648EB3008B85AB /* Realtime */,
+				E33905572D648EB3008B85AB /* Storage */,
+				E33905592D648EB3008B85AB /* Supabase */,
 			);
 			productName = RasoiChef;
 			productReference = 0599B1462D35112A00F8CEE0 /* RasoiChef.app */;
@@ -107,6 +128,9 @@
 			);
 			mainGroup = 0599B13D2D35112A00F8CEE0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0599B1472D35112A00F8CEE0 /* Products */;
 			projectDirPath = "";
@@ -335,6 +359,50 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E339054F2D648EB3008B85AB /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		E33905512D648EB3008B85AB /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		E33905532D648EB3008B85AB /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		E33905552D648EB3008B85AB /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		E33905572D648EB3008B85AB /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		E33905592D648EB3008B85AB /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E339054E2D648EB2008B85AB /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0599B13E2D35112A00F8CEE0 /* Project object */;
 }
