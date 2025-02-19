@@ -112,7 +112,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="6Yc-vO-eVD">
+                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="6Yc-vO-eVD">
                                 <rect key="frame" x="16" y="453" width="94" height="32"/>
                                 <connections>
                                     <action selector="stepperValueChanged:" destination="P3K-Hj-AEI" eventType="valueChanged" id="BJc-L0-UQf"/>
@@ -260,9 +260,8 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e.g. Don't make it too spicy." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gkP-py-bS7">
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e.g. Don't make it too spicy." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gkP-py-bS7">
                                         <rect key="frame" x="8" y="37" width="382" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
@@ -272,7 +271,10 @@
                                     <constraint firstAttribute="height" constant="85" id="0Ct-eR-aMk"/>
                                     <constraint firstItem="fqD-yd-Wdc" firstAttribute="leading" secondItem="GxS-If-rL1" secondAttribute="leading" constant="10" id="45h-0E-hU0"/>
                                     <constraint firstItem="fqD-yd-Wdc" firstAttribute="top" secondItem="GxS-If-rL1" secondAttribute="top" constant="8" id="ABC-6j-CIk"/>
+                                    <constraint firstAttribute="trailing" secondItem="gkP-py-bS7" secondAttribute="trailing" constant="8" id="B8H-AC-bjl"/>
+                                    <constraint firstItem="gkP-py-bS7" firstAttribute="top" secondItem="fqD-yd-Wdc" secondAttribute="bottom" constant="8" symbolic="YES" id="Tiu-lu-jgF"/>
                                     <constraint firstAttribute="width" constant="398" id="deH-D0-mtS"/>
+                                    <constraint firstItem="gkP-py-bS7" firstAttribute="leading" secondItem="GxS-If-rL1" secondAttribute="leading" constant="8" id="eCS-le-vwa"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">

@@ -84,6 +84,7 @@ struct MenuItem {
     let kitchenID: String
     let kitchenName :String
     var distance: Double
+    var availableDate: Date?
     var name: String
     var description: String
     var price: Double
@@ -156,6 +157,7 @@ struct Order {
     let kitchenName: String
     let kitchenID: String
     let items: [OrderItem]
+    var item: SubscriptionPlan?
     var status: OrderStatus
     var totalAmount: Double
     var deliveryAddress: String
@@ -196,6 +198,7 @@ struct OrderItem {
 //}
 struct SubscriptionPlan {
     var planID: String?
+    var kitchenName : String?
     var userID: String?
     var kitchenID: String?
     var startDate: String?
@@ -269,3 +272,5 @@ struct SubscriptionMenuItem {
     let availableMealTypes : [MealType]
     let availableDays : [WeekDay]
 }
+
+// session link: https://infosys.webex.com/infosys/j.php?MTID=mf090e2cc484fd96b7ad8998d9f63c8db/
