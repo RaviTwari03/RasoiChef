@@ -20,8 +20,8 @@ class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
         }
         
         private func setupAppearance() {
-            contentView.layer.cornerRadius = 16
-            contentView.layer.borderWidth = 2
+            contentView.layer.cornerRadius = 15
+            contentView.layer.borderWidth = 1
             contentView.layer.borderColor = UIColor(hex: "ED7A57").cgColor
             contentView.layer.masksToBounds = true
         }
@@ -31,7 +31,6 @@ class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
                 contentView.backgroundColor = isSelected ? UIColor(hex: "ED7A57") : .white
                 monthLabel.textColor = isSelected ? .white : .black
                 dateLabel.textColor = isSelected ? .white : .black
-                dateLabel.font = isSelected ? UIFont.boldSystemFont(ofSize: 15) : UIFont.boldSystemFont(ofSize: 15)
                 dayLabel.textColor = isSelected ? .white : .black
             }
         }
