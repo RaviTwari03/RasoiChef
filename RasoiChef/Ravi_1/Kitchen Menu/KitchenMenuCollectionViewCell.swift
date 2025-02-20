@@ -14,7 +14,8 @@ protocol KitchenMenuDetailsCellDelegate: AnyObject {
 
 class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     
-  
+    var isExpanded: Bool = false
+
     
     @IBOutlet var vegImage: UIImageView!
     @IBOutlet var ratingLabel: UILabel!
@@ -71,9 +72,9 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         applyCardStyle1()
     }
 
-    @objc func readMoreTapped() {
-        dishDescription.text = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description
-    }
+//    @objc func readMoreTapped() {
+//        dishDescription.text = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description
+//    }
 
          func applyCardStyle1() {
             cardViewKitchenMenu.layer.cornerRadius = 15
@@ -89,6 +90,23 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBAction func addButtonTapped(_ sender: Any) {
         
         delegate?.KitchenMenuListaddButtonTapped(in: self)
+    }
+    @objc func readMoreTapped() {
+        isExpanded.toggle() // Toggle the state
+
+        let fullText = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description ?? ""
+        dishDescription.text = isExpanded ? fullText : fullText.split(separator: " ").prefix(9).joined(separator: " ") + "...read more"
+        
+        UIView.animate(withDuration: 0.3) {
+            self.superview?.superview?.layoutIfNeeded() // Ensures layout updates smoothly
+        }
+        
+        // Notify the collection view to update the cell size
+        if let collectionView = self.superview as? UICollectionView {
+            if let indexPath = collectionView.indexPath(for: self) {
+                collectionView.performBatchUpdates(nil, completion: nil)
+            }
+        }
     }
 
 }

@@ -61,8 +61,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         addButton.layer.cornerRadius = 11
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         mealTimeLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-        orderDeadlineLabel.text = "Order Before 4 pm"
-        expectedDeliveryLabel.text = "Delivery Expected By 6 pm"
+        orderDeadlineLabel.text = menuItem.orderDeadline
+        expectedDeliveryLabel.text = menuItem.recievingDeadline
         mealNameLabel.text = menuItem.name
         mealPriceLabel.text = "₹\(menuItem.price)"
         mealRatingLabel.text = "\(menuItem.rating)"

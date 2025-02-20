@@ -46,7 +46,7 @@ class KitchenDataController {
             kitchenName: "Kanha Ji Rasoi",
             distance: 2.6,
             name: "Vegetable Poha",
-            description: "A light, nutritious dish made with flattened rice, salted veggies, and flavorful spices.",
+            description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
             price: 70.0,
             rating: 4.1,
             availableMealTypes: [.breakfast],
@@ -54,6 +54,7 @@ class KitchenDataController {
             intakeLimit: 20,
             imageURL: "VegetablePoha",
             orderDeadline: "Order Before 6 am.",
+            recievingDeadline:"Delivery Expected by 8 am.",
             availability: [.Available],
             availableDays: [.monday],
             mealCategory: [.veg]
@@ -72,6 +73,7 @@ class KitchenDataController {
             intakeLimit: 15,
             imageURL: "VegThali",
             orderDeadline: "Order Before 11 am.",
+            recievingDeadline:"Delivery Expected by 1 pm.",
             availability: [.Unavailable],
             availableDays: [.monday],
             mealCategory: [.veg]
@@ -92,6 +94,7 @@ class KitchenDataController {
             intakeLimit: 10,
             imageURL: "SpringRoll",
             orderDeadline: "Order Before 3 pm.",
+            recievingDeadline:"Delivery Expected by 5 pm.",
             availability: [.Available],
             availableDays: [.monday],
             mealCategory: [.veg]
@@ -110,6 +113,7 @@ class KitchenDataController {
             intakeLimit: 25,
             imageURL: "MasalaDosa",
             orderDeadline: "Order Before 7 pm.",
+            recievingDeadline:"Delivery Expected by 9 pm.",
             availability: [.Available],
             availableDays: [.monday],
             mealCategory: [.veg]

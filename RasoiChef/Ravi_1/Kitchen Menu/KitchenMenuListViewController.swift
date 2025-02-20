@@ -8,9 +8,6 @@
 import UIKit
 
 class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,MenuDetailsCellDelegate, KitchenMenuDetailsCellDelegate {
-    
-    
-    
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -33,12 +30,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
-
-    
-    
-    
-    
-    
     
     @IBOutlet var KitchenMenuList: UICollectionView!
     
@@ -61,9 +52,17 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         KitchenMenuList.setCollectionViewLayout(generateLayout(), animated: true)
         KitchenMenuList.dataSource = self
         KitchenMenuList.delegate = self
+        DispatchQueue.main.async {
+            let todayIndexPath = IndexPath(item: 0, section: 0)
+            self.KitchenMenuList.selectItem(at: todayIndexPath, animated: false, scrollPosition: .centeredHorizontally)
+            if let cell = self.KitchenMenuList.cellForItem(at: todayIndexPath) as? KitchenMenuCalenderCollectionViewCell {
+                cell.isSelected = true  // Ensure the cell appears selected
+            }
+        }
     }
     
-    
+  
+
     // MARK: - Number of Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 5

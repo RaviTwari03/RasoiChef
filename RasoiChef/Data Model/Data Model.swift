@@ -94,6 +94,7 @@ struct MenuItem {
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline : String
+    var recievingDeadline : String?
     var availability: [Availabiltiy]
     var availableDays: [WeekDay]
     var mealCategory : [MealCategory]
