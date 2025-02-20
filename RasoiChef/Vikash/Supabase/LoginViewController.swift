@@ -47,15 +47,28 @@ class LoginViewController: UIViewController {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let signUpVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
                 self.navigationController?.pushViewController(signUpVC, animated: true)
+            
         }
 
-        func navigateToHome() {
-            DispatchQueue.main.async {
-                let homeVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LandingPageViewController")
-                self.navigationController?.setViewControllers([homeVC], animated: true)
-
+    func navigateToHome() {
+        DispatchQueue.main.async {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let homeVC = storyboard.instantiateViewController(withIdentifier: "LandingPageViewController") as! LandingPageViewController
+//            homeVC.navigationItem. = true
+            // ✅ Check if there is a navigationController
+            if let navigationController = self.navigationController {
+                navigationController.setViewControllers([homeVC], animated: true)
+            } else {
+                // ✅ If no navigationController, replace the rootViewController
+                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                    let navController = UINavigationController(rootViewController: homeVC)
+                    sceneDelegate.window?.rootViewController = navController
+                    sceneDelegate.window?.makeKeyAndVisible()
+                }
             }
         }
+    }
+
 
         func showAlert(_ message: String) {
             let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
