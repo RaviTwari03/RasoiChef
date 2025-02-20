@@ -48,7 +48,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
             attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
             
             dishDescription.attributedText = attributedString
-            dishDescription.isUserInteractionEnabled = false
+            dishDescription.isUserInteractionEnabled = true
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
             dishDescription.addGestureRecognizer(tapGesture)
