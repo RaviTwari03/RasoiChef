@@ -8,7 +8,7 @@
 import UIKit
 import Supabase
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, UITextFieldDelegate {
 
     let supabase = SupabaseClient(supabaseURL: URL(string: "https://lplftokvbtoqqietgujl.supabase.co")!,
                                   supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbGZ0b2t2YnRvcXFpZXRndWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk4NzA2NzQsImV4cCI6MjA1NTQ0NjY3NH0.2EOleVodMu4KFH2Zn6jMyXniMckbTdKlf45beahOlHM")
@@ -17,9 +17,28 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var registerButton: UIButton!
+    @IBOutlet weak var passwordMismatchLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Initially hide the password mismatch label
+        passwordMismatchLabel.isHidden = true
+
+        // Set up text field change detection
+        confirmPasswordTextField.delegate = self
+        confirmPasswordTextField.addTarget(self, action: #selector(validatePasswordMatch), for: .editingChanged)
+    }
+
+    @objc func validatePasswordMatch() {
+        if let password = passwordTextField.text, let confirmPassword = confirmPasswordTextField.text {
+            if password != confirmPassword {
+                passwordMismatchLabel.text = "Passwords don't match"
+                passwordMismatchLabel.isHidden = false
+            } else {
+                passwordMismatchLabel.isHidden = true
+            }
+        }
     }
 
     @IBAction func registerTapped(_ sender: UIButton) {
@@ -31,20 +50,39 @@ class SignUpViewController: UIViewController {
         }
 
         guard password == confirmPassword else {
-            showAlert("Passwords do not match")
+            passwordMismatchLabel.text = "Passwords do not match"
+            passwordMismatchLabel.isHidden = false
             return
         }
 
         Task {
             do {
                 let _ = try await supabase.auth.signUp(email: email, password: password)
-                showAlert("Signup successful! Please verify your email.")
+                showAlertAndNavigate("Signup successful! Please verify your email.")
             } catch {
                 showAlert("Signup failed: \(error.localizedDescription)")
             }
         }
     }
 
+    // Show alert and navigate to LoginViewController on "OK"
+    func showAlertAndNavigate(_ message: String) {
+        let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            self.navigateToLogin()
+        }
+        alert.addAction(okAction)
+        present(alert, animated: true)
+    }
+
+    // Function to navigate to LoginViewController
+    func navigateToLogin() {
+        if let loginVC = storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
+            navigationController?.pushViewController(loginVC, animated: true)
+        }
+    }
+
+    // Function to show a simple alert
     func showAlert(_ message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))

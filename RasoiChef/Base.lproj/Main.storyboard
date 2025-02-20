@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -730,7 +731,7 @@
         <!--Login View Controller-->
         <scene sceneID="7GB-2N-O1c">
             <objects>
-                <viewController id="syg-Qz-dfK" customClass="LoginViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="syg-Qz-dfK" customClass="LoginViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6Sl-p5-rNB">
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -993,6 +994,13 @@
                                                     <action selector="registerTapped:" destination="e4y-vU-WPu" eventType="touchUpInside" id="cVD-w4-cy8"/>
                                                 </connections>
                                             </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R2d-yN-Vsm">
+                                                <rect key="frame" x="30" y="716" width="251" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" name="AccentColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
@@ -1033,13 +1041,14 @@
                     <connections>
                         <outlet property="confirmPasswordTextField" destination="iIn-cH-tQ8" id="YKj-gU-qra"/>
                         <outlet property="emailTextField" destination="bSt-iO-Ctv" id="DEG-Fc-V2l"/>
+                        <outlet property="passwordMismatchLabel" destination="R2d-yN-Vsm" id="Hdo-1m-N02"/>
                         <outlet property="passwordTextField" destination="NCr-Vy-R9B" id="7XQ-oO-zza"/>
                         <outlet property="registerButton" destination="TQX-dy-7Hp" id="osI-AK-xlq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbq-JN-zSH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2673" y="794"/>
+            <point key="canvasLocation" x="2672.0930232558139" y="793.77682403433482"/>
         </scene>
         <!--Preorder-->
         <scene sceneID="Xgs-JG-a8l">
@@ -1071,6 +1080,9 @@
         <image name="circle.fill" catalog="system" width="128" height="123"/>
         <image name="multiply.circle" catalog="system" width="128" height="123"/>
         <image name="person.crop.circle" catalog="system" width="128" height="123"/>
+        <namedColor name="AccentColor">
+            <color red="0.92900002002716064" green="0.4779999852180481" blue="0.34099999070167542" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
