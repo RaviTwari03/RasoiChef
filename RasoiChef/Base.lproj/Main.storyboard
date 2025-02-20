@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="taU-4P-ebr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="syg-Qz-dfK">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
@@ -405,7 +405,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-0t-7Ie">
-                                <rect key="frame" x="0.0" y="96" width="430" height="787"/>
+                                <rect key="frame" x="0.0" y="155" width="430" height="694"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="udv-lV-EJm">
                                     <size key="itemSize" width="128" height="128"/>
@@ -797,8 +797,7 @@
                                                             <color key="baseBackgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         </buttonConfiguration>
                                                         <connections>
-                                                            <action selector="loginButtonTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="s4z-XA-ie8"/>
-                                                            <segue destination="taU-4P-ebr" kind="presentation" identifier="LandingPageViewController" animates="NO" modalPresentationStyle="overFullScreen" id="wQw-cm-BS8"/>
+                                                            <action selector="loginTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="KnB-gs-zxD"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -877,7 +876,7 @@
                                                             <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="17"/>
                                                         </buttonConfiguration>
                                                         <connections>
-                                                            <action selector="signupButtonTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="kdD-1C-TCb"/>
+                                                            <action selector="signUpTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="u6u-fU-4Ro"/>
                                                             <segue destination="e4y-vU-WPu" kind="show" id="0fs-4a-Fc6"/>
                                                         </connections>
                                                     </button>
@@ -934,18 +933,19 @@
                     </view>
                     <navigationItem key="navigationItem" id="XqA-5v-2Ak"/>
                     <connections>
-                        <outlet property="passwordTextField" destination="UKC-XV-lzv" id="5pM-F3-Rhw"/>
-                        <outlet property="usernameTextField" destination="UpG-jS-N2u" id="BQh-5R-z2S"/>
+                        <outlet property="emailTextField" destination="UpG-jS-N2u" id="Yyy-W2-nvV"/>
+                        <outlet property="loginButton" destination="6Nl-w9-UiU" id="ZuG-eV-LqP"/>
+                        <outlet property="passwordTextField" destination="UKC-XV-lzv" id="O9X-Ks-Gut"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xe6-vt-BPP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1880" y="794"/>
         </scene>
-        <!--Signup View Controller-->
+        <!--Sign Up View Controller-->
         <scene sceneID="dv9-Iq-TNT">
             <objects>
-                <viewController storyboardIdentifier="SignupViewController" id="e4y-vU-WPu" customClass="SignupViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" id="e4y-vU-WPu" customClass="SignUpViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NGR-wr-6Og">
                         <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1055,7 +1055,7 @@
                                                     <color key="baseBackgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 </buttonConfiguration>
                                                 <connections>
-                                                    <action selector="registerButtonTapped:" destination="e4y-vU-WPu" eventType="touchUpInside" id="WJS-6V-jDq"/>
+                                                    <action selector="registerTapped:" destination="e4y-vU-WPu" eventType="touchUpInside" id="cVD-w4-cy8"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1096,9 +1096,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="axx-iG-lSO"/>
                     <connections>
-                        <outlet property="UsernameTextField" destination="bSt-iO-Ctv" id="wU7-UE-KRp"/>
-                        <outlet property="confirmTextField" destination="iIn-cH-tQ8" id="qZE-zv-1J8"/>
-                        <outlet property="passwordTextField" destination="NCr-Vy-R9B" id="wq1-f6-FZl"/>
+                        <outlet property="confirmPasswordTextField" destination="iIn-cH-tQ8" id="YKj-gU-qra"/>
+                        <outlet property="emailTextField" destination="bSt-iO-Ctv" id="DEG-Fc-V2l"/>
+                        <outlet property="passwordTextField" destination="NCr-Vy-R9B" id="7XQ-oO-zza"/>
+                        <outlet property="registerButton" destination="TQX-dy-7Hp" id="osI-AK-xlq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbq-JN-zSH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1112,7 +1113,7 @@
                     <tabBarItem key="tabBarItem" title="Preorder" image="calendar.circle" catalog="system" selectedImage="calendar.circle.fill" id="uVZ-CS-eb3"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="m96-W8-geH">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="96"/>
+                        <rect key="frame" x="0.0" y="59" width="430" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -1142,7 +1143,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
