@@ -52,13 +52,17 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             myOrdersTabItem.badgeValue = activeOrdersCount > 0 ? "\(activeOrdersCount)" : nil
         }
     }
-    
+    @objc func reloadCart() {
+        self.CartItem.reloadData()
+    }
+
     
        override func viewDidLoad() {
            super.viewDidLoad()
            self.title = "Cart"
           
-        
+           NotificationCenter.default.addObserver(self, selector: #selector(reloadCart), name: NSNotification.Name("CartUpdated"), object: nil)
+
            
            CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
            
@@ -344,13 +348,16 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }
            
        }
-       
-       func didAddItemToCart(_ item: CartItem) {
-           KitchenDataController.cartItems.append(item)
-           updateTabBarBadge()
-           
-           CartItem.reloadData()
-       }
+
+    func didAddItemToCart(_ item: CartItem) {
+        CartViewController.cartItems.append(item) // ✅ Ensure you update the correct cartItems
+        cartItems = CartViewController.cartItems // ✅ Sync local cartItems with the static one
+        updateTabBarBadge()
+        
+        CartItem.reloadData() // ✅ Reload the cart to reflect changes
+    }
+
+
        
 
     func addSubscriptionPlan(_ plan: SubscriptionPlan) {
@@ -365,18 +372,18 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             // Notify delegate
             delegate?.didAddSubscriptionPlan(plan)
         }
-       
-       override func viewWillAppear(_ animated: Bool) {
-           super.viewWillAppear(animated)
-           CartItem.reloadData()
-           updateTabBarBadge()// Reload the table view when the view appears
-           print("🔄 Reloading cart data... Subscription items: \(CartViewController.subscriptionPlan1.count)")
-              CartItem.reloadData() // ✅ Refresh table when the view appears
-       }
+ 
+
        @objc func updateCart() {
            CartItem.reloadData()
        }
       
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        cartItems = CartViewController.cartItems // ✅ Update local cart items
+        CartItem.reloadData() // ✅ Reload table view
+    }
 
        func calculateTotalItemPrice() -> Double {
            // Calculate total from cart items

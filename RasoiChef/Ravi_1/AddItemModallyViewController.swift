@@ -100,55 +100,62 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
     //    MARK: - For cart
   
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
-        var cartItem: CartItem?
+        let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
+            let specialRequest = AddDishRequestTextField.text ?? ""
 
-           let quantity = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-           let specialRequest = AddDishRequestTextField.text ?? ""
+            var cartItem: CartItem?
 
-           if let item = selectedItem {
-               // If it's a regular menu item
-               cartItem = CartItem(
-                   userAdress: "Galgotias University", // Replace with an actual address if needed
-                   quantity: quantity,
-                   specialRequest: specialRequest,
-                   menuItem: item
-                   //chefSpecial: nil
-               )
-           } else if let chefDish = selectedChefSpecialtyDish {
-               // If it's a Chef Specialty dish
-               cartItem = CartItem(
-                   userAdress: "Galgotias University", // Replace with an actual address if needed
-                   quantity: quantity,
-                   specialRequest: specialRequest,
-                 //  menuItem: chefDish,
-                   chefSpecial: chefDish
-               )
-               print("\(chefDish.price)")
-           }
+            if let item = selectedItem {
+                // Regular menu item
+                cartItem = CartItem(
+                    userAdress: "Galgotias University",
+                    quantity: quantity,
+                    specialRequest: specialRequest,
+                    menuItem: item
+                )
+            } else if let chefDish = selectedChefSpecialtyDish {
+                // Chef Specialty dish
+                cartItem = CartItem(
+                    userAdress: "Galgotias University",
+                    quantity: quantity,
+                    specialRequest: specialRequest,
+                    chefSpecial: chefDish
+                )
+            }
 
-           // Ensure cartItem is not nil before proceeding
-           if let cartItem = cartItem {
-               // Add the item to the cart
-               KitchenDataController.cartItems.append(cartItem)
-               CartViewController.cartItems.append(cartItem)
-               //delegate?.didAddItemToCart(cartItem)
+            guard let cartItem = cartItem else {
+                print("Error: No valid item selected to add to cart.")
+                return
+            }
 
+            // **Check if item already exists in the cart**
+            if let existingIndex = CartViewController.cartItems.firstIndex(where: {
+                ($0.menuItem?.itemID == cartItem.menuItem?.itemID) || ($0.chefSpecial?.dishID == cartItem.chefSpecial?.dishID)
+            }) {
+                // **If found, update the quantity instead of adding a new item**
+                CartViewController.cartItems[existingIndex].quantity += quantity
+                print("Updated existing item quantity: \(CartViewController.cartItems[existingIndex].quantity)")
+            } else {
+                // **Else, add a new item**
+                CartViewController.cartItems.append(cartItem)
+            }
 
-               // Debugging: Print the cart items to verify
-               print("Cart Items: \(CartViewController.cartItems)")
+            // Sync with `KitchenDataController`
+            KitchenDataController.cartItems = CartViewController.cartItems
 
-               // Update the tab bar badge
-              // updateCartBadge() // Call the method to handle badge update
+            // Debugging print
+            print("Cart Items: \(CartViewController.cartItems)")
 
-               print("Item added to cart: \(cartItem)") // Log the added item
+            // Update cart badge
+            // updateCartBadge()
 
-               // Dismiss the current view controller if presented modally
-               if self.presentingViewController != nil {
-                   self.dismiss(animated: true, completion: nil)
-               }
-           } else {
-               print("Error: No valid item selected to add to cart.")
-           }
+            // **Reload cart data**
+            NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+
+            // Dismiss modal if presented
+            if self.presentingViewController != nil {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
 
     @IBAction func crossButtonTapped(_ sender: Any) {
