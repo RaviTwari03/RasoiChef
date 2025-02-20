@@ -27,7 +27,7 @@ class LoginViewController: UIViewController {
     
 
     @IBAction func loginTapped(_ sender: UIButton) {
-            guard let email = emailTextField.text, !email.isEmpty,
+        guard let email = emailTextField.text, !email.isEmpty,
                   let password = passwordTextField.text, !password.isEmpty else {
                 showAlert("Please enter email and password")
                 return
@@ -36,13 +36,17 @@ class LoginViewController: UIViewController {
             Task {
                 do {
                     let session = try await supabase.auth.signIn(email: email, password: password)
+
+                    // ✅ Save logged-in email to UserDefaults
+                    UserDefaults.standard.set(email, forKey: "userEmail")
+
+                    // Navigate to Home
                     navigateToHome()
                 } catch {
                     showAlert("Login failed: \(error.localizedDescription)")
                 }
             }
         }
-
         @IBAction func signUpTapped(_ sender: UIButton) {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let signUpVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
