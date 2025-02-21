@@ -57,7 +57,7 @@ class LoginViewController: UIViewController {
     func navigateToHome() {
         DispatchQueue.main.async {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeVC = storyboard.instantiateViewController(withIdentifier: "LandingPageViewController") as! LandingPageViewController
+            let homeVC = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as! UITabBarController
             
             // ✅ Check if there is a navigationController
             if let navigationController = self.navigationController {
