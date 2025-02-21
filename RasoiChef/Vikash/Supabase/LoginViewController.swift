@@ -58,7 +58,7 @@ class LoginViewController: UIViewController {
         DispatchQueue.main.async {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let homeVC = storyboard.instantiateViewController(withIdentifier: "LandingPageViewController") as! LandingPageViewController
-//            homeVC.navigationItem. = true
+            
             // ✅ Check if there is a navigationController
             if let navigationController = self.navigationController {
                 navigationController.setViewControllers([homeVC], animated: true)
