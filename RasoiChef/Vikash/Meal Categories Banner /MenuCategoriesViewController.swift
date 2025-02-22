@@ -29,6 +29,8 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     var filterStackView: UIStackView!
     var itemCountLabel: UILabel!
     
+    var activeFilters: Set<String> = []
+    
     
     var MenuCategories: [MenuItem] = []
  
@@ -93,9 +95,31 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             menuItems = KitchenDataController.GlobaldinnerMenuItems
         }
         
-        filteredMenuItems = menuItems // Initialize filtered items
-        MealCategories.reloadData()
+        applyFilters()
     }
+    
+    func applyFilters() {
+            filteredMenuItems = menuItems
+            
+            if activeFilters.contains("Nearest") {
+                filteredMenuItems.sort { $0.distance < $1.distance }
+            }
+            
+            if activeFilters.contains("Ratings 4.0+") {
+                filteredMenuItems.sort { $0.rating > $1.rating }
+            }
+            
+            if activeFilters.contains("Pure Veg") {
+                filteredMenuItems = filteredMenuItems.filter { $0.mealCategory.contains(.veg) }
+            }
+            
+            if activeFilters.contains("Cost: Low to High") {
+                filteredMenuItems.sort { $0.price < $1.price }
+            }
+            
+            MealCategories.reloadData()
+            updateItemCount()
+        }
     
     
     func updateTitleBasedOnMealTiming() {
@@ -153,43 +177,38 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     
     
     func configureFilterStackView() {
-        filterScrollView = UIScrollView()
-        filterScrollView.showsHorizontalScrollIndicator = false
-        filterScrollView.translatesAutoresizingMaskIntoConstraints = false
-        
-        filterStackView = UIStackView()
-        filterStackView.axis = .horizontal
-        filterStackView.spacing = 15.0
-        filterStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-        let nearestButton = createFilterButton(title: "Nearest")
-        let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-        let pureVegButton = createFilterButton(title: "Pure Veg")
-        let costVegButton = createFilterButton(title: "Cost: Low to High")
-        
-        filterStackView.addArrangedSubview(sortButton)
-        filterStackView.addArrangedSubview(nearestButton)
-        filterStackView.addArrangedSubview(ratingsButton)
-        filterStackView.addArrangedSubview(pureVegButton)
-        filterStackView.addArrangedSubview(costVegButton)
-        
-        filterScrollView.addSubview(filterStackView)
-        view.addSubview(filterScrollView)
-        
-        NSLayoutConstraint.activate([
-            filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
-            filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            filterScrollView.heightAnchor.constraint(equalToConstant: 40),
+            filterScrollView = UIScrollView()
+            filterScrollView.showsHorizontalScrollIndicator = false
+            filterScrollView.translatesAutoresizingMaskIntoConstraints = false
             
-            filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
-            filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
-            filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
-            filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
-            filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
-        ])
-    }
+            filterStackView = UIStackView()
+            filterStackView.axis = .horizontal
+            filterStackView.spacing = 15.0
+            filterStackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+            
+            for title in filterTitles {
+                let button = createFilterButton(title: title)
+                filterStackView.addArrangedSubview(button)
+            }
+            
+            filterScrollView.addSubview(filterStackView)
+            view.addSubview(filterScrollView)
+            
+            NSLayoutConstraint.activate([
+                filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+                filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                filterScrollView.heightAnchor.constraint(equalToConstant: 40),
+                
+                filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
+                filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
+                filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
+                filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
+                filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
+            ])
+        }
     
     
     
@@ -213,45 +232,37 @@ func configureItemCountLabel() {
 }
 
 
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 12
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            return button
         }
-        
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
-    }
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal) else { return }
-        print("Filter tapped: \(title)")
-    }
+            guard let title = sender.title(for: .normal), title != "Sort" else { return }
+            
+            if activeFilters.contains(title) {
+                activeFilters.remove(title)
+                sender.backgroundColor = .white
+                sender.setTitleColor(.black, for: .normal)
+            } else {
+                activeFilters.insert(title)
+                sender.backgroundColor = .accent
+                sender.setTitleColor(.white, for: .normal)
+            }
+            
+            applyFilters()
+        }
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
@@ -276,26 +287,9 @@ func configureItemCountLabel() {
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        var count = 0
-            
-            switch mealTiming {
-            case .breakfast:
-                count = KitchenDataController.GlobalbreakfastMenuItems.count
-            case .lunch:
-                count = KitchenDataController.GloballunchMenuItems.count
-            case .snacks:
-                count = KitchenDataController.GlobalsnacksMenuItems.count
-            case .dinner:
-                count = KitchenDataController.GlobaldinnerMenuItems.count
-            }
-           
-            count = isSearching ? filteredMenuItems.count : count
-            
-            
-            DispatchQueue.main.async {
-                self.itemCountLabel.text = "\(count) Dishes Available For You"
-            }
+        itemCountLabel.text = "\(filteredMenuItems.count) Dishes Available For You"
     }
+
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
