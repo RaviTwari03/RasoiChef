@@ -225,10 +225,22 @@ func configureItemCountLabel() {
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        let count = KitchenDataController.globalChefSpecial.count
-        DispatchQueue.main.async {
-            self.itemCountLabel.text = "\(count) Dishes Available For You"
-        }
+        var count = 0
+            
+            switch mealTiming {
+            case .breakfast:
+                count = KitchenDataController.GlobalbreakfastMenuItems.count
+            case .lunch:
+                count = KitchenDataController.GloballunchMenuItems.count
+            case .snacks:
+                count = KitchenDataController.GlobalsnacksMenuItems.count
+            case .dinner:
+                count = KitchenDataController.GlobaldinnerMenuItems.count
+            }
+            
+            DispatchQueue.main.async {
+                self.itemCountLabel.text = "\(count) Dishes Available For You"
+            }
     }
     
     
