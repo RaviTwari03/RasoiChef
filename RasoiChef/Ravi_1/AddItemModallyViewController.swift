@@ -71,6 +71,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
            AddIncreaseDishButton.value = 1
            AddDishImage.image = UIImage(named: item.imageURL)
            kitchenName.text = item.kitchenName
+           
        }
 
        private func setupUI(chefDish: ChefSpecialtyDish) {
