@@ -14,6 +14,10 @@ protocol MealCategoriesCollectionViewCellDelegate: AnyObject {
 
 class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate,MealCategoriesCollectionViewCellDelegate {
     
+    var filteredMenuItems: [MenuItem] = [] // Stores filtered items for search
+    var isSearching = false // Flag to check if search is active
+
+    
     var menuItems: [MenuItem] = []
 
     var mealTiming : MealTiming = .breakfast
@@ -29,7 +33,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     var MenuCategories: [MenuItem] = []
  
            func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-               return 4
+               return filteredMenuItems.count
            }
     
 
@@ -72,11 +76,26 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         ])
         
         updateItemCount()
+        updateMenuItems()
         
     }
     
     
-    
+    func updateMenuItems() {
+        switch mealTiming {
+        case .breakfast:
+            menuItems = KitchenDataController.GlobalbreakfastMenuItems
+        case .lunch:
+            menuItems = KitchenDataController.GloballunchMenuItems
+        case .snacks:
+            menuItems = KitchenDataController.GlobalsnacksMenuItems
+        case .dinner:
+            menuItems = KitchenDataController.GlobaldinnerMenuItems
+        }
+        
+        filteredMenuItems = menuItems // Initialize filtered items
+        MealCategories.reloadData()
+    }
     
     
     func updateTitleBasedOnMealTiming() {
@@ -97,6 +116,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal // Removes background lines
         searchBar.backgroundImage = UIImage() // Removes background shadow
+        searchBar.showsCancelButton = false
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchBar)
@@ -107,6 +127,27 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             searchBar.heightAnchor.constraint(equalToConstant: 40)
         ])
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""  // Clear search text
+        searchBar.resignFirstResponder() // Dismiss keyboard
+        isSearching = false
+        filteredMenuItems = menuItems // Reset to full menu
+        searchBar.showsCancelButton = false // Hide cancel button
+
+        MealCategories.reloadData() // Reload full data
+        updateItemCount() // Update count after reset
+    }
+
+
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
     }
     
     
@@ -213,8 +254,18 @@ func configureItemCountLabel() {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("Search query: \(searchText)")
+        if searchText.isEmpty {
+            isSearching = false
+            filteredMenuItems = menuItems // Reset to full list
+        } else {
+            isSearching = true
+            filteredMenuItems = menuItems.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
+        
+        MealCategories.reloadData()
+        updateItemCount() // Update count after filtering
     }
+
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -237,6 +288,9 @@ func configureItemCountLabel() {
             case .dinner:
                 count = KitchenDataController.GlobaldinnerMenuItems.count
             }
+           
+            count = isSearching ? filteredMenuItems.count : count
+            
             
             DispatchQueue.main.async {
                 self.itemCountLabel.text = "\(count) Dishes Available For You"
@@ -253,11 +307,15 @@ func configureItemCountLabel() {
         cell.layer.shadowOpacity = 0.5
         cell.layer.masksToBounds = false
         cell.mealTiming = mealTiming
-        cell.updateMealDetails(with: indexPath)
+
+        // Ensure using filtered items
+        let menuItem = filteredMenuItems[indexPath.row]
+            cell.updateMealDetails(with: menuItem)
 
         cell.delegate = self
         return cell
     }
+
     
     
     

@@ -128,7 +128,7 @@
                                 <rect key="frame" x="0.0" y="53" width="430" height="44"/>
                                 <items>
                                     <navigationItem id="nFh-oh-i90">
-                                        <barButtonItem key="rightBarButtonItem" title="cancel" image="multiply.circle" catalog="system" id="ftz-xy-Z8U">
+                                        <barButtonItem key="rightBarButtonItem" title="cancel" image="multiply.circle.fill" catalog="system" id="ftz-xy-Z8U">
                                             <connections>
                                                 <action selector="crossButtonTapped:" destination="P3K-Hj-AEI" id="LaQ-Ga-5Bm"/>
                                             </connections>
@@ -1138,7 +1138,7 @@
         <image name="icons8-apple-50" width="50" height="50"/>
         <image name="icons8-facebook-48 " width="48" height="48"/>
         <image name="icons8-google-logo-48" width="48" height="48"/>
-        <image name="multiply.circle" catalog="system" width="128" height="123"/>
+        <image name="multiply.circle.fill" catalog="system" width="128" height="123"/>
         <image name="person.crop.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
