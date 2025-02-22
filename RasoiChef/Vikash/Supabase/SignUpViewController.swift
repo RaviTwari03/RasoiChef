@@ -45,7 +45,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
 
     @IBAction func registerTapped(_ sender: UIButton) {
-        guard let email = emailTextField.text, !email.isEmpty,
+        guard let name = nameTextField.text, !name.isEmpty,
+              let email = emailTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty,
               let confirmPassword = confirmPasswordTextField.text, !confirmPassword.isEmpty else {
             showAlert("Please fill in all fields")
@@ -61,6 +62,11 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         Task {
             do {
                 let _ = try await supabase.auth.signUp(email: email, password: password)
+                
+                // ✅ Save name and email in UserDefaults
+                UserDefaults.standard.set(name, forKey: "userName")
+                UserDefaults.standard.set(email, forKey: "userEmail")
+
                 showAlertAndNavigate("Signup successful! Please verify your email.")
             } catch {
                 showAlert("Signup failed: \(error.localizedDescription)")
@@ -80,10 +86,11 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
 
     // Function to navigate to LoginViewController
     func navigateToLogin() {
-        if let loginVC = storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
-            navigationController?.pushViewController(loginVC, animated: true)
+            if let loginVC = storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
+                loginVC.modalPresentationStyle = .fullScreen
+                present(loginVC, animated: true)
+            }
         }
-    }
 
     // Function to show a simple alert
     func showAlert(_ message: String) {

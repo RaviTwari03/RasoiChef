@@ -25,15 +25,14 @@ class ProfileViewController: UIViewController {
               loadProfileData()
           }
     
-    
     func loadProfileData() {
-        let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User "
+        let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
         let savedEmail = UserDefaults.standard.string(forKey: "userEmail") ?? ""
 
-        // ✅ Update the labels
         nameLabel.text = savedName
         emailLabel.text = savedEmail
     }
+
 
 
       // Prepare for segue to EditProfileViewController
