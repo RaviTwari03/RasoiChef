@@ -19,6 +19,9 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var registerButton: UIButton!
     @IBOutlet weak var passwordMismatchLabel: UILabel!
 
+    @IBOutlet weak var nameTextField: UITextField!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
