@@ -22,13 +22,13 @@ class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
         private func setupAppearance() {
             contentView.layer.cornerRadius = 15
             contentView.layer.borderWidth = 1
-            contentView.layer.borderColor = UIColor(hex: "ED7A57").cgColor
+            contentView.layer.borderColor = UIColor(named: "AccentColor")?.cgColor
             contentView.layer.masksToBounds = true
         }
         
         override var isSelected: Bool {
             didSet {
-                contentView.backgroundColor = isSelected ? UIColor(hex: "ED7A57") : .white
+                contentView.backgroundColor = isSelected ? UIColor(named: "AccentColor") : .white
                 monthLabel.textColor = isSelected ? .white : .black
                 dateLabel.textColor = isSelected ? .white : .black
                 dayLabel.textColor = isSelected ? .white : .black
