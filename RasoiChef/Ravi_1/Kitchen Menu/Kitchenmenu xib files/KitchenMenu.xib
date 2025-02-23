@@ -27,7 +27,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jqr-Lg-wip">
-                                <rect key="frame" x="8" y="122" width="43" height="20"/>
+                                <rect key="frame" x="8" y="121.66666666666664" width="42.666666666666664" height="20.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -103,6 +103,21 @@
                                     <constraint firstAttribute="width" constant="18" id="muA-dp-eBu"/>
                                 </constraints>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PA8-hr-rZ5">
+                                <rect key="frame" x="73.000000000000014" y="110" width="144.33333333333337" height="32"/>
+                                <subviews>
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="g8s-nC-RG7">
+                                        <rect key="frame" x="0.0" y="0.0" width="94" height="32"/>
+                                        <color key="backgroundColor" red="0.92941176469999998" green="0.47843137250000001" blue="0.3411764706" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    </stepper>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLe-b3-WP6">
+                                        <rect key="frame" x="100" y="0.0" width="44.333333333333343" height="32"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -116,10 +131,15 @@
                             <constraint firstItem="7DO-bH-KaI" firstAttribute="leading" secondItem="3r1-27-lvk" secondAttribute="leading" id="R2R-Z2-8KE"/>
                             <constraint firstItem="JCm-OB-Yum" firstAttribute="top" secondItem="7DO-bH-KaI" secondAttribute="bottom" constant="4" id="R2l-Cq-RBD"/>
                             <constraint firstItem="3r1-27-lvk" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="top" constant="5" id="Tmr-B5-R0h"/>
+                            <constraint firstAttribute="trailing" secondItem="PA8-hr-rZ5" secondAttribute="trailing" constant="156.66999999999999" id="VL1-cZ-xPK"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="top" constant="110" id="Wba-TG-Zbw"/>
                             <constraint firstItem="ID4-Z9-Sa0" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="89" id="XfK-HR-YEA"/>
                             <constraint firstAttribute="height" constant="152" id="YGk-NE-RuG"/>
                             <constraint firstAttribute="bottom" secondItem="ID4-Z9-Sa0" secondAttribute="bottom" constant="5" id="adA-vz-Poq"/>
+                            <constraint firstAttribute="bottom" secondItem="PA8-hr-rZ5" secondAttribute="bottom" constant="10" id="izw-dp-qye"/>
+                            <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Jqr-Lg-wip" secondAttribute="trailing" constant="20" id="lf7-Tx-R5L"/>
                             <constraint firstItem="38t-H7-Q42" firstAttribute="centerY" secondItem="gq1-JO-r7H" secondAttribute="centerY" id="neI-yf-4jf"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="73" id="nj8-E1-0xG"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="JCm-OB-Yum" secondAttribute="trailing" constant="10" id="o6c-5F-LAy"/>
                             <constraint firstAttribute="bottom" secondItem="Jqr-Lg-wip" secondAttribute="bottom" constant="10" id="oh2-FN-M42"/>
                             <constraint firstItem="7DO-bH-KaI" firstAttribute="top" secondItem="3r1-27-lvk" secondAttribute="bottom" constant="5" id="tAs-H3-Zqx"/>
@@ -170,7 +190,10 @@
                 <outlet property="dishNameLabel" destination="7DO-bH-KaI" id="EOl-av-bNM"/>
                 <outlet property="dishTime" destination="wdX-6d-cg9" id="bU5-Ee-lTo"/>
                 <outlet property="dishprice" destination="Jqr-Lg-wip" id="efK-oM-ZWr"/>
+                <outlet property="quantityLabel" destination="fLe-b3-WP6" id="ld5-qp-MRZ"/>
                 <outlet property="ratingLabel" destination="gq1-JO-r7H" id="y5n-Ii-YFP"/>
+                <outlet property="stepper" destination="g8s-nC-RG7" id="ckz-Bm-M1Y"/>
+                <outlet property="stepperStackView" destination="PA8-hr-rZ5" id="yBz-oZ-YEO"/>
                 <outlet property="vegImage" destination="3r1-27-lvk" id="W8m-q9-Sg2"/>
             </connections>
             <point key="canvasLocation" x="19.847328244274809" y="-11.619718309859156"/>
