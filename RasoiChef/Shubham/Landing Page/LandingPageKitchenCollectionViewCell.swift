@@ -32,14 +32,18 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
         KichenImage.image = UIImage(named: restaurant.kitchenImage)
         
         if restaurant.isOnline {
-            availabilityLabel.text = "Online"
-            availabilityLabel.textColor = UIColor.systemGreen
-            onlineOrOfflineIcon.tintColor = UIColor.systemGreen
-        } else {
-            availabilityLabel.text = "Offline"
-            availabilityLabel.textColor = UIColor.systemGray
-            onlineOrOfflineIcon.tintColor = UIColor.systemGray
-        }
+                availabilityLabel.text = "Online"
+                availabilityLabel.textColor = UIColor.systemGreen
+                onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                containerView.alpha = 1.0 // Reset opacity
+                isUserInteractionEnabled = true // Enable interaction
+            } else {
+                availabilityLabel.text = "Offline"
+                availabilityLabel.textColor = UIColor.systemGray
+                onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                containerView.alpha = 0.8 // Dim the cell
+                isUserInteractionEnabled = false // Disable interaction
+            }
     }
 
     
