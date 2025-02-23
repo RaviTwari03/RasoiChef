@@ -114,6 +114,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         }
 
         if activeFilters.contains("Ratings 4.0+") {
+            itemsToFilter = itemsToFilter.filter { $0.rating >= 4.0 }
             itemsToFilter.sort { $0.rating > $1.rating }
         }
 

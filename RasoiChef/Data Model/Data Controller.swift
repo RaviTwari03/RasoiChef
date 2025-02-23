@@ -25,7 +25,8 @@ class KitchenDataController {
             rating: 4.3,
             isOnline: true,
             distance: 2.6,
-            kitchenImage: "KitchenImage 1"
+            kitchenImage: "KitchenImage 1",
+            isPureVeg: false
         ),
         Kitchen(
             kitchenID: "kitchen002",
@@ -35,7 +36,8 @@ class KitchenDataController {
             rating: 4.6,
             isOnline: false,
             distance: 3.1,
-            kitchenImage: "KitchenImage2"
+            kitchenImage: "KitchenImage2",
+            isPureVeg: false
         )
     ]
     
