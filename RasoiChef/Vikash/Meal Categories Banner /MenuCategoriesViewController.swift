@@ -171,7 +171,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         searchBar.resignFirstResponder() // Dismiss keyboard
         isSearching = false
         filteredMenuItems = menuItems // Reset to full menu
-        searchBar.showsCancelButton = false // Hide cancel button
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button with animation
 
         MealCategories.reloadData() // Reload full data
         updateItemCount() // Update count after reset
@@ -180,13 +180,8 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
 
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = true
+        searchBar.setShowsCancelButton(true, animated: true) // Show cancel button with animation
     }
-
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-    }
-    
     
     
     func configureFilterStackView() {
@@ -279,6 +274,7 @@ func configureItemCountLabel() {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         isSearching = !searchText.isEmpty
+        searchBar.setShowsCancelButton(!searchText.isEmpty, animated: true) // Hide if empty
         applyFilters() // Apply filters after searching
     }
 
