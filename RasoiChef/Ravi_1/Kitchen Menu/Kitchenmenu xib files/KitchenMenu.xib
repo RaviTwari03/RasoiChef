@@ -147,6 +147,11 @@
                             <constraint firstItem="3r1-27-lvk" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="8" id="yxY-Os-qmS"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" secondItem="gq1-JO-r7H" secondAttribute="trailing" constant="8" id="z2I-Aa-tNG"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="PA8-hr-rZ5"/>
+                            </mask>
+                        </variation>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wdX-6d-cg9">
                         <rect key="frame" x="4.9999999999999964" y="6.0000000000000018" width="58.666666666666657" height="27.666666666666671"/>

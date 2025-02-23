@@ -30,7 +30,10 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var dishIntakLimit: UILabel!
     
     @IBOutlet var addButton: UIButton!
-
+    @IBOutlet var stepperStackView: UIStackView!
+    @IBOutlet var quantityLabel: UILabel!
+    @IBOutlet var stepper: UIStepper!
+       
     
     weak var delegate: KitchenMenuDetailsCellDelegate?
   
