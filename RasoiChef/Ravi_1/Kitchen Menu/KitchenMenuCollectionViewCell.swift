@@ -31,14 +31,29 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     
     @IBOutlet var addButton: UIButton!
 
+    
     weak var delegate: KitchenMenuDetailsCellDelegate?
+  
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
+    }
+
+    @objc func cartUpdated() {
+        if let collectionView = self.superview as? UICollectionView,
+           let indexPath = collectionView.indexPath(for: self) {
+            updateIntakeLimit(for: indexPath)
+        }
+    }
 
     func updateMealDetails(with indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         vegImage.image = UIImage(named: "vegImage")
         ratingLabel.text = "\(menuItem.rating)"
         dishNameLabel.text = menuItem.name
-        
+        updateIntakeLimit(for: indexPath)
+
         let words = menuItem.description.split(separator: " ")
         if words.count > 9 {
             let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
@@ -86,7 +101,14 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
     @IBAction func addButtonTapped(_ sender: Any) {
         
+        //        delegate?.KitchenMenuListaddButtonTapped(in: self)
         delegate?.KitchenMenuListaddButtonTapped(in: self)
+        
+        // Update the intake limit dynamically
+        if let collectionView = self.superview as? UICollectionView,
+           let indexPath = collectionView.indexPath(for: self) {
+            updateIntakeLimit(for: indexPath)
+        }
     }
     @objc func readMoreTapped() {
         isExpanded.toggle() // Toggle the state
@@ -104,6 +126,17 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                 collectionView.performBatchUpdates(nil, completion: nil)
             }
         }
+    }
+    func updateIntakeLimit(for indexPath: IndexPath) {
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        let orderedQuantity = CartViewController.cartItems.filter { $0.menuItem?.itemID == menuItem.itemID }.reduce(0) { $0 + $1.quantity }
+        
+        let remainingIntake = max(menuItem.intakeLimit - orderedQuantity, 0) // Ensure it doesn't go below 0
+        dishIntakLimit.text = "Intake limit: \(remainingIntake)"
+        
+        // Disable add button if intake limit is reached
+        addButton.isEnabled = remainingIntake > 0
+        addButton.alpha = remainingIntake > 0 ? 1.0 : 0.5
     }
 
 }
