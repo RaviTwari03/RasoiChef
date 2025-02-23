@@ -280,7 +280,8 @@ class KitchenDataController {
             price: 200.0,
             rating: 4.7,
             imageURL: "CholeBhature",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 5
         ),
         ChefSpecialtyDish(
             kitchenName: "Anjali's Kitchen",
@@ -291,7 +292,8 @@ class KitchenDataController {
             price: 250.0,
             rating: 4.8,
             imageURL: "SpringRoll",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 10
         )
     ]
     
@@ -305,7 +307,8 @@ class KitchenDataController {
             price: 300.0,
             rating: 4.9,
             imageURL: "ButterChicken",
-            mealCategory: [.nonVeg]
+            mealCategory: [.nonVeg],
+            intakeLimit: 9
         ),
         ChefSpecialtyDish(
             kitchenName: "Mumbai Spices",
@@ -316,7 +319,8 @@ class KitchenDataController {
             price: 150.0,
             rating: 4.5,
             imageURL: "PavBhaji",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 15
         ),
         ChefSpecialtyDish(
             kitchenName: "Delhi Zaika",
@@ -327,7 +331,8 @@ class KitchenDataController {
             price: 180.0,
             rating: 4.6,
             imageURL: "RajmaChawal",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 18
         ),
      
         ChefSpecialtyDish(
@@ -339,7 +344,8 @@ class KitchenDataController {
             price: 220.0,
             rating: 4.7,
             imageURL: "PaneerTikka",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Royal Rajasthan",
@@ -350,7 +356,8 @@ class KitchenDataController {
             price: 250.0,
             rating: 4.9,
             imageURL: "DalBaatiChurma",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 12
         ),
         ChefSpecialtyDish(
             kitchenName: "Biryani Bliss",
@@ -361,7 +368,8 @@ class KitchenDataController {
             price: 350.0,
             rating: 4.8,
             imageURL: "HyderabadiBiryani",
-            mealCategory: [.nonVeg]
+            mealCategory: [.nonVeg],
+            intakeLimit: 5
         ),
         ChefSpecialtyDish(
             kitchenName: "Street Food Junction",
@@ -372,7 +380,8 @@ class KitchenDataController {
             price: 100.0,
             rating: 4.6,
             imageURL: "PaniPuri",
-            mealCategory: [.veg]
+            mealCategory: [.veg],
+            intakeLimit: 11
         )
     ]
     

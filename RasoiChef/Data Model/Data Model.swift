@@ -128,6 +128,7 @@ struct ChefSpecialtyDish {
     var rating: Float
     var imageURL: String
     var mealCategory : [MealCategory]
+    var intakeLimit : Int
 }
 //struct GlobalChefSpeciality{
 //    let kitchenName : String

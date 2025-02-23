@@ -59,7 +59,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
 
         dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         dishDeliveryExpected.text = menuItem.orderDeadline
-        dishImge.image = UIImage(named: menuItem.imageURL ?? "")
+        dishImge.image = UIImage(named: menuItem.imageURL)
         dishprice.text = "₹\(menuItem.price)"
         dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
         
@@ -72,9 +72,6 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         applyCardStyle1()
     }
 
-//    @objc func readMoreTapped() {
-//        dishDescription.text = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description
-//    }
 
          func applyCardStyle1() {
             cardViewKitchenMenu.layer.cornerRadius = 15
@@ -103,7 +100,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
         // Notify the collection view to update the cell size
         if let collectionView = self.superview as? UICollectionView {
-            if let indexPath = collectionView.indexPath(for: self) {
+            if collectionView.indexPath(for: self) != nil {
                 collectionView.performBatchUpdates(nil, completion: nil)
             }
         }
