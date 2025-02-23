@@ -22,107 +22,116 @@ class CartItemTableViewCell: UITableViewCell {
     @IBOutlet var crossbutton: UIButton!
     
     @IBOutlet weak var cartItemView: UIView!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization \code
-        setupCellAppearance()
-    }
-    
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+ 
+    var indexPath: IndexPath?
 
-        // Configure the view for the selected state
-    }
-    @IBAction func crossButtonTapped(_ sender: UIButton) {
-           delegate?.didTapRemoveButton(cell: self)
-       }
-    
-    @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
-        CartItemQuantityLabel.text = "\(Int(sender.value))"
-        let newQuantity = Int(sender.value)
-
-           if newQuantity > 10 {
-               // Reset stepper value to 10
-               sender.value = 10
-
-               // Show an alert
-               if let parentViewController = self.window?.rootViewController {
-                   let alert = UIAlertController(
-                       title: "Limit Exceeded",
-                       message: "You can only add up to 10 items.",
-                       preferredStyle: .alert
-                   )
-                   alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                   parentViewController.present(alert, animated: true, completion: nil)
-               }
-
-               return
-           }
-    }
-    func updateCartItem(for indexpath: IndexPath) {
-        if KitchenDataController.cartItems.isEmpty {
-            print("The cart is empty, no items to update.")
-            return
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            setupCellAppearance()
         }
         
-        guard indexpath.row < KitchenDataController.cartItems.count else {
-            print("Index out of range: \(indexpath.row) exceeds number of cart items")
-            return
-        }
-        
-        let cartItem = KitchenDataController.cartItems[indexpath.row]
-
-        if let menuItem = cartItem.menuItem {
-            // Regular menu item
-            CartDishLabel.text = menuItem.name
-            CartDishDescription.text = menuItem.description
-            CartDishPriceLabel.text = "₹\(menuItem.price)"
-        } else if let chefSpecialtyDish = cartItem.chefSpecial {
-            // Chef specialty dish
-            CartDishLabel.text = chefSpecialtyDish.name
-            CartDishDescription.text = chefSpecialtyDish.description
-            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
-        } else {
-            CartDishLabel.text = "Unknown Item"
-            CartDishDescription.text = "No description available"
-            CartDishPriceLabel.text = "₹0.0"
+        @IBAction func crossButtonTapped(_ sender: UIButton) {
+            delegate?.didTapRemoveButton(cell: self)
         }
 
-        CartItemQuantityLabel.text = "\(cartItem.quantity)"
-        CartIncreaseCounter.value = Double(cartItem.quantity)
+        @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
+            guard let indexPath = indexPath else { return }
+            guard indexPath.row < KitchenDataController.cartItems.count else { return }
+
+            var cartItem = KitchenDataController.cartItems[indexPath.row]
+
+            let newQuantity = Int(sender.value)
+            var remainingLimit = Int.max  // Default to no limit
+
+            if let menuItem = cartItem.menuItem {
+                // ✅ Check intake limit for normal menu items
+                let totalOrdered = KitchenDataController.cartItems
+                    .filter { $0.menuItem?.itemID == menuItem.itemID }
+                    .reduce(0) { $0 + $1.quantity }
+
+                remainingLimit = menuItem.intakeLimit - (totalOrdered - cartItem.quantity)
+                
+            } else if let chefSpecial = cartItem.chefSpecial {
+                // ✅ Check intake limit for chef specialty dishes
+                let totalOrdered = KitchenDataController.cartItems
+                    .filter { $0.chefSpecial?.dishID == chefSpecial.dishID }
+                    .reduce(0) { $0 + $1.quantity }
+
+                remainingLimit = chefSpecial.intakeLimit - (totalOrdered - cartItem.quantity)
+            }
+
+            if newQuantity > remainingLimit {
+                sender.value = Double(cartItem.quantity) // Reset to previous valid value
+                showAlert(message: "You can only add up to \(remainingLimit) more of this item.")
+                return
+            }
+
+            // ✅ Update the item in KitchenDataController
+            KitchenDataController.cartItems[indexPath.row].quantity = newQuantity
+            updateCartQuantity(newQuantity)
+        }
+
+        func updateCartItem(for indexPath: IndexPath) {
+            self.indexPath = indexPath
+
+            guard indexPath.row < KitchenDataController.cartItems.count else {
+                print("Index out of range: \(indexPath.row) exceeds number of cart items")
+                return
+            }
+
+            let cartItem = KitchenDataController.cartItems[indexPath.row]
+
+            if let menuItem = cartItem.menuItem {
+                CartDishLabel.text = menuItem.name
+                CartDishDescription.text = menuItem.description
+                CartDishPriceLabel.text = "₹\(menuItem.price)"
+            } else if let chefSpecial = cartItem.chefSpecial {
+                CartDishLabel.text = chefSpecial.name
+                CartDishDescription.text = chefSpecial.description
+                CartDishPriceLabel.text = "₹\(chefSpecial.price)"
+            } else {
+                CartDishLabel.text = "Unknown Item"
+                CartDishDescription.text = "No description available"
+                CartDishPriceLabel.text = "₹0.0"
+            }
+
+            CartIncreaseCounter.minimumValue = 1
+            CartIncreaseCounter.value = Double(cartItem.quantity)
+            CartItemQuantityLabel.text = "\(cartItem.quantity)"
+        }
+
+        private func updateCartQuantity(_ newQuantity: Int) {
+            CartItemQuantityLabel.text = "\(newQuantity)"
+            CartIncreaseCounter.value = Double(newQuantity)
+
+            if let parentVC = self.parentViewController as? CartViewController {
+                parentVC.reloadCart()
+            }
+        }
+
+        private func setupCellAppearance() {
+            cartItemView.layer.cornerRadius = 15
+            cartItemView.layer.masksToBounds = true
+            cartItemView.layer.shadowColor = UIColor.black.cgColor
+            cartItemView.layer.shadowOffset = CGSize(width: 0, height: 2)
+            cartItemView.layer.shadowRadius = 2.5
+            cartItemView.layer.shadowOpacity = 0.4
+            cartItemView.layer.masksToBounds = false
+            cartItemView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
+            cartItemView.backgroundColor = .white
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            let inset: CGFloat = 10
+            contentView.frame = contentView.frame.insetBy(dx: inset, dy: 0)
+        }
+
+        private func showAlert(message: String) {
+            if let viewController = self.parentViewController {
+                let alert = UIAlertController(title: "Limit Exceeded", message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                viewController.present(alert, animated: true)
+            }
+        }
     }
-    
-    
-    
-    private func setupCellAppearance() {
-        // Apply corner radius
-        cartItemView.layer.cornerRadius = 15
-        cartItemView.layer.masksToBounds = true
-            // Add shadow to create a card-like appearance
-        cartItemView.layer.shadowColor = UIColor.black.cgColor
-        cartItemView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        cartItemView.layer.shadowRadius = 2.5
-        cartItemView.layer.shadowOpacity = 0.4
-        cartItemView.layer.masksToBounds = false
-            // Add padding by adjusting the content insets
-        cartItemView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
-            
-            // Optionally, you can add a background color for the card
-        cartItemView.backgroundColor = .white
-    }
-    
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        let inset: CGFloat = 10 // Set leading and trailing insets
-        contentView.frame = contentView.frame.insetBy(dx: inset, dy: 0)
-    }
-    
-}
-
-
-
-
