@@ -99,27 +99,40 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     }
     
     func applyFilters() {
-            filteredMenuItems = menuItems
-            
-            if activeFilters.contains("Nearest") {
-                filteredMenuItems.sort { $0.distance < $1.distance }
-            }
-            
-            if activeFilters.contains("Ratings 4.0+") {
-                filteredMenuItems.sort { $0.rating > $1.rating }
-            }
-            
-            if activeFilters.contains("Pure Veg") {
-                filteredMenuItems = filteredMenuItems.filter { $0.mealCategory.contains(.veg) }
-            }
-            
-            if activeFilters.contains("Cost: Low to High") {
-                filteredMenuItems.sort { $0.price < $1.price }
-            }
-            
-            MealCategories.reloadData()
-            updateItemCount()
+        var itemsToFilter: [MenuItem]
+
+        if isSearching {
+            // Work on the search results instead of the full menu
+            itemsToFilter = menuItems.filter { $0.name.localizedCaseInsensitiveContains(searchBar.text ?? "") }
+        } else {
+            itemsToFilter = menuItems
         }
+
+        // Apply filters
+        if activeFilters.contains("Nearest") {
+            itemsToFilter.sort { $0.distance < $1.distance }
+        }
+
+        if activeFilters.contains("Ratings 4.0+") {
+            itemsToFilter = itemsToFilter.filter { $0.rating >= 4.0 }
+            itemsToFilter.sort { $0.rating > $1.rating }
+        }
+
+        if activeFilters.contains("Pure Veg") {
+            itemsToFilter = itemsToFilter.filter { $0.mealCategory.contains(.veg) }
+        }
+
+        if activeFilters.contains("Cost: Low to High") {
+            itemsToFilter.sort { $0.price < $1.price }
+        }
+
+        // Update filtered list
+        filteredMenuItems = itemsToFilter
+
+        MealCategories.reloadData()
+        updateItemCount()
+    }
+
     
     
     func updateTitleBasedOnMealTiming() {
@@ -158,7 +171,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         searchBar.resignFirstResponder() // Dismiss keyboard
         isSearching = false
         filteredMenuItems = menuItems // Reset to full menu
-        searchBar.showsCancelButton = false // Hide cancel button
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button with animation
 
         MealCategories.reloadData() // Reload full data
         updateItemCount() // Update count after reset
@@ -167,13 +180,8 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
 
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = true
+        searchBar.setShowsCancelButton(true, animated: true) // Show cancel button with animation
     }
-
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-    }
-    
     
     
     func configureFilterStackView() {
@@ -265,17 +273,11 @@ func configureItemCountLabel() {
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            isSearching = false
-            filteredMenuItems = menuItems // Reset to full list
-        } else {
-            isSearching = true
-            filteredMenuItems = menuItems.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
-        
-        MealCategories.reloadData()
-        updateItemCount() // Update count after filtering
+        isSearching = !searchText.isEmpty
+        searchBar.setShowsCancelButton(!searchText.isEmpty, animated: true) // Hide if empty
+        applyFilters() // Apply filters after searching
     }
+
 
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

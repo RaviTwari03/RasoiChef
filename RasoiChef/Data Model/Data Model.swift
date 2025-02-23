@@ -76,6 +76,7 @@ struct Kitchen {
     var isOnline: Bool
     var distance: Double
     var kitchenImage: String
+    var isPureVeg: Bool
 }
 
 // Menu Item
