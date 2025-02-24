@@ -163,43 +163,43 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
 
 
     @objc func stepperValueChanged(_ sender: UIStepper) {
-        let newQuantity = Int(sender.value) // Get the new quantity from the stepper
-        quantityLabel.text = "\(newQuantity)" // Update the label
+        let newQuantity = Int(sender.value)
+        quantityLabel.text = "\(newQuantity)"
 
         guard let collectionView = self.superview as? UICollectionView,
               let indexPath = collectionView.indexPath(for: self) else { return }
 
         let menuItem = KitchenDataController.menuItems[indexPath.row]
 
-        // Check the total quantity in the cart for this item
-        let cartItemIndex = CartViewController.cartItems.firstIndex { $0.menuItem?.itemID == menuItem.itemID }
-
-        if let cartIndex = cartItemIndex {
-            // If the item is already in the cart, update its quantity
-            CartViewController.cartItems[cartIndex].quantity = newQuantity
-        } else if newQuantity > 0 {
-            // If item is not in the cart and quantity > 0, add a new item
-            let newCartItem = CartItem(userAdress: "", quantity: 0)
-            CartViewController.cartItems.append(newCartItem)
-        }
-
-        // Remove from cart if quantity is zero
-        if newQuantity == 0 {
-            if let cartIndex = cartItemIndex {
-                CartViewController.cartItems.remove(at: cartIndex)
+        // Find or create cart item
+        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: { $0.menuItem?.itemID == menuItem.itemID }) {
+            // Update existing cart item
+            CartViewController.cartItems[cartItemIndex].quantity = newQuantity
+            
+            if newQuantity == 0 {
+                CartViewController.cartItems.remove(at: cartItemIndex)
+                addButton.isHidden = false
+                stepperStackView.isHidden = true
             }
-            addButton.isHidden = false
-            stepperStackView.isHidden = true
-        } else {
+        } else if newQuantity > 0 {
+            // Create new cart item
+            let newCartItem = CartItem(userAdress: "", quantity: newQuantity, menuItem: menuItem)
+            CartViewController.cartItems.append(newCartItem)
             addButton.isHidden = true
             stepperStackView.isHidden = false
         }
 
-        // Update the UI with the new intake limit
         updateIntakeLimit(for: indexPath)
-
-        // Post a notification so other parts of the app (cart, summary) update
-        NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+        
+        // Post notification with the updated item info
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CartUpdated"),
+            object: nil,
+            userInfo: [
+                "menuItemID": menuItem.itemID,
+                "quantity": newQuantity
+            ]
+        )
     }
 
 
