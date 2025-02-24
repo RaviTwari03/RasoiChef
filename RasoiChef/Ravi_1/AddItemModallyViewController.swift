@@ -43,7 +43,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
             super.viewDidLoad()
             configureModalSize()
             AddDishButton.layer.cornerRadius = 11
-            
+            NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
             if let item = selectedItem {
                 setupUI(item: item)
             } else if let chefDish = selectedChefSpecialtyDish {
@@ -127,49 +127,94 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
   
     @IBAction func addDishButtonTapped(_ sender: UIButton) {
 
+//        let quantityToAdd = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
+//               let specialRequest = AddDishRequestTextField.text ?? ""
+//               
+//               let intakeLimit = selectedItem?.intakeLimit ?? selectedChefSpecialtyDish?.intakeLimit ?? 1
+//        orderedQuantity = getTotalOrderedQuantity(for: selectedItem?.itemID ?? selectedChefSpecialtyDish?.dishID ?? "")
+//
+//               if orderedQuantity + quantityToAdd > intakeLimit {
+//                   showAlert(message: "You have reached the intake limit for this item.")
+//                   return
+//               }
+//               
+//               var cartItem: CartItem?
+//               
+//               if let item = selectedItem {
+//                   cartItem = CartItem(
+//                       userAdress: "Galgotias University",
+//                       quantity: quantityToAdd,
+//                       specialRequest: specialRequest,
+//                       menuItem: item
+//                   )
+//               } else if let chefDish = selectedChefSpecialtyDish {
+//                   cartItem = CartItem(
+//                       userAdress: "Galgotias University",
+//                       quantity: quantityToAdd,
+//                       specialRequest: specialRequest,
+//                       chefSpecial: chefDish
+//                   )
+//               }
+//               
+//               guard let cartItem = cartItem else {
+//                   print("Error: No valid item selected to add to cart.")
+//                   return
+//               }
+//               
+//               CartViewController.cartItems.append(cartItem)
+//               KitchenDataController.cartItems = CartViewController.cartItems
+//               
+//               NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+//               
+//               if self.presentingViewController != nil {
+//                   self.dismiss(animated: true, completion: nil)
+//               }
+//           }
         let quantityToAdd = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
-               let specialRequest = AddDishRequestTextField.text ?? ""
-               
-               let intakeLimit = selectedItem?.intakeLimit ?? selectedChefSpecialtyDish?.intakeLimit ?? 1
-        orderedQuantity = getTotalOrderedQuantity(for: selectedItem?.itemID ?? selectedChefSpecialtyDish?.dishID ?? "")
+            let specialRequest = AddDishRequestTextField.text ?? ""
+            
+            let intakeLimit = selectedItem?.intakeLimit ?? selectedChefSpecialtyDish?.intakeLimit ?? 1
+            orderedQuantity = getTotalOrderedQuantity(for: selectedItem?.itemID ?? selectedChefSpecialtyDish?.dishID ?? "")
 
-               if orderedQuantity + quantityToAdd > intakeLimit {
-                   showAlert(message: "You have reached the intake limit for this item.")
-                   return
-               }
-               
-               var cartItem: CartItem?
-               
-               if let item = selectedItem {
-                   cartItem = CartItem(
-                       userAdress: "Galgotias University",
-                       quantity: quantityToAdd,
-                       specialRequest: specialRequest,
-                       menuItem: item
-                   )
-               } else if let chefDish = selectedChefSpecialtyDish {
-                   cartItem = CartItem(
-                       userAdress: "Galgotias University",
-                       quantity: quantityToAdd,
-                       specialRequest: specialRequest,
-                       chefSpecial: chefDish
-                   )
-               }
-               
-               guard let cartItem = cartItem else {
-                   print("Error: No valid item selected to add to cart.")
-                   return
-               }
-               
-               CartViewController.cartItems.append(cartItem)
-               KitchenDataController.cartItems = CartViewController.cartItems
-               
-               NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
-               
-               if self.presentingViewController != nil {
-                   self.dismiss(animated: true, completion: nil)
-               }
-           }
+            if orderedQuantity + quantityToAdd > intakeLimit {
+                showAlert(message: "You have reached the intake limit for this item.")
+                return
+            }
+            
+            var cartItem: CartItem?
+            
+            if let item = selectedItem {
+                cartItem = CartItem(
+                    userAdress: "Galgotias University",
+                    quantity: quantityToAdd,
+                    specialRequest: specialRequest,
+                    menuItem: item
+                )
+            } else if let chefDish = selectedChefSpecialtyDish {
+                cartItem = CartItem(
+                    userAdress: "Galgotias University",
+                    quantity: quantityToAdd,
+                    specialRequest: specialRequest,
+                    chefSpecial: chefDish
+                )
+            }
+            
+            guard let cartItem = cartItem else {
+                print("Error: No valid item selected to add to cart.")
+                return
+            }
+            
+            CartViewController.cartItems.append(cartItem)
+            KitchenDataController.cartItems = CartViewController.cartItems
+            
+            NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+            
+            if self.presentingViewController != nil {
+                self.dismiss(animated: true) {
+                    NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+                }
+            }
+        }
            
            @IBAction func crossButtonTapped(_ sender: Any) {
                self.dismiss(animated: true)

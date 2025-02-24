@@ -35,111 +35,203 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var stepper: UIStepper!
        
     
+
     weak var delegate: KitchenMenuDetailsCellDelegate?
-  
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
-    }
+          
+        override func awakeFromNib() {
+                  super.awakeFromNib()
+                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
+          
+                  // Ensure outlets are not nil before modifying them
+                  if let stepperStackView = stepperStackView, let stepper = stepper {
+                      stepperStackView.isHidden = true
+                      stepper.layer.cornerRadius = 11
+                      stepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
+                  } else {
+                      print("Error: stepperStackView or stepper is nil")
+                  }
+              }
+
 
     @objc func cartUpdated() {
         if let collectionView = self.superview as? UICollectionView,
            let indexPath = collectionView.indexPath(for: self) {
             updateIntakeLimit(for: indexPath)
-        }
-    }
-
-    func updateMealDetails(with indexPath: IndexPath) {
-        let menuItem = KitchenDataController.menuItems[indexPath.row]
-        vegImage.image = UIImage(named: "vegImage")
-        ratingLabel.text = "\(menuItem.rating)"
-        dishNameLabel.text = menuItem.name
-        updateIntakeLimit(for: indexPath)
-
-        let words = menuItem.description.split(separator: " ")
-        if words.count > 9 {
-            let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
-            let attributedString = NSMutableAttributedString(string: truncatedText)
-            let readMoreRange = (truncatedText as NSString).range(of: "...read more")
             
-            attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
-            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
+            // Update the quantity label if the item is in the cart
+            let menuItem = KitchenDataController.menuItems[indexPath.row]
+            let orderedQuantity = CartViewController.cartItems
+                .filter { $0.menuItem?.itemID == menuItem.itemID }
+                .reduce(0) { $0 + $1.quantity }
             
-            dishDescription.attributedText = attributedString
-            dishDescription.isUserInteractionEnabled = true
-            
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
-            dishDescription.addGestureRecognizer(tapGesture)
-        } else {
-            dishDescription.text = menuItem.description
-        }
-
-        dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-        dishDeliveryExpected.text = menuItem.orderDeadline
-        dishImge.image = UIImage(named: menuItem.imageURL)
-        dishprice.text = "₹\(menuItem.price)"
-        dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
-        
-        if menuItem.mealCategory.contains(.veg) {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
-        } else {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
-        }
-
-        applyCardStyle1()
-    }
-
-
-         func applyCardStyle1() {
-            cardViewKitchenMenu.layer.cornerRadius = 15
-            cardViewKitchenMenu.layer.masksToBounds = false
-            cardViewKitchenMenu.layer.shadowColor = UIColor.black.cgColor
-            cardViewKitchenMenu.layer.shadowOffset = CGSize(width: 0, height: 2)
-             cardViewKitchenMenu.layer.shadowRadius = 2.5
-            cardViewKitchenMenu.layer.shadowOpacity = 0.4
-            cardViewKitchenMenu.backgroundColor = .white
-        }
-   
-        
-    @IBAction func addButtonTapped(_ sender: Any) {
-        
-        //        delegate?.KitchenMenuListaddButtonTapped(in: self)
-        delegate?.KitchenMenuListaddButtonTapped(in: self)
-        
-        // Update the intake limit dynamically
-        if let collectionView = self.superview as? UICollectionView,
-           let indexPath = collectionView.indexPath(for: self) {
-            updateIntakeLimit(for: indexPath)
-        }
-    }
-    @objc func readMoreTapped() {
-        isExpanded.toggle() // Toggle the state
-
-        let fullText = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description ?? ""
-        dishDescription.text = isExpanded ? fullText : fullText.split(separator: " ").prefix(9).joined(separator: " ") + "...read more"
-        
-        UIView.animate(withDuration: 0.3) {
-            self.superview?.superview?.layoutIfNeeded() // Ensures layout updates smoothly
-        }
-        
-        // Notify the collection view to update the cell size
-        if let collectionView = self.superview as? UICollectionView {
-            if collectionView.indexPath(for: self) != nil {
-                collectionView.performBatchUpdates(nil, completion: nil)
+            if orderedQuantity > 0 {
+                stepperStackView.isHidden = false
+                addButton.isHidden = true
+                quantityLabel.text = "\(orderedQuantity)"
+                stepper.value = Double(orderedQuantity)
+            } else {
+                stepperStackView.isHidden = true
+                addButton.isHidden = false
+                quantityLabel.text = "0"
             }
         }
     }
-    func updateIntakeLimit(for indexPath: IndexPath) {
+
+            func updateMealDetails(with indexPath: IndexPath) {
+                let menuItem = KitchenDataController.menuItems[indexPath.row]
+                vegImage.image = UIImage(named: "vegImage")
+                ratingLabel.text = "\(menuItem.rating)"
+                dishNameLabel.text = menuItem.name
+                updateIntakeLimit(for: indexPath)
+
+                let words = menuItem.description.split(separator: " ")
+                if words.count > 9 {
+                    let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
+                    let attributedString = NSMutableAttributedString(string: truncatedText)
+                    let readMoreRange = (truncatedText as NSString).range(of: "...read more")
+                    
+                    attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
+                    attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
+                    
+                    dishDescription.attributedText = attributedString
+                    dishDescription.isUserInteractionEnabled = true
+                    
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
+                    dishDescription.addGestureRecognizer(tapGesture)
+                } else {
+                    dishDescription.text = menuItem.description
+                }
+
+                dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+                dishDeliveryExpected.text = menuItem.orderDeadline
+                dishImge.image = UIImage(named: menuItem.imageURL)
+                dishprice.text = "₹\(menuItem.price)"
+                dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
+                
+                if menuItem.mealCategory.contains(.veg) {
+                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+                } else {
+                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+                }
+
+                applyCardStyle1()
+            }
+
+            func applyCardStyle1() {
+                cardViewKitchenMenu.layer.cornerRadius = 15
+                cardViewKitchenMenu.layer.masksToBounds = false
+                cardViewKitchenMenu.layer.shadowColor = UIColor.black.cgColor
+                cardViewKitchenMenu.layer.shadowOffset = CGSize(width: 0, height: 2)
+                cardViewKitchenMenu.layer.shadowRadius = 2.5
+                cardViewKitchenMenu.layer.shadowOpacity = 0.4
+                cardViewKitchenMenu.backgroundColor = .white
+            }
+           
+            @IBAction func addButtonTapped(_ sender: Any) {
+                delegate?.KitchenMenuListaddButtonTapped(in: self)
+                
+                // Hide Add Button and Show Stepper
+                addButton.isHidden = true
+                stepperStackView.isHidden = false
+
+                // Set initial quantity to 1
+                stepper.value = 1
+                quantityLabel.text = "1"
+
+                if let collectionView = self.superview as? UICollectionView,
+                   let indexPath = collectionView.indexPath(for: self) {
+                    updateIntakeLimit(for: indexPath)
+                }
+            }
+
+            @objc func readMoreTapped() {
+                isExpanded.toggle()
+
+                let fullText = KitchenDataController.menuItems.first(where: { $0.name == dishNameLabel.text })?.description ?? ""
+                dishDescription.text = isExpanded ? fullText : fullText.split(separator: " ").prefix(9).joined(separator: " ") + "...read more"
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.superview?.superview?.layoutIfNeeded()
+                }
+                
+                if let collectionView = self.superview as? UICollectionView {
+                    if collectionView.indexPath(for: self) != nil {
+                        collectionView.performBatchUpdates(nil, completion: nil)
+                    }
+                }
+            }
+
+
+    @objc func stepperValueChanged(_ sender: UIStepper) {
+        let newQuantity = Int(sender.value) // Get the new quantity from the stepper
+        quantityLabel.text = "\(newQuantity)" // Update the label
+
+        guard let collectionView = self.superview as? UICollectionView,
+              let indexPath = collectionView.indexPath(for: self) else { return }
+
         let menuItem = KitchenDataController.menuItems[indexPath.row]
-        let orderedQuantity = CartViewController.cartItems.filter { $0.menuItem?.itemID == menuItem.itemID }.reduce(0) { $0 + $1.quantity }
-        
-        let remainingIntake = max(menuItem.intakeLimit - orderedQuantity, 0) // Ensure it doesn't go below 0
-        dishIntakLimit.text = "Intake limit: \(remainingIntake)"
-        
-        // Disable add button if intake limit is reached
-        addButton.isEnabled = remainingIntake > 0
-        addButton.alpha = remainingIntake > 0 ? 1.0 : 0.5
+
+        // Check the total quantity in the cart for this item
+        let cartItemIndex = CartViewController.cartItems.firstIndex { $0.menuItem?.itemID == menuItem.itemID }
+
+        if let cartIndex = cartItemIndex {
+            // If the item is already in the cart, update its quantity
+            CartViewController.cartItems[cartIndex].quantity = newQuantity
+        } else if newQuantity > 0 {
+            // If item is not in the cart and quantity > 0, add a new item
+            let newCartItem = CartItem(userAdress: "", quantity: 0)
+            CartViewController.cartItems.append(newCartItem)
+        }
+
+        // Remove from cart if quantity is zero
+        if newQuantity == 0 {
+            if let cartIndex = cartItemIndex {
+                CartViewController.cartItems.remove(at: cartIndex)
+            }
+            addButton.isHidden = false
+            stepperStackView.isHidden = true
+        } else {
+            addButton.isHidden = true
+            stepperStackView.isHidden = false
+        }
+
+        // Update the UI with the new intake limit
+        updateIntakeLimit(for: indexPath)
+
+        // Post a notification so other parts of the app (cart, summary) update
+        NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
     }
 
-}
+
+
+
+
+    func updateIntakeLimit(for indexPath: IndexPath) {
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+
+        let orderedQuantity = CartViewController.cartItems
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+
+        let remainingIntake = max(menuItem.intakeLimit - orderedQuantity, 0)
+
+        // ✅ Update UI
+        dishIntakLimit.text = "Intake limit: \(remainingIntake)"
+        addButton.isEnabled = remainingIntake > 0
+        addButton.alpha = remainingIntake > 0 ? 1.0 : 0.5
+
+        // ✅ Keep the stepper enabled (even at max limit)
+        stepper.maximumValue = Double(menuItem.intakeLimit)
+        stepper.minimumValue = 0  // Ensure the user can always decrease
+        stepper.value = Double(orderedQuantity)
+        stepper.isEnabled = true  // Never disable the stepper
+        quantityLabel.text = "\(orderedQuantity)"
+
+        // ✅ Toggle Visibility
+        stepperStackView.isHidden = orderedQuantity == 0
+        addButton.isHidden = orderedQuantity > 0
+    }
+
+
+
+        }
