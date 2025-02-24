@@ -20,9 +20,9 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
     @IBOutlet var DishImage: UIImageView!
     @IBOutlet var dishName: UILabel!
     @IBOutlet var PriceOfDish: UILabel!
-    @IBOutlet var AvailableOnDays: UILabel!
+    @IBOutlet var kitchenName: UILabel!
     @IBOutlet var Ratings: UILabel!
-    @IBOutlet var LimitLeft: UILabel!
+    @IBOutlet var Distance: UILabel!
     
     @IBOutlet weak var vegNonvegIcon: UIImageView!
     
@@ -34,10 +34,10 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         // Update the UI elements with the data from the specialDish object
         dishName.text = specialDish.name
         PriceOfDish.text = "₹\(specialDish.price)"
-        AvailableOnDays.text = "S, Th" // Update this based on real data if
+        kitchenName.text = specialDish.kitchenName
         
         Ratings.text = "\(String(describing: specialDish.rating))"
-        LimitLeft.text = "Max Limit: 50"             // Update dynamically if data exists
+        Distance.text = "\(String(describing: specialDish.distance)) km"  // Update dynamically if data exists
         DishImage.image = UIImage(named: specialDish.imageURL )
         
         if specialDish.mealCategory.contains(.veg) {

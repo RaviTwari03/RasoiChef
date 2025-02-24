@@ -31,14 +31,18 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
         Kichen_Image.image = UIImage(named: restaurant.kitchenImage)
         
         if restaurant.isOnline {
-            availability_Label.text = "Online"
-            availability_Label.textColor = UIColor.systemGreen
-            onlineOrOfflineIcon.tintColor = UIColor.systemGreen
-        } else {
-            availability_Label.text = "Offline"
-            availability_Label.textColor = UIColor.systemGray
-            onlineOrOfflineIcon.tintColor = UIColor.systemGray
-        }
+                availability_Label.text = "Online"
+                availability_Label.textColor = UIColor.systemGreen
+                onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                container_View.alpha = 1.0 // Reset opacity
+                isUserInteractionEnabled = true // Enable interaction
+            } else {
+                availability_Label.text = "Offline"
+                availability_Label.textColor = UIColor.systemGray
+                onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                container_View.alpha = 0.8 // Dim the cell
+                isUserInteractionEnabled = false // Disable interaction
+            }
     }
     
     

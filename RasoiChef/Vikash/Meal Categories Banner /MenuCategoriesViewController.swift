@@ -318,40 +318,28 @@ func configureItemCountLabel() {
     func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell) {
         guard let indexPath = MealCategories.indexPath(for: cell) else { return }
 
-        let selectedItem: MenuItem
-        switch mealTiming {
-        case .breakfast:
-            selectedItem = KitchenDataController.GlobalbreakfastMenuItems[indexPath.row]
-            self.title = "Breakfast"
-        case .lunch:
-            selectedItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
-            self.title = "Lunch"
-        case .snacks:
-            selectedItem = KitchenDataController.GlobalsnacksMenuItems[indexPath.row]
-            self.title = "Snacks"
-        case .dinner:
-            selectedItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
-            self.title = "Dinner"
-        }
+        // Fetch the correct item from filteredMenuItems
+        let selectedItem = filteredMenuItems[indexPath.row]
 
         print("Add button tapped for meal: \(selectedItem.name)")
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-           if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-               detailVC.selectedItem = selectedItem
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            detailVC.selectedItem = selectedItem
 
-               // Present as a bottom sheet
-               if let sheet = detailVC.sheetPresentationController {
-                   sheet.detents = [.medium(), .large()] // Medium-sized sheet
-                   sheet.prefersGrabberVisible = true   // Show a grabber handle
-               }
+            // Present as a bottom sheet
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()] // Medium-sized sheet
+                sheet.prefersGrabberVisible = true    // Show grabber handle
+            }
 
-               detailVC.modalPresentationStyle = .pageSheet
-               present(detailVC, animated: true, completion: nil)
-           } else {
-               print("Error: Could not instantiate AddItemModallyViewController")
-           }
+            detailVC.modalPresentationStyle = .pageSheet
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
     }
+
 
     
     
