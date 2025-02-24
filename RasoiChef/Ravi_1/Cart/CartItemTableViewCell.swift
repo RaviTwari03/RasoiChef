@@ -57,18 +57,31 @@ class CartItemTableViewCell: UITableViewCell {
         // Update the UI
         CartItemQuantityLabel.text = "\(newQuantity)"
         
-        // Update price
+        // Update price and send notification based on item type
         if let menuItem = cartItem?.menuItem {
             let totalPrice = menuItem.price * Double(newQuantity)
             CartDishPriceLabel.text = "₹\(totalPrice)"
             
-            // Post notification to update KitchenMenuCollectionViewCell
             NotificationCenter.default.post(
                 name: NSNotification.Name("CartUpdated"),
                 object: nil,
                 userInfo: [
                     "menuItemID": menuItem.itemID,
-                    "quantity": newQuantity
+                    "quantity": newQuantity,
+                    "isChefSpecial": false
+                ]
+            )
+        } else if let chefSpecial = cartItem?.chefSpecial {
+            let totalPrice = chefSpecial.price * Double(newQuantity)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            NotificationCenter.default.post(
+                name: NSNotification.Name("CartUpdated"),
+                object: nil,
+                userInfo: [
+                    "menuItemID": chefSpecial.dishID,
+                    "quantity": newQuantity,
+                    "isChefSpecial": true
                 ]
             )
         }
@@ -99,6 +112,17 @@ class CartItemTableViewCell: UITableViewCell {
             // Set stepper values
             CartIncreaseCounter.minimumValue = 0
             CartIncreaseCounter.maximumValue = Double(menuItem.intakeLimit)
+            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 0)
+            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 0)"
+        } else if let chefSpecial = cartItem?.chefSpecial {
+            CartDishLabel.text = chefSpecial.name
+            CartDishDescription.text = chefSpecial.description
+            let totalPrice = chefSpecial.price * Double(cartItem?.quantity ?? 0)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            // Set stepper values
+            CartIncreaseCounter.minimumValue = 0
+            CartIncreaseCounter.maximumValue = Double(chefSpecial.intakeLimit)
             CartIncreaseCounter.value = Double(cartItem?.quantity ?? 0)
             CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 0)"
         }

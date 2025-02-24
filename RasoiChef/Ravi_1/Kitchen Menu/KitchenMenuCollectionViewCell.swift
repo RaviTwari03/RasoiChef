@@ -170,9 +170,18 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
               let indexPath = collectionView.indexPath(for: self) else { return }
 
         let menuItem = KitchenDataController.menuItems[indexPath.row]
+        // Check if this is a chef special dish
+        let chefSpecial = KitchenDataController.chefSpecialtyDishes.first { $0.dishID == menuItem.itemID }
+        let isChefSpecial = chefSpecial != nil
 
         // Find or create cart item
-        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: { $0.menuItem?.itemID == menuItem.itemID }) {
+        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: { 
+            if isChefSpecial {
+                return $0.chefSpecial?.dishID == menuItem.itemID
+            } else {
+                return $0.menuItem?.itemID == menuItem.itemID
+            }
+        }) {
             // Update existing cart item
             CartViewController.cartItems[cartItemIndex].quantity = newQuantity
             
@@ -183,7 +192,12 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
             }
         } else if newQuantity > 0 {
             // Create new cart item
-            let newCartItem = CartItem(userAdress: "", quantity: newQuantity, menuItem: menuItem)
+            let newCartItem: CartItem
+            if let chefSpecial = chefSpecial {
+                newCartItem = CartItem(userAdress: "", quantity: newQuantity, chefSpecial: chefSpecial)
+            } else {
+                newCartItem = CartItem(userAdress: "", quantity: newQuantity, menuItem: menuItem)
+            }
             CartViewController.cartItems.append(newCartItem)
             addButton.isHidden = true
             stepperStackView.isHidden = false
@@ -197,7 +211,8 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
             object: nil,
             userInfo: [
                 "menuItemID": menuItem.itemID,
-                "quantity": newQuantity
+                "quantity": newQuantity,
+                "isChefSpecial": isChefSpecial
             ]
         )
     }
@@ -208,19 +223,34 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
 
     func updateIntakeLimit(for indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
-
+        let chefSpecial = KitchenDataController.chefSpecialtyDishes.first { $0.dishID == menuItem.itemID }
+        let isChefSpecial = chefSpecial != nil
+        
         // Get total ordered quantity from both current cart and placed orders
         let cartQuantity = CartViewController.cartItems
-            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .filter { 
+                if isChefSpecial {
+                    return $0.chefSpecial?.dishID == menuItem.itemID
+                } else {
+                    return $0.menuItem?.itemID == menuItem.itemID
+                }
+            }
             .reduce(0) { $0 + $1.quantity }
         
         let placedOrdersQuantity = OrderHistoryController.placedOrders
             .flatMap { $0.items }
-            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .filter { 
+                if isChefSpecial {
+                    return $0.chefSpecial?.dishID == menuItem.itemID
+                } else {
+                    return $0.menuItem?.itemID == menuItem.itemID
+                }
+            }
             .reduce(0) { $0 + $1.quantity }
         
         let totalOrderedQuantity = cartQuantity + placedOrdersQuantity
-        let remainingIntake = max(menuItem.intakeLimit - totalOrderedQuantity, 0)
+        let intakeLimit = isChefSpecial ? chefSpecial?.intakeLimit ?? menuItem.intakeLimit : menuItem.intakeLimit
+        let remainingIntake = max(intakeLimit - totalOrderedQuantity, 0)
 
         // Update UI
         dishIntakLimit.text = "Intake limit: \(remainingIntake)"
@@ -228,7 +258,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         addButton.alpha = remainingIntake > 0 ? 1.0 : 0.5
 
         // Update stepper
-        stepper.maximumValue = Double(remainingIntake + cartQuantity) // Allow reducing current cart items
+        stepper.maximumValue = Double(remainingIntake + cartQuantity) ?? 0.0
         stepper.minimumValue = 0
         stepper.value = Double(cartQuantity)
         stepper.isEnabled = true
