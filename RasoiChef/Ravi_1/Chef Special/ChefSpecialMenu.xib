@@ -204,6 +204,7 @@
                 <outlet property="specialDishName" destination="Jv5-HR-HaY" id="luy-NU-iK7"/>
                 <outlet property="specialDishPrice" destination="svq-hf-KlP" id="DjD-4F-DDo"/>
                 <outlet property="specialDishRating" destination="1cS-iW-Jlg" id="BiV-aN-qbF"/>
+                <outlet property="vegNonvegIcon" destination="Ke6-ir-ALB" id="S13-Qc-Yvd"/>
             </connections>
             <point key="canvasLocation" x="-32.061068702290072" y="0.0"/>
         </collectionViewCell>

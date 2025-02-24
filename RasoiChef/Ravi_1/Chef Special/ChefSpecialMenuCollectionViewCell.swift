@@ -22,19 +22,22 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
     @IBOutlet var Distance: UILabel!
     
     @IBOutlet var addButton: UIButton!
-    func updateSpecialDishDetails(for indexPath: IndexPath) {
-        // Fetch the corresponding ChefSpecialtyDish for the given indexPath
-        let specialDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
-        
-        // Update the UI elements with the data from the specialDish object
+    @IBOutlet weak var vegNonvegIcon: UIImageView!
+    
+    
+    func updateSpecialDishDetails(with specialDish: ChefSpecialtyDish) {
         specialDishName.text = specialDish.name
         specialDishPrice.text = "₹\(specialDish.price)"
-        kitchenName.text = specialDish.kitchenName // Update this based on real data if available
-//        specialDishAvailabilityTime.text = "10:00 AM - 2:00 PM"    // Example; adjust as per your data
-        specialDishRating.text = "\(String(describing: specialDish.rating))"
-        Distance.text = "\(String(describing: specialDish.distance)) km"           // Update dynamically if data exists
-        specialDishImage.image = UIImage(named: specialDish.imageURL ?? "placeholder") // Placeholder image if URL is nil
-        addButton.layer.cornerRadius = 11
+        kitchenName.text = specialDish.kitchenName
+        specialDishRating.text = "\(specialDish.rating)"
+        Distance.text = "\(specialDish.distance) km"
+        specialDishImage.image = UIImage(named: specialDish.imageURL)
+
+        if specialDish.mealCategory.contains(.veg) {
+            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
     }
 
     @IBAction func ChefSpecialAddButtonTapped(_ sender: Any) {
