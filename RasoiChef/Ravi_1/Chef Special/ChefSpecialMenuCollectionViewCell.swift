@@ -16,10 +16,10 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
     @IBOutlet var specialDishImage: UIImageView!
     @IBOutlet var specialDishName: UILabel!
     @IBOutlet var specialDishPrice: UILabel!
-    @IBOutlet var specialDishAvailabilityDays: UILabel!
+    @IBOutlet var kitchenName: UILabel!
     
     @IBOutlet var specialDishRating: UILabel!
-    @IBOutlet var specialDishIntakeLimit: UILabel!
+    @IBOutlet var Distance: UILabel!
     
     @IBOutlet var addButton: UIButton!
     func updateSpecialDishDetails(for indexPath: IndexPath) {
@@ -29,10 +29,10 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
         // Update the UI elements with the data from the specialDish object
         specialDishName.text = specialDish.name
         specialDishPrice.text = "₹\(specialDish.price)"
-        specialDishAvailabilityDays.text = "S, Th" // Update this based on real data if available
+        kitchenName.text = specialDish.kitchenName // Update this based on real data if available
 //        specialDishAvailabilityTime.text = "10:00 AM - 2:00 PM"    // Example; adjust as per your data
         specialDishRating.text = "\(String(describing: specialDish.rating))"
-        specialDishIntakeLimit.text = "Max Limit: 50"             // Update dynamically if data exists
+        Distance.text = "\(String(describing: specialDish.distance)) km"           // Update dynamically if data exists
         specialDishImage.image = UIImage(named: specialDish.imageURL ?? "placeholder") // Placeholder image if URL is nil
         addButton.layer.cornerRadius = 11
     }
