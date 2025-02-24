@@ -165,55 +165,44 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         
         let newQuantity = Int(sender.value)
         
-        // If quantity becomes 0, show the add button
+        // Update quantity label first
+        UIView.animate(withDuration: 0.2) {
+            self.quantityLabel.text = "\(newQuantity)"
+        }
+        
+        // Calculate total ordered quantity
+        let otherCartQuantity = CartViewController.cartItems
+            .filter { item in
+                guard let itemChefID = item.chefSpecial?.dishID else { return false }
+                return itemChefID == specialDish.dishID
+            }
+            .reduce(0) { $0 + $1.quantity }
+        
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.chefSpecial?.dishID == specialDish.dishID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        let totalWithNewQuantity = placedOrdersQuantity + newQuantity
+        
+        // Check if exceeding limit
+        if totalWithNewQuantity > specialDish.intakeLimit {
+            sender.value = Double(newQuantity - 1)
+            self.quantityLabel.text = "\(newQuantity - 1)"
+            return
+        }
+        
+        // Handle cart updates
         if newQuantity == 0 {
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.2) {
                 self.stepperStackView.isHidden = true
                 self.addButton.isHidden = false
             }
             CartViewController.cartItems.removeAll { $0.chefSpecial?.dishID == specialDish.dishID }
         } else {
-            // Update quantity label first
-            UIView.animate(withDuration: 0.2) {
-                self.quantityLabel.text = "\(newQuantity)"
-            }
-            
-            // Calculate total ordered quantity excluding current item
-            let otherCartQuantity = CartViewController.cartItems
-                .filter { item in
-                    guard let itemChefID = item.chefSpecial?.dishID else { return false }
-                    // Only count other items, not the current one
-                    return itemChefID == specialDish.dishID && 
-                           !(itemChefID == specialDish.dishID && item.quantity == newQuantity)
-                }
-                .reduce(0) { $0 + $1.quantity }
-            
-            let placedOrdersQuantity = OrderHistoryController.placedOrders
-                .flatMap { $0.items }
-                .filter { $0.chefSpecial?.dishID == specialDish.dishID }
-                .reduce(0) { $0 + $1.quantity }
-            
-            let totalWithNewQuantity = otherCartQuantity + placedOrdersQuantity + newQuantity
-            let remainingAfterChange = specialDish.intakeLimit - totalWithNewQuantity
-            
-            // Update availability label with new remaining count
-            UIView.animate(withDuration: 0.2) {
-                if totalWithNewQuantity <= specialDish.intakeLimit {
-                    self.specialDishAvailableLabel.text = "Available (\(remainingAfterChange) left)"
-                    self.specialDishAvailableLabel.textColor = UIColor.systemGreen
-                } else {
-                    // Reset to previous value if exceeding limit
-                    sender.value = Double(newQuantity)
-                    self.quantityLabel.text = "\(newQuantity)"
-                    return
-                }
-            }
-            
-            // Update UI and cart
             if let existingItemIndex = CartViewController.cartItems.firstIndex(where: { $0.chefSpecial?.dishID == specialDish.dishID }) {
                 CartViewController.cartItems[existingItemIndex].quantity = newQuantity
             } else {
-                // Add new item to cart if it doesn't exist
                 let cartItem = CartItem(
                     userAdress: "Galgotias University",
                     quantity: newQuantity,

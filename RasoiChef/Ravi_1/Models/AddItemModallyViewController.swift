@@ -147,14 +147,64 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         }
         
         @IBAction func stepperValueChanged(_ sender: UIStepper) {
-            // Update quantity label
-            AddDishItemCounterLabel.text = "\(Int(sender.value))"
+            let newValue = Int(sender.value)
+            
+            UIView.animate(withDuration: 0.2) {
+                self.AddDishItemCounterLabel.text = "\(newValue)"
+            }
         }
         
         @IBAction func addDishButtonTapped(_ sender: UIButton) {
             let quantityToAdd = Int(AddDishItemCounterLabel.text ?? "1") ?? 1
             
-            if let item = selectedItem {
+            if let chefDish = selectedChefSpecialtyDish {
+                // Calculate total ordered
+                let cartQuantity = CartViewController.cartItems
+                    .filter { $0.chefSpecial?.dishID == chefDish.dishID }
+                    .reduce(0) { $0 + $1.quantity }
+                
+                let placedOrdersQuantity = OrderHistoryController.placedOrders
+                    .flatMap { $0.items }
+                    .filter { $0.chefSpecial?.dishID == chefDish.dishID }
+                    .reduce(0) { $0 + $1.quantity }
+                
+                let newTotal = placedOrdersQuantity + quantityToAdd
+                
+                if newTotal > chefDish.intakeLimit {
+                    return
+                }
+                
+                let cartItem = CartItem(
+                    userAdress: "Galgotias University",
+                    quantity: quantityToAdd,
+                    specialRequest: AddDishRequestTextField.text ?? "",
+                    chefSpecial: chefDish
+                )
+                
+                CartViewController.cartItems.append(cartItem)
+                
+                // Update UI before dismissing
+                UIView.animate(withDuration: 0.2) {
+                    self.AddDishButton.isEnabled = false
+                    self.AddDishButton.alpha = 0.5
+                    self.AddIncreaseDishButton.isEnabled = false
+                }
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("CartUpdated"),
+                    object: nil,
+                    userInfo: [
+                        "menuItemID": chefDish.dishID,
+                        "quantity": quantityToAdd,
+                        "isChefSpecial": true,
+                        "isInitialAdd": true
+                    ]
+                )
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    self.dismiss(animated: true)
+                }
+            } else if let item = selectedItem {
                 // Check remaining intake for menu item
                 let cartQuantity = CartViewController.cartItems
                     .filter { $0.menuItem?.itemID == item.itemID }
@@ -198,55 +248,6 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 )
                 
                 // Delay dismiss to show UI update
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    self.dismiss(animated: true, completion: nil)
-                }
-                
-            } else if let chefDish = selectedChefSpecialtyDish {
-                // Check remaining intake for chef special items...
-                let cartQuantity = CartViewController.cartItems
-                    .filter { $0.chefSpecial?.dishID == chefDish.dishID }
-                    .reduce(0) { $0 + $1.quantity }
-                
-                let placedOrdersQuantity = OrderHistoryController.placedOrders
-                    .flatMap { $0.items }
-                    .filter { $0.chefSpecial?.dishID == chefDish.dishID }
-                    .reduce(0) { $0 + $1.quantity }
-                
-                let newTotal = cartQuantity + placedOrdersQuantity + quantityToAdd
-                
-                if newTotal > chefDish.intakeLimit {
-                    return
-                }
-                
-                let cartItem = CartItem(
-                    userAdress: "Galgotias University",
-                    quantity: quantityToAdd,
-                    specialRequest: AddDishRequestTextField.text ?? "",
-                    chefSpecial: chefDish
-                )
-                
-                CartViewController.cartItems.append(cartItem)
-                
-                // Update UI before dismissing
-                UIView.animate(withDuration: 0.3) {
-                    self.AddDishButton.isEnabled = false
-                    self.AddDishButton.alpha = 0.5
-                    self.AddIncreaseDishButton.isEnabled = false
-                }
-                
-                // Notify about cart update with initial quantity
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("CartUpdated"),
-                    object: nil,
-                    userInfo: [
-                        "menuItemID": chefDish.dishID,
-                        "quantity": quantityToAdd,
-                        "isChefSpecial": true,
-                        "isInitialAdd": true  // Add this flag
-                    ]
-                )
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.dismiss(animated: true, completion: nil)
                 }
