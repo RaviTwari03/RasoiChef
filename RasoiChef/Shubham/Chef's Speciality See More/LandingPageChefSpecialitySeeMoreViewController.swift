@@ -15,6 +15,9 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         var filterScrollView: UIScrollView!
         var filterStackView: UIStackView!
         var itemCountLabel: UILabel!
+        var filteredChefSpecialDishes: [ChefSpecialtyDish] = []
+        var activeFilters: Set<String> = []
+        
         
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -45,67 +48,65 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
             ChefsSpecialDishes.dataSource = self
             ChefsSpecialDishes.delegate = self
             
-            
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial
             updateItemCount()
+
         }
 
     
-        func configureSearchBar() {
-            searchBar = UISearchBar()
-            searchBar.delegate = self
-            searchBar.placeholder = "Search"
-            searchBar.searchBarStyle = .minimal // Removes background lines
-            searchBar.backgroundImage = UIImage() // Removes background shadow
-            searchBar.translatesAutoresizingMaskIntoConstraints = false
-            
-            view.addSubview(searchBar)
-            
-            NSLayoutConstraint.activate([
-                searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-                searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                searchBar.heightAnchor.constraint(equalToConstant: 40)
-            ])
+    func configureSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.placeholder = "Search"
+        searchBar.searchBarStyle = .minimal
+        searchBar.backgroundImage = UIImage()
+        searchBar.showsCancelButton = false  // Initially hidden
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(searchBar)
+        
+        NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchBar.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+
+        
+    func configureFilterStackView() {
+        filterScrollView = UIScrollView()
+        filterScrollView.showsHorizontalScrollIndicator = false
+        filterScrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        filterStackView = UIStackView()
+        filterStackView.axis = .horizontal
+        filterStackView.spacing = 15.0
+        filterStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+        
+        for title in filterTitles {
+            let button = createFilterButton(title: title)
+            filterStackView.addArrangedSubview(button)
         }
         
-        func configureFilterStackView() {
-            filterScrollView = UIScrollView()
-            filterScrollView.showsHorizontalScrollIndicator = false
-            filterScrollView.translatesAutoresizingMaskIntoConstraints = false
+        filterScrollView.addSubview(filterStackView)
+        view.addSubview(filterScrollView)
+        
+        NSLayoutConstraint.activate([
+            filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+            filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            filterScrollView.heightAnchor.constraint(equalToConstant: 40),
             
-            filterStackView = UIStackView()
-            filterStackView.axis = .horizontal
-            filterStackView.spacing = 15.0
-            filterStackView.translatesAutoresizingMaskIntoConstraints = false
-            
-            let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-            let nearestButton = createFilterButton(title: "Nearest")
-            let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-            let pureVegButton = createFilterButton(title: "Pure Veg")
-            let costVegButton = createFilterButton(title: "Cost: Low to High")
-            
-            filterStackView.addArrangedSubview(sortButton)
-            filterStackView.addArrangedSubview(nearestButton)
-            filterStackView.addArrangedSubview(ratingsButton)
-            filterStackView.addArrangedSubview(pureVegButton)
-            filterStackView.addArrangedSubview(costVegButton)
-            
-            filterScrollView.addSubview(filterStackView)
-            view.addSubview(filterScrollView)
-            
-            NSLayoutConstraint.activate([
-                filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
-                filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                filterScrollView.heightAnchor.constraint(equalToConstant: 40),
-                
-                filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
-                filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
-                filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
-                filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
-                filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
-            ])
-        }
+            filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
+            filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
+            filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
+            filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
+            filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
+        ])
+    }
         
     // MARK: - Configure Item Count Label
     func configureItemCountLabel() {
@@ -126,83 +127,157 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     }
     
     
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+            button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 10
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            button.tag = filterStackView.arrangedSubviews.count
+            updateFilterButtonAppearance(button, isSelected: false)
+
+            return button
         }
+
+
+    
+    func updateFilterButtonAppearance(_ button: UIButton, isSelected: Bool) {
+        if isSelected {
+            button.backgroundColor = UIColor.accent
+            button.setTitleColor(.white, for: .normal)
+        } else {
+            button.backgroundColor = .white
+            button.setTitleColor(.black, for: .normal)
+        }
+    }
+
         
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
+    @objc func filterButtonTapped(_ sender: UIButton) {
+        guard let title = sender.title(for: .normal) else { return }
+
+        if title == "Sort" {
+            return // Ignore "Sort" button (no color change, no filtering)
+        }
+
+        if activeFilters.contains(title) {
+            activeFilters.remove(title) // Remove filter if already applied
+            updateFilterButtonAppearance(sender, isSelected: false) // Update color
+        } else {
+            activeFilters.insert(title) // Apply new filter
+            updateFilterButtonAppearance(sender, isSelected: true) // Update color
+        }
+
+        applyFilters()
     }
 
 
-        
-        @objc func filterButtonTapped(_ sender: UIButton) {
-            guard let title = sender.title(for: .normal) else { return }
-            print("Filter tapped: \(title)")
+
+    
+    
+    func applyFilters() {
+        filteredChefSpecialDishes = KitchenDataController.globalChefSpecial // Start with full list
+
+        // Apply search first if there's text
+        if let searchText = searchBar.text, !searchText.isEmpty {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
         }
-        
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            print("Search query: \(searchText)")
+
+        // Apply filters one by one
+        if activeFilters.contains("Nearest") {
+            filteredChefSpecialDishes.sort { $0.distance < $1.distance }
         }
+        if activeFilters.contains("Ratings 4.0+") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.rating >= 4.0 }
+        }
+        if activeFilters.contains("Pure Veg") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.mealCategory.contains(.veg) }
+        }
+        if activeFilters.contains("Cost: Low to High") {
+            filteredChefSpecialDishes.sort { $0.price < $1.price }
+        }
+
+        updateItemCount() 
+        ChefsSpecialDishes.reloadData()
+    }
+
+
+
         
         func numberOfSections(in collectionView: UICollectionView) -> Int {
             return 1
         }
         
-        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return KitchenDataController.globalChefSpecial.count
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredChefSpecialDishes.count
+    }
+    
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial
+        } else {
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
         }
+        
+        applyFilters()
+    }
+
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button
+        searchBar.resignFirstResponder() // Hide keyboard
+        
+        filteredChefSpecialDishes = KitchenDataController.globalChefSpecial // Reset to all dishes
+        updateItemCount()
+        ChefsSpecialDishes.reloadData()
+    }
+
+
     
     
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        let count = KitchenDataController.globalChefSpecial.count
-        DispatchQueue.main.async {
-            self.itemCountLabel.text = "\(count) Dishes Available For You"
-        }
+        let count = filteredChefSpecialDishes.count
+        itemCountLabel.text = "\(count) Dishes Available for You"
     }
+
+
     
     
         
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            cell.delegate = self
-            cell.layer.cornerRadius = 15.0
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-            cell.layer.shadowRadius = 2.5
-            cell.layer.shadowOpacity = 0.5
-            cell.layer.masksToBounds = false
-            return cell
-        }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
+        
+        let dish = filteredChefSpecialDishes[indexPath.row] // Now using filtered list
+        cell.updateSpecialDishDetails(with: dish) // Corrected function call
+        cell.delegate = self
+
+        // Cell Styling
+        cell.layer.cornerRadius = 15.0
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cell.layer.shadowRadius = 2.5
+        cell.layer.shadowOpacity = 0.5
+        cell.layer.masksToBounds = false
+
+        return cell
+    }
+
+
         
     
     
@@ -224,7 +299,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         guard let indexPath = ChefsSpecialDishes.indexPath(for: cell) else { return }
         
         // Fetch the Chef Specialty Dish from the data controller
-        let selectedChefSpecialtyDish = KitchenDataController.globalChefSpecial[indexPath.row]
+        let selectedChefSpecialtyDish = filteredChefSpecialDishes[indexPath.row]
         print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
         
         // Instantiate the detail view controller
