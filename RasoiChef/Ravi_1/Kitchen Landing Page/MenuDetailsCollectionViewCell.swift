@@ -36,32 +36,76 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: MenuDetailsCellDelegate?
     
+    var indexPath: IndexPath?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(cartUpdated(_:)),
+            name: NSNotification.Name("CartUpdated"),
+            object: nil
+        )
+        
+        // Initial setup
+        if let stepper = stepper {
+            stepper.minimumValue = 0
+            stepper.stepValue = 1
+            stepper.layer.cornerRadius = 11
+            stepperStackView.spacing = 8
+        }
+        
+        if let stepperStackView = stepperStackView {
+            stepperStackView.isHidden = true
+        }
+        
+        if let quantityLabel = quantityLabel {
+            quantityLabel.text = "0"
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
     }
     
-    var addedItemCount: Int = 0 { // Track how many items are added
-            didSet {
-                updateButtonAppearance()
+    @IBAction func stepperValueChanged(_ sender: UIStepper) {
+        guard let indexPath = self.indexPath else { return }
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        
+        let newQuantity = Int(sender.value)
+        quantityLabel.text = "\(newQuantity)"
+        
+        if newQuantity == 0 {
+            CartViewController.cartItems.removeAll { $0.menuItem?.itemID == menuItem.itemID }
+            stepperStackView.isHidden = true
+            addButton.isHidden = false
+        } else {
+            if let existingItemIndex = CartViewController.cartItems.firstIndex(where: { $0.menuItem?.itemID == menuItem.itemID }) {
+                CartViewController.cartItems[existingItemIndex].quantity = newQuantity
             }
         }
-    
-    func updateButtonAppearance() {
-          if addedItemCount > 0 {
-              addButton.setTitle("Added (\(addedItemCount))", for: .normal)
-              addButton.backgroundColor = .systemBlue
-          } else {
-              addButton.setTitle("Add", for: .normal)
-              addButton.backgroundColor = .systemGreen
-          }
-      }
-//    var selectedItem: MenuItem?
+        
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CartUpdated"),
+            object: nil,
+            userInfo: [
+                "menuItemID": menuItem.itemID,
+                "quantity": newQuantity,
+                "isChefSpecial": false
+            ]
+        )
+    }
     
     func updateMenuDetails(with indexPath: IndexPath) {
-        applyCardStyle1()
-        addButton.layer.cornerRadius = 11
+        self.indexPath = indexPath
         let menuItem = KitchenDataController.menuItems[indexPath.row]
+        
+        // Update basic details
         mealTimeLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
         orderDeadlineLabel.text = menuItem.orderDeadline
         expectedDeliveryLabel.text = menuItem.recievingDeadline
@@ -69,11 +113,40 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         mealPriceLabel.text = "₹\(menuItem.price)"
         mealRatingLabel.text = "\(menuItem.rating)"
         mealImageView.image = UIImage(named: menuItem.imageURL)
-        availabiltyLabel.text = "\(menuItem.availability.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-
         
+        // Check cart state
+        let cartQuantity = CartViewController.cartItems
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        // Update UI based on cart state
+        if cartQuantity > 0 {
+            stepperStackView.isHidden = false
+            addButton.isHidden = true
+            stepper.value = Double(cartQuantity)
+            quantityLabel.text = "\(cartQuantity)"
+        } else {
+            stepperStackView.isHidden = true
+            addButton.isHidden = false
+            stepper.value = 0
+            quantityLabel.text = "0"
+        }
+        
+        applyCardStyle1()
     }
-   
+    
+    @objc private func cartUpdated(_ notification: Notification) {
+        guard let indexPath = self.indexPath,
+              let userInfo = notification.userInfo,
+              let menuItemID = userInfo["menuItemID"] as? String else {
+            return
+        }
+        
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        if menuItem.itemID == menuItemID {
+            updateMenuDetails(with: indexPath)
+        }
+    }
     
     func applyCardStyle1() {
         cardViewKitchen.layer.cornerRadius = 15

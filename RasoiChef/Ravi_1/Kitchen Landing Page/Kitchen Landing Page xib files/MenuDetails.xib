@@ -190,11 +190,6 @@
                             <constraint firstItem="1y7-9y-Gtm" firstAttribute="top" secondItem="j2p-rj-Ukn" secondAttribute="bottom" constant="8" id="sXa-sB-tIn"/>
                             <constraint firstItem="mZl-Km-ahQ" firstAttribute="leading" secondItem="GSj-qm-GlN" secondAttribute="leading" constant="8" id="xPX-8n-oak"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="mZl-Km-ahQ"/>
-                            </mask>
-                        </variation>
                     </view>
                 </subviews>
                 <constraints>
