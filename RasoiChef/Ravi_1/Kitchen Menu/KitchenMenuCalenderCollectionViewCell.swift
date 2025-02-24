@@ -7,12 +7,18 @@
 
 import UIKit
 
+protocol KitchenMenuCalenderCellDelegate: AnyObject {
+    func didSelectDate(_ date: Date)
+}
+
+
 class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
   
     @IBOutlet var monthLabel: UILabel!
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var dayLabel: UILabel!
     
+
 
     override func awakeFromNib() {
             super.awakeFromNib()
@@ -22,42 +28,48 @@ class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
         private func setupAppearance() {
             contentView.layer.cornerRadius = 15
             contentView.layer.borderWidth = 1
-            contentView.layer.borderColor = UIColor(named: "AccentColor")?.cgColor
+            contentView.layer.borderColor = UIColor(hex: "ED7A57").cgColor
             contentView.layer.masksToBounds = true
         }
         
         override var isSelected: Bool {
             didSet {
-                contentView.backgroundColor = isSelected ? UIColor(named: "AccentColor") : .white
-                monthLabel.textColor = isSelected ? .white : .black
-                dateLabel.textColor = isSelected ? .white : .black
-                dayLabel.textColor = isSelected ? .white : .black
+                updateSelectionAppearance(selected: isSelected)
             }
         }
         
-        func updateMenuListDate(for indexPath: IndexPath) {
+        private func updateSelectionAppearance(selected: Bool) {
+            contentView.backgroundColor = selected ? UIColor(hex: "ED7A57") : .white
+            contentView.layer.borderWidth = selected ? 0 : 1
+            monthLabel.textColor = selected ? .white : .black
+            dateLabel.textColor = selected ? .white : .black
+            dayLabel.textColor = selected ? .white : .black
+        }
+        
+        func updateMenuListDate(for indexPath: IndexPath) -> Bool {
             let calendar = Calendar.current
             let today = Date()
-            
+            var isToday = false
+
             if let futureDate = calendar.date(byAdding: .day, value: indexPath.row, to: today) {
                 let dateFormatter = DateFormatter()
                 
-                dateFormatter.dateFormat = "MMM" // Month in short format (e.g., Jan, Feb)
+                dateFormatter.dateFormat = "MMM"
                 monthLabel.text = dateFormatter.string(from: futureDate)
                 
-                dateFormatter.dateFormat = "d" // Day of the month
+                dateFormatter.dateFormat = "d"
                 dateLabel.text = dateFormatter.string(from: futureDate)
                 
-                dateFormatter.dateFormat = "EEE" // Day of the week in short format (e.g., Mon, Tue)
+                dateFormatter.dateFormat = "EEE"
                 dayLabel.text = dateFormatter.string(from: futureDate)
                 
-                // Highlight today’s date if needed
+                // Check if the current cell represents today's date
                 if calendar.isDate(today, inSameDayAs: futureDate) {
-                    dayLabel.textColor = .systemRed
-                } else {
-                    dayLabel.textColor = .label
+                    isToday = true
+                    isSelected = true  // Automatically mark today's date as selected
                 }
             }
+            return isToday
         }
     }
 
@@ -73,7 +85,6 @@ class KitchenMenuCalenderCollectionViewCell: UICollectionViewCell {
             let green = CGFloat((rgb >> 8) & 0xFF) / 255.0
             let blue = CGFloat(rgb & 0xFF) / 255.0
              
-            
             self.init(red: red, green: green, blue: blue, alpha: 1.0)
         }
     }

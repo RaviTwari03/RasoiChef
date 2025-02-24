@@ -8,10 +8,52 @@
 import UIKit
 
 class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableViewDataSource, CustomiseTableDelegate, SubscribeYourPlanButtonDelegate,WeeklyPlansDelegate {
+  
+    
+    func didSelectStartAndEndDate(startDate: String, endDate: String, dayCount: Int, orderedDays: [String]) {
+        selectedStartDate = startDate
+        selectedEndDate = endDate
+        selectedDayCount = dayCount
+        selectedOrderedDays = orderedDays
+
+        let today = getCurrentDay()
+        let reorderedDays = reorderDays(startingFrom: today, days: orderedDays)
+
+        print("Today's day: \(today)")
+        print("Original Days: \(orderedDays)")
+        print("Reordered Days: \(reorderedDays)")
+
+        // Create weeklyMeals dynamically based on selected orderedDays
+        weeklyMeals = reorderedDays.map { day in
+            DayMeal(day: day, meals: ["Breakfast", "Lunch", "Snacks", "Dinner"])
+        }
+
+        isDateSelected = true
+        print("Filtered Meals: \(weeklyMeals.map { $0.day })")
+
+        DispatchQueue.main.async {
+            self.MealSubscriptionPlan.reloadData()
+        }
+    }
+    func reorderDays(startingFrom today: String, days: [String]) -> [String] {
+        if let index = days.firstIndex(of: today) {
+            return Array(days[index...]) + Array(days[..<index])
+        } else {
+            return days // If today is not in the list, return as is
+        }
+    }
+    func getCurrentDay() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE" // Returns full weekday name (e.g., "Friday")
+        return formatter.string(from: Date())
+    }
 
     
 
     
+
+    var selectedOrderedDays: [String] = []
+    var filteredWeeklyMeals: [DayMeal] = [] //
     var isDateSelected = false
     var selectedDayCount: Int = 0
     var selectedStartDate: String = ""
@@ -40,7 +82,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         DayMeal(day: "Saturday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"]),
         DayMeal(day: "Sunday", meals: ["Breakfast", "Lunch", "Snacks", "Dinner"])
     ]
-    
+//    
     
     override func viewDidLoad() {
         super.viewDidLoad()
