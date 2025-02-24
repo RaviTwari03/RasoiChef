@@ -129,6 +129,8 @@ struct ChefSpecialtyDish {
     var imageURL: String
     var mealCategory : [MealCategory]
     var distance: Double
+    var isPureVeg: Bool
+    
 }
 
 // Cart Item

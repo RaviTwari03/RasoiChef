@@ -68,44 +68,39 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
             ])
         }
         
-        func configureFilterStackView() {
-            filterScrollView = UIScrollView()
-            filterScrollView.showsHorizontalScrollIndicator = false
-            filterScrollView.translatesAutoresizingMaskIntoConstraints = false
-            
-            filterStackView = UIStackView()
-            filterStackView.axis = .horizontal
-            filterStackView.spacing = 15.0
-            filterStackView.translatesAutoresizingMaskIntoConstraints = false
-            
-            let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-            let nearestButton = createFilterButton(title: "Nearest")
-            let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-            let pureVegButton = createFilterButton(title: "Pure Veg")
-            let costVegButton = createFilterButton(title: "Cost: Low to High")
-            
-            filterStackView.addArrangedSubview(sortButton)
-            filterStackView.addArrangedSubview(nearestButton)
-            filterStackView.addArrangedSubview(ratingsButton)
-            filterStackView.addArrangedSubview(pureVegButton)
-            filterStackView.addArrangedSubview(costVegButton)
-            
-            filterScrollView.addSubview(filterStackView)
-            view.addSubview(filterScrollView)
-            
-            NSLayoutConstraint.activate([
-                filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
-                filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                filterScrollView.heightAnchor.constraint(equalToConstant: 40),
-                
-                filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
-                filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
-                filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
-                filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
-                filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
-            ])
+    func configureFilterStackView() {
+        filterScrollView = UIScrollView()
+        filterScrollView.showsHorizontalScrollIndicator = false
+        filterScrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        filterStackView = UIStackView()
+        filterStackView.axis = .horizontal
+        filterStackView.spacing = 15.0
+        filterStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+        
+        for title in filterTitles {
+            let button = createFilterButton(title: title)
+            filterStackView.addArrangedSubview(button)
         }
+        
+        filterScrollView.addSubview(filterStackView)
+        view.addSubview(filterScrollView)
+        
+        NSLayoutConstraint.activate([
+            filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+            filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            filterScrollView.heightAnchor.constraint(equalToConstant: 40),
+            
+            filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
+            filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
+            filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
+            filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
+            filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
+        ])
+    }
         
     // MARK: - Configure Item Count Label
     func configureItemCountLabel() {
@@ -126,41 +121,33 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     }
     
     
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+            button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 10
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            button.tag = filterStackView.arrangedSubviews.count
+            updateFilterButtonAppearance(button, isSelected: false)
+
+            return button
         }
-        
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
+
+
+    
+    func updateFilterButtonAppearance(_ button: UIButton, isSelected: Bool) {
+        if isSelected {
+            button.backgroundColor = UIColor.accent
+            button.setTitleColor(.white, for: .normal)
+        } else {
+            button.backgroundColor = .white
+            button.setTitleColor(.black, for: .normal)
+        }
     }
-
-
         
         @objc func filterButtonTapped(_ sender: UIButton) {
             guard let title = sender.title(for: .normal) else { return }

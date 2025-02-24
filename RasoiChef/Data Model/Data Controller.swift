@@ -279,7 +279,8 @@ class KitchenDataController {
             rating: 4.7,
             imageURL: "CholeBhature",
             mealCategory: [.veg],
-            distance: 2.6
+            distance: 2.6,
+            isPureVeg: true
         ),
         ChefSpecialtyDish(
             kitchenName: "Anjali's Kitchen",
@@ -291,7 +292,8 @@ class KitchenDataController {
             rating: 4.8,
             imageURL: "SpringRoll",
             mealCategory: [.veg],
-            distance: 3.1
+            distance: 3.1,
+            isPureVeg: true
         )
     ]
     
@@ -306,7 +308,8 @@ class KitchenDataController {
             rating: 4.9,
             imageURL: "ButterChicken",
             mealCategory: [.nonVeg],
-            distance: 4.3
+            distance: 4.3,
+            isPureVeg: false
         ),
         ChefSpecialtyDish(
             kitchenName: "Mumbai Spices",
@@ -318,7 +321,8 @@ class KitchenDataController {
             rating: 4.5,
             imageURL: "PavBhaji",
             mealCategory: [.veg],
-            distance: 3.1
+            distance: 3.1,
+            isPureVeg: true
         ),
         ChefSpecialtyDish(
             kitchenName: "Delhi Zaika",
@@ -330,7 +334,8 @@ class KitchenDataController {
             rating: 4.6,
             imageURL: "RajmaChawal",
             mealCategory: [.veg],
-            distance: 2.5
+            distance: 2.5,
+            isPureVeg: true
         ),
      
         ChefSpecialtyDish(
@@ -343,7 +348,8 @@ class KitchenDataController {
             rating: 4.7,
             imageURL: "PaneerTikka",
             mealCategory: [.veg],
-            distance: 1.7
+            distance: 1.7,
+            isPureVeg: true
         ),
         ChefSpecialtyDish(
             kitchenName: "Royal Rajasthan",
@@ -355,7 +361,8 @@ class KitchenDataController {
             rating: 4.9,
             imageURL: "DalBaatiChurma",
             mealCategory: [.veg],
-            distance: 4.2
+            distance: 4.2,
+            isPureVeg: true
         ),
         ChefSpecialtyDish(
             kitchenName: "Biryani Bliss",
@@ -367,7 +374,8 @@ class KitchenDataController {
             rating: 4.8,
             imageURL: "HyderabadiBiryani",
             mealCategory: [.nonVeg],
-            distance: 5.3
+            distance: 5.3,
+            isPureVeg: false
         ),
         ChefSpecialtyDish(
             kitchenName: "Street Food Junction",
@@ -379,7 +387,8 @@ class KitchenDataController {
             rating: 4.6,
             imageURL: "PaniPuri",
             mealCategory: [.veg],
-            distance: 2.9
+            distance: 2.9,
+            isPureVeg: true
         )
     ]
     
