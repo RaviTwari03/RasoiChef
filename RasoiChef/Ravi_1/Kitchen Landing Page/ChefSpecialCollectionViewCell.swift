@@ -27,7 +27,9 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
     @IBOutlet var addButton: UIButton!
     
     @IBOutlet var specialCard: UIView!
-    
+    @IBOutlet var stepperStackView: UIStackView!
+    @IBOutlet var quantityLabel: UILabel!
+    @IBOutlet var stepper: UIStepper!
     
     func updateChefSpecialtyDetails(for indexPath: IndexPath) {
         // Ensure the index is within bounds
