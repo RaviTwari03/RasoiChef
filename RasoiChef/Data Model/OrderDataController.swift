@@ -84,7 +84,7 @@ class OrderDataController{
 //                    endDate: "2025-02-16",
 //                    totalPrice: 1400.0,
 //                    details: "Weekly Plan",
-//                    mealCountPerDay: 4,
+//                    PlanIntakeLimit: 4,
 //                    planImage: "PlanImage",
 //                    weeklyMeals: [
 //                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
@@ -99,7 +99,7 @@ class OrderDataController{
 //                    endDate: "2025-02-16",
 //                    totalPrice: 1200.0,
 //                    details: "Bi-weekly Plan",
-//                    mealCountPerDay: 3,
+//                    PlanIntakeLimit: 3,
 //                    planImage: "PlanImage",
 //                    weeklyMeals: [
 //                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
@@ -150,4 +150,6 @@ class OrderDataController{
     
     
     
+
+
 
