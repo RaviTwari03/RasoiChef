@@ -103,15 +103,15 @@
                                     <constraint firstAttribute="width" constant="18" id="muA-dp-eBu"/>
                                 </constraints>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PA8-hr-rZ5">
-                                <rect key="frame" x="89" y="117" width="144.33333333333337" height="32"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PA8-hr-rZ5">
+                                <rect key="frame" x="89.000000000000014" y="117" width="144.33333333333337" height="30"/>
                                 <subviews>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="g8s-nC-RG7">
-                                        <rect key="frame" x="0.0" y="0.0" width="94" height="32"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="94" height="30"/>
                                         <color key="backgroundColor" red="0.92941176469999998" green="0.47843137250000001" blue="0.3411764706" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </stepper>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLe-b3-WP6">
-                                        <rect key="frame" x="100" y="0.0" width="44.333333333333343" height="32"/>
+                                        <rect key="frame" x="100" y="0.0" width="44.333333333333343" height="30"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -131,21 +131,21 @@
                             <constraint firstItem="7DO-bH-KaI" firstAttribute="leading" secondItem="3r1-27-lvk" secondAttribute="leading" id="R2R-Z2-8KE"/>
                             <constraint firstItem="JCm-OB-Yum" firstAttribute="top" secondItem="7DO-bH-KaI" secondAttribute="bottom" constant="4" id="R2l-Cq-RBD"/>
                             <constraint firstItem="3r1-27-lvk" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="top" constant="5" id="Tmr-B5-R0h"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="top" secondItem="ID4-Z9-Sa0" secondAttribute="top" id="XA1-jn-40A"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="bottom" secondItem="ID4-Z9-Sa0" secondAttribute="bottom" id="XS7-0q-UBU"/>
                             <constraint firstItem="ID4-Z9-Sa0" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="89" id="XfK-HR-YEA"/>
                             <constraint firstAttribute="height" constant="152" id="YGk-NE-RuG"/>
                             <constraint firstAttribute="bottom" secondItem="ID4-Z9-Sa0" secondAttribute="bottom" constant="5" id="adA-vz-Poq"/>
-                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="89" id="duc-Bc-gDf"/>
-                            <constraint firstAttribute="bottom" secondItem="PA8-hr-rZ5" secondAttribute="bottom" constant="3" id="jLX-2W-Iu4"/>
-                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="top" constant="117" id="k6C-x2-fCq"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="leading" secondItem="ID4-Z9-Sa0" secondAttribute="trailing" constant="-99.999999999999986" id="fUY-lt-OpC"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Jqr-Lg-wip" secondAttribute="trailing" constant="20" id="lf7-Tx-R5L"/>
                             <constraint firstItem="38t-H7-Q42" firstAttribute="centerY" secondItem="gq1-JO-r7H" secondAttribute="centerY" id="neI-yf-4jf"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="JCm-OB-Yum" secondAttribute="trailing" constant="10" id="o6c-5F-LAy"/>
                             <constraint firstAttribute="bottom" secondItem="Jqr-Lg-wip" secondAttribute="bottom" constant="10" id="oh2-FN-M42"/>
-                            <constraint firstAttribute="trailing" secondItem="PA8-hr-rZ5" secondAttribute="trailing" constant="140.66999999999999" id="rRf-RP-1Rx"/>
                             <constraint firstItem="7DO-bH-KaI" firstAttribute="top" secondItem="3r1-27-lvk" secondAttribute="bottom" constant="5" id="tAs-H3-Zqx"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="top" secondItem="Frd-VB-lQx" secondAttribute="top" constant="5" id="wzR-PZ-uao"/>
                             <constraint firstItem="3r1-27-lvk" firstAttribute="leading" secondItem="Frd-VB-lQx" secondAttribute="leading" constant="8" id="yxY-Os-qmS"/>
                             <constraint firstItem="u1Q-Wa-rW5" firstAttribute="leading" secondItem="gq1-JO-r7H" secondAttribute="trailing" constant="8" id="z2I-Aa-tNG"/>
+                            <constraint firstItem="PA8-hr-rZ5" firstAttribute="leading" secondItem="ID4-Z9-Sa0" secondAttribute="leading" id="zSQ-ox-SlH"/>
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wdX-6d-cg9">
