@@ -95,6 +95,7 @@ struct MenuItem {
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline : String
+    var recievingDeadline : String?
     var availability: [Availabiltiy]
     var availableDays: [WeekDay]
     var mealCategory : [MealCategory]
@@ -129,6 +130,7 @@ struct ChefSpecialtyDish {
     var imageURL: String
     var mealCategory : [MealCategory]
     var distance: Double
+    var intakeLimit : Int
 }
 
 // Cart Item
@@ -264,4 +266,3 @@ struct SubscriptionMenuItem {
     let availableDays : [WeekDay]
 }
 
-// session link: https://infosys.webex.com/infosys/j.php?MTID=mf090e2cc484fd96b7ad8998d9f63c8db/

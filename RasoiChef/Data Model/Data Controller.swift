@@ -42,81 +42,85 @@ class KitchenDataController {
     ]
     
     static var menuItems: [MenuItem] = [
-        MenuItem(
-            itemID: "item001",
-            kitchenID: "kitchen001",
-            kitchenName: "Kanha Ji Rasoi",
-            distance: 2.6,
-            name: "Vegetable Poha",
-            description: "A light, nutritious dish made with flattened rice, salted veggies, and flavorful spices.",
-            price: 70.0,
-            rating: 4.1,
-            availableMealTypes: [.breakfast],
-            portionSize: "250 gm",
-            intakeLimit: 20,
-            imageURL: "VegetablePoha",
-            orderDeadline: "Order Before 6 am.",
-            availability: [.Available],
-            availableDays: [.monday],
-            mealCategory: [.veg]
-        ),
-        MenuItem(
-            itemID: "item002",
-            kitchenID: "kitchen001",
-            kitchenName: "Kanha Ji Rasoi",
-            distance: 6.2,
-            name: "Veg Thali",
-            description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
-            price: 130.0,
-            rating: 4.4,
-            availableMealTypes: [.lunch],
-            portionSize: "500 gm",
-            intakeLimit: 15,
-            imageURL: "VegThali",
-            orderDeadline: "Order Before 11 am.",
-            availability: [.Unavailable],
-            availableDays: [.monday],
-            mealCategory: [.veg]
-            
-        ),
-        MenuItem(
-            itemID: "item003",
-            kitchenID: "kitchen001",
-            kitchenName: "Kanha Ji Rasoi",
-            distance: 3.9,
-            availableDate: Date(),
-            name: "Spring Roll",
-            description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
-            price: 50.0,
-            rating: 4.3,
-            availableMealTypes: [.snacks],
-            portionSize: "6 pieces",
-            intakeLimit: 10,
-            imageURL: "SpringRoll",
-            orderDeadline: "Order Before 3 pm.",
-            availability: [.Available],
-            availableDays: [.monday],
-            mealCategory: [.veg]
-        ),
-        MenuItem(
-            itemID: "item004",
-            kitchenID: "kitchen002",
-            kitchenName: "Kanha Ji Rasoi",
-            distance: 7.3,
-            name: "Masala Dosa",
-            description: "A crispy rice pancake filled with spiced potato filling, served with chutneys and sambar.",
-            price: 120.0,
-            rating: 4.5,
-            availableMealTypes: [.dinner],
-            portionSize: "1 piece",
-            intakeLimit: 25,
-            imageURL: "MasalaDosa",
-            orderDeadline: "Order Before 7 pm.",
-            availability: [.Available],
-            availableDays: [.monday],
-            mealCategory: [.veg]
-        ),
-      ]
+            MenuItem(
+                itemID: "item001",
+                kitchenID: "kitchen001",
+                kitchenName: "Kanha Ji Rasoi",
+                distance: 2.6,
+                name: "Vegetable Poha",
+                description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
+                price: 70.0,
+                rating: 4.1,
+                availableMealTypes: [.breakfast],
+                portionSize: "250 gm",
+                intakeLimit: 20,
+                imageURL: "VegetablePoha",
+                orderDeadline: "Order Before 6 am.",
+                recievingDeadline:"Delivery Expected by 8 am.",
+                availability: [.Available],
+                availableDays: [.monday],
+                mealCategory: [.veg]
+            ),
+            MenuItem(
+                itemID: "item002",
+                kitchenID: "kitchen001",
+                kitchenName: "Kanha Ji Rasoi",
+                distance: 6.2,
+                name: "Veg Thali",
+                description: "A hearty combo of Veg Soya Keema, Arhar Dal, Butter Rotis, Plain Rice, and Mix Veg.",
+                price: 130.0,
+                rating: 4.4,
+                availableMealTypes: [.lunch],
+                portionSize: "500 gm",
+                intakeLimit: 15,
+                imageURL: "VegThali",
+                orderDeadline: "Order Before 11 am.",
+                recievingDeadline:"Delivery Expected by 1 pm.",
+                availability: [.Unavailable],
+                availableDays: [.monday],
+                mealCategory: [.veg]
+                
+            ),
+            MenuItem(
+                itemID: "item003",
+                kitchenID: "kitchen001",
+                kitchenName: "Kanha Ji Rasoi",
+                distance: 3.9,
+                availableDate: Date(),
+                name: "Spring Roll",
+                description: "Crispy rolls stuffed with spiced veggies, perfect for a delightful snack.",
+                price: 50.0,
+                rating: 4.3,
+                availableMealTypes: [.snacks],
+                portionSize: "6 pieces",
+                intakeLimit: 10,
+                imageURL: "SpringRoll",
+                orderDeadline: "Order Before 3 pm.",
+                recievingDeadline:"Delivery Expected by 5 pm.",
+                availability: [.Available],
+                availableDays: [.monday],
+                mealCategory: [.veg]
+            ),
+            MenuItem(
+                itemID: "item004",
+                kitchenID: "kitchen002",
+                kitchenName: "Kanha Ji Rasoi",
+                distance: 7.3,
+                name: "Masala Dosa",
+                description: "A crispy rice pancake filled with spiced potato filling, served with chutneys and sambar.",
+                price: 120.0,
+                rating: 4.5,
+                availableMealTypes: [.dinner],
+                portionSize: "1 piece",
+                intakeLimit: 25,
+                imageURL: "MasalaDosa",
+                orderDeadline: "Order Before 7 pm.",
+                recievingDeadline:"Delivery Expected by 9 pm.",
+                availability: [.Available],
+                availableDays: [.monday],
+                mealCategory: [.veg]
+            ),
+          ]
     static var subscriptionMenuItems: [MenuItem] = [
         // Monday
         MenuItem(itemID: "item201", kitchenID: "kitchen001", kitchenName: "Kanha Ji Rasoi",
@@ -279,7 +283,8 @@ class KitchenDataController {
             rating: 4.7,
             imageURL: "CholeBhature",
             mealCategory: [.veg],
-            distance: 2.6
+            distance: 2.6,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Anjali's Kitchen",
@@ -291,7 +296,8 @@ class KitchenDataController {
             rating: 4.8,
             imageURL: "SpringRoll",
             mealCategory: [.veg],
-            distance: 3.1
+            distance: 3.1,
+            intakeLimit: 11
         )
     ]
     
@@ -306,7 +312,8 @@ class KitchenDataController {
             rating: 4.9,
             imageURL: "ButterChicken",
             mealCategory: [.nonVeg],
-            distance: 4.3
+            distance: 4.3,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Mumbai Spices",
@@ -318,7 +325,8 @@ class KitchenDataController {
             rating: 4.5,
             imageURL: "PavBhaji",
             mealCategory: [.veg],
-            distance: 3.1
+            distance: 3.1,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Delhi Zaika",
@@ -330,7 +338,8 @@ class KitchenDataController {
             rating: 4.6,
             imageURL: "RajmaChawal",
             mealCategory: [.veg],
-            distance: 2.5
+            distance: 2.5,
+            intakeLimit: 11
         ),
      
         ChefSpecialtyDish(
@@ -343,7 +352,8 @@ class KitchenDataController {
             rating: 4.7,
             imageURL: "PaneerTikka",
             mealCategory: [.veg],
-            distance: 1.7
+            distance: 1.7,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Royal Rajasthan",
@@ -355,7 +365,8 @@ class KitchenDataController {
             rating: 4.9,
             imageURL: "DalBaatiChurma",
             mealCategory: [.veg],
-            distance: 4.2
+            distance: 4.2,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Biryani Bliss",
@@ -367,7 +378,8 @@ class KitchenDataController {
             rating: 4.8,
             imageURL: "HyderabadiBiryani",
             mealCategory: [.nonVeg],
-            distance: 5.3
+            distance: 5.3,
+            intakeLimit: 11
         ),
         ChefSpecialtyDish(
             kitchenName: "Street Food Junction",
@@ -379,7 +391,8 @@ class KitchenDataController {
             rating: 4.6,
             imageURL: "PaniPuri",
             mealCategory: [.veg],
-            distance: 2.9
+            distance: 2.9,
+            intakeLimit: 11
         )
     ]
     
