@@ -30,7 +30,9 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var availabiltyLabel: UILabel!
     
     @IBOutlet var cardViewKitchen: UIView!
-    
+    @IBOutlet var stepperStackView: UIStackView!
+    @IBOutlet var quantityLabel: UILabel!
+    @IBOutlet var stepper: UIStepper!
     
     weak var delegate: MenuDetailsCellDelegate?
     
