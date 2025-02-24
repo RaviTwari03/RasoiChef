@@ -26,23 +26,35 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        static var subscriptionPlan1 : [SubscriptionPlan] = []
       
        func didTapPlaceOrder() {
+           // Create new order history entry
+           let orderHistory = OrderHistory(
+               orderID: UUID().uuidString,
+               items: CartViewController.cartItems,
+               orderDate: Date()
+           )
+           
+           // Add to order history
+           OrderHistoryController.addOrder(orderHistory)
+           
+           // Create and add order to OrderDataController
            let order = createOrderFromCart(cartItems: CartViewController.cartItems)
            OrderDataController.shared.addOrder(order: order)
            
            let banner = CustomBannerView()
-              banner.show(in: self.view, message: "Order Placed Successfully!")
-              
+           banner.show(in: self.view, message: "Order Placed Successfully!")
+           
            // Clear cart items and reload table view
-           CartViewController.cartItems.removeAll() // Clear cart items after order
-           CartItem.reloadData() // Reload cart table view
+           CartViewController.cartItems.removeAll()
+           CartItem.reloadData()
            
            // Notify MyOrdersViewController to reload data
-                  MyOrdersViewController.shared.loadData()
+           MyOrdersViewController.shared.loadData()
            
-           // ✅ Update the badge on My Orders tab
-               updateMyOrdersBadge()
-          
-
+           // Update the badge on My Orders tab
+           updateMyOrdersBadge()
+           
+           // Notify to update intake limits
+           NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
        }
     // Function to update the badge count on My Orders tab
     func updateMyOrdersBadge() {

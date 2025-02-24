@@ -209,27 +209,34 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     func updateIntakeLimit(for indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
 
-        let orderedQuantity = CartViewController.cartItems
+        // Get total ordered quantity from both current cart and placed orders
+        let cartQuantity = CartViewController.cartItems
             .filter { $0.menuItem?.itemID == menuItem.itemID }
             .reduce(0) { $0 + $1.quantity }
+        
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        let totalOrderedQuantity = cartQuantity + placedOrdersQuantity
+        let remainingIntake = max(menuItem.intakeLimit - totalOrderedQuantity, 0)
 
-        let remainingIntake = max(menuItem.intakeLimit - orderedQuantity, 0)
-
-        // ✅ Update UI
+        // Update UI
         dishIntakLimit.text = "Intake limit: \(remainingIntake)"
         addButton.isEnabled = remainingIntake > 0
         addButton.alpha = remainingIntake > 0 ? 1.0 : 0.5
 
-        // ✅ Keep the stepper enabled (even at max limit)
-        stepper.maximumValue = Double(menuItem.intakeLimit)
-        stepper.minimumValue = 0  // Ensure the user can always decrease
-        stepper.value = Double(orderedQuantity)
-        stepper.isEnabled = true  // Never disable the stepper
-        quantityLabel.text = "\(orderedQuantity)"
+        // Update stepper
+        stepper.maximumValue = Double(remainingIntake + cartQuantity) // Allow reducing current cart items
+        stepper.minimumValue = 0
+        stepper.value = Double(cartQuantity)
+        stepper.isEnabled = true
+        quantityLabel.text = "\(cartQuantity)"
 
-        // ✅ Toggle Visibility
-        stepperStackView.isHidden = orderedQuantity == 0
-        addButton.isHidden = orderedQuantity > 0
+        // Toggle visibility
+        stepperStackView.isHidden = cartQuantity == 0
+        addButton.isHidden = cartQuantity > 0
     }
 
 
