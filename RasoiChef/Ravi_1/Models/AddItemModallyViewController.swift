@@ -183,6 +183,12 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 
                 CartViewController.cartItems.append(cartItem)
                 
+                // Show banner in parent view
+                if let parentVC = self.presentingViewController {
+                    let banner = BannerView()
+                    banner.show(message: "1 item added", in: parentVC)
+                }
+                
                 // Update UI before dismissing
                 UIView.animate(withDuration: 0.2) {
                     self.AddDishButton.isEnabled = false
@@ -229,6 +235,12 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 )
                 
                 CartViewController.cartItems.append(cartItem)
+                
+                // Show banner in parent view
+                if let parentVC = self.presentingViewController {
+                    let banner = BannerView()
+                    banner.show(message: "1 item added", in: parentVC)
+                }
                 
                 // Update UI before dismissing
                 UIView.animate(withDuration: 0.3) {
