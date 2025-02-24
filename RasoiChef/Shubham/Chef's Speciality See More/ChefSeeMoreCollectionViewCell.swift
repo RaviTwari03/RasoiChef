@@ -27,26 +27,21 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var vegNonvegIcon: UIImageView!
     
     
-    func updateSpecialDishDetails(for indexPath: IndexPath) {
-        // Fetch the corresponding ChefSpecialtyDish for the given indexPath
-        let specialDish = KitchenDataController.globalChefSpecial[indexPath.row]
-        
-        // Update the UI elements with the data from the specialDish object
+    func updateSpecialDishDetails(with specialDish: ChefSpecialtyDish) {
         dishName.text = specialDish.name
         PriceOfDish.text = "₹\(specialDish.price)"
         kitchenName.text = specialDish.kitchenName
-        
-        Ratings.text = "\(String(describing: specialDish.rating))"
-        Distance.text = "\(String(describing: specialDish.distance)) km"  // Update dynamically if data exists
-        DishImage.image = UIImage(named: specialDish.imageURL )
-        
+        Ratings.text = "\(specialDish.rating)"
+        Distance.text = "\(specialDish.distance) km"
+        DishImage.image = UIImage(named: specialDish.imageURL)
+
         if specialDish.mealCategory.contains(.veg) {
             vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
         } else {
             vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
-
     }
+
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.ChefSpecialaddButtonTapped(in: self)

@@ -15,6 +15,9 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         var filterScrollView: UIScrollView!
         var filterStackView: UIStackView!
         var itemCountLabel: UILabel!
+        var filteredChefSpecialDishes: [ChefSpecialtyDish] = []
+        var activeFilters: Set<String> = []
+        
         
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -45,28 +48,31 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
             ChefsSpecialDishes.dataSource = self
             ChefsSpecialDishes.delegate = self
             
-            
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial
             updateItemCount()
+
         }
 
     
-        func configureSearchBar() {
-            searchBar = UISearchBar()
-            searchBar.delegate = self
-            searchBar.placeholder = "Search"
-            searchBar.searchBarStyle = .minimal // Removes background lines
-            searchBar.backgroundImage = UIImage() // Removes background shadow
-            searchBar.translatesAutoresizingMaskIntoConstraints = false
-            
-            view.addSubview(searchBar)
-            
-            NSLayoutConstraint.activate([
-                searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-                searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                searchBar.heightAnchor.constraint(equalToConstant: 40)
-            ])
-        }
+    func configureSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.placeholder = "Search"
+        searchBar.searchBarStyle = .minimal
+        searchBar.backgroundImage = UIImage()
+        searchBar.showsCancelButton = false  // Initially hidden
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(searchBar)
+        
+        NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchBar.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+
         
     func configureFilterStackView() {
         filterScrollView = UIScrollView()
@@ -148,48 +154,130 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
             button.setTitleColor(.black, for: .normal)
         }
     }
+
         
-        @objc func filterButtonTapped(_ sender: UIButton) {
-            guard let title = sender.title(for: .normal) else { return }
-            print("Filter tapped: \(title)")
+    @objc func filterButtonTapped(_ sender: UIButton) {
+        guard let title = sender.title(for: .normal) else { return }
+
+        if title == "Sort" {
+            return // Ignore "Sort" button (no color change, no filtering)
         }
-        
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            print("Search query: \(searchText)")
+
+        if activeFilters.contains(title) {
+            activeFilters.remove(title) // Remove filter if already applied
+            updateFilterButtonAppearance(sender, isSelected: false) // Update color
+        } else {
+            activeFilters.insert(title) // Apply new filter
+            updateFilterButtonAppearance(sender, isSelected: true) // Update color
         }
+
+        applyFilters()
+    }
+
+
+
+    
+    
+    func applyFilters() {
+        filteredChefSpecialDishes = KitchenDataController.globalChefSpecial // Start with full list
+
+        // Apply search first if there's text
+        if let searchText = searchBar.text, !searchText.isEmpty {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
+        }
+
+        // Apply filters one by one
+        if activeFilters.contains("Nearest") {
+            filteredChefSpecialDishes.sort { $0.distance < $1.distance }
+        }
+        if activeFilters.contains("Ratings 4.0+") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.rating >= 4.0 }
+        }
+        if activeFilters.contains("Pure Veg") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.mealCategory.contains(.veg) }
+        }
+        if activeFilters.contains("Cost: Low to High") {
+            filteredChefSpecialDishes.sort { $0.price < $1.price }
+        }
+
+        updateItemCount() 
+        ChefsSpecialDishes.reloadData()
+    }
+
+
+
         
         func numberOfSections(in collectionView: UICollectionView) -> Int {
             return 1
         }
         
-        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return KitchenDataController.globalChefSpecial.count
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredChefSpecialDishes.count
+    }
+    
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial
+        } else {
+            filteredChefSpecialDishes = KitchenDataController.globalChefSpecial.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
         }
+        
+        applyFilters()
+    }
+
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button
+        searchBar.resignFirstResponder() // Hide keyboard
+        
+        filteredChefSpecialDishes = KitchenDataController.globalChefSpecial // Reset to all dishes
+        updateItemCount()
+        ChefsSpecialDishes.reloadData()
+    }
+
+
     
     
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        let count = KitchenDataController.globalChefSpecial.count
-        DispatchQueue.main.async {
-            self.itemCountLabel.text = "\(count) Dishes Available For You"
-        }
+        let count = filteredChefSpecialDishes.count
+        itemCountLabel.text = "\(count) Dishes Available for You"
     }
+
+
     
     
         
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            cell.delegate = self
-            cell.layer.cornerRadius = 15.0
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-            cell.layer.shadowRadius = 2.5
-            cell.layer.shadowOpacity = 0.5
-            cell.layer.masksToBounds = false
-            return cell
-        }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenuSeeMore", for: indexPath) as! ChefSeeMoreCollectionViewCell
+        
+        let dish = filteredChefSpecialDishes[indexPath.row] // Now using filtered list
+        cell.updateSpecialDishDetails(with: dish) // Corrected function call
+        cell.delegate = self
+
+        // Cell Styling
+        cell.layer.cornerRadius = 15.0
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cell.layer.shadowRadius = 2.5
+        cell.layer.shadowOpacity = 0.5
+        cell.layer.masksToBounds = false
+
+        return cell
+    }
+
+
         
     
     
@@ -211,7 +299,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         guard let indexPath = ChefsSpecialDishes.indexPath(for: cell) else { return }
         
         // Fetch the Chef Specialty Dish from the data controller
-        let selectedChefSpecialtyDish = KitchenDataController.globalChefSpecial[indexPath.row]
+        let selectedChefSpecialtyDish = filteredChefSpecialDishes[indexPath.row]
         print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
         
         // Instantiate the detail view controller
