@@ -48,18 +48,21 @@ class CartItemTableViewCell: UITableViewCell {
         
         let newQuantity = Int(sender.value)
         
+        // Ensure quantity is at least 1
+        let finalQuantity = max(newQuantity, 1)
+        
         // Update both the data source and the local reference
         if indexPath.row < CartViewController.cartItems.count {
-            CartViewController.cartItems[indexPath.row].quantity = newQuantity
+            CartViewController.cartItems[indexPath.row].quantity = finalQuantity
             self.cartItem = CartViewController.cartItems[indexPath.row]
         }
         
         // Update the UI
-        CartItemQuantityLabel.text = "\(newQuantity)"
+        CartItemQuantityLabel.text = "\(finalQuantity)"
         
         // Update price and send notification based on item type
         if let menuItem = cartItem?.menuItem {
-            let totalPrice = menuItem.price * Double(newQuantity)
+            let totalPrice = menuItem.price * Double(finalQuantity)
             CartDishPriceLabel.text = "₹\(totalPrice)"
             
             NotificationCenter.default.post(
@@ -67,12 +70,12 @@ class CartItemTableViewCell: UITableViewCell {
                 object: nil,
                 userInfo: [
                     "menuItemID": menuItem.itemID,
-                    "quantity": newQuantity,
+                    "quantity": finalQuantity,
                     "isChefSpecial": false
                 ]
             )
         } else if let chefSpecial = cartItem?.chefSpecial {
-            let totalPrice = chefSpecial.price * Double(newQuantity)
+            let totalPrice = chefSpecial.price * Double(finalQuantity)
             CartDishPriceLabel.text = "₹\(totalPrice)"
             
             NotificationCenter.default.post(
@@ -80,7 +83,7 @@ class CartItemTableViewCell: UITableViewCell {
                 object: nil,
                 userInfo: [
                     "menuItemID": chefSpecial.dishID,
-                    "quantity": newQuantity,
+                    "quantity": finalQuantity,
                     "isChefSpecial": true
                 ]
             )
@@ -109,22 +112,22 @@ class CartItemTableViewCell: UITableViewCell {
             let totalPrice = menuItem.price * Double(cartItem?.quantity ?? 0)
             CartDishPriceLabel.text = "₹\(totalPrice)"
             
-            // Set stepper values
-            CartIncreaseCounter.minimumValue = 0
+            // Set stepper values with minimum 1
+            CartIncreaseCounter.minimumValue = 1.0
             CartIncreaseCounter.maximumValue = Double(menuItem.intakeLimit)
-            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 0)
-            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 0)"
+            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 1)
+            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 1)"
         } else if let chefSpecial = cartItem?.chefSpecial {
             CartDishLabel.text = chefSpecial.name
             CartDishDescription.text = chefSpecial.description
             let totalPrice = chefSpecial.price * Double(cartItem?.quantity ?? 0)
             CartDishPriceLabel.text = "₹\(totalPrice)"
             
-            // Set stepper values
-            CartIncreaseCounter.minimumValue = 0
+            // Set stepper values with minimum 1
+            CartIncreaseCounter.minimumValue = 1.0
             CartIncreaseCounter.maximumValue = Double(chefSpecial.intakeLimit)
-            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 0)
-            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 0)"
+            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 1)
+            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 1)"
         }
     }
 
