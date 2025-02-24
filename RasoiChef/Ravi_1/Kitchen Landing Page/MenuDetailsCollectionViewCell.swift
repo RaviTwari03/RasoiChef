@@ -78,12 +78,19 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         
         let newQuantity = Int(sender.value)
-        quantityLabel.text = "\(newQuantity)"
+        
+        // Animate quantity label update
+        UIView.transition(with: quantityLabel, duration: 0.2, options: .transitionCrossDissolve) {
+            self.quantityLabel.text = "\(newQuantity)"
+        }
         
         if newQuantity == 0 {
+            // Animate visibility changes
+            UIView.animate(withDuration: 0.3) {
+                self.stepperStackView.isHidden = true
+                self.addButton.isHidden = false
+            }
             CartViewController.cartItems.removeAll { $0.menuItem?.itemID == menuItem.itemID }
-            stepperStackView.isHidden = true
-            addButton.isHidden = false
         } else {
             if let existingItemIndex = CartViewController.cartItems.firstIndex(where: { $0.menuItem?.itemID == menuItem.itemID }) {
                 CartViewController.cartItems[existingItemIndex].quantity = newQuantity
@@ -114,25 +121,52 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         mealRatingLabel.text = "\(menuItem.rating)"
         mealImageView.image = UIImage(named: menuItem.imageURL)
         
-        // Check cart state
+        updateCartState(for: menuItem)
+        applyCardStyle1()
+    }
+    
+    private func updateCartState(for menuItem: MenuItem) {
+        // Calculate quantities
         let cartQuantity = CartViewController.cartItems
             .filter { $0.menuItem?.itemID == menuItem.itemID }
             .reduce(0) { $0 + $1.quantity }
         
-        // Update UI based on cart state
-        if cartQuantity > 0 {
-            stepperStackView.isHidden = false
-            addButton.isHidden = true
-            stepper.value = Double(cartQuantity)
-            quantityLabel.text = "\(cartQuantity)"
-        } else {
-            stepperStackView.isHidden = true
-            addButton.isHidden = false
-            stepper.value = 0
-            quantityLabel.text = "0"
-        }
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
         
-        applyCardStyle1()
+        let totalOrderedQuantity = cartQuantity + placedOrdersQuantity
+        let remainingIntake = menuItem.intakeLimit - totalOrderedQuantity
+        
+        // Update availability UI
+        UIView.animate(withDuration: 0.3) {
+            if remainingIntake > 0 {
+                self.availabiltyLabel.text = "Available (\(remainingIntake) left)"
+                self.availabiltyLabel.textColor = UIColor.systemGreen
+                self.addButton.isEnabled = true
+                self.addButton.alpha = 1.0
+            } else {
+                self.availabiltyLabel.text = "Unavailable"
+                self.availabiltyLabel.textColor = UIColor.systemRed
+                self.addButton.isEnabled = false
+                self.addButton.alpha = 0.5
+            }
+            
+            // Update cart state UI
+            if cartQuantity > 0 {
+                self.stepperStackView.isHidden = false
+                self.addButton.isHidden = true
+                self.stepper.value = Double(cartQuantity)
+                self.quantityLabel.text = "\(cartQuantity)"
+                self.stepper.maximumValue = Double(remainingIntake + cartQuantity)
+            } else {
+                self.stepperStackView.isHidden = true
+                self.addButton.isHidden = false
+                self.stepper.value = 0
+                self.quantityLabel.text = "0"
+            }
+        }
     }
     
     @objc private func cartUpdated(_ notification: Notification) {
@@ -144,7 +178,10 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         if menuItem.itemID == menuItemID {
-            updateMenuDetails(with: indexPath)
+            // Animate the update
+            UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve) {
+                self.updateCartState(for: menuItem)
+            }
         }
     }
     
@@ -158,8 +195,45 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         cardViewKitchen.backgroundColor = .white
    }
 
-
-
+    func updateIntakeLimit(for indexPath: IndexPath) {
+        self.indexPath = indexPath
+        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        
+        // Calculate total ordered quantity
+        let cartQuantity = CartViewController.cartItems
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        let totalOrderedQuantity = cartQuantity + placedOrdersQuantity
+        let remainingIntake = menuItem.intakeLimit - totalOrderedQuantity
+        
+        // Update UI
+        if remainingIntake > 0 {
+            availabiltyLabel.text = "Available (\(remainingIntake) left)"
+            availabiltyLabel.textColor = UIColor.systemGreen
+            addButton.isEnabled = true
+            addButton.alpha = 1.0
+        } else {
+            availabiltyLabel.text = "Unavailable"
+            availabiltyLabel.textColor = UIColor.systemRed
+            addButton.isEnabled = false
+            addButton.alpha = 0.5
+        }
+        
+        // Update stepper
+        stepper.maximumValue = Double(remainingIntake + cartQuantity)
+        stepper.value = Double(cartQuantity)
+        quantityLabel.text = "\(cartQuantity)"
+        
+        // Update visibility
+        stepperStackView.isHidden = cartQuantity == 0
+        addButton.isHidden = cartQuantity > 0
+    }
 }
 //extension MenuDetailsCollectionViewCell: AddItemDelegate {
 //    func didAddItemToCart(_ item: CartItem, quantity: Int) {
