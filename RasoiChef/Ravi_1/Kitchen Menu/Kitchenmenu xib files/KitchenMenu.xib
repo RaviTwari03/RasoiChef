@@ -103,8 +103,8 @@
                                     <constraint firstAttribute="width" constant="18" id="muA-dp-eBu"/>
                                 </constraints>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PA8-hr-rZ5">
-                                <rect key="frame" x="89.000000000000014" y="117" width="144.33333333333337" height="32"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PA8-hr-rZ5">
+                                <rect key="frame" x="89" y="117" width="144.33333333333337" height="32"/>
                                 <subviews>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="g8s-nC-RG7">
                                         <rect key="frame" x="0.0" y="0.0" width="94" height="32"/>
