@@ -399,15 +399,17 @@ class KitchenDataController {
    
     static var subscriptionPlan: [SubscriptionPlan] = [
         SubscriptionPlan(
+           
             planID: "001",
-            userID: "001",
-            kitchenID: "kitchen001",
+            kitchenName: "Kanjha Ji Rasoi",
+            kitchenID: "kitchen001", location : "Galgotias university",
             startDate: "2025-02-10",
             endDate: "2025-02-16",
             totalPrice: 1400,
-            details: "Weekly Plan",
+            planName: "Weekly Plan",
             PlanIntakeLimit: 4,
             planImage: "PlanImage",
+            
             weeklyMeals: [
                 .monday: [
                     .breakfast: subscriptionMenuItems.first(where: { $0.itemID == "item201" }),

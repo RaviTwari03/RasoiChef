@@ -58,32 +58,19 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
     }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//         let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as! subscriptionPlansTableViewCell
-//        
-//        if Subscriptionplan.count > 0 {
-//                    let allSubscription1 = Subscriptionplan[indexPath.row]
-//                    cell.configureWithSubscription(subscription: allSubscription1)
-//                }
-//        
-//        return cell
-//    }
-//
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Dequeue the cell
-        guard let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as? subscriptionPlansTableViewCell else {
-            fatalError("Cell not found!")
-        }
+         let cell = tableViewSubscriptionPlan.dequeueReusableCell(withIdentifier: "subscriptionPlansTableViewCell", for: indexPath) as! subscriptionPlansTableViewCell
         
-        // Check if the array has data
         if Subscriptionplan.count > 0 {
-            let allSubscription1 = Subscriptionplan[indexPath.row]
-            cell.configureWithSubscription(allSubscription1) // Passing the subscription directly to the cell
-        }
-
+                    let allSubscription1 = Subscriptionplan[indexPath.row]
+                    cell.configure(subscription: allSubscription1)
+                }
+        
         return cell
     }
+
+  
 
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -96,6 +83,7 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         loadSubscriptionPlan()
+        tableViewSubscriptionPlan.reloadData()
     }
 
     

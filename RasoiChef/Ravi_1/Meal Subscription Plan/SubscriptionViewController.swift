@@ -254,12 +254,12 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 
             let subscriptionPlan = SubscriptionPlan(
                 planID: UUID().uuidString,
-                userID: "user001",
-                kitchenID: "kitchen001",
+                kitchenName: "Kanjha Ji Rasoi", userID: "user001",
+                kitchenID: "kitchen001", location: "greater noida",
                 startDate: selectedStartDate,
                 endDate: selectedEndDate,
                 totalPrice: finalPrice,
-                details: "Your customized meal plan",
+                planName: "Weekly Plans",
                 PlanIntakeLimit: 4,
                 planImage: "",
                 weeklyMeals: selectedWeeklyMeals

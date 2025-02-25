@@ -7,15 +7,12 @@
 
 import UIKit
 
-class subscriptionPlansTableViewCell: UITableViewCell,SubscriptionPlanDelegate {
-   
+class subscriptionPlansTableViewCell: UITableViewCell {
     
-    //var Subscriptionplan:SubscriptionPlan?
-    var subscriptionPlan: SubscriptionPlan?
-    //        didSet {
-    //            updateUI()
-    //        }
-    //    }
+    
+    var Subscriptionplan:SubscriptionPlan?
+    
+    
     @IBOutlet weak var orderIDLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var kitchenName: UILabel!
@@ -53,160 +50,44 @@ class subscriptionPlansTableViewCell: UITableViewCell,SubscriptionPlanDelegate {
     }
     
     
-    //    func configureWithSubscription(_ subscription: SubscriptionPlan) {
-    //        // Set the plan name, or get it from the subscription if it exists
-    //        planName.text = subscription.kitchenName ?? "Weekly Plan"
-    //        
-    //        // Safely unwrap and format dates
-    //        let startDate = subscription.startDate ?? "N/A"
-    //        let endDate = subscription.endDate ?? "N/A"
-    //        dateLabel.text = "\(startDate) - \(endDate)"
-    //        
-    //        // Safely unwrap and format the price
-    //        let formattedPrice = String(format: "₹%.2f", subscription.totalPrice ?? 0.0)
-    //        symbol.text = formattedPrice
-    //    }
-    //
-    //}
-    func configureWithSubscription(_ subscription: SubscriptionPlan) {
-        print("Configuring with subscription: \(subscription)")  // Log the entire subscription object
+    
+   
+    
+    
+    
+    
+    func configure(subscription: SubscriptionPlan) {
         
-        // Set the plan name, or get it from the subscription if it exists
-        planName.text = subscription.kitchenName ?? "Weekly Plan"
+        orderIDLabel.text = "Plan ID - \(subscription.planID ?? "N/A")"
+        dateLabel.text = formatDate(subscription.startDate) + " - " + formatDate(subscription.endDate)
+        locationLabel.text = subscription.location ?? "N/A"
+        kitchenName.text = Subscriptionplan?.kitchenName ?? "Subscription Plan"
+        planName.text = subscription.planName ?? "Subscription Plan"
+       // symbol.text = "🍽️" // You can update this to display icons dynamically
         
-        // Safely unwrap and format dates
-        let startDate = subscription.startDate ?? "N/A"
-        let endDate = subscription.endDate ?? "N/A"
-        print("Start Date: \(startDate), End Date: \(endDate)")  // Log the dates
-        dateLabel.text = "\(startDate) - \(endDate)"
-        
-        // Safely unwrap and format the price
-        let formattedPrice = String(format: "₹%.2f", subscription.totalPrice ?? 0.0)
-        print("Formatted Price: \(formattedPrice)")  // Log the formatted price
-        symbol.text = formattedPrice
     }
-    func didAddSubscriptionPlan(_ plan: SubscriptionPlan) {
-        print(subscriptionPlan)
+    private func formatDate(_ dateString: String?) -> String {
+        guard let dateString = dateString else { return "N/A" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd" // Adjust if needed
+        if let date = formatter.date(from: dateString) {
+            formatter.dateStyle = .medium
+            return formatter.string(from: date)
+        }
+        return "Invalid Date"
     }
     
 }
 
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        applyCardStyle()
-//
-//
-//
-//        contentView.layer.cornerRadius = 10
-//        // Initialization code
-//    }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-////    func configureWithSubscription(_ subscription: SubscriptionPlan) {
-////        planName.text = "Weekly Plan"
-////
-////        // Safe unwrapping for startDate and endDate
-//////        let startDate = subscription.startDate ?? "N/A"
-//////        let endDate = subscription.endDate ?? "N/A"
-////
-////        // Safe unwrapping and formatting for totalPrice
-////        let totalPrice = String(format: "₹%.2f", subscription.totalPrice ?? 0.0)
-////
-//////        dateLabel.text = "\(startDate) - \(endDate)"
-//////        subscriptionPrice1.text = totalPrice
-//////        quantityLabel1.text = "1" // Default to 1 for subscription
-//////        increaseStepper1.value = 1
-////    }
-////    func configureWithSubscription(_ subscription: SubscriptionPlan) {
-////        planName.text = "Weekly Plan"
-////
-////        // Safe unwrapping for startDate and endDate
-////        let startDate = subscription.startDate ?? "N/A"
-////        let endDate = subscription.endDate ?? "N/A"
-////        dateLabel.text = "\(startDate) - \(endDate)"
-////
-////        // Safe unwrapping and formatting for totalPrice
-//////        if let price = subscription.totalPrice {
-//////            subscriptionPrice1.text = String(format: "₹%.2f", price)
-//////        } else {
-//////            subscriptionPrice1.text = "₹0.00" // Fallback for missing price
-//////        }
-////
-//////        quantityLabel1.text = "1" // Default to 1 for subscription
-//////        increaseStepper1.value = 1
-////    }
-//
-
-//
-//
-//    func configure(subscription: SubscriptionPlan) {
-//        orderIDLabel.text = "Plan ID - \(subscription.planID ?? "N/A")"
-//        dateLabel.text = formatDate(subscription.startDate) + " - " + formatDate(subscription.endDate)
-//        locationLabel.text = "Kitchen: \(subscription.kitchenID ?? "N/A")"
-//        kitchenName.text = subscription.details ?? "Subscription Plan"
-//        planName.text = "Meals per Day: \(subscription.PlanIntakeLimit ?? 0)"
-//        symbol.text = "🍽️" // You can update this to display icons dynamically
-//
-//    }
-//    private func formatDate(_ dateString: String?) -> String {
-//        guard let dateString = dateString else { return "N/A" }
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd" // Adjust if needed
-//        if let date = formatter.date(from: dateString) {
-//            formatter.dateStyle = .medium
-//            return formatter.string(from: date)
-//        }
-//        return "Invalid Date"
-//    }
-//
-//
-//
-//
-//
-//
-//}
-//extension subscriptionPlansTableViewCell: SubscriptionPlanDelegate {
-//    func didAddSubscriptionPlan(_ plan: SubscriptionPlan) {
-//        self.Subscriptionplan = plan
-//        orderIDLabel.text = plan.planID ?? "N/A"
-//        dateLabel.text = "\(plan.startDate ?? "") - \(plan.endDate ?? "")"
-//        kitchenName.text = plan.kitchenID ?? "N/A"
-//        planName.text = plan.details ?? "No Plan Name"
-//    }
-//}
-/// Updates the UI when `subscriptionPlan` is set
-//     func updateUI() {
-//        guard let plan = subscriptionPlan else { return }
-//
-//        orderIDLabel.text = plan.planID ?? "N/A"
-//        dateLabel.text = "\(plan.startDate ?? "") - \(plan.endDate ?? "")"
-//        kitchenName.text = plan.kitchenID ?? "N/A"
-//        planName.text = plan.details ?? "No Plan Name"
-//        locationLabel.text = "Some Location"  // Update as per actual data
-//        symbol.text = "₹\(plan.totalPrice ?? 0.0)" // Assuming it's a price label
-//    }
-
-/// Configures the cell with a `SubscriptionPlan`
-//        func configureWithSubscription(_ subscription: SubscriptionPlan) {
-//            planName.text = "Weekly Plan"
-//
-//            // Safe unwrapping for startDate and endDate
-//            let startDate = subscription.startDate ?? "N/A"
-//            let endDate = subscription.endDate ?? "N/A"
-//            dateLabel.text = "\(startDate) - \(endDate)"
-//
-//            // Safe unwrapping and formatting for totalPrice
-//            if let price = subscription.totalPrice {
-//                subscriptionPrice1.text = String(format: "₹%.2f", price)
-//            } else {
-//                subscriptionPrice1.text = "₹0.00" // Fallback for missing price
-//            }
-//
-//            quantityLabel1.text = "1" // Default to 1 for subscription
-//            increaseStepper1.value = 1
-//        }
-//    }
+extension subscriptionPlansTableViewCell:CartPayCellDelegate{
+    func didTapPlaceOrder() {
+        orderIDLabel.text = "Order ID - \(Subscriptionplan?.planID)"
+        dateLabel.text = formatDate(Subscriptionplan?.startDate)
+        locationLabel.text = Subscriptionplan?.location
+        kitchenName.text = Subscriptionplan?.kitchenName
+        planName.text = Subscriptionplan?.planName ?? "Subscription Plan"
+        
+    }
+    
+    
+}
