@@ -12,11 +12,18 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
     @IBOutlet weak var AllKitchens: UICollectionView!
     
     
+    var isSearching: Bool = false
 
+    
     var searchBar: UISearchBar!
     var filterScrollView: UIScrollView!
     var filterStackView: UIStackView!
     var itemCountLabel: UILabel!
+    
+    var allKitchens = KitchenDataController.kitchens
+    var filteredKitchens: [Kitchen] = []
+    var isFilteringOnline = false
+    var selectedFilters: [String: Bool] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +55,9 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         AllKitchens.delegate = self
         
         
+        filteredKitchens = allKitchens
         updateItemCount()
+        AllKitchens.reloadData()
     }
 
 
@@ -58,6 +67,7 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal // Removes background lines
         searchBar.backgroundImage = UIImage() // Removes background shadow
+        searchBar.showsCancelButton = false // Hide cancel button initially
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchBar)
@@ -69,6 +79,7 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
             searchBar.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+
     
     func configureFilterStackView() {
         filterScrollView = UIScrollView()
@@ -80,17 +91,12 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         filterStackView.spacing = 15.0
         filterStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-        let nearestButton = createFilterButton(title: "Nearest")
-        let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-        let pureVegButton = createFilterButton(title: "Pure Veg")
-        let costVegButton = createFilterButton(title: "Cost: Low to High")
+        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Online"]
         
-        filterStackView.addArrangedSubview(sortButton)
-        filterStackView.addArrangedSubview(nearestButton)
-        filterStackView.addArrangedSubview(ratingsButton)
-        filterStackView.addArrangedSubview(pureVegButton)
-        filterStackView.addArrangedSubview(costVegButton)
+        for title in filterTitles {
+            let button = createFilterButton(title: title)
+            filterStackView.addArrangedSubview(button)
+        }
         
         filterScrollView.addSubview(filterStackView)
         view.addSubview(filterScrollView)
@@ -128,81 +134,129 @@ func configureItemCountLabel() {
 }
 
 
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+            button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 10
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            button.tag = filterStackView.arrangedSubviews.count
+            updateFilterButtonAppearance(button, isSelected: false)
+
+            return button
         }
-        
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
-    }
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal) else { return }
-        print("Filter tapped: \(title)")
+        guard let title = sender.title(for: .normal), title != "Sort" else { return }
+        
+        // Toggle filter state
+        selectedFilters[title] = !(selectedFilters[title] ?? false)
+
+        // Apply filters based on active selections
+        applyFilters()
+        
+        // Update button appearance
+        updateFilterButtonAppearance(sender, isSelected: selectedFilters[title] ?? false)
+        
+        // Reload data
+        updateItemCount()
+        AllKitchens.reloadData()
+    }
+    
+    func applyFilters() {
+        // Always start with search results if searching
+        if let searchText = searchBar.text, !searchText.isEmpty {
+            filteredKitchens = allKitchens.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+        } else {
+            filteredKitchens = allKitchens
+        }
+
+        // Now apply the filters on top of search results
+        if selectedFilters["Online"] == true {
+            filteredKitchens = filteredKitchens.filter { $0.isOnline }
+        }
+
+        if selectedFilters["Nearest"] == true {
+            filteredKitchens.sort { $0.distance < $1.distance }
+        }
+
+        if selectedFilters["Ratings 4.0+"] == true {
+            filteredKitchens = filteredKitchens.filter { $0.rating >= 4.0 }
+            filteredKitchens.sort { $0.rating > $1.rating }
+        }
+
+        if selectedFilters["Pure Veg"] == true {
+            filteredKitchens = filteredKitchens.filter { $0.isPureVeg }
+        }
+
+        // Reload UI
+        updateItemCount()
+        AllKitchens.reloadData()
+    }
+
+
+    
+    func updateFilterButtonAppearance(_ button: UIButton, isSelected: Bool) {
+        if isSelected {
+            button.backgroundColor = UIColor.accent
+            button.setTitleColor(.white, for: .normal)
+        } else {
+            button.backgroundColor = .white
+            button.setTitleColor(.black, for: .normal)
+        }
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("Search query: \(searchText)")
+        applyFilters() // Instead of filtering separately, just apply filters
     }
+
+
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        searchBar.setShowsCancelButton(false, animated: true)
+        applyFilters() // Reset filters while keeping logic intact
+    }
+
+
+    
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true) // Show Cancel button when clicked
+    }
+
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return KitchenDataController.kitchens.count
+        return filteredKitchens.count
     }
 
 
 
 // MARK: - Update Item Count Label
-func updateItemCount() {
-    let count = KitchenDataController.kitchens.count
-    DispatchQueue.main.async {
-        self.itemCountLabel.text = "\(count) Kitchens Available For You"
-    }
-}
+    func updateItemCount() {
+            let count = filteredKitchens.count
+            DispatchQueue.main.async {
+                self.itemCountLabel.text = "\(count) Kitchens Available For You"
+            }
+        }
 
 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
-        cell.updateSpecialDishDetails(for: indexPath)
-        cell.layer.cornerRadius = 15.0
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-        cell.layer.shadowRadius = 2.5
-        cell.layer.shadowOpacity = 0.5
-        cell.layer.masksToBounds = false
-        return cell
-    }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
+            cell.updateSpecialDishDetails(for: indexPath)
+            return cell
+        }
     
 
 

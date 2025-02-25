@@ -22,107 +22,167 @@ class CartItemTableViewCell: UITableViewCell {
     @IBOutlet var crossbutton: UIButton!
     
     @IBOutlet weak var cartItemView: UIView!
-    
+ 
+    var indexPath: IndexPath?
+    var cartItem: CartItem?
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization \code
         setupCellAppearance()
+        
+        // Add observer for cart updates with userInfo
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(cartUpdated(_:)),
+            name: NSNotification.Name("CartUpdated"),
+            object: nil
+        )
     }
     
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     @IBAction func crossButtonTapped(_ sender: UIButton) {
-           delegate?.didTapRemoveButton(cell: self)
-       }
-    
-    @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
-        CartItemQuantityLabel.text = "\(Int(sender.value))"
-        let newQuantity = Int(sender.value)
-
-           if newQuantity > 10 {
-               // Reset stepper value to 10
-               sender.value = 10
-
-               // Show an alert
-               if let parentViewController = self.window?.rootViewController {
-                   let alert = UIAlertController(
-                       title: "Limit Exceeded",
-                       message: "You can only add up to 10 items.",
-                       preferredStyle: .alert
-                   )
-                   alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                   parentViewController.present(alert, animated: true, completion: nil)
-               }
-
-               return
-           }
+        delegate?.didTapRemoveButton(cell: self)
     }
-    func updateCartItem(for indexpath: IndexPath) {
-        if KitchenDataController.cartItems.isEmpty {
-            print("The cart is empty, no items to update.")
-            return
-        }
-        
-        guard indexpath.row < KitchenDataController.cartItems.count else {
-            print("Index out of range: \(indexpath.row) exceeds number of cart items")
-            return
-        }
-        
-        let cartItem = KitchenDataController.cartItems[indexpath.row]
 
-        if let menuItem = cartItem.menuItem {
-            // Regular menu item
+    @IBAction func CartIncreaseCounter(_ sender: UIStepper) {
+        guard let indexPath = indexPath else { return }
+        
+        let newQuantity = Int(sender.value)
+        
+        // Ensure quantity is at least 1
+        let finalQuantity = max(newQuantity, 1)
+        
+        // Update both the data source and the local reference
+        if indexPath.row < CartViewController.cartItems.count {
+            CartViewController.cartItems[indexPath.row].quantity = finalQuantity
+            self.cartItem = CartViewController.cartItems[indexPath.row]
+        }
+        
+        // Update the UI
+        CartItemQuantityLabel.text = "\(finalQuantity)"
+        
+        // Update price and send notification based on item type
+        if let menuItem = cartItem?.menuItem {
+            let totalPrice = menuItem.price * Double(finalQuantity)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            NotificationCenter.default.post(
+                name: NSNotification.Name("CartUpdated"),
+                object: nil,
+                userInfo: [
+                    "menuItemID": menuItem.itemID,
+                    "quantity": finalQuantity,
+                    "isChefSpecial": false
+                ]
+            )
+        } else if let chefSpecial = cartItem?.chefSpecial {
+            let totalPrice = chefSpecial.price * Double(finalQuantity)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            NotificationCenter.default.post(
+                name: NSNotification.Name("CartUpdated"),
+                object: nil,
+                userInfo: [
+                    "menuItemID": chefSpecial.dishID,
+                    "quantity": finalQuantity,
+                    "isChefSpecial": true
+                ]
+            )
+        }
+        
+        // Reload cart to update total
+        if let parentVC = self.parentViewController as? CartViewController {
+            parentVC.reloadCart()
+        }
+    }
+
+    func updateCartItem(for indexPath: IndexPath) {
+        self.indexPath = indexPath
+        
+        guard indexPath.row < CartViewController.cartItems.count else {
+            print("Index out of range: \(indexPath.row) exceeds number of cart items")
+            return
+        }
+        
+        // Store reference to cart item
+        self.cartItem = CartViewController.cartItems[indexPath.row]
+        
+        if let menuItem = cartItem?.menuItem {
             CartDishLabel.text = menuItem.name
             CartDishDescription.text = menuItem.description
-            CartDishPriceLabel.text = "₹\(menuItem.price)"
-        } else if let chefSpecialtyDish = cartItem.chefSpecial {
-            // Chef specialty dish
-            CartDishLabel.text = chefSpecialtyDish.name
-            CartDishDescription.text = chefSpecialtyDish.description
-            CartDishPriceLabel.text = "₹\(chefSpecialtyDish.price)"
-        } else {
-            CartDishLabel.text = "Unknown Item"
-            CartDishDescription.text = "No description available"
-            CartDishPriceLabel.text = "₹0.0"
+            let totalPrice = menuItem.price * Double(cartItem?.quantity ?? 0)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            // Set stepper values with minimum 1
+            CartIncreaseCounter.minimumValue = 1.0
+            CartIncreaseCounter.maximumValue = Double(menuItem.intakeLimit)
+            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 1)
+            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 1)"
+        } else if let chefSpecial = cartItem?.chefSpecial {
+            CartDishLabel.text = chefSpecial.name
+            CartDishDescription.text = chefSpecial.description
+            let totalPrice = chefSpecial.price * Double(cartItem?.quantity ?? 0)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+            
+            // Set stepper values with minimum 1
+            CartIncreaseCounter.minimumValue = 1.0
+            CartIncreaseCounter.maximumValue = Double(chefSpecial.intakeLimit)
+            CartIncreaseCounter.value = Double(cartItem?.quantity ?? 1)
+            CartItemQuantityLabel.text = "\(cartItem?.quantity ?? 1)"
         }
-
-        CartItemQuantityLabel.text = "\(cartItem.quantity)"
-        CartIncreaseCounter.value = Double(cartItem.quantity)
     }
-    
-    
-    
+
     private func setupCellAppearance() {
-        // Apply corner radius
         cartItemView.layer.cornerRadius = 15
         cartItemView.layer.masksToBounds = true
-            // Add shadow to create a card-like appearance
         cartItemView.layer.shadowColor = UIColor.black.cgColor
         cartItemView.layer.shadowOffset = CGSize(width: 0, height: 2)
         cartItemView.layer.shadowRadius = 2.5
         cartItemView.layer.shadowOpacity = 0.4
         cartItemView.layer.masksToBounds = false
-            // Add padding by adjusting the content insets
         cartItemView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 15, right: 16)
-            
-            // Optionally, you can add a background color for the card
         cartItemView.backgroundColor = .white
     }
-    
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        let inset: CGFloat = 10 // Set leading and trailing insets
+        let inset: CGFloat = 10
         contentView.frame = contentView.frame.insetBy(dx: inset, dy: 0)
     }
-    
+
+    // Add this method to handle cart updates
+    @objc private func cartUpdated(_ notification: Notification) {
+        guard let cartItem = self.cartItem,
+              let userInfo = notification.userInfo,
+              let updatedItemID = userInfo["menuItemID"] as? String,
+              let updatedQuantity = userInfo["quantity"] as? Int,
+              cartItem.menuItem?.itemID == updatedItemID else {
+            return
+        }
+        
+        // Update the UI
+        CartItemQuantityLabel.text = "\(updatedQuantity)"
+        CartIncreaseCounter.value = Double(updatedQuantity)
+        
+        // Update price
+        if let menuItem = cartItem.menuItem {
+            let totalPrice = menuItem.price * Double(updatedQuantity)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+        }
+    }
+
+    // Add deinit to remove observer when cell is deallocated
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    func configure(with cartItem: CartItem) {
+        self.cartItem = cartItem
+        CartItemQuantityLabel.text = "\(cartItem.quantity)"
+        
+        // Fix the price calculation
+        if let price = cartItem.menuItem?.price {
+            let totalPrice = price * Double(cartItem.quantity)
+            CartDishPriceLabel.text = "₹\(totalPrice)"
+        }
+    }
 }
-
-
-
-

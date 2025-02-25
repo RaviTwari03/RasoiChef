@@ -8,9 +8,6 @@
 import UIKit
 
 class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,MenuDetailsCellDelegate, KitchenMenuDetailsCellDelegate {
-    
-    
-    
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -33,12 +30,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
-
-    
-    
-    
-    
-    
     
     @IBOutlet var KitchenMenuList: UICollectionView!
     
@@ -61,9 +52,17 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         KitchenMenuList.setCollectionViewLayout(generateLayout(), animated: true)
         KitchenMenuList.dataSource = self
         KitchenMenuList.delegate = self
+        DispatchQueue.main.async {
+            let todayIndexPath = IndexPath(item: 0, section: 0)
+            self.KitchenMenuList.selectItem(at: todayIndexPath, animated: false, scrollPosition: .centeredHorizontally)
+            if let cell = self.KitchenMenuList.cellForItem(at: todayIndexPath) as? KitchenMenuCalenderCollectionViewCell {
+                cell.isSelected = true  // Ensure the cell appears selected
+            }
+        }
     }
     
-    
+  
+
     // MARK: - Number of Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 5
@@ -88,15 +87,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenuCalender", for: indexPath) as! KitchenMenuCalenderCollectionViewCell
             cell.updateMenuListDate(for: indexPath)
-//            cell.layer.cornerRadius = 10.0
-//            cell.layer.borderWidth = 1.0
-//            cell.layer.borderColor = UIColor.gray.cgColor
-//            cell.layer.shadowColor = UIColor.black.cgColor
-//            cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-//            cell.layer.shadowRadius = 5.0
-//            cell.layer.shadowOpacity = 0.2
-//            cell.layer.masksToBounds = false
-//            cell.layer.shadowColor = UIColor.black.cgColor
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
@@ -130,17 +120,16 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     }
     // Calendar Section Layout
     func generateMenuCalenderSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.20), heightDimension: .absolute(100))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 8.0, trailing: 0.0)
-        group.interItemSpacing = .fixed(0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading:5.0, bottom: 8.0, trailing: 0.0)
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 8.0, bottom: 10.0, trailing: 8.0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 15.0, leading: 15.0, bottom: 10.0, trailing: 10.0)
 
         return section
     }
@@ -149,12 +138,12 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(250))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(235))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0.0, bottom: 0.0, trailing: 0.0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5.0, bottom: 0.0, trailing: 5.0)
         group.interItemSpacing = .fixed(0)
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0.0, bottom: 0, trailing: 0.0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
         section.interGroupSpacing = 0
 
         return section

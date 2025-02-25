@@ -14,6 +14,10 @@ protocol MealCategoriesCollectionViewCellDelegate: AnyObject {
 
 class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate,MealCategoriesCollectionViewCellDelegate {
     
+    var filteredMenuItems: [MenuItem] = [] // Stores filtered items for search
+    var isSearching = false // Flag to check if search is active
+
+    
     var menuItems: [MenuItem] = []
 
     var mealTiming : MealTiming = .breakfast
@@ -25,11 +29,13 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     var filterStackView: UIStackView!
     var itemCountLabel: UILabel!
     
+    var activeFilters: Set<String> = []
+    
     
     var MenuCategories: [MenuItem] = []
  
            func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-               return 4
+               return filteredMenuItems.count
            }
     
 
@@ -72,11 +78,61 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         ])
         
         updateItemCount()
+        updateMenuItems()
         
     }
     
     
+    func updateMenuItems() {
+        switch mealTiming {
+        case .breakfast:
+            menuItems = KitchenDataController.GlobalbreakfastMenuItems
+        case .lunch:
+            menuItems = KitchenDataController.GloballunchMenuItems
+        case .snacks:
+            menuItems = KitchenDataController.GlobalsnacksMenuItems
+        case .dinner:
+            menuItems = KitchenDataController.GlobaldinnerMenuItems
+        }
+        
+        applyFilters()
+    }
     
+    func applyFilters() {
+        var itemsToFilter: [MenuItem]
+
+        if isSearching {
+            // Work on the search results instead of the full menu
+            itemsToFilter = menuItems.filter { $0.name.localizedCaseInsensitiveContains(searchBar.text ?? "") }
+        } else {
+            itemsToFilter = menuItems
+        }
+
+        // Apply filters
+        if activeFilters.contains("Nearest") {
+            itemsToFilter.sort { $0.distance < $1.distance }
+        }
+
+        if activeFilters.contains("Ratings 4.0+") {
+            itemsToFilter = itemsToFilter.filter { $0.rating >= 4.0 }
+            itemsToFilter.sort { $0.rating > $1.rating }
+        }
+
+        if activeFilters.contains("Pure Veg") {
+            itemsToFilter = itemsToFilter.filter { $0.mealCategory.contains(.veg) }
+        }
+
+        if activeFilters.contains("Cost: Low to High") {
+            itemsToFilter.sort { $0.price < $1.price }
+        }
+
+        // Update filtered list
+        filteredMenuItems = itemsToFilter
+
+        MealCategories.reloadData()
+        updateItemCount()
+    }
+
     
     
     func updateTitleBasedOnMealTiming() {
@@ -97,6 +153,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal // Removes background lines
         searchBar.backgroundImage = UIImage() // Removes background shadow
+        searchBar.showsCancelButton = false
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchBar)
@@ -109,46 +166,57 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         ])
     }
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""  // Clear search text
+        searchBar.resignFirstResponder() // Dismiss keyboard
+        isSearching = false
+        filteredMenuItems = menuItems // Reset to full menu
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button with animation
+
+        MealCategories.reloadData() // Reload full data
+        updateItemCount() // Update count after reset
+    }
+
+
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true) // Show cancel button with animation
+    }
     
     
     func configureFilterStackView() {
-        filterScrollView = UIScrollView()
-        filterScrollView.showsHorizontalScrollIndicator = false
-        filterScrollView.translatesAutoresizingMaskIntoConstraints = false
-        
-        filterStackView = UIStackView()
-        filterStackView.axis = .horizontal
-        filterStackView.spacing = 15.0
-        filterStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-        let nearestButton = createFilterButton(title: "Nearest")
-        let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-        let pureVegButton = createFilterButton(title: "Pure Veg")
-        let costVegButton = createFilterButton(title: "Cost: Low to High")
-        
-        filterStackView.addArrangedSubview(sortButton)
-        filterStackView.addArrangedSubview(nearestButton)
-        filterStackView.addArrangedSubview(ratingsButton)
-        filterStackView.addArrangedSubview(pureVegButton)
-        filterStackView.addArrangedSubview(costVegButton)
-        
-        filterScrollView.addSubview(filterStackView)
-        view.addSubview(filterScrollView)
-        
-        NSLayoutConstraint.activate([
-            filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
-            filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            filterScrollView.heightAnchor.constraint(equalToConstant: 40),
+            filterScrollView = UIScrollView()
+            filterScrollView.showsHorizontalScrollIndicator = false
+            filterScrollView.translatesAutoresizingMaskIntoConstraints = false
             
-            filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
-            filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
-            filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
-            filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
-            filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
-        ])
-    }
+            filterStackView = UIStackView()
+            filterStackView.axis = .horizontal
+            filterStackView.spacing = 15.0
+            filterStackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+            
+            for title in filterTitles {
+                let button = createFilterButton(title: title)
+                filterStackView.addArrangedSubview(button)
+            }
+            
+            filterScrollView.addSubview(filterStackView)
+            view.addSubview(filterScrollView)
+            
+            NSLayoutConstraint.activate([
+                filterScrollView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+                filterScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                filterScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                filterScrollView.heightAnchor.constraint(equalToConstant: 40),
+                
+                filterStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor),
+                filterStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor),
+                filterStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
+                filterStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
+                filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
+            ])
+        }
     
     
     
@@ -172,49 +240,45 @@ func configureItemCountLabel() {
 }
 
 
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 12
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            return button
         }
-        
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
-    }
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal) else { return }
-        print("Filter tapped: \(title)")
-    }
+            guard let title = sender.title(for: .normal), title != "Sort" else { return }
+            
+            if activeFilters.contains(title) {
+                activeFilters.remove(title)
+                sender.backgroundColor = .white
+                sender.setTitleColor(.black, for: .normal)
+            } else {
+                activeFilters.insert(title)
+                sender.backgroundColor = .accent
+                sender.setTitleColor(.white, for: .normal)
+            }
+            
+            applyFilters()
+        }
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("Search query: \(searchText)")
+        isSearching = !searchText.isEmpty
+        searchBar.setShowsCancelButton(!searchText.isEmpty, animated: true) // Hide if empty
+        applyFilters() // Apply filters after searching
     }
+
+
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -225,11 +289,9 @@ func configureItemCountLabel() {
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        let count = KitchenDataController.globalChefSpecial.count
-        DispatchQueue.main.async {
-            self.itemCountLabel.text = "\(count) Dishes Available For You"
-        }
+        itemCountLabel.text = "\(filteredMenuItems.count) Dishes Available For You"
     }
+
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -241,51 +303,43 @@ func configureItemCountLabel() {
         cell.layer.shadowOpacity = 0.5
         cell.layer.masksToBounds = false
         cell.mealTiming = mealTiming
-        cell.updateMealDetails(with: indexPath)
+
+        // Ensure using filtered items
+        let menuItem = filteredMenuItems[indexPath.row]
+            cell.updateMealDetails(with: menuItem)
 
         cell.delegate = self
         return cell
     }
+
     
     
     
     func MealcategoriesButtonTapped(in cell: MenuCategoriesCollectionViewCell) {
         guard let indexPath = MealCategories.indexPath(for: cell) else { return }
 
-        let selectedItem: MenuItem
-        switch mealTiming {
-        case .breakfast:
-            selectedItem = KitchenDataController.GlobalbreakfastMenuItems[indexPath.row]
-            self.title = "Breakfast"
-        case .lunch:
-            selectedItem = KitchenDataController.GloballunchMenuItems[indexPath.row]
-            self.title = "Lunch"
-        case .snacks:
-            selectedItem = KitchenDataController.GlobalsnacksMenuItems[indexPath.row]
-            self.title = "Snacks"
-        case .dinner:
-            selectedItem = KitchenDataController.GlobaldinnerMenuItems[indexPath.row]
-            self.title = "Dinner"
-        }
+        // Fetch the correct item from filteredMenuItems
+        let selectedItem = filteredMenuItems[indexPath.row]
 
         print("Add button tapped for meal: \(selectedItem.name)")
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-           if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-               detailVC.selectedItem = selectedItem
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            detailVC.selectedItem = selectedItem
 
-               // Present as a bottom sheet
-               if let sheet = detailVC.sheetPresentationController {
-                   sheet.detents = [.medium(), .large()] // Medium-sized sheet
-                   sheet.prefersGrabberVisible = true   // Show a grabber handle
-               }
+            // Present as a bottom sheet
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()] // Medium-sized sheet
+                sheet.prefersGrabberVisible = true    // Show grabber handle
+            }
 
-               detailVC.modalPresentationStyle = .pageSheet
-               present(detailVC, animated: true, completion: nil)
-           } else {
-               print("Error: Could not instantiate AddItemModallyViewController")
-           }
+            detailVC.modalPresentationStyle = .pageSheet
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
     }
+
 
     
     

@@ -8,12 +8,14 @@
 import UIKit
 
 
+protocol SubscriptionPlanDelegate: AnyObject {
+    func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
+}
 
 class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate,SubscriptionCartItemTableViewCellDelegate {
     
  
-    
-  
+    weak var delegate: SubscriptionPlanDelegate?
    
     @IBOutlet var CartItem: UITableView!
 
@@ -24,23 +26,35 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        static var subscriptionPlan1 : [SubscriptionPlan] = []
       
        func didTapPlaceOrder() {
+           // Create new order history entry
+           let orderHistory = OrderHistory(
+               orderID: UUID().uuidString,
+               items: CartViewController.cartItems,
+               orderDate: Date()
+           )
+           
+           // Add to order history
+           OrderHistoryController.addOrder(orderHistory)
+           
+           // Create and add order to OrderDataController
            let order = createOrderFromCart(cartItems: CartViewController.cartItems)
            OrderDataController.shared.addOrder(order: order)
            
            let banner = CustomBannerView()
-              banner.show(in: self.view, message: "Order Placed Successfully!")
-              
+           banner.show(in: self.view, message: "Order Placed Successfully!")
+           
            // Clear cart items and reload table view
-           CartViewController.cartItems.removeAll() // Clear cart items after order
-           CartItem.reloadData() // Reload cart table view
+           CartViewController.cartItems.removeAll()
+           CartItem.reloadData()
            
            // Notify MyOrdersViewController to reload data
-                  MyOrdersViewController.shared.loadData()
+           MyOrdersViewController.shared.loadData()
            
-           // ✅ Update the badge on My Orders tab
-               updateMyOrdersBadge()
-          
-
+           // Update the badge on My Orders tab
+           updateMyOrdersBadge()
+           
+           // Notify to update intake limits
+           NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
        }
     // Function to update the badge count on My Orders tab
     func updateMyOrdersBadge() {
@@ -50,13 +64,17 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             myOrdersTabItem.badgeValue = activeOrdersCount > 0 ? "\(activeOrdersCount)" : nil
         }
     }
-    
+    @objc func reloadCart() {
+        self.CartItem.reloadData()
+    }
+
     
        override func viewDidLoad() {
            super.viewDidLoad()
            self.title = "Cart"
           
-        
+           NotificationCenter.default.addObserver(self, selector: #selector(reloadCart), name: NSNotification.Name("CartUpdated"), object: nil)
+
            
            CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
            
@@ -303,27 +321,34 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }
        }
        
-       func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-           
-           switch section {
-               
-           case 0:
-               return "Delivery Address"
-           case 1:
-               return "Cart Items"
-           case 2:
-               return CartViewController.subscriptionPlan1.isEmpty ? nil : "Subscription Details"
-           case 3:
-               return CartViewController.cartItems.isEmpty ? nil : "Payment"
-//           case 4:
-//               return "Order Details"
-           default:
-               return nil
-           }
-       }
+
        
-       
-       
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let hasCartItems = !CartViewController.cartItems.isEmpty
+        let hasSubscriptions = !CartViewController.subscriptionPlan1.isEmpty
+        let hasAnyItems = hasCartItems || hasSubscriptions
+
+        switch section {
+            case 0:
+                return "Delivery Address"  // ✅ Always shown
+            
+            case 1:
+                return hasCartItems ? "Cart Items" : (hasSubscriptions && CartViewController.subscriptionPlan1.count == 1 ? nil : "Your Cart is Empty")
+            
+            case 2:
+                return hasSubscriptions ? "Subscription Details" : nil
+            
+            case 3:
+                return hasAnyItems ? "Payment" : nil  // ✅ Show only if there are cart items or subscriptions
+            
+            case 4:
+                return hasAnyItems ? "Order Details" : nil  // ✅ Show only if cart or subscription exists
+            
+            default:
+                return nil
+        }
+    }
+
        
        func presentAddItemModal(with item: MenuItem) {
            let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -335,53 +360,43 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }
            
        }
+
+    func didAddItemToCart(_ item: CartItem) {
+        CartViewController.cartItems.append(item) // ✅ Ensure you update the correct cartItems
+        cartItems = CartViewController.cartItems // ✅ Sync local cartItems with the static one
+        updateTabBarBadge()
+        
+        CartItem.reloadData() // ✅ Reload the cart to reflect changes
+    }
+
+
        
-       func didAddItemToCart(_ item: CartItem) {
-           KitchenDataController.cartItems.append(item)
-           updateTabBarBadge()
-           
-           CartItem.reloadData()
-           /// Use the navigation controller's view if available, otherwise self.view.
-           
-          
-           //       print("Item added to cart: \(item.menuItemID), Total items: \(KitchenDataController.cartItems.count)")
-       }
-       
-       
-       func addSubscriptionPlan(_ plan: SubscriptionPlan) {
-               CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
-               DispatchQueue.main.async {
-                   self.CartItem?.reloadData()  // ✅ Refresh table view
-               }
-           }
-       
-       override func viewWillAppear(_ animated: Bool) {
-           super.viewWillAppear(animated)
-           CartItem.reloadData()
-           updateTabBarBadge()// Reload the table view when the view appears
-           print("🔄 Reloading cart data... Subscription items: \(CartViewController.subscriptionPlan1.count)")
-              CartItem.reloadData() // ✅ Refresh table when the view appears
-       }
+
+    func addSubscriptionPlan(_ plan: SubscriptionPlan) {
+            CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
+            
+            DispatchQueue.main.async {
+                self.CartItem?.reloadData()  // ✅ Refresh table view
+            }
+            
+            print(CartViewController.subscriptionPlan1)
+            
+            // Notify delegate
+            delegate?.didAddSubscriptionPlan(plan)
+        }
+ 
+
        @objc func updateCart() {
            CartItem.reloadData()
        }
       
-   //    func calculateTotalItemPrice() -> Double {
-   //        return CartViewController.cartItems.reduce(0) { total, cartItem in
-   //            switch (cartItem.menuItem, cartItem.chefSpecial) {
-   //            case let (menuItem?, nil):
-   //                print(menuItem.name)
-   //                return total + ((menuItem.price ?? 0) * Double(cartItem.quantity))
-   //
-   //            case let (nil, chefDish?):
-   //                print(chefDish.name)
-   //                return total + (chefDish.price * Double(cartItem.quantity))
-   //
-   //            default:
-   //                return total
-   //            }
-   //        }
-   //    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        cartItems = CartViewController.cartItems // ✅ Update local cart items
+        CartItem.reloadData() // ✅ Reload table view
+    }
+
        func calculateTotalItemPrice() -> Double {
            // Calculate total from cart items
            let cartTotal = CartViewController.cartItems.reduce(0) { total, cartItem in

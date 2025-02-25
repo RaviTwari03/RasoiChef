@@ -42,13 +42,56 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         LandingPage.delegate = self
         
         setupSearchController()
-       
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.scrollToCurrentMeal()
+        }
         
        }
        
+    
+    func getCurrentMealCategoryIndex() -> Int {
+        let currentHour = Calendar.current.component(.hour, from: Date())
+
+        switch currentHour {
+        case 21..<24, 0..<7:
+            return 0 // Breakfast
+        case 7..<11:
+            return 1 // Lunch
+        case 11..<16:
+            return 2 // Snacks
+        case 16..<21:
+            return 3 // Dinner
+        default:
+            return 0 // Default to breakfast
+        }
+    }
+
+
+    func scrollToCurrentMeal() {
+        let currentMealIndex = getCurrentMealCategoryIndex()
+        let indexPath = IndexPath(item: currentMealIndex, section: 0) // Assuming section 0 is the meal banner
+
+        LandingPage.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    }
+
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        let targetIndex = getCurrentMealCategoryIndex()
+        let indexPath = IndexPath(item: targetIndex, section: 0)
+
+        // Ensure the cell is visible without scrolling automatically
+        DispatchQueue.main.async {
+            self.LandingPage.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        }
+    }
+
+    
        // MARK: - Number of Sections
        func numberOfSections(in collectionView: UICollectionView) -> Int {
-           return 5
+           return 3
        }
        
        // MARK: - Number of Items in Section
@@ -179,7 +222,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            group.interItemSpacing = .fixed(5) // Space between items within the section
            group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 8.0)
            let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 20) // Minimize insets
+           section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10) // Minimize insets
            section.orthogonalScrollingBehavior = .groupPaging
            return section
        }
