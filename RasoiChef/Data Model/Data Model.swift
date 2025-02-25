@@ -76,6 +76,7 @@ struct Kitchen {
     var isOnline: Bool
     var distance: Double
     var kitchenImage: String
+    var isPureVeg: Bool
 }
 
 // Menu Item
@@ -84,6 +85,7 @@ struct MenuItem {
     let kitchenID: String
     let kitchenName :String
     var distance: Double
+    var availableDate: Date?
     var name: String
     var description: String
     var price: Double
@@ -93,6 +95,7 @@ struct MenuItem {
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline : String
+    var recievingDeadline : String?
     var availability: [Availabiltiy]
     var availableDays: [WeekDay]
     var mealCategory : [MealCategory]
@@ -126,18 +129,9 @@ struct ChefSpecialtyDish {
     var rating: Float
     var imageURL: String
     var mealCategory : [MealCategory]
+    var distance: Double
+    var intakeLimit : Int
 }
-//struct GlobalChefSpeciality{
-//    let kitchenName : String
-//    let dishID: String
-//    let kitchenID: String
-//    var name: String
-//    var description: String
-//    var price: Double
-//    var rating: Float
-//    var imageURL: String
-//    var mealCategory : [MealCategory]
-//}
 
 // Cart Item
 struct CartItem {
@@ -156,6 +150,7 @@ struct Order {
     let kitchenName: String
     let kitchenID: String
     let items: [OrderItem]
+    var item: SubscriptionPlan?
     var status: OrderStatus
     var totalAmount: Double
     var deliveryAddress: String
@@ -196,6 +191,7 @@ struct OrderItem {
 //}
 struct SubscriptionPlan {
     var planID: String?
+    var kitchenName : String?
     var userID: String?
     var kitchenID: String?
     var startDate: String?
@@ -269,3 +265,4 @@ struct SubscriptionMenuItem {
     let availableMealTypes : [MealType]
     let availableDays : [WeekDay]
 }
+

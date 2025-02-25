@@ -19,18 +19,33 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var containerView: UIView!
     
+    @IBOutlet weak var onlineOrOfflineIcon: UIImageView!
+    
+    
     func updateLandingPageKitchen(for indexPath: IndexPath) {
-        
         let restaurant = KitchenDataController.kitchens[indexPath.row]
+        
         KitchenName.text = restaurant.name
         Distance.text = "\(restaurant.distance) km"
         CuisineLabel.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
         RatingsLabel.text = "\(restaurant.rating)"
-//        KichenImage.image = UIImage(named: "KitchenImage 1")
         KichenImage.image = UIImage(named: restaurant.kitchenImage)
         
-        availabilityLabel.text = restaurant.isOnline ? "Online" : "Offline"
+        if restaurant.isOnline {
+                availabilityLabel.text = "Online"
+                availabilityLabel.textColor = UIColor.systemGreen
+                onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                containerView.alpha = 1.0 // Reset opacity
+                isUserInteractionEnabled = true // Enable interaction
+            } else {
+                availabilityLabel.text = "Offline"
+                availabilityLabel.textColor = UIColor.systemGray
+                onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                containerView.alpha = 0.8 // Dim the cell
+                isUserInteractionEnabled = false // Disable interaction
+            }
     }
+
     
     
     override func awakeFromNib() {

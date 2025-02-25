@@ -16,20 +16,33 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
     @IBOutlet var Cuisine_Label: UILabel!
     @IBOutlet var DistanceLabel: UILabel!
     @IBOutlet var Ratings_Label: UILabel!
+    @IBOutlet weak var onlineOrOfflineIcon: UIImageView!
+    
 
     @IBOutlet weak var container_View: UIView!
     
     func updateSpecialDishDetails(for indexPath: IndexPath) {
-        
         let restaurant = KitchenDataController.kitchens[indexPath.row]
+        
         Kitchen_Name.text = restaurant.name
         DistanceLabel.text = "\(restaurant.distance) km"
         Cuisine_Label.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
         Ratings_Label.text = "\(restaurant.rating)"
-//        KichenImage.image = UIImage(named: "KitchenImage 1")
         Kichen_Image.image = UIImage(named: restaurant.kitchenImage)
         
-        availability_Label.text = restaurant.isOnline ? "Online" : "Offline"
+        if restaurant.isOnline {
+                availability_Label.text = "Online"
+                availability_Label.textColor = UIColor.systemGreen
+                onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                container_View.alpha = 1.0 // Reset opacity
+                isUserInteractionEnabled = true // Enable interaction
+            } else {
+                availability_Label.text = "Offline"
+                availability_Label.textColor = UIColor.systemGray
+                onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                container_View.alpha = 0.8 // Dim the cell
+                isUserInteractionEnabled = false // Disable interaction
+            }
     }
     
     

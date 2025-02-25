@@ -8,43 +8,7 @@
 import UIKit
 
 class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate,ChefSpecialMenuDetailsCellDelegate{
-    
 
-    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
-        guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
-
-        var selectedMenuItem: MenuItem? = nil
-        var selectedChefSpecialtyDish: ChefSpecialtyDish? = nil
-
-        if indexPath.section == 0 {
-            // Section 0 contains Chef Specialty Dishes
-            selectedChefSpecialtyDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
-            print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish?.name ?? "Unknown")")
-        } else if indexPath.section == 1 {
-            // Section 1 contains Regular Menu Items
-            selectedMenuItem = KitchenDataController.menuItems[indexPath.row]
-            print("Add button tapped for Menu Item: \(selectedMenuItem?.name ?? "Unknown")")
-        }
-
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-            detailVC.selectedItem = selectedMenuItem
-            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish // Pass the Chef Special dish
-
-            detailVC.modalPresentationStyle = .pageSheet
-
-            if let sheet = detailVC.sheetPresentationController {
-                sheet.detents = [.medium(), .large()]
-                sheet.prefersGrabberVisible = true
-            }
-
-            present(detailVC, animated: true, completion: nil)
-        } else {
-            print("Error: Could not instantiate AddItemModallyViewController")
-        }
-    }
-
-    
     
     @IBOutlet var ChefSpecialMenu: UICollectionView!
     
@@ -52,6 +16,8 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     var filterScrollView: UIScrollView!
     var filterStackView: UIStackView!
     var itemCountLabel: UILabel!
+    var filteredChefSpecialDishes: [ChefSpecialtyDish] = []
+    var activeFilters: Set<String> = []
     
     
     override func viewDidLoad() {
@@ -84,6 +50,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         ChefSpecialMenu.dataSource = self
         ChefSpecialMenu.delegate = self
         
+        filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes
         updateItemCount()
         
     }
@@ -92,8 +59,9 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         searchBar = UISearchBar()
         searchBar.delegate = self
         searchBar.placeholder = "Search"
-        searchBar.searchBarStyle = .minimal // Removes background lines
-        searchBar.backgroundImage = UIImage() // Removes background shadow
+        searchBar.searchBarStyle = .minimal
+        searchBar.backgroundImage = UIImage()
+        searchBar.showsCancelButton = false  // Initially hidden
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(searchBar)
@@ -116,17 +84,12 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         filterStackView.spacing = 15.0
         filterStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let sortButton = createFilterButton(title: "Sort ", withChevron: true)
-        let nearestButton = createFilterButton(title: "Nearest")
-        let ratingsButton = createFilterButton(title: "Ratings 4.0+")
-        let pureVegButton = createFilterButton(title: "Pure Veg")
-        let costVegButton = createFilterButton(title: "Cost: Low to High")
+        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
         
-        filterStackView.addArrangedSubview(sortButton)
-        filterStackView.addArrangedSubview(nearestButton)
-        filterStackView.addArrangedSubview(ratingsButton)
-        filterStackView.addArrangedSubview(pureVegButton)
-        filterStackView.addArrangedSubview(costVegButton)
+        for title in filterTitles {
+            let button = createFilterButton(title: title)
+            filterStackView.addArrangedSubview(button)
+        }
         
         filterScrollView.addSubview(filterStackView)
         view.addSubview(filterScrollView)
@@ -144,6 +107,8 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
             filterStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
         ])
     }
+    
+    
     
 // MARK: - Configure Item Count Label
 func configureItemCountLabel() {
@@ -164,49 +129,109 @@ func configureItemCountLabel() {
 }
 
 
-    func createFilterButton(title: String, withChevron: Bool = false) -> UIButton {
-        let button = UIButton(type: .system)
-        
-        if withChevron {
-            let chevronImage = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate)
-            let attachment = NSTextAttachment()
-            attachment.image = chevronImage
-            attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-            
-            let attributedString = NSMutableAttributedString(string: title + " ")
-            attributedString.append(NSAttributedString(attachment: attachment))
-            
-            // Apply medium font style with increased size
-            let regularFont = UIFont.systemFont(ofSize: 18, weight: .regular) // Changed to medium
-            attributedString.addAttribute(.font, value: regularFont, range: NSRange(location: 0, length: attributedString.length))
-            
-            button.setAttributedTitle(attributedString, for: .normal)
-        } else {
-            // Apply medium font with increased size
-            let regularTitle = NSAttributedString(string: title, attributes: [.font: UIFont.systemFont(ofSize: 18, weight: .regular)]) // Changed to medium
-            button.setAttributedTitle(regularTitle, for: .normal)
+    func createFilterButton(title: String) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.backgroundColor = .white
+            button.layer.borderWidth = 1.0
+            button.layer.borderColor = UIColor.accent.cgColor
+            button.layer.cornerRadius = 10
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+            button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            button.tag = filterStackView.arrangedSubviews.count
+            updateFilterButtonAppearance(button, isSelected: false)
+
+            return button
         }
-        
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.gray.cgColor
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
-        
-        return button
+    
+    func updateFilterButtonAppearance(_ button: UIButton, isSelected: Bool) {
+        if isSelected {
+            button.backgroundColor = UIColor.accent
+            button.setTitleColor(.white, for: .normal)
+        } else {
+            button.backgroundColor = .white
+            button.setTitleColor(.black, for: .normal)
+        }
     }
+    
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
         guard let title = sender.title(for: .normal) else { return }
-        print("Filter tapped: \(title)")
+
+        if title == "Sort" {
+            return // Ignore "Sort" button (no color change, no filtering)
+        }
+
+        if activeFilters.contains(title) {
+            activeFilters.remove(title) // Remove filter if already applied
+            updateFilterButtonAppearance(sender, isSelected: false) // Update color
+        } else {
+            activeFilters.insert(title) // Apply new filter
+            updateFilterButtonAppearance(sender, isSelected: true) // Update color
+        }
+
+        applyFilters()
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("Search query: \(searchText)")
+    
+    func applyFilters() {
+        filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes // Start with full list
+
+        // Apply search first if there's text
+        if let searchText = searchBar.text, !searchText.isEmpty {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
+        }
+        // Apply filters one by one
+        if activeFilters.contains("Nearest") {
+            filteredChefSpecialDishes.sort { $0.distance < $1.distance }
+        }
+        if activeFilters.contains("Ratings 4.0+") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.rating >= 4.0 }
+        }
+        if activeFilters.contains("Pure Veg") {
+            filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.mealCategory.contains(.veg) }
+        }
+        if activeFilters.contains("Cost: Low to High") {
+            filteredChefSpecialDishes.sort { $0.price < $1.price }
+        }
+
+        updateItemCount()
+        ChefSpecialMenu.reloadData()
     }
+        
+        
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes
+        } else {
+            filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes.filter { dish in
+                return dish.name.lowercased().contains(searchText.lowercased())
+            }
+        }
+        
+        applyFilters()
+    }
+
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true) // Hide cancel button
+        searchBar.resignFirstResponder() // Hide keyboard
+        
+        filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes // Reset to all dishes
+        updateItemCount()
+        ChefSpecialMenu.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -215,46 +240,36 @@ func configureItemCountLabel() {
     
     // MARK: - Number of Items in Section
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return KitchenDataController.chefSpecialtyDishes.count
-        
-        default:
-            return 0
-        }
+        return filteredChefSpecialDishes.count
     }
     
     
     
     // MARK: - Update Item Count Label
     func updateItemCount() {
-        let count = KitchenDataController.chefSpecialtyDishes.count
-        DispatchQueue.main.async {
-            self.itemCountLabel.text = "\(count) Dishes Available For You"
-        }
+        let count = filteredChefSpecialDishes.count
+        itemCountLabel.text = "\(count) Dishes Available for You"
     }
     
     
     
     // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenu", for: indexPath) as! ChefSpecialMenuCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            cell.layer.cornerRadius = 15.0
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-            cell.layer.shadowRadius = 2.5
-            cell.layer.shadowOpacity = 0.5
-            cell.layer.masksToBounds = false
-            cell.delegate = self
-            return cell
-       
-            
-        default:
-            return UICollectionViewCell()
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialMenu", for: indexPath) as! ChefSpecialMenuCollectionViewCell
+        
+        let dish = filteredChefSpecialDishes[indexPath.row] // Now using filtered list
+        cell.updateSpecialDishDetails(with: dish) // Corrected function call
+        cell.delegate = self
+
+        // Cell Styling
+        cell.layer.cornerRadius = 15.0
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cell.layer.shadowRadius = 2.5
+        cell.layer.shadowOpacity = 0.5
+        cell.layer.masksToBounds = false
+
+        return cell
     }
     
     
@@ -269,6 +284,31 @@ func configureItemCountLabel() {
 
         let section = NSCollectionLayoutSection(group: group)
         return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    
+    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
+        guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
+
+        let selectedChefSpecialtyDish = filteredChefSpecialDishes[indexPath.row]
+        print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
+            
+            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish  // Pass the Chef Special dish
+
+            detailVC.modalPresentationStyle = .pageSheet
+
+            if let sheet = detailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+
+            present(detailVC, animated: true, completion: nil)
+        } else {
+            print("Error: Could not instantiate AddItemModallyViewController")
+        }
     }
 
     
