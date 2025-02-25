@@ -67,19 +67,14 @@ class LoginViewController: UIViewController {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let homeVC = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as! UITabBarController
             
-            // ✅ Check if there is a navigationController
-            if let navigationController = self.navigationController {
-                navigationController.setViewControllers([homeVC], animated: true)
-            } else {
-                // ✅ If no navigationController, replace the rootViewController
-                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                    let navController = UINavigationController(rootViewController: homeVC)
-                    sceneDelegate.window?.rootViewController = navController
-                    sceneDelegate.window?.makeKeyAndVisible()
-                }
+            // ✅ If there's a navigation controller, set the new root without embedding it in another navigation stack
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.window?.rootViewController = homeVC
+                sceneDelegate.window?.makeKeyAndVisible()
             }
         }
     }
+
 
 
         func showAlert(_ message: String) {
