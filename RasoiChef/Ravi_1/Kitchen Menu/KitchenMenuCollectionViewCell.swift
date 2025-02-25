@@ -35,7 +35,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var stepper: UIStepper!
        
     
-
+   
     weak var delegate: KitchenMenuDetailsCellDelegate?
           
         override func awakeFromNib() {
@@ -77,45 +77,43 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         }
     }
 
-            func updateMealDetails(with indexPath: IndexPath) {
-                let menuItem = KitchenDataController.menuItems[indexPath.row]
-                vegImage.image = UIImage(named: "vegImage")
-                ratingLabel.text = "\(menuItem.rating)"
-                dishNameLabel.text = menuItem.name
-                updateIntakeLimit(for: indexPath)
+    func updateMealDetails(with menuItem: MenuItem) {
+        vegImage.image = UIImage(named: "vegImage")
+        ratingLabel.text = "\(menuItem.rating)"
+        dishNameLabel.text = menuItem.name
+        
+        let words = menuItem.description.split(separator: " ")
+        if words.count > 9 {
+            let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
+            let attributedString = NSMutableAttributedString(string: truncatedText)
+            let readMoreRange = (truncatedText as NSString).range(of: "...read more")
 
-                let words = menuItem.description.split(separator: " ")
-                if words.count > 9 {
-                    let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
-                    let attributedString = NSMutableAttributedString(string: truncatedText)
-                    let readMoreRange = (truncatedText as NSString).range(of: "...read more")
-                    
-                    attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
-                    attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
-                    
-                    dishDescription.attributedText = attributedString
-                    dishDescription.isUserInteractionEnabled = true
-                    
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
-                    dishDescription.addGestureRecognizer(tapGesture)
-                } else {
-                    dishDescription.text = menuItem.description
-                }
+            attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
+            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
 
-                dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-                dishDeliveryExpected.text = menuItem.orderDeadline
-                dishImge.image = UIImage(named: menuItem.imageURL)
-                dishprice.text = "₹\(menuItem.price)"
-                dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
-                
-                if menuItem.mealCategory.contains(.veg) {
-                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
-                } else {
-                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
-                }
+            dishDescription.attributedText = attributedString
+            dishDescription.isUserInteractionEnabled = true
 
-                applyCardStyle1()
-            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
+            dishDescription.addGestureRecognizer(tapGesture)
+        } else {
+            dishDescription.text = menuItem.description
+        }
+
+        dishTime.text = menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", ")
+        dishDeliveryExpected.text = menuItem.orderDeadline
+        dishImge.image = UIImage(named: menuItem.imageURL)
+        dishprice.text = "₹\(menuItem.price)"
+        dishIntakLimit.text = "Intake limit: \(menuItem.intakeLimit)"
+
+        if menuItem.mealCategory.contains(.veg) {
+            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        } else {
+            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        }
+
+        applyCardStyle1()
+    }
 
             func applyCardStyle1() {
                 cardViewKitchenMenu.layer.cornerRadius = 15

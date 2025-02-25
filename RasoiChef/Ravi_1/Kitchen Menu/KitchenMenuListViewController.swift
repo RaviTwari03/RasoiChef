@@ -8,6 +8,8 @@
 import UIKit
 
 class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,MenuDetailsCellDelegate, KitchenMenuDetailsCellDelegate {
+    
+    var selectedDay: WeekDay = .monday // Default to Monday (Change as needed)
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -72,13 +74,14 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 7/* KitchenDataController.dateItem.count*/
+            return 7 // Assuming 7 days in a week
         case 1:
-            return KitchenDataController.menuItems.count
+            return KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }.count
         default:
             return 0
         }
     }
+
     
     
     // MARK: - Cell for Item at IndexPath
@@ -89,15 +92,20 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             cell.updateMenuListDate(for: indexPath)
             return cell
         case 1:
+            let filteredMenu = KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
-            cell.updateMealDetails(with: indexPath)
+            
+            let menuItem = filteredMenu[indexPath.row] // Get the correct `MenuItem`
+            cell.updateMealDetails(with: menuItem) // Ensure `updateMealDetails` accepts a `MenuItem`
+            
             cell.delegate = self
             return cell
-            
         default:
             return UICollectionViewCell()
         }
     }
+
+
     
     
     // MARK: - Compositional Layout
@@ -118,6 +126,17 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         }
         return layout
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // If Calendar Section is clicked
+            let selectedCell = collectionView.cellForItem(at: indexPath) as? KitchenMenuCalenderCollectionViewCell
+            selectedDay = WeekDay.allCases[indexPath.row] // Assuming WeekDay enum follows correct order
+            
+            // Reload the menu items based on selected date
+            KitchenMenuList.reloadSections(IndexSet(integer: 1))
+        }
+    }
+
     // Calendar Section Layout
     func generateMenuCalenderSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(1))
