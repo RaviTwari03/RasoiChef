@@ -35,39 +35,25 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     @IBOutlet var stepper: UIStepper!
        
     
-   
+
     weak var delegate: KitchenMenuDetailsCellDelegate?
           
         override func awakeFromNib() {
                   super.awakeFromNib()
-                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated(_:)), name: NSNotification.Name("CartUpdated"), object: nil)
-                  NotificationCenter.default.addObserver(self, selector: #selector(resetStepper), name: NSNotification.Name("ResetStepper"), object: nil)
+                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
           
-                  // Initial setup
-                  if let stepper = stepper {
-                      stepper.minimumValue = 0
-                      stepper.stepValue = 1
-                      stepper.layer.cornerRadius = 11
-                      stepperStackView.spacing = 8
-                  } else {
-                      print("Error: stepper is nil")
-                  }
-                  
-                  if let stepperStackView = stepperStackView {
+                  // Ensure outlets are not nil before modifying them
+                  if let stepperStackView = stepperStackView, let stepper = stepper {
                       stepperStackView.isHidden = true
+                      stepper.layer.cornerRadius = 11
+                      stepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
                   } else {
-                      print("Error: stepperStackView is nil")
-                  }
-                  
-                  if let quantityLabel = quantityLabel {
-                      quantityLabel.text = "0"
-                  } else {
-                      print("Error: quantityLabel is nil")
+                      print("Error: stepperStackView or stepper is nil")
                   }
               }
 
 
-    @objc func cartUpdated(_ notification: Notification) {
+    @objc func cartUpdated() {
         if let collectionView = self.superview as? UICollectionView,
            let indexPath = collectionView.indexPath(for: self) {
             updateIntakeLimit(for: indexPath)
@@ -91,43 +77,46 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         }
     }
 
-    func updateMealDetails(with menuItem: MenuItem) {
-        vegImage.image = UIImage(named: "vegImage")
-        ratingLabel.text = "\(menuItem.rating)"
-        dishNameLabel.text = menuItem.name
-        
-        let words = menuItem.description.split(separator: " ")
-        if words.count > 9 {
-            let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
-            let attributedString = NSMutableAttributedString(string: truncatedText)
-            let readMoreRange = (truncatedText as NSString).range(of: "...read more")
+            func updateMealDetails(with menuItem: MenuItem, at indexPath: IndexPath) {
+                vegImage.image = UIImage(named: "vegImage")
+                ratingLabel.text = "\(menuItem.rating)"
+                dishNameLabel.text = menuItem.name
+                
+                // Update intake limit using the passed indexPath
+                updateIntakeLimit(for: indexPath)
 
-            attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
-            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
+                let words = menuItem.description.split(separator: " ")
+                if words.count > 9 {
+                    let truncatedText = words.prefix(9).joined(separator: " ") + "...read more"
+                    let attributedString = NSMutableAttributedString(string: truncatedText)
+                    let readMoreRange = (truncatedText as NSString).range(of: "...read more")
+                    
+                    attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
+                    attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
+                    
+                    dishDescription.attributedText = attributedString
+                    dishDescription.isUserInteractionEnabled = true
+                    
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
+                    dishDescription.addGestureRecognizer(tapGesture)
+                } else {
+                    dishDescription.text = menuItem.description
+                }
 
-            dishDescription.attributedText = attributedString
-            dishDescription.isUserInteractionEnabled = true
+                dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+                dishDeliveryExpected.text = menuItem.orderDeadline
+                dishImge.image = UIImage(named: menuItem.imageURL)
+                dishprice.text = "₹\(menuItem.price)"
+                dishIntakLimit.text = "Intake limit: \(menuItem.intakeLimit)"
+                
+                if menuItem.mealCategory.contains(.veg) {
+                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+                } else {
+                    vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+                }
 
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
-            dishDescription.addGestureRecognizer(tapGesture)
-        } else {
-            dishDescription.text = menuItem.description
-        }
-
-        dishTime.text = menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", ")
-        dishDeliveryExpected.text = menuItem.orderDeadline
-        dishImge.image = UIImage(named: menuItem.imageURL)
-        dishprice.text = "₹\(menuItem.price)"
-        dishIntakLimit.text = "Intake limit: \(menuItem.intakeLimit)"
-
-        if menuItem.mealCategory.contains(.veg) {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
-        } else {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
-        }
-
-        applyCardStyle1()
-    }
+                applyCardStyle1()
+            }
 
             func applyCardStyle1() {
                 cardViewKitchenMenu.layer.cornerRadius = 15
@@ -187,7 +176,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         let isChefSpecial = chefSpecial != nil
 
         // Find or create cart item
-        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: { 
+        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: {
             if isChefSpecial {
                 return $0.chefSpecial?.dishID == menuItem.itemID
             } else {
@@ -229,18 +218,9 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         )
     }
 
-    @objc private func resetStepper() {
-        print("Resetting stepper")
-        guard stepper != nil, quantityLabel != nil, stepperStackView != nil else {
-            print("Error: One of the outlets is nil in resetStepper")
-            return
-        }
-        
-        stepper.value = 0
-        quantityLabel.text = "0"
-        stepperStackView.isHidden = true
-        addButton.isHidden = false
-    }
+
+
+
 
     func updateIntakeLimit(for indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
@@ -249,7 +229,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
         // Get total ordered quantity from both current cart and placed orders
         let cartQuantity = CartViewController.cartItems
-            .filter { 
+            .filter {
                 if isChefSpecial {
                     return $0.chefSpecial?.dishID == menuItem.itemID
                 } else {
@@ -260,7 +240,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
         let placedOrdersQuantity = OrderHistoryController.placedOrders
             .flatMap { $0.items }
-            .filter { 
+            .filter {
                 if isChefSpecial {
                     return $0.chefSpecial?.dishID == menuItem.itemID
                 } else {

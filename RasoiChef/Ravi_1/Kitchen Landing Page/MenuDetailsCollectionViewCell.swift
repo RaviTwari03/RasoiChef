@@ -41,16 +41,28 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated(_:)), name: NSNotification.Name("CartUpdated"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(resetStepper), name: NSNotification.Name("ResetStepper"), object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(cartUpdated(_:)),
+            name: NSNotification.Name("CartUpdated"),
+            object: nil
+        )
         
         // Initial setup
-        stepper.minimumValue = 0
-        stepper.stepValue = 1
-        stepper.layer.cornerRadius = 11
-        stepperStackView.spacing = 5
-        stepperStackView.isHidden = true
-        quantityLabel.text = "0"
+        if let stepper = stepper {
+            stepper.minimumValue = 0
+            stepper.stepValue = 1
+            stepper.layer.cornerRadius = 11
+            stepperStackView.spacing = 8
+        }
+        
+        if let stepperStackView = stepperStackView {
+            stepperStackView.isHidden = true
+        }
+        
+        if let quantityLabel = quantityLabel {
+            quantityLabel.text = "0"
+        }
     }
     
     deinit {
@@ -171,19 +183,6 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
                 self.updateCartState(for: menuItem)
             }
         }
-    }
-    
-    @objc private func resetStepper() {
-        print("Resetting stepper")
-        guard stepper != nil, quantityLabel != nil, stepperStackView != nil else {
-            print("Error: One of the outlets is nil in resetStepper")
-            return
-        }
-        
-        stepper.value = 0
-        quantityLabel.text = "0"
-        stepperStackView.isHidden = true
-        addButton.isHidden = false
     }
     
     func applyCardStyle1() {

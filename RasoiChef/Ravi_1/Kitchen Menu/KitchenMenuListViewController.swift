@@ -96,7 +96,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
             
             let menuItem = filteredMenu[indexPath.row] // Get the correct `MenuItem`
-            cell.updateMealDetails(with: menuItem) // Ensure `updateMealDetails` accepts a `MenuItem`
+            cell.updateMealDetails(with: menuItem, at: indexPath) // Pass both MenuItem and IndexPath
             
             cell.delegate = self
             return cell
