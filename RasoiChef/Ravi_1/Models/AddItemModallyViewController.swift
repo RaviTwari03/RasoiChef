@@ -67,6 +67,7 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         
         deinit {
             NotificationCenter.default.removeObserver(self)
+            updateCartBadge()
         }
         
         private func setupUI(item: MenuItem) {
@@ -183,10 +184,13 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 
                 CartViewController.cartItems.append(cartItem)
                 
+                // Update badge count
+                updateCartBadge()
+                
                 // Show banner in parent view
                 if let parentVC = self.presentingViewController {
                     let banner = BannerView()
-                    banner.show(message: "1 item added", in: parentVC)
+                    banner.show(message: "\(quantityToAdd) item added", in: parentVC)
                 }
                 
                 // Update UI before dismissing
@@ -236,10 +240,13 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 
                 CartViewController.cartItems.append(cartItem)
                 
+                // Update badge count
+                updateCartBadge()
+                
                 // Show banner in parent view
                 if let parentVC = self.presentingViewController {
                     let banner = BannerView()
-                    banner.show(message: "1 item added", in: parentVC)
+                    banner.show(message: "\(quantityToAdd) item added", in: parentVC)
                 }
                 
                 // Update UI before dismissing
@@ -276,5 +283,15 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
         
         @IBAction func crossButtonTapped(_ sender: Any) {
             self.dismiss(animated: true)
+        }
+        
+        private func updateCartBadge() {
+            if let tabBarController = UIApplication.shared.keyWindow?.rootViewController as? UITabBarController {
+                if let tabItems = tabBarController.tabBar.items {
+                    let cartTabItem = tabItems[2] // Cart tab is at index 2
+                    let itemCount = CartViewController.cartItems.count
+                    cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
+                }
+            }
         }
     }

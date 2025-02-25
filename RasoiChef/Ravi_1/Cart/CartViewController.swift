@@ -47,6 +47,12 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartViewController.cartItems.removeAll()
            CartItem.reloadData()
            
+           // Clear the cart badge
+           if let tabItems = self.tabBarController?.tabBar.items {
+               let cartTabItem = tabItems[2] // Cart tab is at index 2
+               cartTabItem.badgeValue = nil
+           }
+           
            // Notify MyOrdersViewController to reload data
            MyOrdersViewController.shared.loadData()
            
