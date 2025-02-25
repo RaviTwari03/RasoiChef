@@ -40,20 +40,34 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
           
         override func awakeFromNib() {
                   super.awakeFromNib()
-                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
+                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated(_:)), name: NSNotification.Name("CartUpdated"), object: nil)
+                  NotificationCenter.default.addObserver(self, selector: #selector(resetStepper), name: NSNotification.Name("ResetStepper"), object: nil)
           
-                  // Ensure outlets are not nil before modifying them
-                  if let stepperStackView = stepperStackView, let stepper = stepper {
-                      stepperStackView.isHidden = true
+                  // Initial setup
+                  if let stepper = stepper {
+                      stepper.minimumValue = 0
+                      stepper.stepValue = 1
                       stepper.layer.cornerRadius = 11
-                      stepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
+                      stepperStackView.spacing = 8
                   } else {
-                      print("Error: stepperStackView or stepper is nil")
+                      print("Error: stepper is nil")
+                  }
+                  
+                  if let stepperStackView = stepperStackView {
+                      stepperStackView.isHidden = true
+                  } else {
+                      print("Error: stepperStackView is nil")
+                  }
+                  
+                  if let quantityLabel = quantityLabel {
+                      quantityLabel.text = "0"
+                  } else {
+                      print("Error: quantityLabel is nil")
                   }
               }
 
 
-    @objc func cartUpdated() {
+    @objc func cartUpdated(_ notification: Notification) {
         if let collectionView = self.superview as? UICollectionView,
            let indexPath = collectionView.indexPath(for: self) {
             updateIntakeLimit(for: indexPath)
@@ -215,9 +229,18 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         )
     }
 
-
-
-
+    @objc private func resetStepper() {
+        print("Resetting stepper")
+        guard stepper != nil, quantityLabel != nil, stepperStackView != nil else {
+            print("Error: One of the outlets is nil in resetStepper")
+            return
+        }
+        
+        stepper.value = 0
+        quantityLabel.text = "0"
+        stepperStackView.isHidden = true
+        addButton.isHidden = false
+    }
 
     func updateIntakeLimit(for indexPath: IndexPath) {
         let menuItem = KitchenDataController.menuItems[indexPath.row]

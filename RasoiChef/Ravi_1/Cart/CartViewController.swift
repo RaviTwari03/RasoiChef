@@ -47,20 +47,11 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartViewController.cartItems.removeAll()
            CartItem.reloadData()
            
-           // Clear the cart badge
-           if let tabItems = self.tabBarController?.tabBar.items {
-               let cartTabItem = tabItems[2] // Cart tab is at index 2
-               cartTabItem.badgeValue = nil
-           }
-           
-           // Notify MyOrdersViewController to reload data
-           MyOrdersViewController.shared.loadData()
-           
-           // Update the badge on My Orders tab
-           updateMyOrdersBadge()
-           
            // Notify to update intake limits
            NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+           
+           // Notify all relevant views to update their UI
+           NotificationCenter.default.post(name: NSNotification.Name("ResetStepper"), object: nil)
        }
     // Function to update the badge count on My Orders tab
     func updateMyOrdersBadge() {
