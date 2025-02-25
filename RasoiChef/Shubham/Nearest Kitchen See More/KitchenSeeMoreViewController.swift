@@ -91,7 +91,7 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         filterStackView.spacing = 15.0
         filterStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Online"]
+        let filterTitles = ["Nearest", "Ratings 4.0+", "Pure Veg", "Online"]
         
         for title in filterTitles {
             let button = createFilterButton(title: title)
@@ -152,7 +152,7 @@ func configureItemCountLabel() {
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal), title != "Sort" else { return }
+        guard let title = sender.title(for: .normal) else { return }
         
         // Toggle filter state
         selectedFilters[title] = !(selectedFilters[title] ?? false)
