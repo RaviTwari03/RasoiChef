@@ -32,14 +32,11 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
             availability_Label.text = "Online"
             availability_Label.textColor = UIColor.systemGreen
             onlineOrOfflineIcon.tintColor = UIColor.systemGreen
-            container_View.alpha = 1.0
-            isUserInteractionEnabled = true
         } else {
             availability_Label.text = "Offline"
             availability_Label.textColor = UIColor.systemGray
             onlineOrOfflineIcon.tintColor = UIColor.systemGray
             container_View.alpha = 0.8
-            isUserInteractionEnabled = false
         }
     }
 

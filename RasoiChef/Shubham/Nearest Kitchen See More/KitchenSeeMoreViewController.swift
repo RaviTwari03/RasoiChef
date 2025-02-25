@@ -276,5 +276,19 @@ func configureItemCountLabel() {
         let section = NSCollectionLayoutSection(group: group)
         return UICollectionViewCompositionalLayout(section: section)
     }
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // Existing logic for "LandingPageKitchen"
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                
+                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
+                
+                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+            }
+        }
+    }
 
 }
