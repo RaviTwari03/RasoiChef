@@ -47,6 +47,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         // Initial setup
         stepper.minimumValue = 0
         stepper.stepValue = 1
+        stepper.layer.cornerRadius = 11
+        stepperStackView.spacing = 5
         stepperStackView.isHidden = true
         quantityLabel.text = "0"
     }
