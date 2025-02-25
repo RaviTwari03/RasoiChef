@@ -91,7 +91,7 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         filterStackView.spacing = 15.0
         filterStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Online"]
+        let filterTitles = ["Nearest", "Ratings 4.0+", "Pure Veg", "Online"]
         
         for title in filterTitles {
             let button = createFilterButton(title: title)
@@ -152,7 +152,7 @@ func configureItemCountLabel() {
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal), title != "Sort" else { return }
+        guard let title = sender.title(for: .normal) else { return }
         
         // Toggle filter state
         selectedFilters[title] = !(selectedFilters[title] ?? false)
@@ -169,14 +169,16 @@ func configureItemCountLabel() {
     }
     
     func applyFilters() {
-        // Always start with search results if searching
-        if let searchText = searchBar.text, !searchText.isEmpty {
-            filteredKitchens = allKitchens.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-        } else {
+        let searchText = searchBar.text?.lowercased() ?? ""
+        
+        // Apply search first
+        if searchText.isEmpty {
             filteredKitchens = allKitchens
+        } else {
+            filteredKitchens = allKitchens.filter { $0.name.lowercased().contains(searchText) }
         }
 
-        // Now apply the filters on top of search results
+        // Apply additional filters ONLY on the already searched list
         if selectedFilters["Online"] == true {
             filteredKitchens = filteredKitchens.filter { $0.isOnline }
         }
@@ -198,6 +200,7 @@ func configureItemCountLabel() {
         updateItemCount()
         AllKitchens.reloadData()
     }
+
 
 
     
@@ -253,9 +256,10 @@ func configureItemCountLabel() {
 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            return cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
+        let kitchen = filteredKitchens[indexPath.row]
+        cell.updateSpecialDishDetails(with: kitchen)
+        return cell
         }
     
 
@@ -271,6 +275,20 @@ func configureItemCountLabel() {
 
         let section = NSCollectionLayoutSection(group: group)
         return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // Existing logic for "LandingPageKitchen"
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                
+                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
+                
+                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+            }
+        }
     }
 
 }
