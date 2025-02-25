@@ -169,14 +169,16 @@ func configureItemCountLabel() {
     }
     
     func applyFilters() {
-        // Always start with search results if searching
-        if let searchText = searchBar.text, !searchText.isEmpty {
-            filteredKitchens = allKitchens.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-        } else {
+        let searchText = searchBar.text?.lowercased() ?? ""
+        
+        // Apply search first
+        if searchText.isEmpty {
             filteredKitchens = allKitchens
+        } else {
+            filteredKitchens = allKitchens.filter { $0.name.lowercased().contains(searchText) }
         }
 
-        // Now apply the filters on top of search results
+        // Apply additional filters ONLY on the already searched list
         if selectedFilters["Online"] == true {
             filteredKitchens = filteredKitchens.filter { $0.isOnline }
         }
@@ -198,6 +200,7 @@ func configureItemCountLabel() {
         updateItemCount()
         AllKitchens.reloadData()
     }
+
 
 
     
@@ -253,9 +256,10 @@ func configureItemCountLabel() {
 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            return cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenViewCell", for: indexPath) as! KitchenSeeMoreCollectionViewCell
+        let kitchen = filteredKitchens[indexPath.row]
+        cell.updateSpecialDishDetails(with: kitchen)
+        return cell
         }
     
 
