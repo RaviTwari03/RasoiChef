@@ -105,8 +105,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         }
     }
 
-
-    
     
     // MARK: - Compositional Layout
     func generateLayout() -> UICollectionViewLayout {
