@@ -122,7 +122,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             itemsToFilter = itemsToFilter.filter { $0.mealCategory.contains(.veg) }
         }
 
-        if activeFilters.contains("Cost: Low to High") {
+        if activeFilters.contains("Cost Low to High") {
             itemsToFilter.sort { $0.price < $1.price }
         }
 
