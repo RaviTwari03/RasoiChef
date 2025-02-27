@@ -270,6 +270,32 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         addButton.isHidden = cartQuantity > 0
     }
 
-
-
+    func setAvailability(_ isAvailable: Bool) {
+        // Remove any existing blur view first
+        contentView.subviews.forEach { view in
+            if view is UIVisualEffectView {
+                view.removeFromSuperview()
+            }
         }
+        
+        if !isAvailable {
+            // Add blur effect
+            let blurEffect = UIBlurEffect(style: .light)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            blurView.frame = contentView.bounds
+            blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            contentView.addSubview(blurView)
+            contentView.sendSubviewToBack(blurView)
+            
+            // Disable interaction
+            isUserInteractionEnabled = false
+            addButton.isEnabled = false
+            contentView.alpha = 0.7
+        } else {
+            // Enable interaction
+            isUserInteractionEnabled = true
+            addButton.isEnabled = true
+            contentView.alpha = 1.0
+        }
+    }
+}

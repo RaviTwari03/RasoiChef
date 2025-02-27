@@ -92,11 +92,27 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             cell.updateMenuListDate(for: indexPath)
             return cell
         case 1:
-            let filteredMenu = KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
+            let filteredMenu = KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }
             
-            let menuItem = filteredMenu[indexPath.row] // Get the correct `MenuItem`
-            cell.updateMealDetails(with: menuItem, at: indexPath) // Pass both MenuItem and IndexPath
+            if indexPath.row < filteredMenu.count {
+                let menuItem = filteredMenu[indexPath.row]
+                cell.updateMealDetails(with: menuItem, at: indexPath)
+                
+                // Check meal availability based on current time
+                let currentHour = Calendar.current.component(.hour, from: Date())
+                let isAvailable: Bool = {
+                    switch menuItem.availableMealTypes.first {
+                    case .breakfast where currentHour < 6:   return true  // Until 6 AM
+                    case .lunch where currentHour < 11:      return true  // Until 11 AM
+                    case .snacks where currentHour < 15:     return true  // Until 3 PM
+                    case .dinner where currentHour < 19:     return true  // Until 7 PM
+                    default: return false
+                    }
+                }()
+                
+                cell.setAvailability(isAvailable)
+            }
             
             cell.delegate = self
             return cell
