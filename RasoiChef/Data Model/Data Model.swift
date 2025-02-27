@@ -194,10 +194,11 @@ struct SubscriptionPlan {
     var kitchenName : String?
     var userID: String?
     var kitchenID: String?
+    var location: String?
     var startDate: String?
     var endDate: String?
     var totalPrice: Double?
-    var details: String?
+    var planName: String?
     var PlanIntakeLimit: Int
     var planImage: String?
     var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Uses subscriptionMenuItems

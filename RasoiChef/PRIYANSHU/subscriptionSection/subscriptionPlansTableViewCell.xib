@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mei-Yp-Bgf">
-                        <rect key="frame" x="5" y="8" width="359" height="214"/>
+                        <rect key="frame" x="15" y="8" width="351" height="214"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sz1-zd-MvR">
                                 <rect key="frame" x="60" y="74" width="165" height="27"/>
@@ -67,7 +67,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="See Plan Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nFI-8X-qmh">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="See Plan Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nFI-8X-qmh">
                                 <rect key="frame" x="15" y="172" width="144" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="3Fk-xv-gLU"/>
@@ -102,8 +102,8 @@
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <buttonConfiguration key="configuration" style="plain"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pio-3y-Fh8">
-                                <rect key="frame" x="254" y="165" width="100" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pio-3y-Fh8">
+                                <rect key="frame" x="246" y="165" width="100" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="Zk3-vy-QzK"/>
                                     <constraint firstAttribute="height" constant="35" id="rVz-WK-PLu"/>
@@ -176,18 +176,19 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="mei-Yp-Bgf" secondAttribute="bottom" constant="8" id="MU7-fJ-iIw"/>
-                    <constraint firstItem="mei-Yp-Bgf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Nui-X8-XIx"/>
-                    <constraint firstAttribute="bottom" secondItem="mei-Yp-Bgf" secondAttribute="bottom" constant="8" id="YjN-LI-2RH"/>
-                    <constraint firstItem="mei-Yp-Bgf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="r9Q-DG-Df6"/>
-                    <constraint firstAttribute="trailing" secondItem="mei-Yp-Bgf" secondAttribute="trailing" constant="5" id="rN9-ql-GmO"/>
-                    <constraint firstAttribute="trailing" secondItem="mei-Yp-Bgf" secondAttribute="trailing" constant="5" id="xDK-a7-RYG"/>
+                    <constraint firstAttribute="bottom" secondItem="mei-Yp-Bgf" secondAttribute="bottom" constant="10" id="Djv-Wq-Ids"/>
+                    <constraint firstAttribute="trailing" secondItem="mei-Yp-Bgf" secondAttribute="trailing" constant="15" id="th5-Ii-Z6T"/>
+                    <constraint firstItem="mei-Yp-Bgf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="vNY-az-TTO"/>
+                    <constraint firstItem="mei-Yp-Bgf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="viI-RO-2Rf"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="cardView" destination="mei-Yp-Bgf" id="FeQ-Ec-HK1"/>
+                <outlet property="dateLabel" destination="297-oz-9yE" id="5uI-B7-1pX"/>
                 <outlet property="kitchenName" destination="sW3-qk-iqZ" id="xhg-mh-4o6"/>
+                <outlet property="locationLabel" destination="4l2-Yi-n14" id="809-EH-2Bv"/>
+                <outlet property="orderIDLabel" destination="lgl-WF-ZMU" id="Rfo-u3-yJJ"/>
                 <outlet property="planName" destination="sz1-zd-MvR" id="dQh-eq-zjB"/>
             </connections>
             <point key="canvasLocation" x="29.770992366412212" y="7.042253521126761"/>
@@ -195,7 +196,7 @@
     </objects>
     <resources>
         <image name="BreakfastIcon" width="512" height="512"/>
-        <image name="DinnerIcon" width="512" height="512"/>
+        <image name="DinnerIcon" width="256" height="256"/>
         <image name="LunchIcon" width="512" height="512"/>
         <image name="SnacksIcon" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">

@@ -46,7 +46,10 @@ class OrderDataController{
     // Load dummy orders (currently empty)
     func loadDummyOrders() {
         // Dummy orders with different statuses
-        orders = []
+        orders = [
+//            Order(orderID: "1234", userID: "1234", kitchenName: "Raja's Kitchen", kitchenID: "1", items: [OrderItem(menuItemID: "1", quantity: 1, price: 300.0)], status: .delivered, totalAmount:300.0 , deliveryAddress: "Galgotias university", deliveryDate: Date(), deliveryType:"delivery")
+            
+        ]
 
         sortOrdersByStatus()  // Ensure the orders are categorized correctly into current and past orders
     }
@@ -56,7 +59,7 @@ class OrderDataController{
     
     
     private var SubscriptionPlans: [SubscriptionPlan] = []
-   
+
     
     // get all subscription
     func getSubscription()-> [SubscriptionPlan]{
@@ -84,7 +87,7 @@ class OrderDataController{
 //                    endDate: "2025-02-16",
 //                    totalPrice: 1400.0,
 //                    details: "Weekly Plan",
-//                    mealCountPerDay: 4,
+//                    PlanIntakeLimit: 4,
 //                    planImage: "PlanImage",
 //                    weeklyMeals: [
 //                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
@@ -99,7 +102,7 @@ class OrderDataController{
 //                    endDate: "2025-02-16",
 //                    totalPrice: 1200.0,
 //                    details: "Bi-weekly Plan",
-//                    mealCountPerDay: 3,
+//                    PlanIntakeLimit: 3,
 //                    planImage: "PlanImage",
 //                    weeklyMeals: [
 //                        .monday: [:], .tuesday: [:], .wednesday: [:], .thursday: [:],
@@ -150,4 +153,6 @@ class OrderDataController{
     
     
     
+
+
 

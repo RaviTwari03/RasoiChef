@@ -35,7 +35,7 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         let subscriptionPlan = KitchenDataController.subscriptionPlan[indexPath.row]
         
         // Update the subscription name label
-        SubscriptionNameLabel.text = subscriptionPlan.details
+        SubscriptionNameLabel.text = subscriptionPlan.planName
         
         // Update the meal intake limit (assuming meals count for intake)
 //        let remainingMeals = subscriptionPlan.meals?.count

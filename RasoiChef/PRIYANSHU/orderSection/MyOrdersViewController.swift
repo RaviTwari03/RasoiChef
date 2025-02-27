@@ -17,6 +17,7 @@ class MyOrdersViewController: UIViewController {
         var currentOrders: [Order] = []  // Orders still in progress
         var pastOrders: [Order] = []     // Delivered orders
         var displayedOrders: [Order] = [] // Orders shown based on the selected segment
+   
         static var shared = MyOrdersViewController()
     
     private let noActiveOrdersLabel: UILabel = {
@@ -31,6 +32,7 @@ class MyOrdersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +80,7 @@ class MyOrdersViewController: UIViewController {
         // Show or hide the "No Active Orders" label and table view
                if currentOrders.isEmpty {
                    noActiveOrdersLabel.isHidden = false
-                   tableView.isHidden = true // Hide the table view if there are no current orders
+                   tableView?.isHidden = true // Hide the table view if there are no current orders
                 } else {
                    noActiveOrdersLabel.isHidden = true
                    tableView?.isHidden = false // Show the table view if there are current orders
@@ -100,17 +102,18 @@ class MyOrdersViewController: UIViewController {
     @IBAction func segmentChanged(_ sender: Any) {
         
         switch (sender as AnyObject).selectedSegmentIndex {
-            case 0:
-                // Show Orders section
+        case 0:
+            // Show Orders section
             tableView.isHidden = false
-                subscribedPlansView.isHidden = true
-            case 1:
-                // Show Subscribed Plans section
+            subscribedPlansView.isHidden = true
+        case 1:
+            // Show Subscribed Plans section
             tableView.isHidden = true
-                subscribedPlansView.isHidden = false
-            default:
-                break
-            }
+            subscribedPlansView.isHidden = false
+        default:
+            break
+            
+        }
     }
     
     
