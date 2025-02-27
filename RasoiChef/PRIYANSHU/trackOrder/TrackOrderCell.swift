@@ -84,7 +84,7 @@ class TrackOrderCell: UITableViewCell {
     }
 
 
-    func configure(status: String, description: String, time: String, isCompleted: Bool) {
+    func configure(status: String, description: String, time: String, isCompleted: Bool, hideLastLine: Bool = false) {
         statusLabel.text = status
         descriptionLabel.text = description
         timeLabel.text = time
@@ -92,14 +92,12 @@ class TrackOrderCell: UITableViewCell {
         // Change the color of the status indicator based on completion
         statusIndicator.backgroundColor = isCompleted ? .systemGreen : .systemOrange
 
-        // Adjust the visibility of the line based on the status
+        // Adjust the visibility of the line based on the status and position
         if isCompleted {
             lineView.backgroundColor = .systemGreen
-            
-            lineView.isHidden = false
+            lineView.isHidden = hideLastLine // Hide line for last completed item
         } else {
             lineView.backgroundColor = .lightGray
-            
             lineView.isHidden = true
         }
     }
