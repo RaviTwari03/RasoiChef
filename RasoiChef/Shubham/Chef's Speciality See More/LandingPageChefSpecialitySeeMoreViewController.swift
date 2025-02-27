@@ -194,7 +194,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         if activeFilters.contains("Pure Veg") {
             filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.mealCategory.contains(.veg) }
         }
-        if activeFilters.contains("Cost: Low to High") {
+        if activeFilters.contains("Cost Low to High") {
             filteredChefSpecialDishes.sort { $0.price < $1.price }
         }
 
