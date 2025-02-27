@@ -59,23 +59,43 @@ class subscriptionPlansTableViewCell: UITableViewCell {
     func configure(subscription: SubscriptionPlan) {
         
         orderIDLabel.text = "Plan ID - \(subscription.planID ?? "N/A")"
-        dateLabel.text = formatDate(subscription.startDate) + " - " + formatDate(subscription.endDate)
+        dateLabel.text = formatDate(subscription.startDate)
         locationLabel.text = subscription.location ?? "N/A"
-        kitchenName.text = Subscriptionplan?.kitchenName ?? "Subscription Plan"
+        kitchenName.text = subscription.kitchenName ?? "Subscription Plan"
         planName.text = subscription.planName ?? "Subscription Plan"
        // symbol.text = "🍽️" // You can update this to display icons dynamically
         
     }
-    private func formatDate(_ dateString: String?) -> String {
-        guard let dateString = dateString else { return "N/A" }
+    private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd" // Adjust if needed
-        if let date = formatter.date(from: dateString) {
-            formatter.dateStyle = .medium
-            return formatter.string(from: date)
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
         }
-        return "Invalid Date"
+
+    private func formatDate(_ dateString: String?) -> String {
+        guard let dateString else { return "N/A" }
+        
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let date = inputFormatter.date(from: dateString) else { return "Invalid Date" }
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "dd-MM-yyyy"
+        
+        return outputFormatter.string(from: date)
     }
+
+//    private func formatDate(_ dateString: String?) -> String {
+//        guard let dateString = dateString else { return "N/A" }
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd" // Adjust if needed
+//        if let date = formatter.date(from: dateString) {
+//            formatter.dateStyle = .medium
+//            return formatter.string(from: date)
+//        }
+//        return "Invalid Date"
+//    }
     
 }
 

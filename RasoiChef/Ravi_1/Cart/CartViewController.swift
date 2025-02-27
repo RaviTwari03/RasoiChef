@@ -37,7 +37,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            OrderHistoryController.addOrder(orderHistory)
            
            // Process and store orders & subscriptions
-               if let order = createOrderFromCart(cartItems: CartViewController.cartItems, subscriptionPlans: CartViewController.subscriptionPlan1) {
+           if let order = createOrderFromCart(cartItems: CartViewController.cartItems, subscriptionPlan: CartViewController.subscriptionPlan1) {
                    OrderDataController.shared.addOrder(order: order)
                }
            
@@ -103,7 +103,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        }
     
     
-    func createOrderFromCart(cartItems: [CartItem], subscriptionPlans: [SubscriptionPlan]) -> Order? {
+    func createOrderFromCart(cartItems: [CartItem], subscriptionPlan: [SubscriptionPlan]) -> Order? {
         var orderItems: [OrderItem] = []
 
         // Process regular cart items
@@ -141,11 +141,13 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
 
         // Process subscription plans separately
-        for subscription in subscriptionPlans {
+        for subscription in subscriptionPlan {
             let subscriptionOrder = SubscriptionPlan(
                 //subscriptionID: UUID().uuidString,
+                planID: subscription.planID,
                 kitchenName: subscription.kitchenName,
-                 userID: UUID().uuidString, // Replace with actual user ID
+                userID: UUID().uuidString, // Replace with actual user ID
+                location: subscription.location ?? "Unknown Location",
                 startDate: subscription.startDate,
                 endDate: subscription.endDate,
                 totalPrice: subscription.totalPrice,

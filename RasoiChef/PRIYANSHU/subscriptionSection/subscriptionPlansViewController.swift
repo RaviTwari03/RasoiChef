@@ -49,6 +49,9 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
         
        tableViewSubscriptionPlan.reloadData()
     }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
+    }
     
     
     func numberOfSections(in tableView: UITableView) -> Int {

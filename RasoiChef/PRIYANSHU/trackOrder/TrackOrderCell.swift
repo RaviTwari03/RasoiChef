@@ -84,10 +84,12 @@ class TrackOrderCell: UITableViewCell {
     }
 
 
-    func configure(status: String, description: String, time: String, isCompleted: Bool) {
+    func configure(status: String, description: String, time: String, isCompleted: Bool)
+    {
         statusLabel.text = status
         descriptionLabel.text = description
         timeLabel.text = time
+    
 
         // Change the color of the status indicator based on completion
         statusIndicator.backgroundColor = isCompleted ? .systemGreen : .systemOrange

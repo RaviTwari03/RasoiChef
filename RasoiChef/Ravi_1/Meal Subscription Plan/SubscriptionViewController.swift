@@ -253,7 +253,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             print("Final Price before passing: \(finalPrice)")
 
             let subscriptionPlan = SubscriptionPlan(
-                planID: UUID().uuidString,
+                planID: String(UUID().uuidString.prefix(6)),
                 kitchenName: "Kanjha Ji Rasoi", userID: "user001",
                 kitchenID: "kitchen001", location: "greater noida",
                 startDate: selectedStartDate,

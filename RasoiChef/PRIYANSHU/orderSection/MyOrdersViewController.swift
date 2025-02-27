@@ -80,7 +80,7 @@ class MyOrdersViewController: UIViewController {
         // Show or hide the "No Active Orders" label and table view
                if currentOrders.isEmpty {
                    noActiveOrdersLabel.isHidden = false
-                   tableView.isHidden = true // Hide the table view if there are no current orders
+                   tableView?.isHidden = true // Hide the table view if there are no current orders
                 } else {
                    noActiveOrdersLabel.isHidden = true
                    tableView?.isHidden = false // Show the table view if there are current orders
