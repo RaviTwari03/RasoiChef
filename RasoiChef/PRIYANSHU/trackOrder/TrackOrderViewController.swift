@@ -1,3 +1,10 @@
+//
+//   TrackOrderViewController.swift
+//  RasoiChef
+//
+//  Created by Batch - 1 on 21/01/25.
+//
+//
 import UIKit
 
 class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -129,7 +136,7 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
             self?.updateOrderStatus()
         }
     }
-    
+ 
     private func updateOrderStatus() {
         guard let startTime = startTime else { return }
         
@@ -139,18 +146,25 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
         let timeElapsed = currentTime.timeIntervalSince(startTime)
         let currentTimeStr = formatter.string(from: currentTime)
         
-        // Get saved status times from UserDefaults
         let defaults = UserDefaults.standard
         let orderKey = "orderTimes_\(order.orderID)"
-        var statusTimes = defaults.dictionary(forKey: orderKey) as? [String: String] ?? [:]
         
-        // Save initial placed time if not already saved
+        // ✅ Load saved status times
+        var statusTimes = defaults.dictionary(forKey: orderKey) as? [String: String] ?? [:]
+
+        // ✅ If the order is already delivered, stop updates permanently
+        if let _ = statusTimes["delivered"] {
+            timer?.invalidate()
+            timer = nil
+            return
+        }
+
+        // ✅ Save initial placed time if not already saved
         if statusTimes["placed"] == nil {
             statusTimes["placed"] = formatter.string(from: startTime)
-//import UIKit
         }
-        
-        // Update status and descriptions one by one, only if not already completed
+
+        // ✅ Update order statuses
         if timeElapsed >= 5 && !statusData[1].3 && statusTimes["confirmed"] == nil {
             statusData[1].1 = "Your order has been confirmed by the chef."
             statusData[1].2 = currentTimeStr
@@ -158,7 +172,7 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
             statusTimes["confirmed"] = currentTimeStr
             tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
         }
-        
+
         if timeElapsed >= 10 && !statusData[2].3 && statusTimes["prepared"] == nil {
             statusData[2].1 = "Your order has been freshly prepared and is ready."
             statusData[2].2 = currentTimeStr
@@ -166,7 +180,7 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
             statusTimes["prepared"] = currentTimeStr
             tableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .automatic)
         }
-        
+
         if timeElapsed >= 15 && !statusData[3].3 && statusTimes["delivery"] == nil {
             statusData[3].1 = "Your order is on the way to your location."
             statusData[3].2 = currentTimeStr
@@ -174,34 +188,24 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
             statusTimes["delivery"] = currentTimeStr
             tableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .automatic)
         }
-        
-        if timeElapsed >= 20 && !statusData[4].3 && statusTimes["delivered"] == nil {
+
+        if timeElapsed >= 20 && !statusData[4].3 {
             statusData[4].1 = "Your order has been delivered. Enjoy your meal!"
             statusData[4].2 = currentTimeStr
             statusData[4].3 = true
             statusTimes["delivered"] = currentTimeStr
             tableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .automatic)
-            
-            // Stop timer when order is delivered
+
+            // ✅ Save final state and stop updates
+            defaults.set(statusTimes, forKey: orderKey)
             timer?.invalidate()
             timer = nil
         }
-        
-        // Save updated times
+
+        // ✅ Save updated times
         defaults.set(statusTimes, forKey: orderKey)
     }
 
-    deinit {
-        timer?.invalidate()
-        NotificationCenter.default.removeObserver(self)
-        
-        // Don't clear data on deinit anymore, only clear when order is actually delivered
-        if statusData[4].3 {
-            let defaults = UserDefaults.standard
-            defaults.removeObject(forKey: "orderStartTime_\(order.orderID)")
-            defaults.removeObject(forKey: "orderTimes_\(order.orderID)")
-        }
-    }
 
     // MARK: - TableView DataSource and Delegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
