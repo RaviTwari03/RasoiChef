@@ -92,7 +92,6 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         MealSubscriptionPlan.register(UINib(nibName: "CustomiseTable2", bundle: nil), forCellReuseIdentifier: "CustomiseTable2")
         MealSubscriptionPlan.register(UINib(nibName: "SubscriptionFooter", bundle: nil), forCellReuseIdentifier: "SubscriptionFooter")
         
-        // Set the dataSource and delegate
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
         MealSubscriptionPlan.reloadData()
