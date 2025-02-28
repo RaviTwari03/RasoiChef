@@ -8,6 +8,8 @@
 import UIKit
 
 class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,MenuDetailsCellDelegate, KitchenMenuDetailsCellDelegate {
+    
+    var selectedDay: WeekDay = .monday // Default to Monday (Change as needed)
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -72,13 +74,14 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 7/* KitchenDataController.dateItem.count*/
+            return 7 // Assuming 7 days in a week
         case 1:
-            return KitchenDataController.menuItems.count
+            return KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }.count
         default:
             return 0
         }
     }
+
     
     
     // MARK: - Cell for Item at IndexPath
@@ -90,15 +93,34 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
-            cell.updateMealDetails(with: indexPath)
+            let filteredMenu = KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }
+            
+            if indexPath.row < filteredMenu.count {
+                let menuItem = filteredMenu[indexPath.row]
+                cell.updateMealDetails(with: menuItem, at: indexPath)
+                
+                // Check meal availability based on current time
+                let currentHour = Calendar.current.component(.hour, from: Date())
+                let isAvailable: Bool = {
+                    switch menuItem.availableMealTypes.first {
+                    case .breakfast where currentHour < 6:   return true  // Until 6 AM
+                    case .lunch where currentHour < 11:      return true  // Until 11 AM
+                    case .snacks where currentHour < 15:     return true  // Until 3 PM
+                    case .dinner where currentHour < 19:     return true  // Until 7 PM
+                    default: return false
+                    }
+                }()
+                
+                cell.setAvailability(isAvailable)
+            }
+            
             cell.delegate = self
             return cell
-            
         default:
             return UICollectionViewCell()
         }
     }
-    
+
     
     // MARK: - Compositional Layout
     func generateLayout() -> UICollectionViewLayout {
@@ -118,6 +140,17 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         }
         return layout
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 { // If Calendar Section is clicked
+            let selectedCell = collectionView.cellForItem(at: indexPath) as? KitchenMenuCalenderCollectionViewCell
+            selectedDay = WeekDay.allCases[indexPath.row] // Assuming WeekDay enum follows correct order
+            
+            // Reload the menu items based on selected date
+            KitchenMenuList.reloadSections(IndexSet(integer: 1))
+        }
+    }
+
     // Calendar Section Layout
     func generateMenuCalenderSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(1))

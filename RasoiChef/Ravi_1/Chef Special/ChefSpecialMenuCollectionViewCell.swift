@@ -23,9 +23,12 @@ class ChefSpecialMenuCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet var addButton: UIButton!
     @IBOutlet weak var vegNonvegIcon: UIImageView!
-    
+    @IBOutlet var stepperStackView: UIStackView!
+    @IBOutlet var quantityLabel: UILabel!
+    @IBOutlet var stepper: UIStepper!
     
     func updateSpecialDishDetails(with specialDish: ChefSpecialtyDish) {
+        stepperStackView.isHidden = true
         specialDishName.text = specialDish.name
         specialDishPrice.text = "₹\(specialDish.price)"
         kitchenName.text = specialDish.kitchenName

@@ -77,11 +77,12 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         }
     }
 
-            func updateMealDetails(with indexPath: IndexPath) {
-                let menuItem = KitchenDataController.menuItems[indexPath.row]
+            func updateMealDetails(with menuItem: MenuItem, at indexPath: IndexPath) {
                 vegImage.image = UIImage(named: "vegImage")
                 ratingLabel.text = "\(menuItem.rating)"
                 dishNameLabel.text = menuItem.name
+                
+                // Update intake limit using the passed indexPath
                 updateIntakeLimit(for: indexPath)
 
                 let words = menuItem.description.split(separator: " ")
@@ -106,7 +107,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                 dishDeliveryExpected.text = menuItem.orderDeadline
                 dishImge.image = UIImage(named: menuItem.imageURL)
                 dishprice.text = "₹\(menuItem.price)"
-                dishIntakLimit.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
+                dishIntakLimit.text = "Intake limit: \(menuItem.intakeLimit)"
                 
                 if menuItem.mealCategory.contains(.veg) {
                     vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
@@ -175,7 +176,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         let isChefSpecial = chefSpecial != nil
 
         // Find or create cart item
-        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: { 
+        if let cartItemIndex = CartViewController.cartItems.firstIndex(where: {
             if isChefSpecial {
                 return $0.chefSpecial?.dishID == menuItem.itemID
             } else {
@@ -228,7 +229,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
         // Get total ordered quantity from both current cart and placed orders
         let cartQuantity = CartViewController.cartItems
-            .filter { 
+            .filter {
                 if isChefSpecial {
                     return $0.chefSpecial?.dishID == menuItem.itemID
                 } else {
@@ -239,7 +240,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         
         let placedOrdersQuantity = OrderHistoryController.placedOrders
             .flatMap { $0.items }
-            .filter { 
+            .filter {
                 if isChefSpecial {
                     return $0.chefSpecial?.dishID == menuItem.itemID
                 } else {
@@ -269,6 +270,32 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         addButton.isHidden = cartQuantity > 0
     }
 
-
-
+    func setAvailability(_ isAvailable: Bool) {
+        // Remove any existing blur view first
+        contentView.subviews.forEach { view in
+            if view is UIVisualEffectView {
+                view.removeFromSuperview()
+            }
         }
+        
+        if !isAvailable {
+            // Add blur effect
+            let blurEffect = UIBlurEffect(style: .light)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            blurView.frame = contentView.bounds
+            blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            contentView.addSubview(blurView)
+            contentView.sendSubviewToBack(blurView)
+            
+            // Disable interaction
+            isUserInteractionEnabled = false
+            addButton.isEnabled = false
+            contentView.alpha = 0.7
+        } else {
+            // Enable interaction
+            isUserInteractionEnabled = true
+            addButton.isEnabled = true
+            contentView.alpha = 1.0
+        }
+    }
+}

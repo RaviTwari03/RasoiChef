@@ -55,14 +55,17 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartViewController.subscriptionPlan1.removeAll()
            CartItem.reloadData()
            
-           // Notify MyOrdersViewController to reload data
-           MyOrdersViewController.shared.loadData()
-           
-           // Update the badge on My Orders tab
-           updateMyOrdersBadge()
+           // Update the badge count (remove badge)
+           updateTabBarBadge()
            
            // Notify to update intake limits
            NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+           
+           // Notify all relevant views to update their UI
+           NotificationCenter.default.post(name: NSNotification.Name("ResetStepper"), object: nil)
+           
+           // Update My Orders badge
+           updateMyOrdersBadge()
        }
     // Function to update the badge count on My Orders tab
     func updateMyOrdersBadge() {

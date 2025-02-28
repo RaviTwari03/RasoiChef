@@ -1,4 +1,5 @@
 //
+//
 //  Data Controller.swift
 //  RasoiChef
 //
@@ -58,7 +59,7 @@ class KitchenDataController {
                 orderDeadline: "Order Before 6 am.",
                 recievingDeadline:"Delivery Expected by 8 am.",
                 availability: [.Available],
-                availableDays: [.monday],
+                availableDays: [.monday,.sunday],
                 mealCategory: [.veg]
             ),
             MenuItem(
@@ -287,9 +288,9 @@ class KitchenDataController {
             intakeLimit: 11
         ),
         ChefSpecialtyDish(
-            kitchenName: "Anjali's Kitchen",
+            kitchenName: "Kanjha Ji Rasoi",
             dishID: "special002",
-            kitchenID: "kitchen002",
+            kitchenID: "kitchen001",
             name: "Spring Roll",
             description: "A spicy and flavorful South Indian chicken curry.",
             price: 250.0,

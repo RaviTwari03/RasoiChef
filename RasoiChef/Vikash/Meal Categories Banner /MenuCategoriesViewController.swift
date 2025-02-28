@@ -122,7 +122,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             itemsToFilter = itemsToFilter.filter { $0.mealCategory.contains(.veg) }
         }
 
-        if activeFilters.contains("Cost: Low to High") {
+        if activeFilters.contains("Cost Low to High") {
             itemsToFilter.sort { $0.price < $1.price }
         }
 
@@ -194,7 +194,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
             filterStackView.spacing = 15.0
             filterStackView.translatesAutoresizingMaskIntoConstraints = false
             
-            let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+            let filterTitles = ["Nearest", "Ratings 4.0+", "Pure Veg", "Cost Low to High"]
             
             for title in filterTitles {
                 let button = createFilterButton(title: title)
@@ -256,7 +256,7 @@ func configureItemCountLabel() {
 
     
     @objc func filterButtonTapped(_ sender: UIButton) {
-            guard let title = sender.title(for: .normal), title != "Sort" else { return }
+            guard let title = sender.title(for: .normal) else { return }
             
             if activeFilters.contains(title) {
                 activeFilters.remove(title)

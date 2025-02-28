@@ -84,7 +84,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         filterStackView.spacing = 15.0
         filterStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let filterTitles = ["Sort", "Nearest", "Ratings 4.0+", "Pure Veg", "Cost: Low to High"]
+        let filterTitles = ["Nearest", "Ratings 4.0+", "Pure Veg", "Cost Low to High"]
         
         for title in filterTitles {
             let button = createFilterButton(title: title)
@@ -159,10 +159,6 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     @objc func filterButtonTapped(_ sender: UIButton) {
         guard let title = sender.title(for: .normal) else { return }
 
-        if title == "Sort" {
-            return // Ignore "Sort" button (no color change, no filtering)
-        }
-
         if activeFilters.contains(title) {
             activeFilters.remove(title) // Remove filter if already applied
             updateFilterButtonAppearance(sender, isSelected: false) // Update color
@@ -198,7 +194,7 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
         if activeFilters.contains("Pure Veg") {
             filteredChefSpecialDishes = filteredChefSpecialDishes.filter { $0.mealCategory.contains(.veg) }
         }
-        if activeFilters.contains("Cost: Low to High") {
+        if activeFilters.contains("Cost Low to High") {
             filteredChefSpecialDishes.sort { $0.price < $1.price }
         }
 

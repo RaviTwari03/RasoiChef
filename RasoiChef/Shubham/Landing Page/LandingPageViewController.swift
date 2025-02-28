@@ -84,7 +84,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
         // Ensure the cell is visible without scrolling automatically
         DispatchQueue.main.async {
-            self.LandingPage.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            self.LandingPage.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         }
     }
 
