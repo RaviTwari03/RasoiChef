@@ -52,6 +52,29 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         } else {
             vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
+        
+        
+        // Disable "Add" button based on time
+            let currentHour = Calendar.current.component(.hour, from: Date())
+
+            switch mealTiming {
+            case .breakfast:
+                addButton.isEnabled = !(currentHour >= 7 && currentHour < 21)
+            case .lunch:
+                addButton.isEnabled = !(currentHour >= 11 && currentHour < 21)
+            case .snacks:
+                addButton.isEnabled = !(currentHour >= 16 && currentHour < 21)
+            case .dinner:
+                addButton.isEnabled = !(currentHour >= 20 && currentHour < 21)
+            }
+
+            if currentHour >= 21 || currentHour < 7 {
+                addButton.isEnabled = true // Re-enable after 9 PM
+            }
+
+            addButton.alpha = addButton.isEnabled ? 1.0 : 0.8
+        
+        
     }
 
     
