@@ -42,11 +42,23 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
             super.awakeFromNib()
             stepperStackView.isHidden = true  // Hide stepper initially
             
-            NotificationCenter.default.addObserver(self, selector: #selector(updateCartUI(_:)), name: NSNotification.Name("CartUpdated"), object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(updateCellUI(_:)), name: NSNotification.Name("UpdateMenuCategoryCell"), object: nil)
-            
             NotificationCenter.default.addObserver(
-self,selector: #selector(handleOrderPlacement),name: NSNotification.Name("OrderPlaced"),object: nil
+                self,
+                selector: #selector(cartUpdated),
+                name: NSNotification.Name("CartUpdated"),
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(updateCellUI),
+                name: NSNotification.Name("UpdateMenuCategoryCell"),
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleOrderPlacement),
+                name: NSNotification.Name("OrderPlaced"),
+                object: nil
             )
 
         
@@ -63,7 +75,6 @@ self,selector: #selector(handleOrderPlacement),name: NSNotification.Name("OrderP
         kitchenNameLabel.text = menuItem.kitchenName
         KitchenDistance.text = "\(menuItem.distance) km"
         Ratings.text = "\(menuItem.rating)"
-        orderIntakeLimitLabel.text = "Intake limit: \(String(describing: menuItem.intakeLimit))"
         priceLabel.text = "₹\(menuItem.price)"
         descriptionLabel.text = menuItem.description
 
@@ -73,134 +84,171 @@ self,selector: #selector(handleOrderPlacement),name: NSNotification.Name("OrderP
             vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
         
-        updateUIFromCart()
-        // Disable "Add" button based on time
-//            let currentHour = Calendar.current.component(.hour, from: Date())
-//
-//            switch mealTiming {
-//            case .breakfast:
-//                addButton.isEnabled = !(currentHour >= 7 && currentHour < 21)
-//            case .lunch:
-//                addButton.isEnabled = !(currentHour >= 11 && currentHour < 21)
-//            case .snacks:
-//                addButton.isEnabled = !(currentHour >= 16 && currentHour < 21)
-//            case .dinner:
-//                addButton.isEnabled = !(currentHour >= 20 && currentHour < 21)
-//            }
-//
-//            if currentHour >= 21 || currentHour < 7 {
-//                addButton.isEnabled = true // Re-enable after 9 PM
-//            }
-//
-//            addButton.alpha = addButton.isEnabled ? 1.0 : 0.8
-        
-        
+        updateCartAndIntakeState()
     }
 
-    
-    
-    
-    
-
-    
-    @IBAction func addButtonTapped(_ sender: Any) {
-            delegate?.MealcategoriesButtonTapped(in: self)
+    private func updateCartAndIntakeState() {
+        guard let item = menuItem else { return }
+        
+        // Calculate total quantity in cart
+        let cartQuantity = CartViewController.cartItems
+            .filter { $0.menuItem?.itemID == item.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        // Calculate total quantity in placed orders
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.menuItem?.itemID == item.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        // Calculate remaining intake
+        let remainingIntake = item.intakeLimit - (cartQuantity + placedOrdersQuantity)
+        
+        // Update intake limit label
+        orderIntakeLimitLabel.text = "Remaining intake: \(remainingIntake)"
+        
+        // Update stepper configuration
+        stepper.maximumValue = Double(remainingIntake + cartQuantity) // Allow current cart quantity plus remaining
+        stepper.minimumValue = 0
+        stepper.value = Double(cartQuantity)
+        quantityLabel.text = "\(cartQuantity)"
+        
+        // Update visibility
+        if remainingIntake <= 0 && cartQuantity == 0 {
+            // No remaining intake and not in cart
+            stepperStackView.isHidden = true
+            addButton.isHidden = false
+            addButton.isEnabled = false
+            addButton.alpha = 0.5
+        } else if cartQuantity > 0 {
+            // Item is in cart
+            stepperStackView.isHidden = false
+            addButton.isHidden = true
+            stepper.isEnabled = remainingIntake > 0
+        } else {
+            // Item can be added
+            stepperStackView.isHidden = true
+            addButton.isHidden = false
+            addButton.isEnabled = true
+            addButton.alpha = 1.0
         }
+    }
+
+    @IBAction func addButtonTapped(_ sender: Any) {
+        guard let menuItem = menuItem else { return }
+        
+        // Just call the delegate to show the modal
+        delegate?.MealcategoriesButtonTapped(in: self)
+    }
 
     @objc func stepperValueChanged(_ sender: UIStepper) {
         guard let menuItem = menuItem else { return }
+        
+        let newQuantity = Int(sender.value)
+        
+        // Calculate placed orders quantity
+        let placedOrdersQuantity = OrderHistoryController.placedOrders
+            .flatMap { $0.items }
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        // Get current cart quantity
+        let currentCartQuantity = CartViewController.cartItems
+            .filter { $0.menuItem?.itemID == menuItem.itemID }
+            .reduce(0) { $0 + $1.quantity }
+        
+        // Always allow decreasing quantity
+        if newQuantity < currentCartQuantity {
+            updateCart(with: newQuantity)
+            return
+        }
+        
+        // Check intake limit only when increasing quantity
+        let totalQuantity = newQuantity + placedOrdersQuantity
+        if totalQuantity <= menuItem.intakeLimit {
+            updateCart(with: newQuantity)
+        } else {
+            // Reset to current quantity and show alert
+            sender.value = Double(currentCartQuantity)
+            quantityLabel.text = "\(currentCartQuantity)"
+            
+            if let parentViewController = self.next?.next as? UIViewController {
+                let alert = UIAlertController(
+                    title: "Intake Limit Reached",
+                    message: "You have reached the maximum intake limit for this item.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                parentViewController.present(alert, animated: true)
+            }
+        }
+    }
 
-        let maxLimit = menuItem.intakeLimit // Get available intake limit
-        let newQuantity = min(Int(sender.value), maxLimit) // Prevent exceeding limit
-
-        sender.value = Double(newQuantity) // Update stepper
-        quantityLabel.text = "\(newQuantity)"
-
-        if newQuantity == 0 {
+    private func updateCart(with quantity: Int) {
+        guard let menuItem = menuItem else { return }
+        
+        // Remove existing item from cart
+        CartViewController.cartItems.removeAll { $0.menuItem?.itemID == menuItem.itemID }
+        
+        if quantity > 0 {
+            // Add new item to cart
+            let cartItem = CartItem(
+                userAdress: "Galgotias University",
+                quantity: quantity,
+                menuItem: menuItem,
+                subscriptionDetails: nil
+            )
+            CartViewController.cartItems.append(cartItem)
+            
+            // Update UI
+            quantityLabel.text = "\(quantity)"
+            stepperStackView.isHidden = false
+            addButton.isHidden = true
+        } else {
+            // Reset UI for zero quantity
             stepperStackView.isHidden = true
             addButton.isHidden = false
-            removeItemFromCart()
-        } else {
-            updateCart(with: newQuantity)
+            addButton.isEnabled = true
+            addButton.alpha = 1.0
         }
-    }
-    
-
-    private func updateUIFromCart() {
-        guard let item = menuItem else { return }
-
-        let quantityInCart = CartViewController.cartItems
-            .filter { $0.menuItem?.itemID == item.itemID }
-            .reduce(0) { $0 + $1.quantity }
-
-        updateStepperState(quantity: quantityInCart)
-    }
-
-
-        private func updateStepperState(quantity: Int) {
-            if quantity > 0 {
-                stepperStackView.isHidden = false
-                addButton.isHidden = true
-                stepper.value = Double(quantity)
-                quantityLabel.text = "\(quantity)"
-            } else {
-                stepperStackView.isHidden = true
-                addButton.isHidden = false
-            }
-        }
-
-        private func updateCart(with quantity: Int) {
-            NotificationCenter.default.post(
-                name: NSNotification.Name("CartUpdated"),
-                object: nil,
-                userInfo: ["menuItemID": menuItem?.itemID ?? "", "quantity": quantity]
-            )
-        }
-
-        private func removeItemFromCart() {
-            NotificationCenter.default.post(
-                name: NSNotification.Name("CartUpdated"),
-                object: nil,
-                userInfo: ["menuItemID": menuItem?.itemID ?? "", "quantity": 0]
-            )
-        }
-
-    @objc private func updateCartUI(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-              let menuItemID = userInfo["menuItemID"] as? String,
-              let quantity = userInfo["quantity"] as? Int,
-              menuItemID == menuItem?.itemID else { return }
-
-        updateStepperState(quantity: quantity)
+        
+        // Update cart badge
+        updateCartBadge()
+        
+        // Notify cart update
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CartUpdated"),
+            object: nil,
+            userInfo: [
+                "menuItemID": menuItem.itemID,
+                "quantity": quantity,
+                "isChefSpecial": false
+            ]
+        )
     }
 
-
-        @objc private func updateCellUI(_ notification: Notification) {
-            guard let userInfo = notification.userInfo,
-                  let updatedItemID = userInfo["menuItemID"] as? String,
-                  let menuItem = menuItem else { return }
-
-            if menuItem.itemID == updatedItemID {
-                let cartQuantity = CartViewController.cartItems
-                    .filter { $0.menuItem?.itemID == menuItem.itemID }
-                    .reduce(0) { $0 + $1.quantity }
-
-                updateStepperState(quantity: cartQuantity)
-            }
+    private func updateCartBadge() {
+        if let tabBarController = UIApplication.shared.keyWindow?.rootViewController as? UITabBarController,
+           let tabItems = tabBarController.tabBar.items {
+            let cartTabItem = tabItems[2] // Cart tab is at index 2
+            let itemCount = CartViewController.cartItems.count // Count number of items instead of quantities
+            cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
         }
+    }
 
-        deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
-    
+    @objc private func cartUpdated() {
+        updateCartAndIntakeState()
+    }
+
+    @objc private func updateCellUI() {
+        updateCartAndIntakeState()
+    }
+
     @objc private func handleOrderPlacement() {
-        guard let menuItem = menuItem else { return }
-
-        if menuItem.intakeLimit == 0 {
-            addButton.isEnabled = false
-            addButton.alpha = 0.5 // Visually indicate it's disabled
-        }
+        updateCartAndIntakeState()
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
-//}
