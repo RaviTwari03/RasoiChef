@@ -8,7 +8,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CartDelivery" id="e5L-Pl-d1K">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CartDelivery" id="e5L-Pl-d1K" customClass="CartDeliveryTableViewCell" customModule="RasoiChef" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="361" height="95"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e5L-Pl-d1K" id="mUF-xr-Vqe">
@@ -39,6 +39,9 @@
                     <constraint firstItem="gFb-li-jsZ" firstAttribute="top" secondItem="csm-IW-efy" secondAttribute="bottom" constant="15" id="w05-vQ-VuD"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="deliverySegmentedControl" destination="gFb-li-jsZ" id="NOB-Bv-hIF"/>
+            </connections>
             <point key="canvasLocation" x="145.80152671755724" y="11.619718309859156"/>
         </tableViewCell>
     </objects>
