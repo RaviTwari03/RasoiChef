@@ -108,8 +108,8 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         orderIntakeLimitLabel.text = "Remaining intake: \(remainingIntake)"
         
         // Update stepper configuration
-        stepper.maximumValue = Double(remainingIntake + cartQuantity) // Allow current cart quantity plus remaining
         stepper.minimumValue = 0
+        stepper.maximumValue = Double(item.intakeLimit - placedOrdersQuantity) // Set max to total limit minus placed orders
         stepper.value = Double(cartQuantity)
         quantityLabel.text = "\(cartQuantity)"
         
@@ -124,7 +124,7 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
             // Item is in cart
             stepperStackView.isHidden = false
             addButton.isHidden = true
-            stepper.isEnabled = remainingIntake > 0
+            stepper.isEnabled = true // Always enable stepper when item is in cart
         } else {
             // Item can be added
             stepperStackView.isHidden = true
@@ -146,42 +146,8 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         
         let newQuantity = Int(sender.value)
         
-        // Calculate placed orders quantity
-        let placedOrdersQuantity = OrderHistoryController.placedOrders
-            .flatMap { $0.items }
-            .filter { $0.menuItem?.itemID == menuItem.itemID }
-            .reduce(0) { $0 + $1.quantity }
-        
-        // Get current cart quantity
-        let currentCartQuantity = CartViewController.cartItems
-            .filter { $0.menuItem?.itemID == menuItem.itemID }
-            .reduce(0) { $0 + $1.quantity }
-        
-        // Always allow decreasing quantity
-        if newQuantity < currentCartQuantity {
-            updateCart(with: newQuantity)
-            return
-        }
-        
-        // Check intake limit only when increasing quantity
-        let totalQuantity = newQuantity + placedOrdersQuantity
-        if totalQuantity <= menuItem.intakeLimit {
-            updateCart(with: newQuantity)
-        } else {
-            // Reset to current quantity and show alert
-            sender.value = Double(currentCartQuantity)
-            quantityLabel.text = "\(currentCartQuantity)"
-            
-            if let parentViewController = self.next?.next as? UIViewController {
-                let alert = UIAlertController(
-                    title: "Intake Limit Reached",
-                    message: "You have reached the maximum intake limit for this item.",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                parentViewController.present(alert, animated: true)
-            }
-        }
+        // Always update cart with new quantity
+        updateCart(with: newQuantity)
     }
 
     private func updateCart(with quantity: Int) {
