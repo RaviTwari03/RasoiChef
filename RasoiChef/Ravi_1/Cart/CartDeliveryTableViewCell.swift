@@ -7,11 +7,28 @@
 
 import UIKit
 
-class CartDeliveryTableViewCell: UITableViewCell {
+protocol CartDeliveryDelegate: AnyObject {
+    func deliveryOptionChanged(isDelivery: Bool)
+}
 
+class CartDeliveryTableViewCell: UITableViewCell {
+    
+    @IBOutlet weak var deliverySegmentedControl: UISegmentedControl!
+    weak var delegate: CartDeliveryDelegate?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        setupSegmentedControl()
+    }
+    
+    private func setupSegmentedControl() {
+        deliverySegmentedControl.selectedSegmentIndex = 0 // Default to Self-Pickup
+        deliverySegmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+    }
+    
+    @objc private func segmentedControlValueChanged() {
+        let isDelivery = deliverySegmentedControl.selectedSegmentIndex == 1
+        delegate?.deliveryOptionChanged(isDelivery: isDelivery)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
