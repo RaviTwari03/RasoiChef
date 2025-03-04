@@ -176,8 +176,21 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 
         // Get kitchen details from first cart item
         let firstCartItem = cartItems.first
-        let kitchenName = firstCartItem?.menuItem?.kitchenName ?? "Unknown Kitchen"
-        let kitchenID = firstCartItem?.menuItem?.kitchenID ?? ""
+        var kitchenName = firstCartItem?.menuItem?.kitchenName ?? "Unknown Kitchen"
+        var kitchenID = firstCartItem?.menuItem?.kitchenID ?? ""
+        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
+               case let (menuItem?, nil):
+                   kitchenName = menuItem.kitchenName
+                   kitchenID = menuItem.kitchenID
+               case let (nil, chefSpecial?):
+                   kitchenName = chefSpecial.kitchenName
+                   kitchenID = chefSpecial.kitchenID
+               case let (menuItem?, chefSpecial?):
+                   kitchenName = menuItem.kitchenName
+                   kitchenID = menuItem.kitchenID
+               default:
+                   break
+               }
 
         // Create and return order
         let order = Order(
@@ -197,99 +210,6 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
 
 
-//    func createOrderFromCart(cartItems: [CartItem], subscriptionPlans: [SubscriptionPlan]) -> Order {
-//        var orderItems: [OrderItem] = []
-//
-//        // Process regular cart items
-//        for cartItem in cartItems {
-//            var menuItemID = "Unknown Item"
-//            var price: Double = 0.0
-//            var kitchenName = "Unknown Kitchen"
-//            var kitchenID = ""
-//
-//            switch (cartItem.menuItem, cartItem.chefSpecial) {
-//            case let (menuItem?, nil):
-//                menuItemID = menuItem.name
-//                price = menuItem.price
-//                kitchenName = menuItem.kitchenName
-//                kitchenID = menuItem.kitchenName
-//            case let (nil, chefSpecial?):
-//                menuItemID = chefSpecial.name
-//                price = chefSpecial.price
-//                kitchenName = chefSpecial.kitchenName
-//                kitchenID = chefSpecial.kitchenID
-//            case let (menuItem?, chefSpecial?):
-//                menuItemID = "\(menuItem.name) / \(chefSpecial.name)"
-//                price = menuItem.price + chefSpecial.price
-//                kitchenName = menuItem.kitchenName
-//                kitchenID = menuItem.kitchenID
-//            default:
-//                break
-//            }
-//
-//            orderItems.append(OrderItem(
-//                menuItemID: menuItemID,
-//                quantity: cartItem.quantity,
-//                price: price * Double(cartItem.quantity)
-//            ))
-//        }
-//
-//        // Process subscription plans
-//        var subscriptionOrderItems: [OrderItem] = []
-//        for subscription in subscriptionPlans {
-//            subscriptionOrderItems.append(OrderItem(
-//                menuItemID: subscription.planName!,
-//                quantity: 1,  // Subscription plans are not quantity-based like menu items
-//                price: subscription.totalPrice!
-//            ))
-//        }
-//
-//        // Calculate total price including subscriptions
-//        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price } +
-//                          subscriptionOrderItems.reduce(0.0) { $0 + $1.price }
-//
-//        // Get kitchen details from first item
-//        let firstCartItem = cartItems.first ?? nil
-//        var kitchenName = "Unknown Kitchen"
-//        var kitchenID = ""
-//
-//        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
-//        case let (menuItem?, nil):
-//            kitchenName = menuItem.kitchenName
-//            kitchenID = menuItem.kitchenName
-//        case let (nil, chefSpecial?):
-//            kitchenName = chefSpecial.kitchenName
-//            kitchenID = chefSpecial.kitchenID
-//        case let (menuItem?, chefSpecial?):
-//            kitchenName = menuItem.kitchenName
-//            kitchenID = menuItem.kitchenID
-//        default:
-//            break
-//        }
-//
-//        // Create an order
-//        let order = Order(
-//            orderID: String(UUID().uuidString.prefix(6)),  // Generate a unique order ID
-//            userID: "user123",  // Replace with actual user ID
-//            kitchenName: kitchenName,
-//            kitchenID: kitchenID,
-//            items: orderItems,
-//            status: .placed,
-//            totalAmount: totalAmount,
-//            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
-//            deliveryDate: Date(),
-//            deliveryType: "Delivery"
-//        )
-//
-//        // If there are subscription plans, add them separately
-//        if !subscriptionPlans.isEmpty {
-//            for subscription in subscriptionPlans {
-//                OrderDataController.shared.addSubscription(SubscriptionPlan: subscription)
-//            }
-//        }
-//
-//        return order
-//    }
 
     
     

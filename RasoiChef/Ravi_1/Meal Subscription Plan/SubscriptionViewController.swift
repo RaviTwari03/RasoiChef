@@ -255,7 +255,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             let subscriptionPlan = SubscriptionPlan(
                 planID: String(UUID().uuidString.prefix(6)),
                 kitchenName: "Kanjha Ji Rasoi", userID: "user001",
-                kitchenID: "kitchen001", location: "greater noida",
+                kitchenID: "kitchen001", location: "Galgotias University",
                 startDate: selectedStartDate,
                 endDate: selectedEndDate,
                 totalPrice: finalPrice,
