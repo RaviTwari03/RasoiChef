@@ -12,7 +12,11 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     @IBOutlet var LandingPage: UICollectionView!
     
     
-    
+        private var placeholderTimer: Timer?
+        private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
+        private var currentIndex = 0
+        private var animatedPlaceholderLabel: UILabel?
+
     
     let searchController = UISearchController(searchResultsController: nil)
 
@@ -47,6 +51,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             self.scrollToCurrentMeal()
         }
         
+        startPlaceholderAnimation()
        }
        
     
@@ -376,13 +381,73 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     
     
     // MARK: - Search bar
-    
     func setupSearchController() {
-           navigationItem.searchController = searchController
-           searchController.searchResultsUpdater = self
-           searchController.obscuresBackgroundDuringPresentation = false
-           searchController.searchBar.placeholder = "Search here..."
-       }
+            searchController.searchResultsUpdater = self
+            searchController.obscuresBackgroundDuringPresentation = false
+            searchController.hidesNavigationBarDuringPresentation = false
+            searchController.searchBar.delegate = self
+            searchController.searchBar.searchTextField.clearButtonMode = .never
+            navigationItem.searchController = searchController
+            definesPresentationContext = true
+
+            // Set initial placeholder to avoid "Search" appearing first
+            searchController.searchBar.placeholder = dishNames[currentIndex]
+
+            if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+                animatedPlaceholderLabel = UILabel(frame: searchTextField.bounds)
+                animatedPlaceholderLabel?.text = dishNames[currentIndex]
+                animatedPlaceholderLabel?.font = searchTextField.font
+                animatedPlaceholderLabel?.textColor = .gray
+                animatedPlaceholderLabel?.alpha = 1.0
+                animatedPlaceholderLabel?.textAlignment = .left
+                searchTextField.addSubview(animatedPlaceholderLabel!)
+            }
+
+            startPlaceholderAnimation()
+        }
+
+        private func startPlaceholderAnimation() {
+            placeholderTimer?.invalidate()
+            placeholderTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(animatePlaceholder), userInfo: nil, repeats: true)
+        }
+
+        @objc private func animatePlaceholder() {
+            guard let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField,
+                  let animatedPlaceholderLabel = animatedPlaceholderLabel else { return }
+
+            UIView.animate(withDuration: 0.5, animations: {
+                animatedPlaceholderLabel.transform = CGAffineTransform(translationX: 0, y: -10) // Move up
+                animatedPlaceholderLabel.alpha = 0.0 // Fade out
+            }) { _ in
+                self.currentIndex = (self.currentIndex + 1) % self.dishNames.count
+                let newText = self.dishNames[self.currentIndex]
+
+                animatedPlaceholderLabel.text = newText
+                searchTextField.placeholder = newText // Ensure actual placeholder updates
+
+                // Reset position below and fade-in
+                animatedPlaceholderLabel.transform = CGAffineTransform(translationX: 0, y: 10)
+                UIView.animate(withDuration: 0.5) {
+                    animatedPlaceholderLabel.alpha = 1.0
+                    animatedPlaceholderLabel.transform = .identity
+                }
+            }
+        }
+
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            startPlaceholderAnimation()
+        }
+
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            placeholderTimer?.invalidate()
+        }
+
+        deinit {
+            placeholderTimer?.invalidate()
+        }
+
 
        func updateSearchResults(for searchController: UISearchController) {
            // Handle search logic
@@ -390,4 +455,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     
     
 
+}
+extension LandingPageViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // Dismiss keyboard
+        let storyboard = UIStoryboard(name: "Search", bundle: nil)
+        if let searchVC = storyboard.instantiateViewController(withIdentifier: "SearchDishesViewController") as? SearchDishesViewController {
+            navigationController?.pushViewController(searchVC, animated: true)
+        }
+    }
 }
