@@ -86,6 +86,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="changeButton" destination="q9G-14-qZy" id="Jwt-Ny-iLa"/>
                 <outlet property="userAdressLabel" destination="Lne-pU-LC5" id="aye-cy-HM0"/>
                 <outlet property="userCartView" destination="c5N-5x-hrX" id="Wmb-tG-LI0"/>
             </connections>
