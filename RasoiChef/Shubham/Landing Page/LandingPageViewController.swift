@@ -291,6 +291,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
             }
         } else if indexPath.section == 2 { // Existing logic for "LandingPageKitchen"
+            let selectedKitchen = KitchenDataController.kitchens[indexPath.item]
+            if !selectedKitchen.isOnline {
+                        return // Prevent navigation if kitchen is offline
+                    }
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
                 
