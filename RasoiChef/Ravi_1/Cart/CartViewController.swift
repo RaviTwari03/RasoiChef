@@ -34,6 +34,15 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
        private var isDeliverySelected: Bool = false
       
        func didTapPlaceOrder() {
+           // Check if the selected address is set
+           guard let address = selectedAddress else {
+               // Show an alert if the address is not set
+               let alert = UIAlertController(title: "Address Required", message: "Please select a delivery address before placing your order.", preferredStyle: .alert)
+               alert.addAction(UIAlertAction(title: "OK", style: .default))
+               present(alert, animated: true)
+               return
+           }
+
            // Create new order history entry
            let orderHistory = OrderHistory(
                orderID: UUID().uuidString,
@@ -537,10 +546,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                    return
                }
 
-               // Remove the item from cart
                CartViewController.cartItems.remove(at: indexPath.row)
 
-               // Check if the cart is empty after removal
                if CartViewController.cartItems.isEmpty {
                    print("🛒 Cart is now empty, reloading table to show placeholder and other sections.")
                    CartItem.reloadData() // Reload table to reflect empty cart
@@ -549,26 +556,18 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                    CartItem.deleteRows(at: [indexPath], with: .fade)
                }
 
-               updateTabBarBadge() // Update the cart badge count
+               updateTabBarBadge()
            }
 
        func didTapSeeMorePlanYourMeal() {
-               // Handle navigation or UI update when "See More Plans" is clicked
                print("See More Plans tapped")
            }
 
            func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
-               // Convert SubscriptionPlan to CartItem
                let cartItem = RasoiChef.CartItem(userAdress: "", quantity: 1, menuItem: nil, subscriptionDetails: item)
-
-               // Add to cart
                CartViewController.cartItems.append(cartItem)
-
-               // Reload table to reflect changes
                CartItem.reloadData()
-               
-               // Update Tab Bar Badge
-               updateTabBarBadge()
+                updateTabBarBadge()
                
                print("Subscription plan added to cart: \(item.planID)")
            }
