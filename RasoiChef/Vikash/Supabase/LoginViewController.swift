@@ -24,7 +24,13 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-    }
+        errorLabel.isHidden = true
+
+                // Add target to detect text change
+                emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+                passwordTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+            }
+
     
 
     @IBAction func loginTapped(_ sender: UIButton) {
@@ -56,6 +62,14 @@ class LoginViewController: UIViewController {
                 errorLabel.isHidden = false
             }
         }
+    }
+    @objc func textFieldsDidChange(_ textField: UITextField) {
+        errorLabel.isHidden = true
+    }
+
+    private func showError(_ message: String) {
+        errorLabel.text = message
+        errorLabel.isHidden = false
     }
 
 
