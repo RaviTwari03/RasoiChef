@@ -78,12 +78,12 @@ class MyOrdersViewController: UIViewController {
             pastOrders = allOrders.filter { $0.status == .delivered }
         
         // Show or hide the "No Active Orders" label and table view
-               if currentOrders.isEmpty {
+               if currentOrders.isEmpty  && pastOrders.isEmpty{
                    noActiveOrdersLabel.isHidden = false
                    tableView?.isHidden = true // Hide the table view if there are no current orders
                 } else {
                    noActiveOrdersLabel.isHidden = true
-                   tableView?.isHidden = false // Show the table view if there are current orders
+                    tableView?.isHidden = false // Show the table view if there are current orders
                 }
         
 
@@ -106,10 +106,13 @@ class MyOrdersViewController: UIViewController {
             // Show Orders section
             tableView.isHidden = false
             subscribedPlansView.isHidden = true
+            loadData()
+          
         case 1:
             // Show Subscribed Plans section
             tableView.isHidden = true
             subscribedPlansView.isHidden = false
+            noActiveOrdersLabel.isHidden = true
         default:
             break
             
@@ -120,6 +123,7 @@ class MyOrdersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         loadData()
         tableView.reloadData()
     }
@@ -135,6 +139,9 @@ class MyOrdersViewController: UIViewController {
 extension MyOrdersViewController:UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        if currentOrders.isEmpty && pastOrders.isEmpty {
+                return 0  // Jab kuch nahi hai to section hi nahi dikhana
+            }
         return 2
     }
     
@@ -153,7 +160,7 @@ extension MyOrdersViewController:UITableViewDataSource {
 
             let titleLabel = UILabel()
             titleLabel.text = section == 0 ? "Current Orders" : "Past Orders"
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 25)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
             titleLabel.textColor = .black
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -166,29 +173,13 @@ extension MyOrdersViewController:UITableViewDataSource {
 
             return headerView
         }
+    
 
         func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             return 44
         }
     
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//            if section == 0 {
-//                    return "Current Orders"
-//            } else {
-//                    return "Past Orders"
-//            }
-//    }
-//    
-//    
-//    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-//             if let header = view as? UITableViewHeaderFooterView {
-//                 header.textLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize)
-//                    header.textLabel?.textColor = .black
-//                    header.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: header.frame.height)
-//              
-//                    }
-//    }
    
 
     
@@ -196,7 +187,7 @@ extension MyOrdersViewController:UITableViewDataSource {
    
             if indexPath.section == 0 {
                    // Current Order Cell
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as!                   MyOrdersTableViewCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "MyOrdersTableViewCell", for: indexPath) as! MyOrdersTableViewCell
                     let order = currentOrders[indexPath.row]
                                 cell.configure(order: order)
             
