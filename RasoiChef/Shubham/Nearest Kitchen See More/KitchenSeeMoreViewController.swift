@@ -243,6 +243,11 @@ func configureItemCountLabel() {
         return filteredKitchens.count
     }
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // Dismiss the keyboard
+    }
+
+    
 
 
 // MARK: - Update Item Count Label

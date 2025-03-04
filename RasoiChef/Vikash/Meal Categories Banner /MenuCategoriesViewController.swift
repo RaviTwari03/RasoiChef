@@ -278,6 +278,10 @@ func configureItemCountLabel() {
         applyFilters() // Apply filters after searching
     }
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // Dismiss the keyboard
+    }
+
 
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

@@ -242,6 +242,10 @@ class LandingPageChefSpecialitySeeMoreViewController: UIViewController, UICollec
     }
 
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // Dismiss the keyboard
+    }
+
     
     
     
