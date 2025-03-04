@@ -234,62 +234,6 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             layer.shadowOpacity = 0.2
             layer.shadowRadius = 4
             
-<<<<<<< HEAD
-            var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
-
-            for (section, selectedTags) in selectedButtons {
-                guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
-
-                if selectedWeeklyMeals[day] == nil {
-                    selectedWeeklyMeals[day] = [:]
-                }
-
-                for tag in selectedTags {
-                    if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
-                        let menuItem = MenuItem(
-                            itemID: "\(section)-\(tag)",
-                            kitchenID: "kitchen001",
-                            kitchenName: "Kanha Ji Rasoi",
-                            distance: 0.0,
-                            name: mealType.rawValue,
-                            description: "Delicious \(mealType.rawValue) meal",
-                            price: Double(tag),
-                            rating: 4.5,
-                            availableMealTypes: [mealType],
-                            portionSize: "Medium",
-                            intakeLimit: 1,
-                            imageURL: "",
-                            orderDeadline: "10:00 AM",
-                            availability: [],
-                            availableDays: [day],
-                            mealCategory: []
-                        )
-
-                        selectedWeeklyMeals[day]?[mealType] = menuItem
-                    }
-                }
-            }
-
-            updateFooterPrice()
-            print("Final Price before passing: \(finalPrice)")
-
-            let subscriptionPlan = SubscriptionPlan(
-                planID: String(UUID().uuidString.prefix(6)),
-                kitchenName: "Kanjha Ji Rasoi", userID: "user001",
-                kitchenID: "kitchen001", location: "Galgotias University",
-                startDate: selectedStartDate,
-                endDate: selectedEndDate,
-                totalPrice: finalPrice,
-                planName: "Weekly Plans",
-                PlanIntakeLimit: 4,
-                planImage: "",
-                weeklyMeals: selectedWeeklyMeals
-            )
-
-            cartVC.addSubscriptionPlan(subscriptionPlan)
-
-            self.navigationController?.tabBarController?.selectedIndex = 2
-=======
             stackView.axis = .horizontal
             stackView.spacing = 16
             stackView.alignment = .center
@@ -333,7 +277,6 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         func configure(message: String, action: @escaping () -> Void) {
             messageLabel.text = message
             actionHandler = action
->>>>>>> App_Development
         }
     }
 
