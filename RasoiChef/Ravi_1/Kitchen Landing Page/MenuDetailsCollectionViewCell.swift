@@ -48,6 +48,13 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleOrderPlacement),
+            name: NSNotification.Name("OrderPlaced"),
+            object: nil
+        )
+        
         // Initial setup
         if let stepper = stepper {
             stepper.minimumValue = 0
@@ -183,6 +190,14 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
                 self.updateCartState(for: menuItem)
             }
         }
+    }
+    
+    @objc private func handleOrderPlacement() {
+        // Hide stepper and show add button when order is placed
+        stepperStackView.isHidden = true
+        addButton.isHidden = false
+        addButton.isEnabled = true
+        addButton.alpha = 1.0
     }
     
     func applyCardStyle1() {

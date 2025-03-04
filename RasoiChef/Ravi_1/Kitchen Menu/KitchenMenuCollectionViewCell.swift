@@ -41,6 +41,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         override func awakeFromNib() {
                   super.awakeFromNib()
                   NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
+                  NotificationCenter.default.addObserver(self, selector: #selector(handleOrderPlacement), name: NSNotification.Name("OrderPlaced"), object: nil)
           
                   // Ensure outlets are not nil before modifying them
                   if let stepperStackView = stepperStackView, let stepper = stepper {
@@ -55,8 +56,8 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
 
     @objc func cartUpdated() {
         if let collectionView = self.superview as? UICollectionView,
-           let indexPath = collectionView.indexPath(for: self) {
-            updateIntakeLimit(for: indexPath)
+           let indexPath = collectionView.indexPath(for: self),
+           indexPath.row < KitchenDataController.menuItems.count {
             
             // Update the quantity label if the item is in the cart
             let menuItem = KitchenDataController.menuItems[indexPath.row]
@@ -64,15 +65,40 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                 .filter { $0.menuItem?.itemID == menuItem.itemID }
                 .reduce(0) { $0 + $1.quantity }
             
-            if orderedQuantity > 0 {
-                stepperStackView.isHidden = false
-                addButton.isHidden = true
-                quantityLabel.text = "\(orderedQuantity)"
-                stepper.value = Double(orderedQuantity)
-            } else {
+            // Update UI safely
+            DispatchQueue.main.async {
+                if orderedQuantity > 0 {
+                    self.stepperStackView.isHidden = false
+                    self.addButton.isHidden = true
+                    self.quantityLabel.text = "\(orderedQuantity)"
+                    self.stepper.value = Double(orderedQuantity)
+                } else {
+                    self.stepperStackView.isHidden = true
+                    self.addButton.isHidden = false
+                    self.quantityLabel.text = "0"
+                }
+            }
+            
+            // Update intake limit
+            updateIntakeLimit(for: indexPath)
+        }
+    }
+
+    @objc private func handleOrderPlacement() {
+        // Safely handle UI updates on main thread
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Safely update stepper stack view
+            if let stepperStackView = self.stepperStackView {
                 stepperStackView.isHidden = true
+            }
+            
+            // Safely update add button
+            if let addButton = self.addButton {
                 addButton.isHidden = false
-                quantityLabel.text = "0"
+                addButton.isEnabled = true
+                addButton.alpha = 1.0
             }
         }
     }

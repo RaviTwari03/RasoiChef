@@ -211,7 +211,11 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     }
 
     @objc private func handleOrderPlacement() {
-        updateCartAndIntakeState()
+        // Hide stepper and show add button when order is placed
+        stepperStackView.isHidden = true
+        addButton.isHidden = false
+        addButton.isEnabled = true
+        addButton.alpha = 1.0
     }
 
     deinit {

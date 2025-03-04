@@ -38,6 +38,7 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         
         NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated(_:)), name: NSNotification.Name("CartUpdated"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetStepper), name: NSNotification.Name("ResetStepper"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleOrderPlacement), name: NSNotification.Name("OrderPlaced"), object: nil)
         
         // Initial setup
         stepper.minimumValue = 0
@@ -275,6 +276,14 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         quantityLabel.text = "0"
         stepperStackView.isHidden = true
         addButton.isHidden = false
+    }
+    
+    @objc private func handleOrderPlacement() {
+        // Hide stepper and show add button when order is placed
+        stepperStackView.isHidden = true
+        addButton.isHidden = false
+        addButton.isEnabled = true
+        addButton.alpha = 1.0
     }
     
     func applyCardStyle1() {
