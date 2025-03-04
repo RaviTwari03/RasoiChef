@@ -195,6 +195,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 kitchenName: subscription.kitchenName,
                 userID: UUID().uuidString, // Replace with actual user ID
                 location: subscription.location ?? "Unknown Location",
+                //                location : selectedAddress ?? "No address selected",
                 startDate: subscription.startDate,
                 endDate: subscription.endDate,
                 totalPrice: subscription.totalPrice,
@@ -245,7 +246,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             items: orderItems,
             status: .placed,
             totalAmount: totalAmount,
-            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+//            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+            deliveryAddress: selectedAddress ?? "No address selected",
             deliveryDate: Date(),
             deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
         )
