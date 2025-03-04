@@ -765,7 +765,7 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="wXD-Sg-EZh">
-                                                <rect key="frame" x="30" y="420" width="370" height="213"/>
+                                                <rect key="frame" x="30" y="420" width="370" height="148"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please login to continue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qzn-mP-Ech">
                                                         <rect key="frame" x="0.0" y="0.0" width="370" height="18"/>
@@ -789,22 +789,29 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                                     </textField>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Nl-w9-UiU">
-                                                        <rect key="frame" x="0.0" y="163" width="370" height="50"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="50" id="jRX-11-cSF"/>
-                                                        </constraints>
-                                                        <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="filled" title="Login" cornerStyle="capsule">
-                                                            <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="20"/>
-                                                            <color key="baseBackgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                        </buttonConfiguration>
-                                                        <connections>
-                                                            <action selector="loginTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="KnB-gs-zxD"/>
-                                                        </connections>
-                                                    </button>
                                                 </subviews>
                                             </stackView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Nl-w9-UiU">
+                                                <rect key="frame" x="30" y="602" width="370" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="370" id="8lw-Yw-TAM"/>
+                                                    <constraint firstAttribute="height" constant="50" id="jRX-11-cSF"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="Login" cornerStyle="capsule">
+                                                    <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="20"/>
+                                                    <color key="baseBackgroundColor" red="0.92941176889999999" green="0.47843140360000003" blue="0.34117650989999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="loginTapped:" destination="syg-Qz-dfK" eventType="touchUpInside" id="KnB-gs-zxD"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SK1-Il-pva">
+                                                <rect key="frame" x="30" y="576" width="360" height="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" name="AccentColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZ5-E3-vWs">
                                                 <rect key="frame" x="71" y="677" width="288.33333333333331" height="35"/>
                                                 <subviews>
@@ -842,11 +849,16 @@
                                             <constraint firstAttribute="trailing" secondItem="Inu-18-W0i" secondAttribute="trailing" id="8Lw-8q-RFM"/>
                                             <constraint firstItem="Inu-18-W0i" firstAttribute="top" secondItem="wXJ-Yi-i68" secondAttribute="top" id="DS8-mW-Rwh"/>
                                             <constraint firstItem="wXD-Sg-EZh" firstAttribute="leading" secondItem="wXJ-Yi-i68" secondAttribute="leading" constant="30" id="Ies-EX-Nlk"/>
+                                            <constraint firstItem="6Nl-w9-UiU" firstAttribute="leading" secondItem="SK1-Il-pva" secondAttribute="leading" id="Kud-YC-Uhm"/>
+                                            <constraint firstItem="6Nl-w9-UiU" firstAttribute="top" secondItem="SK1-Il-pva" secondAttribute="bottom" constant="8" symbolic="YES" id="Lnk-3y-ukj"/>
+                                            <constraint firstItem="6Nl-w9-UiU" firstAttribute="top" secondItem="wXD-Sg-EZh" secondAttribute="bottom" constant="34" id="Qbu-ZY-0Zs"/>
                                             <constraint firstAttribute="height" constant="912" id="Rie-vE-wIk"/>
                                             <constraint firstItem="wXD-Sg-EZh" firstAttribute="centerX" secondItem="MSM-Zk-aPZ" secondAttribute="centerX" id="YNT-U9-drM"/>
                                             <constraint firstItem="Inu-18-W0i" firstAttribute="leading" secondItem="wXJ-Yi-i68" secondAttribute="leading" id="d0u-YG-YJt"/>
                                             <constraint firstAttribute="bottom" secondItem="WZ5-E3-vWs" secondAttribute="bottom" constant="200" id="hyv-WH-fGC"/>
                                             <constraint firstItem="wXD-Sg-EZh" firstAttribute="centerX" secondItem="Inu-18-W0i" secondAttribute="centerX" id="nqN-Lz-U36"/>
+                                            <constraint firstItem="SK1-Il-pva" firstAttribute="top" secondItem="wXD-Sg-EZh" secondAttribute="bottom" constant="8" symbolic="YES" id="rFW-D8-dLa"/>
+                                            <constraint firstItem="SK1-Il-pva" firstAttribute="leading" secondItem="wXD-Sg-EZh" secondAttribute="leading" id="rjt-ET-ZWr"/>
                                             <constraint firstItem="WZ5-E3-vWs" firstAttribute="centerX" secondItem="wXD-Sg-EZh" secondAttribute="centerX" id="ys9-8g-Zoc"/>
                                         </constraints>
                                     </view>
@@ -872,13 +884,14 @@
                     <navigationItem key="navigationItem" id="XqA-5v-2Ak"/>
                     <connections>
                         <outlet property="emailTextField" destination="UpG-jS-N2u" id="Yyy-W2-nvV"/>
+                        <outlet property="errorLabel" destination="SK1-Il-pva" id="cB0-b8-WOe"/>
                         <outlet property="loginButton" destination="6Nl-w9-UiU" id="ZuG-eV-LqP"/>
                         <outlet property="passwordTextField" destination="UKC-XV-lzv" id="O9X-Ks-Gut"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xe6-vt-BPP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1880" y="794"/>
+            <point key="canvasLocation" x="1879.5348837209301" y="793.77682403433482"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="dv9-Iq-TNT">

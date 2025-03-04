@@ -13,6 +13,7 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
     private let tableView = UITableView()
     private var timer: Timer?
     private var startTime: Date?
+    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
 
     private var statusData = [
         ("Order Placed", "You have successfully placed your order.", "", true),
@@ -114,20 +115,37 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     @objc private func appDidEnterBackground() {
-        // Store the current status in UserDefaults
+        // Register background task before the app goes to background
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+        
+        // Store the current status and time in UserDefaults
         UserDefaults.standard.set(statusData.map { $0.3 }, forKey: "orderStatus_\(order.orderID)")
-        timer?.invalidate()
+        UserDefaults.standard.synchronize()
+        
+        // Don't invalidate timer, let it run in background
+        // timer?.invalidate()
+    }
+    
+    private func endBackgroundTask() {
+        if backgroundTask != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
     }
 
     @objc private func appWillEnterForeground() {
-        // Restore status and restart timer
+        // End background task when app comes to foreground
+        endBackgroundTask()
+        
+        // Update UI with any changes that happened in background
         if let savedStatus = UserDefaults.standard.array(forKey: "orderStatus_\(order.orderID)") as? [Bool] {
             for (index, isCompleted) in savedStatus.enumerated() where index < statusData.count {
                 statusData[index].3 = isCompleted
             }
         }
         updateOrderStatus()
-        startStatusUpdateTimer()
     }
 
     private func startStatusUpdateTimer() {
@@ -206,6 +224,11 @@ class TrackOrderViewController: UIViewController, UITableViewDelegate, UITableVi
         defaults.set(statusTimes, forKey: orderKey)
     }
 
+    deinit {
+        timer?.invalidate()
+        endBackgroundTask()
+        NotificationCenter.default.removeObserver(self)
+    }
 
     // MARK: - TableView DataSource and Delegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

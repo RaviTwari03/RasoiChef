@@ -63,7 +63,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             do {
                 let _ = try await supabase.auth.signUp(email: email, password: password)
                 
-                // ✅ Save name and email in UserDefaults
+                // Save name and email in UserDefaults
                 UserDefaults.standard.set(name, forKey: "userName")
                 UserDefaults.standard.set(email, forKey: "userEmail")
 

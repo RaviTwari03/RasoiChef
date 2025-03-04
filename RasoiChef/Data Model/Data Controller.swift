@@ -273,6 +273,8 @@ class KitchenDataController {
     ]
 
 
+    
+    
     static var chefSpecialtyDishes: [ChefSpecialtyDish] = [
         ChefSpecialtyDish(
             kitchenName: "Kanjha Ji Rasoi",

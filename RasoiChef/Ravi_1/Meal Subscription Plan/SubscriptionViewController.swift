@@ -92,7 +92,6 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         MealSubscriptionPlan.register(UINib(nibName: "CustomiseTable2", bundle: nil), forCellReuseIdentifier: "CustomiseTable2")
         MealSubscriptionPlan.register(UINib(nibName: "SubscriptionFooter", bundle: nil), forCellReuseIdentifier: "SubscriptionFooter")
         
-        // Set the dataSource and delegate
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
         MealSubscriptionPlan.reloadData()
@@ -210,10 +209,32 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         present(alert, animated: true, completion: nil)
     }
 
-    func didTapSeeMorePlanYourMeal() {
-        let storyboard = UIStoryboard(name: "Vikash", bundle: nil)
-        if let cartVC = storyboard.instantiateViewController(withIdentifier: "CartViewController") as? CartViewController {
+    class BannerView: UIView {
+        private let stackView = UIStackView()
+        private let messageLabel = UILabel()
+        private let actionButton = UIButton(type: .system)
+        private let chevronImage = UIImageView()
+        private var actionHandler: (() -> Void)?
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setupView()
+        }
+        
+        required init?(coder: NSCoder) {
+            super.init(coder: coder)
+            setupView()
+        }
+        
+        private func setupView() {
+            backgroundColor = .white
+            layer.cornerRadius = 25
+            layer.shadowColor = UIColor.black.cgColor
+            layer.shadowOffset = CGSize(width: 0, height: 2)
+            layer.shadowOpacity = 0.2
+            layer.shadowRadius = 4
             
+<<<<<<< HEAD
             var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
 
             for (section, selectedTags) in selectedButtons {
@@ -268,67 +289,220 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             cartVC.addSubscriptionPlan(subscriptionPlan)
 
             self.navigationController?.tabBarController?.selectedIndex = 2
+=======
+            stackView.axis = .horizontal
+            stackView.spacing = 16
+            stackView.alignment = .center
+            stackView.distribution = .equalSpacing
+            
+            messageLabel.font = .systemFont(ofSize: 16, weight: .medium)
+            
+            actionButton.setTitle("View Cart", for: .normal)
+            actionButton.setTitleColor(UIColor(named: "AccentColor"), for: .normal)
+            actionButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+            
+            chevronImage.image = UIImage(systemName: "chevron.right")
+            chevronImage.tintColor = UIColor(named: "AccentColor")
+            chevronImage.contentMode = .scaleAspectFit
+            
+            let rightContainer = UIStackView(arrangedSubviews: [actionButton, chevronImage])
+            rightContainer.axis = .horizontal
+            rightContainer.spacing = 4
+            rightContainer.alignment = .center
+            
+            stackView.addArrangedSubview(messageLabel)
+            stackView.addArrangedSubview(rightContainer)
+            
+            addSubview(stackView)
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+                stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+                stackView.topAnchor.constraint(equalTo: topAnchor),
+                stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
+        }
+        
+        @objc private func actionButtonTapped() {
+            actionHandler?()
+        }
+        
+        func configure(message: String, action: @escaping () -> Void) {
+            messageLabel.text = message
+            actionHandler = action
+>>>>>>> App_Development
         }
     }
 
+    func didTapSeeMorePlanYourMeal() {
+        var selectedWeeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
 
+        for (section, selectedTags) in selectedButtons {
+            guard let day = WeekDay(rawValue: weeklyMeals[section].day) else { continue }
 
-    var selectedButtons: [Int: Set<Int>] = [:]   // Tracks selected buttons per section
-        var buttonClickCountPerSection: [Int: Int] = [:]  // Tracks count per section
-      
-        var totalPricePerSection: [Int: Int] = [:]  // Tracks deducted price per section
-
-        func buttonClicked(inSection section: Int, withTag tag: Int) {
-            print("Button Clicked! Section: \(section), Tag: \(tag)")
-
-            // Ensure tracking for the section
-            if selectedButtons[section] == nil {
-                selectedButtons[section] = []
-            }
-            if buttonClickCountPerSection[section] == nil {
-                buttonClickCountPerSection[section] = 0
-            }
-            if totalPricePerSection[section] == nil {
-                totalPricePerSection[section] = 0
+            if selectedWeeklyMeals[day] == nil {
+                selectedWeeklyMeals[day] = [:]
             }
 
-            // Toggle button selection for that section only
-            if selectedButtons[section]!.contains(tag) {
-                print("Button \(tag) deselected in section \(section). Not adding value back.")
-                selectedButtons[section]!.remove(tag)
-                buttonClickCountPerSection[section]! -= 1
-            } else {
-                print("Button \(tag) selected in section \(section). Deducting its value.")
+            for tag in selectedTags {
+                if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
+                    let menuItem = MenuItem(
+                        itemID: "\(section)-\(tag)",
+                        kitchenID: "kitchen001",
+                        kitchenName: "Kanha Ji Rasoi",
+                        distance: 0.0,
+                        name: mealType.rawValue,
+                        description: "Delicious \(mealType.rawValue) meal",
+                        price: Double(tag),
+                        rating: 4.5,
+                        availableMealTypes: [mealType],
+                        portionSize: "Medium",
+                        intakeLimit: 1,
+                        imageURL: "",
+                        orderDeadline: "10:00 AM",
+                        availability: [],
+                        availableDays: [day],
+                        mealCategory: []
+                    )
 
-                if buttonClickCountPerSection[section]! >= 4 {
-                    print("Limit exceeded in section \(section). Showing alert.")
-                    showAlert()
-                    return
+                    selectedWeeklyMeals[day]?[mealType] = menuItem
                 }
-
-                selectedButtons[section]!.insert(tag)
-                totalPrice -= tag  // ✅ Deduct only once per section
-                totalPricePerSection[section]! += tag
-                buttonClickCountPerSection[section]! += 1
-            }
-
-            // 🔥 Debugging Info
-            print("Total Price: \(totalPrice)")
-            print("Section \(section) Total: \(totalPricePerSection[section]!)")
-            print("Selected buttons in section \(section): \(selectedButtons[section]!)")
-
-            // Update footer price dynamically
-            updateFooterPrice()
-
-            // Reload only the row where the button was clicked
-            if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
-                hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
-                print("Reloading row at index path: \(selectedIndexPath)")
-                MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-            } else {
-                print("No selected row found in MealSubscriptionPlan.")
             }
         }
+
+        updateFooterPrice()
+        print("Final Price before passing: \(finalPrice)")
+
+        let subscriptionPlan = SubscriptionPlan(
+            planID: String(UUID().uuidString.prefix(6)),
+            kitchenName: "Kanjha Ji Rasoi", userID: "user001",
+            kitchenID: "kitchen001", location: "greater noida",
+            startDate: selectedStartDate,
+            endDate: selectedEndDate,
+            totalPrice: finalPrice,
+            planName: "Weekly Plans",
+            PlanIntakeLimit: 4,
+            planImage: "",
+            weeklyMeals: selectedWeeklyMeals
+        )
+
+        // Add to cart
+        CartViewController.subscriptionPlan1.append(subscriptionPlan)
+        
+        // Create and configure banner view
+        let bannerView = BannerView()
+        bannerView.configure(message: "Plan added successfully") { [weak self] in
+            self?.tabBarController?.selectedIndex = 2
+        }
+        view.addSubview(bannerView)
+        
+        // Setup constraints
+        NSLayoutConstraint.activate([
+            bannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            bannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            bannerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            bannerView.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        // Animate banner appearance
+        bannerView.transform = CGAffineTransform(translationX: 0, y: 100)
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
+            bannerView.transform = .identity
+        }
+        
+        // Hide banner after delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn) {
+                bannerView.transform = CGAffineTransform(translationX: 0, y: 100)
+            } completion: { _ in
+                bannerView.removeFromSuperview()
+            }
+        }
+        
+        // Reset UI state
+        selectedButtons.removeAll()
+        buttonClickCountPerSection.removeAll()
+        totalPricePerSection.removeAll()
+        isDateSelected = false
+        selectedDayCount = 0
+        selectedStartDate = ""
+        selectedEndDate = ""
+        selectedOrderedDays.removeAll()
+        
+        // Update UI
+        DispatchQueue.main.async {
+            self.MealSubscriptionPlan.reloadData()
+        }
+        
+        // Update cart badge and post notification
+        if let tabItems = self.tabBarController?.tabBar.items {
+            let cartTabItem = tabItems[2]
+            let itemCount = CartViewController.cartItems.count + CartViewController.subscriptionPlan1.count
+            cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
+        }
+        
+        NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+    }
+
+    var selectedButtons: [Int: Set<Int>] = [:]   // Tracks selected buttons per section
+    var buttonClickCountPerSection: [Int: Int] = [:]  // Tracks count per section
+  
+    var totalPricePerSection: [Int: Int] = [:]  // Tracks deducted price per section
+
+    func buttonClicked(inSection section: Int, withTag tag: Int) {
+        print("Button Clicked! Section: \(section), Tag: \(tag)")
+
+        // Ensure tracking for the section
+        if selectedButtons[section] == nil {
+            selectedButtons[section] = []
+        }
+        if buttonClickCountPerSection[section] == nil {
+            buttonClickCountPerSection[section] = 0
+        }
+        if totalPricePerSection[section] == nil {
+            totalPricePerSection[section] = 0
+        }
+
+        // Toggle button selection for that section only
+        if selectedButtons[section]!.contains(tag) {
+            print("Button \(tag) deselected in section \(section). Not adding value back.")
+            selectedButtons[section]!.remove(tag)
+            buttonClickCountPerSection[section]! -= 1
+        } else {
+            print("Button \(tag) selected in section \(section). Deducting its value.")
+
+            if buttonClickCountPerSection[section]! >= 4 {
+                print("Limit exceeded in section \(section). Showing alert.")
+                showAlert()
+                return
+            }
+
+            selectedButtons[section]!.insert(tag)
+            totalPrice -= tag  // ✅ Deduct only once per section
+            totalPricePerSection[section]! += tag
+            buttonClickCountPerSection[section]! += 1
+        }
+
+        // 🔥 Debugging Info
+        print("Total Price: \(totalPrice)")
+        print("Section \(section) Total: \(totalPricePerSection[section]!)")
+        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
+
+        // Update footer price dynamically
+        updateFooterPrice()
+
+        // Reload only the row where the button was clicked
+        if let selectedIndexPath = MealSubscriptionPlan.indexPathForSelectedRow {
+            hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
+            print("Reloading row at index path: \(selectedIndexPath)")
+            MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
+        } else {
+            print("No selected row found in MealSubscriptionPlan.")
+        }
+    }
 
 
     func updateFooterPrice() {

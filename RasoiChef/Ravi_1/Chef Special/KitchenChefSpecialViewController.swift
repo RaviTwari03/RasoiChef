@@ -283,27 +283,18 @@ func configureItemCountLabel() {
     }
     
     
-    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell) {
-        guard let indexPath = ChefSpecialMenu.indexPath(for: cell) else { return }
-
-        let selectedChefSpecialtyDish = filteredChefSpecialDishes[indexPath.row]
-        print("Add button tapped for Chef Specialty Dish: \(selectedChefSpecialtyDish.name)")
-
+    func MenuListaddButtonTapped(in cell: ChefSpecialMenuCollectionViewCell, dish: ChefSpecialtyDish) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "AddItemModallyViewController") as? AddItemModallyViewController {
-            
-            detailVC.selectedChefSpecialtyDish = selectedChefSpecialtyDish  // Pass the Chef Special dish
-
+            detailVC.selectedChefSpecialtyDish = dish
             detailVC.modalPresentationStyle = .pageSheet
-
+            
             if let sheet = detailVC.sheetPresentationController {
                 sheet.detents = [.medium(), .large()]
                 sheet.prefersGrabberVisible = true
             }
-
+            
             present(detailVC, animated: true, completion: nil)
-        } else {
-            print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
 

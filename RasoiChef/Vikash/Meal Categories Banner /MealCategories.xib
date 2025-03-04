@@ -85,7 +85,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vb3-ha-qEP">
-                                <rect key="frame" x="31" y="127" width="36" height="17"/>
+                                <rect key="frame" x="31.000000000000004" y="127" width="35.333333333333343" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -130,9 +130,35 @@
                                     <constraint firstAttribute="width" constant="18" id="khq-15-3Dg"/>
                                 </constraints>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="tcZ-JT-hrD">
+                                <rect key="frame" x="226" y="150" width="127" height="32"/>
+                                <subviews>
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="NoW-Ra-aip">
+                                        <rect key="frame" x="0.0" y="0.0" width="94" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="32" id="jVN-wi-TAy"/>
+                                            <constraint firstAttribute="width" constant="94" id="wIf-w3-2yE"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.96470588450000005" green="0.76470589639999997" blue="0.26666668059999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <connections>
+                                            <action selector="stepperValueChanged:" destination="I5q-NF-SIw" eventType="valueChanged" id="QsN-yr-1O2"/>
+                                        </connections>
+                                    </stepper>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y3c-t6-q9U">
+                                        <rect key="frame" x="101" y="0.0" width="26" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="26" id="WSb-Bi-Ri4"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="tcZ-JT-hrD" secondAttribute="trailing" constant="6" id="1yw-rs-qkK"/>
                             <constraint firstItem="g2G-NL-bRc" firstAttribute="leading" secondItem="9uo-tp-ueP" secondAttribute="trailing" constant="3.3333333333333712" id="95C-dY-txz"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="leading" secondItem="IcH-Kp-7ce" secondAttribute="leading" id="9sR-fD-Z0W"/>
                             <constraint firstItem="TQX-SV-13y" firstAttribute="top" secondItem="dC9-61-viy" secondAttribute="bottom" constant="5" id="CW4-BB-s0v"/>
@@ -143,7 +169,9 @@
                             <constraint firstItem="Vb3-ha-qEP" firstAttribute="top" secondItem="U1X-P8-j1b" secondAttribute="bottom" constant="5.3333333333333286" id="Mrn-dy-fEx"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="top" secondItem="IcH-Kp-7ce" secondAttribute="bottom" constant="4" id="Pik-9t-J9e"/>
                             <constraint firstItem="Vb3-ha-qEP" firstAttribute="leading" secondItem="dC9-61-viy" secondAttribute="trailing" constant="3" id="Qj7-CA-IK5"/>
+                            <constraint firstItem="tcZ-JT-hrD" firstAttribute="top" secondItem="bqk-kA-EkK" secondAttribute="bottom" constant="5" id="VAg-2T-h42"/>
                             <constraint firstItem="IcH-Kp-7ce" firstAttribute="leading" secondItem="J1I-9Q-j62" secondAttribute="leading" id="WVV-eV-aq2"/>
+                            <constraint firstItem="tcZ-JT-hrD" firstAttribute="leading" secondItem="bqk-kA-EkK" secondAttribute="trailing" constant="-128" id="a1q-ZN-3Ja"/>
                             <constraint firstItem="U1X-P8-j1b" firstAttribute="top" secondItem="yma-fl-V7r" secondAttribute="bottom" constant="4" id="aqm-01-gLG"/>
                             <constraint firstItem="n9Y-rG-PUS" firstAttribute="centerX" secondItem="bqk-kA-EkK" secondAttribute="centerX" id="d2B-si-oJQ"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" secondItem="g2G-NL-bRc" secondAttribute="trailing" constant="8" id="hUn-GW-wsC"/>
@@ -184,6 +212,9 @@
                 <outlet property="mealNameLabel" destination="J1I-9Q-j62" id="old-nx-lXj"/>
                 <outlet property="orderIntakeLimitLabel" destination="yma-fl-V7r" id="5cp-K5-IUq"/>
                 <outlet property="priceLabel" destination="U1X-P8-j1b" id="Ggz-4W-CuL"/>
+                <outlet property="quantityLabel" destination="Y3c-t6-q9U" id="kS1-WI-FDs"/>
+                <outlet property="stepper" destination="NoW-Ra-aip" id="XE7-HZ-Czn"/>
+                <outlet property="stepperStackView" destination="tcZ-JT-hrD" id="BjF-Jd-bZV"/>
                 <outlet property="vegNonVegIcon" destination="ZNv-a3-OBz" id="wwC-TG-miV"/>
             </connections>
             <point key="canvasLocation" x="619.08396946564881" y="2.8169014084507045"/>

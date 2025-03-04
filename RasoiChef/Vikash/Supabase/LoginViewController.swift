@@ -18,18 +18,26 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     
     
-
+    @IBOutlet weak var errorLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-    }
+        errorLabel.isHidden = true
+
+                // Add target to detect text change
+                emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+                passwordTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+            }
+
     
 
     @IBAction func loginTapped(_ sender: UIButton) {
         guard let email = emailTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
-            showAlert("Please enter email and password")
+            errorLabel.text = "Please enter email and password"
+            errorLabel.isHidden = false
             return
         }
 
@@ -37,23 +45,33 @@ class LoginViewController: UIViewController {
             do {
                 let session = try await supabase.auth.signIn(email: email, password: password)
 
-                // ✅ Save logged-in email to UserDefaults
+                //  Save logged-in email to UserDefaults
                 UserDefaults.standard.set(email, forKey: "userEmail")
 
-                // ✅ Retrieve user name from Supabase or set a default name
+                // Retrieve user name from Supabase or set a default name
                 let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
                 UserDefaults.standard.set(savedName, forKey: "userName")
+
+                // Hide error message if login is successful
+                errorLabel.isHidden = true
 
                 // Navigate to Home
                 navigateToHome()
             } catch {
-                showAlert("Login failed: \(error.localizedDescription)")
+                errorLabel.text = "Login failed: \(error.localizedDescription)"
+                errorLabel.isHidden = false
             }
         }
     }
-    
-    
-    
+    @objc func textFieldsDidChange(_ textField: UITextField) {
+        errorLabel.isHidden = true
+    }
+
+    private func showError(_ message: String) {
+        errorLabel.text = message
+        errorLabel.isHidden = false
+    }
+
 
         @IBAction func signUpTapped(_ sender: UIButton) {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -67,7 +85,7 @@ class LoginViewController: UIViewController {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let homeVC = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as! UITabBarController
             
-            // ✅ If there's a navigation controller, set the new root without embedding it in another navigation stack
+            // If there's a navigation controller, set the new root without embedding it in another navigation stack
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.window?.rootViewController = homeVC
                 sceneDelegate.window?.makeKeyAndVisible()
