@@ -14,9 +14,9 @@ class MyOrdersViewController: UIViewController {
     
     @IBOutlet weak var subscribedPlansView: UIView!
     
-        var currentOrders: [Order] = []  // Orders still in progress
-        var pastOrders: [Order] = []     // Delivered orders
-        var displayedOrders: [Order] = [] // Orders shown based on the selected segment
+        var currentOrders: [Order] = []
+        var pastOrders: [Order] = []
+        var displayedOrders: [Order] = [] 
    
         static var shared = MyOrdersViewController()
     
@@ -92,8 +92,11 @@ class MyOrdersViewController: UIViewController {
     
     func showPricePopup(for order: Order) {
         let popup = PricePopupView(frame: self.view.bounds)
-        popup.configure(price: "\(order.totalAmount)", gst: "0", discount: "0", grandTotal: "\(order.totalAmount)")
-//        popup.configure(getPrice: "\(order.totalAmount)", grandTotal: "\(order.totalAmount)")
+        let totalAmount = order.totalAmount
+        let gstAmount = totalAmount * 0.18
+        let discountAmount = 20
+        let grandTotal = totalAmount + (totalAmount * 0.18) - Double(discountAmount)
+        popup.configure(price: "\(totalAmount)", gst: "\(gstAmount)", discount: "\(discountAmount)", grandTotal: "\(grandTotal)")
         self.view.addSubview(popup)
     }
     
