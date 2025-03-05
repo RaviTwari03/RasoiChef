@@ -246,8 +246,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             items: orderItems,
             status: .placed,
             totalAmount: totalAmount,
-//            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
-            deliveryAddress: selectedAddress ?? "No address selected",
+            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+           // deliveryAddress: selectedAddress ?? "No address selected",
             deliveryDate: Date(),
             deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
         )
