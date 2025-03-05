@@ -40,9 +40,9 @@ class UserCartAddressTableViewCell: UITableViewCell {
         button.setTitle("Change", for: .normal)
         button.setTitleColor(UIColor(named: "AccentColor") ?? .systemBlue, for: .normal)
         button.layer.cornerRadius = 15
-        button.layer.borderWidth = 1
-        button.layer.borderColor = (UIColor(named: "AccentColor") ?? .systemBlue).cgColor
-        button.backgroundColor = .clear
+//        button.layer.borderWidth = 1
+//        button.layer.borderColor = (UIColor(named: "AccentColor") ?? .systemBlue).cgColor
+//        button.backgroundColor = .clear
     }
     
     @objc private func changeButtonTapped() {
