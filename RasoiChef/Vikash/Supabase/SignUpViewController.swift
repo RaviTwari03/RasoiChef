@@ -25,6 +25,15 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        
+        // Set text field delegates
+               emailTextField.delegate = self
+               passwordTextField.delegate = self
+               confirmPasswordTextField.delegate = self
+               nameTextField.delegate = self
+        
+        
         // Initially hide the password mismatch label
         passwordMismatchLabel.isHidden = true
 
@@ -83,7 +92,14 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         alert.addAction(okAction)
         present(alert, animated: true)
     }
-
+    
+    
+    // Dismiss keyboard when return key is pressed
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            textField.resignFirstResponder() // Hides the keyboard
+            return true
+        }
+    
     // Function to navigate to LoginViewController
     func navigateToLogin() {
             if let loginVC = storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
