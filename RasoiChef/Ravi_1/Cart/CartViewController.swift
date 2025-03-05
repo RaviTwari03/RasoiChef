@@ -6,17 +6,22 @@
 //
 
 import UIKit
-
+import MapKit
+import CoreLocation
 
 protocol SubscriptionPlanDelegate: AnyObject {
     func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
 }
 
-class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,AddItemDelegate,CartPayCellDelegate,CartItemTableViewCellDelegate,SubscribeYourPlanButtonDelegate,SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate {
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate {
     
- 
+    // Add location manager and address properties
+    private let locationManager = CLLocationManager()
+    private var currentLocation: CLLocation?
+    private var selectedAddress: String? = nil
+    private var geocoder = CLGeocoder()
+    
     weak var delegate: SubscriptionPlanDelegate?
-   
     @IBOutlet var CartItem: UITableView!
 
     var cartItems: [CartItem] = []
@@ -29,6 +34,15 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        private var isDeliverySelected: Bool = false
       
        func didTapPlaceOrder() {
+           // Check if the selected address is set
+           guard let address = selectedAddress else {
+               // Show an alert if the address is not set
+               let alert = UIAlertController(title: "Address Required", message: "Please select a delivery address before placing your order.", preferredStyle: .alert)
+               alert.addAction(UIAlertAction(title: "OK", style: .default))
+               present(alert, animated: true)
+               return
+           }
+
            // Create new order history entry
            let orderHistory = OrderHistory(
                orderID: UUID().uuidString,
@@ -110,6 +124,10 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            super.viewDidLoad()
            self.title = "Cart"
           
+           // Setup location manager
+           locationManager.delegate = self
+           locationManager.desiredAccuracy = kCLLocationAccuracyBest
+           
            NotificationCenter.default.addObserver(self, selector: #selector(reloadCart), name: NSNotification.Name("CartUpdated"), object: nil)
 
            
@@ -127,8 +145,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            CartItem.dataSource = self
            CartItem.reloadData()
            
-           
-           
+           // Request location authorization
+           locationManager.requestWhenInUseAuthorization()
        }
     
     
@@ -177,6 +195,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 kitchenName: subscription.kitchenName,
                 userID: UUID().uuidString, // Replace with actual user ID
                 location: subscription.location ?? "Unknown Location",
+                //                location : selectedAddress ?? "No address selected",
                 startDate: subscription.startDate,
                 endDate: subscription.endDate,
                 totalPrice: subscription.totalPrice,
@@ -228,96 +247,15 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             status: .placed,
             totalAmount: totalAmount,
             deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+           // deliveryAddress: selectedAddress ?? "No address selected",
             deliveryDate: Date(),
             deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
         )
 
         return order
     }
-
-
-
-    
-    
-       
-
-//    func createOrderFromCart(cartItems: [CartItem]) -> Order {
-//        // Create order items from cart items
-//        let orderItems = cartItems.map { cartItem -> OrderItem in
-//            var menuItemID = "Unknown Item"
-//            var price: Double = 0.0
-//            var kitchenName = "Unknown Kitchen"
-//            var kitchenID = ""
-//
-//            switch (cartItem.menuItem, cartItem.chefSpecial) {
-//            case let (menuItem?, nil):
-//                menuItemID = menuItem.name
-//                price = menuItem.price
-//                kitchenName = menuItem.kitchenName
-//                kitchenID = menuItem.kitchenID
-//            case let (nil, chefSpecial?):
-//                menuItemID = chefSpecial.name
-//                price = chefSpecial.price
-//                kitchenName = chefSpecial.kitchenName
-//                kitchenID = chefSpecial.kitchenID
-//            case let (menuItem?, chefSpecial?):
-//                menuItemID = "\(menuItem.name) / \(chefSpecial.name)"
-//                price = menuItem.price + chefSpecial.price
-//                kitchenName = menuItem.kitchenName // Assuming the same kitchen for both
-//                kitchenID = menuItem.kitchenID
-//            default:
-//                break
-//            }
-//
-//            return OrderItem(
-//                menuItemID: menuItemID,
-//                quantity: cartItem.quantity,
-//                price: price * Double(cartItem.quantity)
-//            )
-//        }
-//
-//        // Calculate total amount for the entire order
-//        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price }
-//        
-//        // Determine the kitchen details from the first cart item
-//        let firstCartItem = cartItems.first
-//        var kitchenName = "Unknown Kitchen"
-//        var kitchenID = ""
-//
-//        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
-//        case let (menuItem?, nil):
-//            kitchenName = menuItem.kitchenName
-//            kitchenID = menuItem.kitchenID
-//        case let (nil, chefSpecial?):
-//            kitchenName = chefSpecial.kitchenName
-//            kitchenID = chefSpecial.kitchenID
-//        case let (menuItem?, chefSpecial?):
-//            kitchenName = menuItem.kitchenName
-//            kitchenID = menuItem.kitchenID
-//        default:
-//            break
-//        }
-//
-//        // Create the Order object
-//        let order = Order(
-//            orderID: String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4)),  // Generate a unique order ID
-//            userID: "user123",  // Replace with actual user ID
-//            kitchenName: kitchenName,
-//            kitchenID: kitchenID,
-//            items: orderItems,
-//            status: .placed,
-//            totalAmount: totalAmount,
-//            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
-//            deliveryDate: Date(),  // Use the actual delivery date selected by the user
-//            deliveryType: "Delivery"  // Specify the delivery type (e.g., delivery or pickup)
-//        )
-//
-//        return order
-//    }
-
-       
        func numberOfSections(in tableView: UITableView) -> Int {
-           return 6 // Five sections: Address, Cart Items, Bill, Delivery, and Payment
+           return 6
        }
        
        
@@ -330,7 +268,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 
            switch section {
                case 0:
-                   return 1 // Address Section
+                   return 1
                    
                case 1:
                    if hasCartItems {
@@ -363,7 +301,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCartAddress", for: indexPath) as? UserCartAddressTableViewCell else {
                        return UITableViewCell()
                    }
-                   cell.updateAddress(with: indexPath)
+                   cell.delegate = self
+                   cell.updateAddress(with: selectedAddress ?? "Select delivery address")
                    cell.separatorInset = .zero
                    return cell
                    
@@ -459,17 +398,17 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
            switch indexPath.section {
            case 0:
-               return 100 // Address Section Height
+               return 100
            case 1:
-               return 135 // Cart Item Section Height
+               return 135
            case 2:
-               return 120 // Subscription Section Height
+               return 120
            case 3:
-               return 100 // Delivery Section Height
+               return 100
            case 4:
-               return 250 // Bill Section Height
+               return 250
            case 5:
-               return 70 // Payment Section Height
+               return 70
            default:
                return 44
            }
@@ -519,11 +458,11 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
        }
 
     func didAddItemToCart(_ item: CartItem) {
-        CartViewController.cartItems.append(item) // ✅ Ensure you update the correct cartItems
-        cartItems = CartViewController.cartItems // ✅ Sync local cartItems with the static one
+        CartViewController.cartItems.append(item)
+        cartItems = CartViewController.cartItems
         updateTabBarBadge()
         
-        CartItem.reloadData() // ✅ Reload the cart to reflect changes
+        CartItem.reloadData()
     }
 
 
@@ -533,7 +472,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             CartViewController.subscriptionPlan1.append(plan)  // ✅ Add new plan
             
             DispatchQueue.main.async {
-                self.CartItem?.reloadData()  // ✅ Refresh table view
+                self.CartItem?.reloadData()
             }
             
             print(CartViewController.subscriptionPlan1)
@@ -550,16 +489,15 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        cartItems = CartViewController.cartItems // ✅ Update local cart items
-        CartItem.reloadData() // ✅ Reload table view
+        cartItems = CartViewController.cartItems
+        CartItem.reloadData()
     }
 
        func calculateTotalItemPrice() -> Double {
-           // Calculate total from cart items
            let cartTotal = CartViewController.cartItems.reduce(0) { total, cartItem in
                if let menuItem = cartItem.menuItem {
                    print(menuItem.name)
-                   return total + (menuItem.price * Double(cartItem.quantity)) // ✅ Assuming price is non-optional
+                   return total + (menuItem.price * Double(cartItem.quantity))
                }
                
                if let chefDish = cartItem.chefSpecial {
@@ -572,13 +510,12 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            
            // Calculate total from subscription plans
            let subscriptionTotal = CartViewController.subscriptionPlan1.reduce(0) { total, plan in
-               return total + (plan.totalPrice ?? 0) ?? 0 // ✅ Assuming totalPrice is non-optional
+               return total + (plan.totalPrice ?? 0) ?? 0
            }
 
            return cartTotal + Double(Int(subscriptionTotal)) // ✅ Combined total
        }
 
-       // Example function to fetch a MenuItem by ID
        func fetchMenuItem(by id: Int) -> MenuItem? {
            return KitchenDataController.menuItems.first /*{ $0.id == id }*/
        }
@@ -593,7 +530,7 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
        func updateTabBarBadge() {
            if let tabItems = self.tabBarController?.tabBar.items {
-               let cartTabItem = tabItems[2] // Replace with the correct index for the "Cart" tab
+               let cartTabItem = tabItems[2] 
                let itemCount = CartViewController.cartItems.count
                cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
            }
@@ -611,10 +548,8 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                    return
                }
 
-               // Remove the item from cart
                CartViewController.cartItems.remove(at: indexPath.row)
 
-               // Check if the cart is empty after removal
                if CartViewController.cartItems.isEmpty {
                    print("🛒 Cart is now empty, reloading table to show placeholder and other sections.")
                    CartItem.reloadData() // Reload table to reflect empty cart
@@ -623,26 +558,18 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                    CartItem.deleteRows(at: [indexPath], with: .fade)
                }
 
-               updateTabBarBadge() // Update the cart badge count
+               updateTabBarBadge()
            }
 
        func didTapSeeMorePlanYourMeal() {
-               // Handle navigation or UI update when "See More Plans" is clicked
                print("See More Plans tapped")
            }
 
            func didAddItemToSubscriptionCart(_ item: SubscriptionPlan) {
-               // Convert SubscriptionPlan to CartItem
                let cartItem = RasoiChef.CartItem(userAdress: "", quantity: 1, menuItem: nil, subscriptionDetails: item)
-
-               // Add to cart
                CartViewController.cartItems.append(cartItem)
-
-               // Reload table to reflect changes
                CartItem.reloadData()
-               
-               // Update Tab Bar Badge
-               updateTabBarBadge()
+                updateTabBarBadge()
                
                print("Subscription plan added to cart: \(item.planID)")
            }
@@ -685,4 +612,93 @@ class CartViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
     }
     
-   }
+    // MARK: - Location Manager Delegate Methods
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager.startUpdatingLocation()
+        case .denied, .restricted:
+            showLocationPermissionAlert()
+        default:
+            break
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        currentLocation = location
+        locationManager.stopUpdatingLocation()
+        
+        // Reverse geocode the location
+        reverseGeocodeLocation(location)
+    }
+    
+    private func reverseGeocodeLocation(_ location: CLLocation) {
+        geocoder.reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            guard let self = self,
+                  let placemark = placemarks?.first else { return }
+            
+            let address = [
+                placemark.subThoroughfare,
+                placemark.thoroughfare,
+                placemark.locality,
+                placemark.administrativeArea,
+                placemark.postalCode
+            ].compactMap { $0 }.joined(separator: ", ")
+            
+            self.selectedAddress = address
+            
+            DispatchQueue.main.async {
+                if let addressCell = self.CartItem.cellForRow(at: IndexPath(row: 0, section: 0)) as? UserCartAddressTableViewCell {
+                    addressCell.updateAddress(with: address)
+                }
+            }
+        }
+    }
+    
+    private func showLocationPermissionAlert() {
+        let alert = UIAlertController(
+            title: "Location Access Required",
+            message: "Please enable location access in Settings to use this feature.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL)
+            }
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    // MARK: - Map View Controller
+    
+    func showMapViewController() {
+        let mapVC = MapViewController()
+        mapVC.delegate = self
+        mapVC.currentLocation = self.currentLocation
+        
+        let navController = UINavigationController(rootViewController: mapVC)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
+    }
+    
+    // Handle address selection from map
+    func didSelectAddress(_ address: String, location: CLLocation) {
+        self.selectedAddress = address
+        self.currentLocation = location
+        
+        if let addressCell = self.CartItem.cellForRow(at: IndexPath(row: 0, section: 0)) as? UserCartAddressTableViewCell {
+            addressCell.updateAddress(with: address)
+        }
+    }
+
+    // MARK: - UserCartAddressDelegate
+    func didTapChangeAddress() {
+        showMapViewController()
+    }
+}
