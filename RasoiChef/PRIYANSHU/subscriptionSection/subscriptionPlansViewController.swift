@@ -26,39 +26,43 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
            return label
        }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        tableViewSubscriptionPlan.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                tableViewSubscriptionPlan.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
-                tableViewSubscriptionPlan.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
-            ])
-        
-        
+
+        tableViewSubscriptionPlan.tableHeaderView = UIView(frame: CGRect.zero) // Removes any default spacing
+
+        if #available(iOS 11.0, *) {
+            tableViewSubscriptionPlan.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
+
+        NSLayoutConstraint.activate([
+            tableViewSubscriptionPlan.topAnchor.constraint(equalTo: view.topAnchor, constant: 0), // Attach directly to top
+            tableViewSubscriptionPlan.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+            tableViewSubscriptionPlan.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
+        ])
+
         tableViewSubscriptionPlan.delegate = self
         tableViewSubscriptionPlan.dataSource = self
-        
         tableViewSubscriptionPlan.register(UINib(nibName: "subscriptionPlansTableViewCell", bundle: nil), forCellReuseIdentifier: "subscriptionPlansTableViewCell")
 
+        view.addSubview(noSubscriptionsLabel)
+        NSLayoutConstraint.activate([
+            noSubscriptionsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noSubscriptionsLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100),
+            noSubscriptionsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            noSubscriptionsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
 
-        // Do any additional setup after loading the view.
-        tableViewSubscriptionPlan.reloadData()
-        // Add the "No Subscriptions" label
-                view.addSubview(noSubscriptionsLabel)
-                NSLayoutConstraint.activate([
-                    noSubscriptionsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    noSubscriptionsLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100), 
-                    noSubscriptionsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-                    noSubscriptionsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-                ])
-
-                // Initially hide the label and table
-                noSubscriptionsLabel.isHidden = true
-                tableViewSubscriptionPlan.isHidden = true
-                loadSubscriptionPlan( )
+        noSubscriptionsLabel.isHidden = true
+        tableViewSubscriptionPlan.isHidden = true
+        loadSubscriptionPlan()
     }
+
+    
+
     
     func loadSubscriptionPlan(){
         let allSubscription = OrderDataController.shared.getSubscription()
@@ -102,7 +106,7 @@ class subscriptionPlansModifyViewController: UIViewController,UITableViewDelegat
         }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
+        return 30
     }
     
     
