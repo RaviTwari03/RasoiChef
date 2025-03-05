@@ -105,7 +105,7 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishPriceLabel.text = "₹\(specialDish.price)"
         specialDishRating.text = "\(specialDish.rating)"
         specialDishImage.image = UIImage(named: specialDish.imageURL)
-        specialDishIntakeLimtLabel.text = "Mon,Thur"
+        specialDishIntakeLimtLabel.text = "Mon,Wed"
         
         // Calculate current state
         let cartQuantity = CartViewController.cartItems
