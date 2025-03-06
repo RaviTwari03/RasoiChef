@@ -584,10 +584,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             return
         }
 
-        // Remove the subscription plan
-        CartViewController.subscriptionPlan1.remove(at: indexPath.row)
+          CartViewController.subscriptionPlan1.remove(at: indexPath.row)
 
-        // Check if subscriptions are empty
         if CartViewController.subscriptionPlan1.isEmpty {
             print("📦 Subscription list is empty, reloading table to show empty state.")
             CartItem.reloadData() // Reload entire table to reflect empty state
