@@ -15,7 +15,6 @@ protocol SubscriptionPlanDelegate: AnyObject {
 
 class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate {
     
-    // Add location manager and address properties
     private let locationManager = CLLocationManager()
     private var currentLocation: CLLocation?
     private var selectedAddress: String? = nil
