@@ -23,15 +23,15 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
     
     override func viewDidLoad() {
-           super.viewDidLoad()
+        super.viewDidLoad()
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
-           // Registering Nibs for Cells
-           let BannerDetailsNib = UINib(nibName: "LandingPageBanner", bundle: nil)
-           let LandingPageChefSpecialNib = UINib(nibName: "LandingPageChefSpecial", bundle: nil)
-           let LandingPageKitchenNib = UINib(nibName: "LandingPageKitchen", bundle: nil)
-           
-           
+        
+        // Registering Nibs for Cells
+        let BannerDetailsNib = UINib(nibName: "LandingPageBanner", bundle: nil)
+        let LandingPageChefSpecialNib = UINib(nibName: "LandingPageChefSpecial", bundle: nil)
+        let LandingPageKitchenNib = UINib(nibName: "LandingPageKitchen", bundle: nil)
+        
         LandingPage.register(BannerDetailsNib, forCellWithReuseIdentifier: "LandingPageBanner")
         LandingPage.register(LandingPageChefSpecialNib, forCellWithReuseIdentifier: "LandingPageChefSpecial")
         LandingPage.register(LandingPageKitchenNib, forCellWithReuseIdentifier: "LandingPageKitchen")
@@ -66,7 +66,15 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         }
         
         startPlaceholderAnimation()
-       }
+        
+        // Load initial data if needed
+        Task {
+            await KitchenDataController.loadInitialData()
+            DispatchQueue.main.async {
+                self.LandingPage.reloadData()
+            }
+        }
+    }
        
     
     func getCurrentMealCategoryIndex() -> Int {
@@ -184,20 +192,21 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             case 0:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
                 cell.updateBannerDetails(for: indexPath)
-                cell.layer.cornerRadius = 15.0    // Rounded corners
+                cell.layer.cornerRadius = 15.0
                 return cell
                 
             case 1:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
                 cell.updateSpecialDishDetails(for: indexPath)
                 cell.delegate = self
-                cell.layer.cornerRadius = 15.0    // Rounded corners
+                cell.layer.cornerRadius = 15.0
                 return cell
                 
             case 2:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchen", for: indexPath) as! LandingPageKitchenCollectionViewCell
+                let kitchen = KitchenDataController.kitchens[indexPath.item]
                 cell.updateLandingPageKitchen(for: indexPath)
-                cell.layer.cornerRadius = 15.0    // Rounded corners
+                cell.layer.cornerRadius = 15.0
                 return cell
             
             default:
@@ -275,24 +284,24 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
        // Layout for Chef's Special Section
        func generateLandingPageKitchenSectionLayout() -> NSCollectionLayoutSection {
-
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-               let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-               // Define group size and layout
-               let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(160))
-               let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-               // Add content insets to the group
-               group.interItemSpacing = .fixed(5)
-           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 20, trailing: 10.0) // No insets on the left/right
-
-               // Create the section
-               let section = NSCollectionLayoutSection(group: group)
-               section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
-
-           return section
-       }
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // Define group size and layout
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .absolute(160))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        // Add content insets to the group
+        group.interItemSpacing = .fixed(10)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 10.0)
+        
+        // Create the section
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 10, trailing: 10)
+        section.interGroupSpacing = 10
+        
+        return section
+    }
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == LandingPage {
@@ -463,6 +472,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
             startPlaceholderAnimation()
+            LandingPage.reloadData()
         }
 
         override func viewWillDisappear(_ animated: Bool) {
