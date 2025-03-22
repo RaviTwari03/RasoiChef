@@ -32,72 +32,73 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
        // Add property to track delivery option
        private var isDeliverySelected: Bool = false
       
-       func didTapPlaceOrder() {
-           // Check if the selected address is set
-           guard let address = selectedAddress else {
-               // Show an alert if the address is not set
-               let alert = UIAlertController(title: "Address Required", message: "Please select a delivery address before placing your order.", preferredStyle: .alert)
-               alert.addAction(UIAlertAction(title: "OK", style: .default))
-               present(alert, animated: true)
+       @IBAction func placeOrderButtonTapped(_ sender: Any) {
+           print("\n🔄 Starting order placement process...")
+           
+           guard !CartViewController.cartItems.isEmpty else {
+               print("❌ Cart is empty")
+               showAlert(title: "Empty Cart", message: "Please add items to your cart before placing an order.")
                return
            }
-
-           // Create new order history entry
-           let orderHistory = OrderHistory(
-               orderID: UUID().uuidString,
-               items: CartViewController.cartItems,
-               orderDate: Date()
+           
+           // Create order from cart items
+           guard let order = createOrderFromCart(cartItems: CartViewController.cartItems, subscriptionPlan: []) else {
+               print("❌ Failed to create order from cart items")
+               showAlert(title: "Order Creation Failed", message: "Unable to create order from cart items. Please try again.")
+               return
+           }
+           
+           // Save order to Supabase
+           Task {
+               do {
+                   print("\n📤 Saving order to Supabase...")
+                   try await SupabaseController.shared.insertOrder(order: order)
+                   
+                   DispatchQueue.main.async {
+                       print("✅ Order successfully placed and saved")
+                       
+                       // Clear the cart
+                       CartViewController.cartItems.removeAll()
+                       self.CartItem.reloadData()
+                       self.updateTotalAmount()
+                       
+                       // Show success message
+                       self.showAlert(
+                           title: "Order Placed Successfully",
+                           message: "Your order has been placed and will be delivered to your address."
+                       )
+                       
+                       // Add to order history
+                       OrderHistoryController.addOrder(OrderHistory(
+                           orderID: order.orderID,
+                           items: CartViewController.cartItems,
+                           orderDate: Date()
+                       ))
+                       
+                       // Update UI
+                       NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+                   }
+                   
+               } catch {
+                   print("❌ Error saving order to Supabase: \(error.localizedDescription)")
+                   DispatchQueue.main.async {
+                       self.showAlert(
+                           title: "Order Failed",
+                           message: "Failed to place your order. Please try again."
+                       )
+                   }
+               }
+           }
+       }
+       
+       private func showAlert(title: String, message: String) {
+           let alert = UIAlertController(
+               title: title,
+               message: message,
+               preferredStyle: .alert
            )
-           
-           // Add to order history
-           OrderHistoryController.addOrder(orderHistory)
-           
-           // Process and store orders & subscriptions
-           if let order = createOrderFromCart(cartItems: CartViewController.cartItems, subscriptionPlan: CartViewController.subscriptionPlan1) {
-               // Set the order start time in UserDefaults
-               let startTime = Date()
-               UserDefaults.standard.set(startTime, forKey: "orderStartTime_\(order.orderID)")
-               
-               // Initialize the order times dictionary
-               let orderTimes = ["placed": formatTime(startTime)]
-               UserDefaults.standard.set(orderTimes, forKey: "orderTimes_\(order.orderID)")
-               
-               // Add order to OrderDataController
-               OrderDataController.shared.addOrder(order: order)
-               
-               // Post notification with order ID to start tracking
-               NotificationCenter.default.post(
-                   name: NSNotification.Name("OrderPlaced"),
-                   object: nil,
-                   userInfo: ["orderID": order.orderID]
-               )
-           }
-           
-           // Show success message
-           let banner = CustomBannerView()
-           banner.show(in: self.view, message: "Order Placed Successfully!")
-           
-           // Clear all items
-           CartViewController.cartItems.removeAll()
-           CartViewController.subscriptionPlan1.removeAll()
-           
-           // Update UI
-           CartItem.reloadData()
-           updateTabBarBadge()
-           
-           // Notify to update intake limits
-           NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
-           
-           // Notify all relevant views to update their UI
-           NotificationCenter.default.post(name: NSNotification.Name("ResetStepper"), object: nil)
-           
-           // Update My Orders badge
-           updateMyOrdersBadge()
-           
-           // Dismiss the view controller after a short delay
-           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-               self.navigationController?.popViewController(animated: true)
-           }
+           alert.addAction(UIAlertAction(title: "OK", style: .default))
+           present(alert, animated: true)
        }
    
    private func formatTime(_ date: Date) -> String {
@@ -238,15 +239,15 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         // Create and return order with selected delivery type
         let order = Order(
-            orderID: String(UUID().uuidString.prefix(6)),
-            userID: "user123",
+            orderID: UUID().uuidString,  // Use full UUID
+            userID: UUID().uuidString,  // Generate a UUID for user
             kitchenName: kitchenName,
-            kitchenID: kitchenName,
+            kitchenID: kitchenID,  // Use the actual kitchen ID
             items: orderItems,
+            item: nil,
             status: .placed,
             totalAmount: totalAmount,
             deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
-           // deliveryAddress: selectedAddress ?? "No address selected",
             deliveryDate: Date(),
             deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
         )
@@ -697,5 +698,145 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - UserCartAddressDelegate
     func didTapChangeAddress() {
         showMapViewController()
+    }
+
+    // MARK: - CartPayCellDelegate
+    func didTapPlaceOrder() {
+        guard !CartViewController.cartItems.isEmpty || !CartViewController.subscriptionPlan1.isEmpty else {
+            showAlert(title: "Empty Cart", message: "Please add items to your cart before placing an order.")
+            return
+        }
+        
+        guard let selectedAddress = selectedAddress else {
+            showAlert(title: "Missing Address", message: "Please select a delivery address before placing your order.")
+            return
+        }
+        
+        // Get kitchen details from first cart item
+        guard let firstItem = CartViewController.cartItems.first else {
+            showAlert(title: "Error", message: "No items in cart")
+            return
+        }
+        
+        // Get kitchen ID and name from either menu item or chef special
+        let kitchenID: String
+        let kitchenName: String
+        
+        if let menuItem = firstItem.menuItem {
+            kitchenID = menuItem.kitchenID
+            kitchenName = menuItem.kitchenName
+        } else if let chefSpecial = firstItem.chefSpecial {
+            kitchenID = chefSpecial.kitchenID
+            kitchenName = chefSpecial.kitchenName
+        } else {
+            showAlert(title: "Error", message: "Invalid item in cart")
+            return
+        }
+        
+        // Validate kitchen ID
+        guard !kitchenID.isEmpty else {
+            showAlert(title: "Error", message: "Invalid kitchen ID")
+            return
+        }
+        
+        // Get current user ID from UserDefaults or session
+        Task {
+            do {
+                // Try to get user ID from UserDefaults first
+                var userID = UserDefaults.standard.string(forKey: "userID")
+                
+                // If not in UserDefaults, try to get from current session
+                if userID == nil {
+                    if let session = try await SupabaseController.shared.getCurrentSession() {
+                        userID = session.user.id.uuidString
+                        // Save for future use
+                        UserDefaults.standard.set(userID, forKey: "userID")
+                    }
+                }
+                
+                // Verify user ID exists
+                guard let finalUserID = userID else {
+                    showAlert(title: "Error", message: "Please log in to place an order")
+                    return
+                }
+                
+                // Verify user exists in users table
+                let response = try await SupabaseController.shared.client.database
+                    .from("users")
+                    .select()
+                    .eq("user_id", value: finalUserID)
+                    .execute()
+                
+                let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+                
+                guard let users = json, !users.isEmpty else {
+                    showAlert(title: "Error", message: "User account not found. Please log out and sign in again.")
+                    return
+                }
+                
+                // Create an order from cart items
+                let orderID = UUID().uuidString
+                let totalAmount = calculateGrandTotal()
+                let deliveryType = isDeliverySelected ? "Delivery" : "Self-Pickup"
+                
+                let order = Order(
+                    orderID: orderID,
+                    userID: finalUserID,  // Use the verified user ID
+                    kitchenName: kitchenName,
+                    kitchenID: kitchenID,
+                    items: CartViewController.cartItems.map { cartItem in
+                        let itemID: String
+                        let price: Double
+                        
+                        if let menuItem = cartItem.menuItem {
+                            itemID = menuItem.itemID
+                            price = menuItem.price
+                        } else if let chefSpecial = cartItem.chefSpecial {
+                            itemID = chefSpecial.dishID
+                            price = chefSpecial.price
+                        } else {
+                            itemID = ""
+                            price = 0.0
+                        }
+                        
+                        return OrderItem(
+                            menuItemID: itemID,
+                            quantity: cartItem.quantity,
+                            price: price * Double(cartItem.quantity)
+                        )
+                    },
+                    item: nil,
+                    status: .placed,
+                    totalAmount: totalAmount,
+                    deliveryAddress: selectedAddress,
+                    deliveryDate: Date(),
+                    deliveryType: deliveryType
+                )
+                
+                // Save order to Supabase
+                try await SupabaseController.shared.insertOrder(order: order)
+                
+                // Clear cart and update UI
+                CartViewController.cartItems.removeAll()
+                CartViewController.subscriptionPlan1.removeAll()
+                updateTabBarBadge()
+                CartItem.reloadData()
+                
+                showAlert(title: "Success", message: "Your order has been placed successfully!")
+                
+            } catch {
+                showAlert(title: "Error", message: "Failed to place order: \(error.localizedDescription)")
+                print("Error placing order: \(error)")
+            }
+        }
+    }
+
+    // MARK: - Helper Methods
+    func updateTotalAmount() {
+        let grandTotal = calculateGrandTotal()
+        if let paySection = CartItem.numberOfSections > 5 ? 5 : nil,
+           let cell = CartItem.cellForRow(at: IndexPath(row: 0, section: paySection)) as? CartPayTableViewCell {
+            cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
+        }
     }
 }

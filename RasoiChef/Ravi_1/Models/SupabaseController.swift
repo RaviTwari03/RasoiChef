@@ -480,6 +480,165 @@ class SupabaseController {
             throw error
         }
     }
+
+    // MARK: - Database Models
+    private struct DBOrder: Encodable {
+        let order_id: String
+        let user_id: String
+        let kitchen_id: String
+        let status_id: Int
+        let total_amount: Double
+        let delivery_address: String
+        let delivery_date: String
+        let delivery_type: String
+    }
+
+    private struct DBOrderItem: Encodable {
+        let order_id: String
+        let item_id: String
+        let quantity: Int
+        let price: Double
+    }
+
+    func insertOrder(order: Order) async throws {
+        print("\n🔄 Starting order insertion process...")
+        print("📊 Order details:")
+        print("- Order ID: \(order.orderID)")
+        print("- User ID: \(order.userID)")
+        print("- Kitchen ID: \(order.kitchenID)")
+        print("- Total Amount: ₹\(order.totalAmount)")
+        
+        do {
+            // Format date for PostgreSQL
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let formattedDate = dateFormatter.string(from: order.deliveryDate)
+            
+            // Ensure kitchen_id is a valid UUID
+            guard UUID(uuidString: order.kitchenID) != nil else {
+                throw NSError(domain: "OrderError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid kitchen ID format"])
+            }
+            
+            print("\n📤 Inserting order into database...")
+            print("- Order ID: \(order.orderID)")
+            print("- User ID: \(order.userID)")
+            print("- Kitchen ID: \(order.kitchenID)")
+            
+            let dbOrder = DBOrder(
+                order_id: order.orderID,
+                user_id: order.userID,
+                kitchen_id: order.kitchenID,
+                status_id: 1,
+                total_amount: order.totalAmount,
+                delivery_address: order.deliveryAddress,
+                delivery_date: formattedDate,
+                delivery_type: order.deliveryType
+            )
+            
+            // Insert order
+            try await client.database
+                .from("orders")
+                .insert(dbOrder)
+                .execute()
+            
+            print("✅ Successfully inserted order")
+            
+            // Then, insert each order item
+            print("\n📤 Inserting order items...")
+            for item in order.items {
+                let dbOrderItem = DBOrderItem(
+                    order_id: order.orderID,
+                    item_id: item.menuItemID,
+                    quantity: item.quantity,
+                    price: item.price
+                )
+                
+                try await client.database
+                    .from("orderitem")
+                    .insert(dbOrderItem)
+                    .execute()
+                
+                print("✅ Successfully inserted order item: \(item.menuItemID)")
+            }
+            
+            print("\n✅ Order insertion completed successfully")
+            
+        } catch {
+            print("\n❌ Error inserting order:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
+            throw error
+        }
+    }
+
+    func updateOrderStatus(orderID: String, status: OrderStatus) async throws {
+        print("\n🔄 Updating order status...")
+        print("📊 Update details:")
+        print("- Order ID: \(orderID)")
+        print("- New Status: \(status.rawValue)")
+        
+        do {
+            try await client.database
+                .from("orders")
+                .update(["status": status.rawValue])
+                .eq("order_id", value: orderID)
+                .execute()
+            
+            print("✅ Successfully updated order status")
+            
+        } catch {
+            print("\n❌ Error updating order status:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
+            throw error
+        }
+    }
+
+    // MARK: - User Management
+    
+    func createUserRecord(userID: String, name: String, email: String) async throws {
+        print("\n🔄 Creating user record...")
+        print("📊 User details:")
+        print("- User ID: \(userID)")
+        print("- Name: \(name)")
+        print("- Email: \(email)")
+        
+        struct DBUser: Encodable {
+            let user_id: String
+            let name: String
+            let email: String
+        }
+        
+        do {
+            let dbUser = DBUser(
+                user_id: userID,
+                name: name,
+                email: email
+            )
+            
+            try await client.database
+                .from("users")
+                .insert(dbUser)
+                .execute()
+            
+            print("✅ Successfully created user record")
+        } catch {
+            print("\n❌ Error creating user record:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            throw error
+        }
+    }
 }
 
 // Helper extension for async mapping

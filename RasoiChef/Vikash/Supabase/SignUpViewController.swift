@@ -69,11 +69,24 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
 
         Task {
             do {
-                let _ = try await supabase.auth.signUp(email: email, password: password)
+                // Sign up with Supabase Auth
+                let authResponse = try await supabase.auth.signUp(email: email, password: password)
+                let userID = authResponse.user.id.uuidString
+                
+                // Insert directly into users table
+                try await supabase.database
+                    .from("users")
+                    .insert([
+                        "user_id": userID,
+                        "name": name,
+                        "email": email
+                    ])
+                    .execute()
                 
                 // Save name and email in UserDefaults
                 UserDefaults.standard.set(name, forKey: "userName")
                 UserDefaults.standard.set(email, forKey: "userEmail")
+                UserDefaults.standard.set(userID, forKey: "userID")
 
                 showAlertAndNavigate("Signup successful! Please verify your email.")
             } catch {
