@@ -33,25 +33,17 @@ class KitchenDataController {
 
     // MARK: - Data Loading
     
-    static func loadInitialData() async throws {
-        print("\n🔄 Starting to load initial data...")
+    static func loadData() async {
+        print("\n🔄 Starting data loading process...")
+        
         do {
-            // Create a task group to load data concurrently
-            try await withThrowingTaskGroup(of: Void.self) { group in
+            await withThrowingTaskGroup(of: Void.self) { group in
                 // Fetch kitchens
                 group.addTask {
                     print("\n📥 Fetching kitchens...")
-                    kitchens = try await SupabaseController.shared.fetchKitchens()
-                    print("✅ Successfully loaded \(kitchens.count) kitchens")
-                    
-                    // Print kitchen details
-                    print("\n📋 Kitchen Details:")
-                    kitchens.forEach { kitchen in
-                        print("- \(kitchen.name)")
-                        print("  Location: \(kitchen.location)")
-                        print("  Rating: \(kitchen.rating)")
-                        print("  Cuisines: \(kitchen.cuisines.map { $0.rawValue }.joined(separator: ", "))")
-                    }
+                    let allKitchens = try await SupabaseController.shared.fetchKitchens()
+                    print("✅ Successfully loaded \(allKitchens.count) kitchens")
+                    kitchens = allKitchens
                 }
                 
                 // Fetch menu items
@@ -86,29 +78,52 @@ class KitchenDataController {
                 // Fetch subscription plans
                 group.addTask {
                     print("\n📥 Fetching subscription plans...")
-                    subscriptionPlans = try await SupabaseController.shared.fetchSubscriptionPlans()
-                    print("✅ Successfully loaded \(subscriptionPlans.count) subscription plans")
+                    let allSubscriptionPlans = try await SupabaseController.shared.fetchSubscriptionPlans()
+                    print("✅ Successfully loaded \(allSubscriptionPlans.count) subscription plans")
+                    subscriptionPlan = allSubscriptionPlans
+                }
+                
+                // Fetch chef specialty dishes
+                group.addTask {
+                    print("\n📥 Fetching chef specialty dishes...")
+                    do {
+                        let allChefSpecialtyDishes = try await SupabaseController.shared.fetchChefSpecialtyDishes()
+                        print("✅ Successfully loaded \(allChefSpecialtyDishes.count) chef specialty dishes")
+                        print("\n📋 Chef Specialty Dishes Details:")
+                        allChefSpecialtyDishes.forEach { dish in
+                            print("- \(dish.name) from \(dish.kitchenName)")
+                            print("  Price: ₹\(dish.price)")
+                            print("  Rating: \(dish.rating)")
+                            print("  Meal Categories: \(dish.mealCategory.map { $0.rawValue }.joined(separator: ", "))")
+                        }
+                        chefSpecialtyDishes = allChefSpecialtyDishes
+                        globalChefSpecial = allChefSpecialtyDishes
+                    } catch {
+                        print("❌ Error fetching chef specialty dishes: \(error.localizedDescription)")
+                    }
                 }
                 
                 // Wait for all tasks to complete
-                try await group.waitForAll()
+                try? await group.waitForAll()
             }
             
-            print("\n✅ Initial data load complete!")
-            print("\n📊 Final Statistics:")
+            // Print final statistics
+            print("\n📊 Final Data Loading Statistics:")
             print("- Kitchens: \(kitchens.count)")
-            print("- Total Menu Items: \(menuItems.count)")
-            print("- Breakfast Items: \(GlobalbreakfastMenuItems.count)")
-            print("- Lunch Items: \(GloballunchMenuItems.count)")
-            print("- Snacks Items: \(GlobalsnacksMenuItems.count)")
-            print("- Dinner Items: \(GlobaldinnerMenuItems.count)")
-            print("- Subscription Plans: \(subscriptionPlans.count)")
+            print("- Menu Items: \(menuItems.count)")
+            print("- Chef Specialty Dishes: \(chefSpecialtyDishes.count)")
+            print("- Subscription Plans: \(subscriptionPlan.count)")
+            print("✅ All data loaded successfully")
             
         } catch {
-            print("\n❌ Error loading initial data:")
-            print("- Error type: \(type(of: error))")
+            print("\n❌ Error loading data:")
+            print("- Type: \(type(of: error))")
             print("- Description: \(error.localizedDescription)")
-            throw error
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
         }
     }
 

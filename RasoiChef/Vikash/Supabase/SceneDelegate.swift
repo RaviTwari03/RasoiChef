@@ -28,9 +28,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let maxRetries = 3
             
             while retryCount < maxRetries {
-                do {
-                    try await KitchenDataController.loadInitialData()
-                    
+                await KitchenDataController.loadData()
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                     // Print statistics about loaded data
                     print("\n📊 Data Loading Statistics:")
                     print("- Kitchens loaded: \(KitchenDataController.kitchens.count)")
@@ -40,30 +41,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
                     print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
                     print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
+                    print("- Chef Specialty Dishes: \(KitchenDataController.chefSpecialtyDishes.count)")
                     
                     // If successful, break the retry loop
                     break
-                } catch {
-                    retryCount += 1
-                    print("\n❌ Error loading data (Attempt \(retryCount)/\(maxRetries)):")
-                    print(error.localizedDescription)
-                    
-                    if retryCount < maxRetries {
-                        print("Retrying in 2 seconds...")
-                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
-                    } else {
-                        print("Failed to load data after \(maxRetries) attempts")
-                        // Handle the failure case - maybe show an error to the user
-                        DispatchQueue.main.async {
-                            // Show an alert or update UI to indicate error
-                            let alert = UIAlertController(
-                                title: "Data Loading Error",
-                                message: "Failed to load data. Please check your internet connection and try again.",
-                                preferredStyle: .alert
-                            )
-                            alert.addAction(UIAlertAction(title: "OK", style: .default))
-                            self.window?.rootViewController?.present(alert, animated: true)
-                        }
+                }
+                
+                retryCount += 1
+                print("\n❌ No data loaded (Attempt \(retryCount)/\(maxRetries))")
+                
+                if retryCount < maxRetries {
+                    print("Retrying in 2 seconds...")
+                    try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+                } else {
+                    print("Failed to load data after \(maxRetries) attempts")
+                    // Handle the failure case - maybe show an error to the user
+                    DispatchQueue.main.async {
+                        // Show an alert or update UI to indicate error
+                        let alert = UIAlertController(
+                            title: "Data Loading Error",
+                            message: "Failed to load data. Please check your internet connection and try again.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.window?.rootViewController?.present(alert, animated: true)
                     }
                 }
             }

@@ -76,13 +76,15 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         
         // Load initial data if needed
         Task {
-            do {
-                try await KitchenDataController.loadInitialData()
+            await KitchenDataController.loadData()
+            
+            // Check if data was loaded successfully
+            if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                 DispatchQueue.main.async {
                     self.LandingPage.reloadData()
                 }
-            } catch {
-                print("❌ Error loading initial data: \(error.localizedDescription)")
+            } else {
+                print("❌ Error: No data was loaded")
                 DispatchQueue.main.async {
                     // Show an error alert to the user
                     let alert = UIAlertController(
@@ -90,30 +92,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                         message: "Failed to load data. Please check your internet connection and try again.",
                         preferredStyle: .alert
                     )
-                    alert.addAction(UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
-                        // Retry loading data
-                        Task {
-                            do {
-                                try await KitchenDataController.loadInitialData()
-                                DispatchQueue.main.async {
-                                    self?.LandingPage.reloadData()
-                                }
-                            } catch {
-                                print("❌ Retry failed: \(error.localizedDescription)")
-                                // Show error message if retry fails
-                                DispatchQueue.main.async {
-                                    let retryAlert = UIAlertController(
-                                        title: "Error",
-                                        message: "Failed to load data. Please try again later.",
-                                        preferredStyle: .alert
-                                    )
-                                    retryAlert.addAction(UIAlertAction(title: "OK", style: .default))
-                                    self?.present(retryAlert, animated: true)
-                                }
-                            }
-                        }
-                    })
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
             }
@@ -332,7 +311,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Define group size and layout
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .absolute(160))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(160))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         // Add content insets to the group
@@ -536,50 +515,28 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     @objc private func refreshData() {
         print("\n🔄 Refreshing data...")
         Task {
-            do {
-                try await KitchenDataController.loadInitialData()
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+            await KitchenDataController.loadData()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                     self.LandingPage.reloadData()
                     self.kitchenCollectionView?.reloadData()
-                    self.refreshControl.endRefreshing()
                     
                     // Show success message
                     let banner = UILabel()
                     banner.text = "✅ Content updated"
                     banner.textAlignment = .center
-                    banner.backgroundColor = UIColor.systemGreen
-                    banner.textColor = .white
-                    banner.frame = CGRect(x: 0, y: -50, width: self.view.frame.width, height: 50)
-                    banner.alpha = 0
-                    
-                    self.view.addSubview(banner)
-                    
-                    UIView.animate(withDuration: 0.5, animations: {
-                        banner.frame.origin.y = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
-                        banner.alpha = 1
-                    }) { _ in
-                        UIView.animate(withDuration: 0.5, delay: 1.5, options: [], animations: {
-                            banner.alpha = 0
-                        }) { _ in
-                            banner.removeFromSuperview()
-                        }
-                    }
-                }
-            } catch {
-                DispatchQueue.main.async { [weak self] in
-                    self?.refreshControl.endRefreshing()
-                    
+                } else {
                     // Show error message
-                    let alert = UIAlertController(
-                        title: "Refresh Failed",
-                        message: "Unable to refresh content. Please check your internet connection and try again.",
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self?.present(alert, animated: true)
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content"
+                    banner.textAlignment = .center
                 }
-                print("❌ Refresh failed: \(error.localizedDescription)")
+                
+                self.refreshControl.endRefreshing()
             }
         }
     }

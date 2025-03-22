@@ -350,6 +350,136 @@ class SupabaseController {
             throw error
         }
     }
+    
+    func fetchChefSpecialtyDishes() async throws -> [ChefSpecialtyDish] {
+        print("\n🔄 Starting chef specialty dishes fetch process...")
+        print("📊 Query details:")
+        print("- Table: chef_specialty_dishes")
+        print("- Columns: dish_id, kitchen_id, name, description, price, rating, image_url, distance, intake_limit, meal_category")
+        
+        do {
+            let response = try await client.database
+                .from("chef_specialty_dishes")
+                .select("""
+                    dish_id,
+                    kitchen_id,
+                    kitchen!inner (
+                        name
+                    ),
+                    name,
+                    description,
+                    price,
+                    rating,
+                    image_url,
+                    distance,
+                    intake_limit,
+                    meal_category
+                """)
+                .order("name")
+                .execute()
+            
+            print("\n📥 Raw Chef Specialty Dishes Response:")
+            print("Response data size: \(response.data.count) bytes")
+            
+            // Debug: Print raw JSON
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print("Raw JSON response:")
+                print(jsonString)
+            }
+            
+            // Convert Data to JSON
+            let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+            guard let dishesData = json else {
+                print("❌ Failed to decode JSON data")
+                print("Raw data size: \(response.data.count) bytes")
+                throw NSError(domain: "SupabaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode JSON data"])
+            }
+            
+            print("✅ Successfully decoded JSON data")
+            print("Found \(dishesData.count) chef specialty dish records")
+            
+            var specialtyDishes: [ChefSpecialtyDish] = []
+            
+            for dishJson in dishesData {
+                do {
+                    print("\nProcessing dish: \(dishJson["name"] ?? "Unknown")")
+                    
+                    guard let dishID = dishJson["dish_id"] as? String,
+                          let kitchenID = dishJson["kitchen_id"] as? String,
+                          let kitchenData = dishJson["kitchen"] as? [String: Any],
+                          let kitchenName = kitchenData["name"] as? String,
+                          let name = dishJson["name"] as? String,
+                          let price = (dishJson["price"] as? NSNumber)?.doubleValue ?? dishJson["price"] as? Double
+                    else {
+                        print("\n❌ Missing required fields for chef specialty dish")
+                        print("Available fields in JSON:")
+                        dishJson.forEach { key, value in
+                            print("- \(key): \(value)")
+                        }
+                        continue
+                    }
+                    
+                    // Handle optional fields with default values
+                    let description = (dishJson["description"] as? String) ?? ""
+                    let rating = (dishJson["rating"] as? NSNumber)?.floatValue ?? (dishJson["rating"] as? Float) ?? 0.0
+                    let imageURL = (dishJson["image_url"] as? String) ?? ""
+                    let distance = (dishJson["distance"] as? NSNumber)?.doubleValue ?? (dishJson["distance"] as? Double) ?? 0.0
+                    let intakeLimit = (dishJson["intake_limit"] as? NSNumber)?.intValue ?? (dishJson["intake_limit"] as? Int) ?? 10
+                    
+                    // Process meal category
+                    var mealCategories: [MealCategory] = []
+                    if let categoryString = dishJson["meal_category"] as? String {
+                        print("Processing meal category: \(categoryString)")
+                        if let category = MealCategory(rawValue: categoryString.lowercased()) {
+                            mealCategories.append(category)
+                        }
+                    }
+                    
+                    let specialtyDish = ChefSpecialtyDish(
+                        kitchenName: kitchenName,
+                        dishID: dishID,
+                        kitchenID: kitchenID,
+                        name: name,
+                        description: description,
+                        price: price,
+                        rating: rating,
+                        imageURL: imageURL,
+                        mealCategory: mealCategories,
+                        distance: distance,
+                        intakeLimit: intakeLimit
+                    )
+                    
+                    print("✅ Successfully created ChefSpecialtyDish object:")
+                    print("- Name: \(specialtyDish.name)")
+                    print("- Kitchen: \(specialtyDish.kitchenName)")
+                    print("- Price: ₹\(specialtyDish.price)")
+                    print("- Rating: \(specialtyDish.rating)")
+                    
+                    specialtyDishes.append(specialtyDish)
+                    
+                } catch {
+                    print("❌ Error processing chef specialty dish: \(error.localizedDescription)")
+                    continue
+                }
+            }
+            
+            print("\n✅ Successfully processed all chef specialty dishes")
+            print("Total dishes loaded: \(specialtyDishes.count)")
+            
+            return specialtyDishes
+            
+        } catch {
+            print("\n❌ Error fetching chef specialty dishes:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
+            throw error
+        }
+    }
 }
 
 // Helper extension for async mapping
