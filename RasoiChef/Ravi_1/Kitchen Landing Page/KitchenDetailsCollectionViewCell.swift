@@ -17,13 +17,33 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var kitchenName: UILabel!
     
     
-    func updateKitchenDetails() {
+    func configure(with kitchen: Kitchen) {
+        // Update kitchen name
+        kitchenName.text = kitchen.name
         
-        let restaurant = KitchenDataController.kitchens.first!
-        kitchenName.text = restaurant.name
-        kitchenDistance.text = "\(restaurant.distance) km"
-        kitchenCuisine.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
-        kitchenRatings.text = "\(restaurant.rating)"
-        kitchenProfileImage.image = UIImage(named: "KitchenImage")
+        // Update distance
+        kitchenDistance.text = String(format: "%.1f km", kitchen.distance)
+        
+        // Update rating
+        kitchenRatings.text = String(format: "%.1f", kitchen.rating)
+        
+        // Update cuisines and veg status
+        var statusText = kitchen.isPureVeg ? "Pure Veg • " : "Mixed • "
+        statusText += kitchen.cuisines.map { $0.rawValue.capitalized }.joined(separator: ", ")
+        kitchenCuisine.text = statusText
+        
+        // Update kitchen image if available
+        if let imageUrl = URL(string: kitchen.kitchenImage) {
+            URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, _ in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.kitchenProfileImage.image = image
+                    }
+                }
+            }.resume()
+        } else {
+            // Set a default image
+            kitchenProfileImage.image = UIImage(named: "KitchenImage")
+        }
     }
 }

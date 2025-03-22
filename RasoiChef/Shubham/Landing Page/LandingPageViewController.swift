@@ -10,6 +10,7 @@ import UIKit
 class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate{
 
     @IBOutlet var LandingPage: UICollectionView!
+    @IBOutlet weak var kitchenCollectionView: UICollectionView?
     
     
         private var placeholderTimer: Timer?
@@ -35,8 +36,15 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         LandingPage.register(LandingPageChefSpecialNib, forCellWithReuseIdentifier: "LandingPageChefSpecial")
         LandingPage.register(LandingPageKitchenNib, forCellWithReuseIdentifier: "LandingPageKitchen")
         
-           
-           // Setting Layout
+        // Register kitchen collection view cell if it exists
+        if let kitchenCV = kitchenCollectionView {
+            let kitchenNib = UINib(nibName: "LandingPageKitchenCollectionViewCell", bundle: nil)
+            kitchenCV.register(kitchenNib, forCellWithReuseIdentifier: "LandingPageKitchenCollectionViewCell")
+            kitchenCV.dataSource = self
+            kitchenCV.delegate = self
+        }
+        
+        // Setting Layout
         LandingPage.register(SectionHeaderLandingCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeaderLanding")
 //        header.actionButton.addTarget(self, action: #selector(sectionButtonTapped(_:)), for: .touchUpInside)
 
@@ -44,6 +52,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         LandingPage.setCollectionViewLayout(generateLayout(), animated: true)
         LandingPage.dataSource = self
         LandingPage.delegate = self
+        
+        // Configure kitchen collection view
+        if let kitchenCV = kitchenCollectionView {
+            kitchenCV.dataSource = self
+            kitchenCV.delegate = self
+        }
         
         setupSearchController()
 
@@ -101,17 +115,21 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        
        // MARK: - Number of Items in Section
        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-           switch section {
-           case 0:
-               return KitchenDataController.mealBanner.count
-           case 1:
-               return KitchenDataController.chefSpecialtyDishes.count
-           case 2:
+           if collectionView == LandingPage {
+               switch section {
+               case 0:
+                   return KitchenDataController.mealBanner.count
+               case 1:
+                   return KitchenDataController.chefSpecialtyDishes.count
+               case 2:
+                   return KitchenDataController.kitchens.count
+               default:
+                   return 0
+               }
+           } else if collectionView == kitchenCollectionView {
                return KitchenDataController.kitchens.count
-           
-           default:
-               return 0
            }
+           return 0
        }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -161,32 +179,36 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
 
        // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
-            cell.updateBannerDetails(for: indexPath)
-            cell.layer.cornerRadius = 15.0    // Rounded corners
-
-            return cell
+        if collectionView == LandingPage {
+            switch indexPath.section {
+            case 0:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageBanner", for: indexPath) as! LandingPageBannerCollectionViewCell
+                cell.updateBannerDetails(for: indexPath)
+                cell.layer.cornerRadius = 15.0    // Rounded corners
+                return cell
+                
+            case 1:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
+                cell.updateSpecialDishDetails(for: indexPath)
+                cell.delegate = self
+                cell.layer.cornerRadius = 15.0    // Rounded corners
+                return cell
+                
+            case 2:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchen", for: indexPath) as! LandingPageKitchenCollectionViewCell
+                cell.updateLandingPageKitchen(for: indexPath)
+                cell.layer.cornerRadius = 15.0    // Rounded corners
+                return cell
             
-            
-        case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
-            cell.updateSpecialDishDetails(for: indexPath)
-            cell.delegate = self
-            cell.layer.cornerRadius = 15.0    // Rounded corners
-
-            return cell
-            
-        case 2:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchen", for: indexPath) as! LandingPageKitchenCollectionViewCell
+            default:
+                return UICollectionViewCell()
+            }
+        } else if collectionView == kitchenCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageKitchenCollectionViewCell", for: indexPath) as! LandingPageKitchenCollectionViewCell
             cell.updateLandingPageKitchen(for: indexPath)
-            cell.layer.cornerRadius = 15.0    // Rounded corners
             return cell
-        
-        default:
-            return UICollectionViewCell()
         }
+        return UICollectionViewCell()
     }
 
        
@@ -273,39 +295,43 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
        }
        
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 { // Section 0 corresponds to "LandingPageBanner"
-            
-           let storyboard = UIStoryboard(name: "Main", bundle: nil) // Replace "Main" with your storyboard name
-            if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
-                
-                // Pass data if necessary, for example:
-                // mealCategoriesVC.selectedBannerData = KitchenDataController.mealBanner[indexPath.item]
-                switch indexPath.row {
-                case 0:
-                    mealCategoriesVC.mealTiming = .breakfast
-                case 1:
-                    mealCategoriesVC.mealTiming = .lunch
-                case 2:
-                    mealCategoriesVC.mealTiming = .snacks
-                case 3:
-                    mealCategoriesVC.mealTiming = .dinner
-                default:
-                    mealCategoriesVC.mealTiming = .snacks
-                }
-
-                self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
-            }
-        } else if indexPath.section == 2 { // Existing logic for "LandingPageKitchen"
-            let selectedKitchen = KitchenDataController.kitchens[indexPath.item]
-            if !selectedKitchen.isOnline {
-                        return // Prevent navigation if kitchen is offline
+        if collectionView == LandingPage {
+            if indexPath.section == 0 { // Section 0 corresponds to "LandingPageBanner"
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let mealCategoriesVC = storyboard.instantiateViewController(withIdentifier: "MenuCategoriesViewController") as? MenuCategoriesViewController {
+                    switch indexPath.row {
+                    case 0:
+                        mealCategoriesVC.mealTiming = .breakfast
+                    case 1:
+                        mealCategoriesVC.mealTiming = .lunch
+                    case 2:
+                        mealCategoriesVC.mealTiming = .snacks
+                    case 3:
+                        mealCategoriesVC.mealTiming = .dinner
+                    default:
+                        mealCategoriesVC.mealTiming = .snacks
                     }
+                    self.navigationController?.pushViewController(mealCategoriesVC, animated: true)
+                }
+            } else if indexPath.section == 2 { // Kitchen section
+                let selectedKitchen = KitchenDataController.kitchens[indexPath.item]
+                if !selectedKitchen.isOnline {
+                    return // Prevent navigation if kitchen is offline
+                }
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let viewController = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                    viewController.kitchenData = selectedKitchen
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
+            }
+        } else if collectionView == kitchenCollectionView {
+            let selectedKitchen = KitchenDataController.kitchens[indexPath.row]
+            print("Selected kitchen: \(selectedKitchen.name)")
+            // Navigate to kitchen detail view controller
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
-                
-                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
-                
-                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+            if let viewController = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                viewController.kitchenData = selectedKitchen
+                navigationController?.pushViewController(viewController, animated: true)
             }
         }
     }

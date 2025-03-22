@@ -46,7 +46,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         collectionView1.register(MenuListHeaderNib, forCellWithReuseIdentifier: "MenuListHeader")
         collectionView1.register(ChefSpecialityDishesHeaderNib, forCellWithReuseIdentifier: "ChefSpecialityDishesHeader")
         collectionView1.register(MealSubscriptionPlanNib, forCellWithReuseIdentifier: "MealSubscriptionPlanHeader")
-        
+
         
         
         collectionView1.setCollectionViewLayout(generateLayout(), animated: true)
@@ -93,7 +93,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     // MARK: - Number of Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 10
+        return 7  // Remove extra sections
     }
     
     // MARK: - Number of Items in Section
@@ -126,7 +126,6 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenDetails", for: indexPath) as! KitchenDetailsCollectionViewCell
-            cell.updateKitchenDetails()
             cell.layer.cornerRadius = 8.0
             return cell
         case 1:
