@@ -79,7 +79,13 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
             
             updateAvailability(for: item)
             
-            AddDishImage.image = UIImage(named: item.imageURL)
+            // Load image from URL
+            if let imageURL = URL(string: item.imageURL) {
+                loadImage(from: imageURL)
+            } else {
+                AddDishImage.image = UIImage(systemName: "photo") // Fallback image
+            }
+            
             kitchenName.text = item.kitchenName
         }
         
@@ -92,7 +98,13 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
             
             updateAvailability(for: chefDish)
             
-            AddDishImage.image = UIImage(named: chefDish.imageURL)
+            // Load image from URL
+            if let imageURL = URL(string: chefDish.imageURL) {
+                loadImage(from: imageURL)
+            } else {
+                AddDishImage.image = UIImage(systemName: "photo") // Fallback image
+            }
+            
             kitchenName.text = chefDish.kitchenName
         }
         

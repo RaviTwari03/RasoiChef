@@ -33,10 +33,14 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         SpecialKitchenNameLabel.text = specialDish.kitchenName
         SpecialDishName.text = specialDish.name
         SpecialPriceLabel.text = "₹\(specialDish.price)"
-
         SpecialRating.text = "\(String(describing: specialDish.rating))"
 
-        specialDishImage.image = UIImage(named: specialDish.imageURL)
+        // Load image from URL
+        if let imageURL = URL(string: specialDish.imageURL) {
+            loadImage(from: imageURL)
+        } else {
+            specialDishImage.image = UIImage(systemName: "photo") // Fallback image
+        }
         
         timeIcon.image = UIImage(named: "LunchIcon")
         specialDishImage.layer.cornerRadius = 10
@@ -46,9 +50,23 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
         } else {
             vegicon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
-
-
-        
+    }
+    
+    private func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self,
+                  let data = data,
+                  let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    self?.specialDishImage.image = UIImage(systemName: "photo") // Fallback image
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.specialDishImage.image = image
+            }
+        }.resume()
     }
     
     override func awakeFromNib() {
