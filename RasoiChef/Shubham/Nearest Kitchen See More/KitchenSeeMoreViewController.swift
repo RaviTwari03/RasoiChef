@@ -10,6 +10,7 @@ import UIKit
 class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UISearchBarDelegate {
 
     @IBOutlet weak var AllKitchens: UICollectionView!
+    private let refreshControl = UIRefreshControl()
     
     
     var isSearching: Bool = false
@@ -30,6 +31,11 @@ class KitchenSeeMoreViewController: UIViewController, UICollectionViewDelegate, 
         self.navigationItem.largeTitleDisplayMode = .never
         self.view.backgroundColor = .white
         self.title = "Nearest Kitchens"
+        
+        // Add refresh control
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        AllKitchens.refreshControl = refreshControl
         
         configureSearchBar()
         configureFilterStackView()
@@ -296,6 +302,37 @@ func configureItemCountLabel() {
                 kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
                 
                 self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+            }
+        }
+    }
+
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing kitchens data...")
+        Task {
+            await KitchenDataController.loadData()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.kitchens.isEmpty {
+                    self.allKitchens = KitchenDataController.kitchens
+                    self.filteredKitchens = self.allKitchens
+                    self.AllKitchens.reloadData()
+                    self.updateItemCount()
+                    
+                    // Show success message
+                    let banner = UILabel()
+                    banner.text = "✅ Content updated"
+                    banner.textAlignment = .center
+                } else {
+                    // Show error message
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content"
+                    banner.textAlignment = .center
+                }
+                
+                self.refreshControl.endRefreshing()
             }
         }
     }

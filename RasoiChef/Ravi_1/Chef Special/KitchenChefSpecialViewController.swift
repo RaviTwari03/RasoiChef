@@ -18,6 +18,7 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
     var itemCountLabel: UILabel!
     var filteredChefSpecialDishes: [ChefSpecialtyDish] = []
     var activeFilters: Set<String> = []
+    private let refreshControl = UIRefreshControl()
     
     
     override func viewDidLoad() {
@@ -25,6 +26,12 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         self.navigationItem.largeTitleDisplayMode = .never
            self.view.backgroundColor = .white
            self.title = "Chef Speciality Dishes"
+        
+        // Add refresh control - moved to top
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        ChefSpecialMenu.refreshControl = refreshControl
+        
         configureSearchBar()
         configureFilterStackView()
         configureItemCountLabel()
@@ -52,7 +59,6 @@ class KitchenChefSpecialViewController: UIViewController, UICollectionViewDelega
         
         filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes
         updateItemCount()
-        
     }
     
     func configureSearchBar() {
@@ -298,7 +304,35 @@ func configureItemCountLabel() {
         }
     }
 
-    
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing chef special data...")
+        Task {
+            await KitchenDataController.loadData()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.chefSpecialtyDishes.isEmpty {
+                    self.filteredChefSpecialDishes = KitchenDataController.chefSpecialtyDishes
+                    self.ChefSpecialMenu.reloadData()
+                    self.updateItemCount()
+                    
+                    // Show success message
+                    let banner = UILabel()
+                    banner.text = "✅ Content updated"
+                    banner.textAlignment = .center
+                } else {
+                    // Show error message
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content"
+                    banner.textAlignment = .center
+                }
+                
+                self.refreshControl.endRefreshing()
+            }
+        }
+    }
 }
     
 

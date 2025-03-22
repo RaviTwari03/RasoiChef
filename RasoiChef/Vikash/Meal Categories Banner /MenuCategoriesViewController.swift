@@ -16,6 +16,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
     
     var filteredMenuItems: [MenuItem] = [] // Stores filtered items for search
     var isSearching = false // Flag to check if search is active
+    private let refreshControl = UIRefreshControl()
 
     
     var menuItems: [MenuItem] = []
@@ -46,8 +47,7 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         self.view.backgroundColor = .white
         self.navigationItem.largeTitleDisplayMode = .never
         
-        updateTitleBasedOnMealTiming ()
-        
+        updateTitleBasedOnMealTiming()
         
         // Register the custom cell XIB
         let menuCategoriesNib = UINib(nibName: "MealCategories", bundle: nil)
@@ -59,6 +59,11 @@ class MenuCategoriesViewController: UIViewController, UICollectionViewDataSource
         // Set the delegate and data source
         MealCategories.delegate = self
         MealCategories.dataSource = self
+        
+        // Add refresh control - moved after collection view setup
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        MealCategories.refreshControl = refreshControl
         
         // Reload data
         MealCategories.reloadData()
@@ -358,6 +363,36 @@ func configureItemCountLabel() {
 
          let section = NSCollectionLayoutSection(group: group)
          return UICollectionViewCompositionalLayout(section: section)
+    }
+
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing meal categories data...")
+        Task {
+            await KitchenDataController.loadData()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.menuItems.isEmpty {
+                    self.updateMenuItems()
+                    self.MealCategories.reloadData()
+                    self.updateItemCount()
+                    
+                    // Show success message
+                    let banner = UILabel()
+                    banner.text = "✅ Content updated"
+                    banner.textAlignment = .center
+                } else {
+                    // Show error message
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content"
+                    banner.textAlignment = .center
+                }
+                
+                self.refreshControl.endRefreshing()
+            }
+        }
     }
 }
 

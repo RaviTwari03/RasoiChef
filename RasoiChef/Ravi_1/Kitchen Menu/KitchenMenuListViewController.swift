@@ -10,6 +10,7 @@ import UIKit
 class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,MenuDetailsCellDelegate, KitchenMenuDetailsCellDelegate {
     
     var selectedDay: WeekDay = .monday // Default to Monday (Change as needed)
+    private let refreshControl = UIRefreshControl()
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -41,7 +42,6 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Menu"
-       
         
         // Registering Nibs for Cells
         let kitchenMenuCalenderNib = UINib(nibName: "KitchenMenuCalender", bundle: nil)
@@ -54,6 +54,12 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         KitchenMenuList.setCollectionViewLayout(generateLayout(), animated: true)
         KitchenMenuList.dataSource = self
         KitchenMenuList.delegate = self
+        
+        // Add refresh control - moved after collection view setup
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        KitchenMenuList.refreshControl = refreshControl
+        
         DispatchQueue.main.async {
             let todayIndexPath = IndexPath(item: 0, section: 0)
             self.KitchenMenuList.selectItem(at: todayIndexPath, animated: false, scrollPosition: .centeredHorizontally)
@@ -196,5 +202,31 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             }
         }
 
-    
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing menu data...")
+        Task {
+            await KitchenDataController.loadData()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.menuItems.isEmpty {
+                    self.KitchenMenuList.reloadData()
+                    
+                    // Show success message
+                    let banner = UILabel()
+                    banner.text = "✅ Content updated"
+                    banner.textAlignment = .center
+                } else {
+                    // Show error message
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content"
+                    banner.textAlignment = .center
+                }
+                
+                self.refreshControl.endRefreshing()
+            }
+        }
+    }
 }
