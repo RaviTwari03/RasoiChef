@@ -166,29 +166,6 @@ struct OrderItem {
 }
 
 
-//struct SubscriptionPlan {
-//    var planID: String?
-//    var userID: String?
-//    var kitchenID: String?
-//    var startDate: String?
-//    var endDate: String?
-//    var totalPrice: Double?
-//    var details: String?
-//    var mealCountPerDay: Int
-//    var planImage: String?
-//    var weeklyMeals: [WeekDay: [MealType: MenuItem?]]? // Made optional
-//
-//    // Computed property to generate meals dynamically
-//    var meals: [SubscriptionMeal]? {
-//        return weeklyMeals?.flatMap { day, meals in
-//            meals.compactMap { mealType, menuItem in
-//                // Only add valid MenuItems to the meal list
-//                guard let menuItem = menuItem else { return nil }
-//                return SubscriptionMeal(day: day.rawValue, mealType: mealType, menuItemID: menuItem.itemID ?? "0")
-//            }
-//        }
-//    }
-//}
 struct SubscriptionPlan {
     var planID: String?
     var kitchenName : String?

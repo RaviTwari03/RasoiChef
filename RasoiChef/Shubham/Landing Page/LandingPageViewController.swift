@@ -21,11 +21,18 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     
     let searchController = UISearchController(searchResultsController: nil)
 
+    private let refreshControl = UIRefreshControl()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
+        
+        // Add refresh control
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        LandingPage.refreshControl = refreshControl
         
         // Registering Nibs for Cells
         let BannerDetailsNib = UINib(nibName: "LandingPageBanner", bundle: nil)
@@ -69,9 +76,46 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         
         // Load initial data if needed
         Task {
-            await KitchenDataController.loadInitialData()
-            DispatchQueue.main.async {
-                self.LandingPage.reloadData()
+            do {
+                try await KitchenDataController.loadInitialData()
+                DispatchQueue.main.async {
+                    self.LandingPage.reloadData()
+                }
+            } catch {
+                print("❌ Error loading initial data: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    // Show an error alert to the user
+                    let alert = UIAlertController(
+                        title: "Data Loading Error",
+                        message: "Failed to load data. Please check your internet connection and try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
+                        // Retry loading data
+                        Task {
+                            do {
+                                try await KitchenDataController.loadInitialData()
+                                DispatchQueue.main.async {
+                                    self?.LandingPage.reloadData()
+                                }
+                            } catch {
+                                print("❌ Retry failed: \(error.localizedDescription)")
+                                // Show error message if retry fails
+                                DispatchQueue.main.async {
+                                    let retryAlert = UIAlertController(
+                                        title: "Error",
+                                        message: "Failed to load data. Please try again later.",
+                                        preferredStyle: .alert
+                                    )
+                                    retryAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                                    self?.present(retryAlert, animated: true)
+                                }
+                            }
+                        }
+                    })
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                    self.present(alert, animated: true)
+                }
             }
         }
     }
@@ -489,9 +533,58 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            // Handle search logic
        }
     
-    
-
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing data...")
+        Task {
+            do {
+                try await KitchenDataController.loadInitialData()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.LandingPage.reloadData()
+                    self.kitchenCollectionView?.reloadData()
+                    self.refreshControl.endRefreshing()
+                    
+                    // Show success message
+                    let banner = UILabel()
+                    banner.text = "✅ Content updated"
+                    banner.textAlignment = .center
+                    banner.backgroundColor = UIColor.systemGreen
+                    banner.textColor = .white
+                    banner.frame = CGRect(x: 0, y: -50, width: self.view.frame.width, height: 50)
+                    banner.alpha = 0
+                    
+                    self.view.addSubview(banner)
+                    
+                    UIView.animate(withDuration: 0.5, animations: {
+                        banner.frame.origin.y = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+                        banner.alpha = 1
+                    }) { _ in
+                        UIView.animate(withDuration: 0.5, delay: 1.5, options: [], animations: {
+                            banner.alpha = 0
+                        }) { _ in
+                            banner.removeFromSuperview()
+                        }
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async { [weak self] in
+                    self?.refreshControl.endRefreshing()
+                    
+                    // Show error message
+                    let alert = UIAlertController(
+                        title: "Refresh Failed",
+                        message: "Unable to refresh content. Please check your internet connection and try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self?.present(alert, animated: true)
+                }
+                print("❌ Refresh failed: \(error.localizedDescription)")
+            }
+        }
+    }
 }
+
 extension LandingPageViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder() // Dismiss keyboard

@@ -21,20 +21,52 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Initialize window
         window = UIWindow(windowScene: windowScene)
         
-        // Load data from Supabase
+        // Load data from Supabase with retry mechanism
         Task {
             print("\n🔄 Loading data from Supabase...")
-            await KitchenDataController.loadInitialData()
+            var retryCount = 0
+            let maxRetries = 3
             
-            // Print some statistics about loaded data
-            print("\n📊 Data Loading Statistics:")
-            print("- Kitchens loaded: \(KitchenDataController.kitchens.count)")
-            print("- Menu Items loaded: \(KitchenDataController.menuItems.count)")
-            print("- Breakfast Items: \(KitchenDataController.GlobalbreakfastMenuItems.count)")
-            print("- Lunch Items: \(KitchenDataController.GloballunchMenuItems.count)")
-            print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
-            print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
-            print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
+            while retryCount < maxRetries {
+                do {
+                    try await KitchenDataController.loadInitialData()
+                    
+                    // Print statistics about loaded data
+                    print("\n📊 Data Loading Statistics:")
+                    print("- Kitchens loaded: \(KitchenDataController.kitchens.count)")
+                    print("- Menu Items loaded: \(KitchenDataController.menuItems.count)")
+                    print("- Breakfast Items: \(KitchenDataController.GlobalbreakfastMenuItems.count)")
+                    print("- Lunch Items: \(KitchenDataController.GloballunchMenuItems.count)")
+                    print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
+                    print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
+                    print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
+                    
+                    // If successful, break the retry loop
+                    break
+                } catch {
+                    retryCount += 1
+                    print("\n❌ Error loading data (Attempt \(retryCount)/\(maxRetries)):")
+                    print(error.localizedDescription)
+                    
+                    if retryCount < maxRetries {
+                        print("Retrying in 2 seconds...")
+                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+                    } else {
+                        print("Failed to load data after \(maxRetries) attempts")
+                        // Handle the failure case - maybe show an error to the user
+                        DispatchQueue.main.async {
+                            // Show an alert or update UI to indicate error
+                            let alert = UIAlertController(
+                                title: "Data Loading Error",
+                                message: "Failed to load data. Please check your internet connection and try again.",
+                                preferredStyle: .alert
+                            )
+                            alert.addAction(UIAlertAction(title: "OK", style: .default))
+                            self.window?.rootViewController?.present(alert, animated: true)
+                        }
+                    }
+                }
+            }
         }
         
         // Set up your initial view controller here

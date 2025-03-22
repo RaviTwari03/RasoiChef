@@ -36,7 +36,6 @@ class SupabaseController {
         print("\n🔄 Starting kitchen fetch process...")
         print("📊 Query details:")
         print("- Table: kitchen")
-        print("- Fields: kitchen_id, name, location, rating, is_online, distance, kitchen_image, is_pure_veg")
         
         do {
             let kitchenResponse = try await client.database
@@ -49,7 +48,8 @@ class SupabaseController {
                     is_online,
                     distance,
                     kitchen_image,
-                    is_pure_veg
+                    is_pure_veg,
+                    Cuisines
                 """)
                 .execute()
             
@@ -71,21 +71,6 @@ class SupabaseController {
             
             for kitchenJson in kitchenData {
                 print("\n🔄 Processing kitchen: \(kitchenJson["name"] ?? "Unknown")")
-                print("Kitchen data: \(kitchenJson)")
-                
-                // For each kitchen, fetch its cuisines
-                let cuisineResponse = try await client.database
-                    .from("kitchencuisine")
-                    .select("""
-                        cuisine (
-                            name
-                        )
-                    """)
-                    .eq("kitchen_id", value: kitchenJson["kitchen_id"] as? String ?? "")
-                    .execute()
-                
-                print("\n📥 Raw Cuisine Response for kitchen \(kitchenJson["name"] ?? "Unknown"):")
-                print("Cuisine data: \(cuisineResponse.data)")
                 
                 do {
                     guard let kitchenID = kitchenJson["kitchen_id"] as? String,
@@ -98,24 +83,15 @@ class SupabaseController {
                           let isPureVeg = kitchenJson["is_pure_veg"] as? Bool
                     else {
                         print("\n❌ Missing required fields for kitchen")
-                        print("Available fields and types:")
-                        kitchenJson.forEach { key, value in
-                            print("- \(key): \(type(of: value))")
-                        }
                         continue
                     }
                     
-                    // Extract cuisine names from the response
-                    let cuisineData = try? JSONSerialization.jsonObject(with: cuisineResponse.data, options: []) as? [[String: Any]]
-                    let cuisineNames = (cuisineData ?? []).compactMap { dict -> String? in
-                        guard let cuisineDict = dict["cuisine"] as? [String: Any],
-                              let name = cuisineDict["name"] as? String else {
-                            return nil
-                        }
-                        return name
+                    // Process cuisine
+                    var cuisines: [Cuisine] = []
+                    if let cuisineString = kitchenJson["Cuisines"] as? String,
+                       let cuisine = Cuisine(rawValue: cuisineString.lowercased()) {
+                        cuisines.append(cuisine)
                     }
-                    let cuisines = cuisineNames.compactMap { Cuisine(rawValue: $0.lowercased()) }
-                    print("Processed cuisines: \(cuisineNames)")
                     
                     let kitchen = Kitchen(
                         kitchenID: kitchenID,
@@ -139,6 +115,7 @@ class SupabaseController {
             
             print("\n✅ Successfully processed all kitchens")
             return kitchens
+            
         } catch {
             print("\n❌ Error fetching kitchens:")
             print("- Type: \(type(of: error))")
@@ -156,7 +133,6 @@ class SupabaseController {
         print("\n🔄 Starting menu items fetch process...")
         print("📊 Query details:")
         print("- Table: menuitem")
-        print("- Fields: item_id, kitchen_id, name, description, price, rating, portion_size, intake_limit, image_url, order_deadline")
         
         do {
             let response = try await client.database
@@ -175,12 +151,15 @@ class SupabaseController {
                     intake_limit,
                     image_url,
                     order_deadline,
-                    receiving_deadline
+                    receiving_deadline,
+                    menuitemmealtype,
+                    availability,
+                    available_days,
+                    meal_category
                 """)
                 .execute()
             
             print("\n📥 Raw Menu Items Response:")
-            print("Response type: \(type(of: response.data))")
             
             // Convert Data to JSON
             let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
@@ -196,47 +175,6 @@ class SupabaseController {
             var menuItems: [MenuItem] = []
             
             for menuItemJson in menuData {
-                print("\n🔄 Processing menu item: \(menuItemJson["name"] ?? "Unknown")")
-                print("Menu item data: \(menuItemJson)")
-                
-                // Fetch meal types
-                let mealTypesResponse = try await client.database
-                    .from("menuitemmealtype")
-                    .select("""
-                        mealtype (
-                            name
-                        )
-                    """)
-                    .eq("item_id", value: menuItemJson["item_id"] as? String ?? "")
-                    .execute()
-                
-                // Fetch available days
-                let daysResponse = try await client.database
-                    .from("menuitemavailabledays")
-                    .select("""
-                        weekday (
-                            name
-                        )
-                    """)
-                    .eq("item_id", value: menuItemJson["item_id"] as? String ?? "")
-                    .execute()
-                
-                // Fetch meal categories
-                let categoriesResponse = try await client.database
-                    .from("menuitemmealcategory")
-                    .select("""
-                        mealcategory (
-                            name
-                        )
-                    """)
-                    .eq("item_id", value: menuItemJson["item_id"] as? String ?? "")
-                    .execute()
-                
-                print("\n📥 Raw Related Data Responses:")
-                print("Meal Types data:", mealTypesResponse.data ?? "nil")
-                print("Available Days data:", daysResponse.data ?? "nil")
-                print("Meal Categories data:", categoriesResponse.data ?? "nil")
-                
                 do {
                     guard let itemID = menuItemJson["item_id"] as? String,
                           let kitchenID = menuItemJson["kitchen_id"] as? String,
@@ -252,51 +190,42 @@ class SupabaseController {
                           let orderDeadline = menuItemJson["order_deadline"] as? String
                     else {
                         print("\n❌ Missing required fields for menu item")
-                        print("Available fields and types:")
-                        menuItemJson.forEach { key, value in
-                            print("- \(key): \(type(of: value))")
-                        }
                         continue
                     }
                     
                     // Process meal types
-                    let mealTypeData = try? JSONSerialization.jsonObject(with: mealTypesResponse.data, options: []) as? [[String: Any]]
-                    let mealTypes = (mealTypeData ?? []).compactMap { dict -> MealType? in
-                        guard let mealTypeDict = dict["mealtype"] as? [String: Any],
-                              let name = mealTypeDict["name"] as? String else {
-                            return nil
-                        }
-                        return MealType(rawValue: name.lowercased())
+                    var mealTypes: [MealType] = []
+                    if let mealTypeString = menuItemJson["menuitemmealtype"] as? String,
+                       let mealType = MealType(rawValue: mealTypeString.lowercased()) {
+                        mealTypes.append(mealType)
                     }
-                    print("Processed meal types: \(mealTypes.map { $0.rawValue })")
                     
                     // Process available days
-                    let daysData = try? JSONSerialization.jsonObject(with: daysResponse.data, options: []) as? [[String: Any]]
-                    let availableDays = (daysData ?? []).compactMap { dict -> WeekDay? in
-                        guard let dayDict = dict["weekday"] as? [String: Any],
-                              let name = dayDict["name"] as? String else {
-                            return nil
-                        }
-                        return WeekDay(rawValue: name.lowercased())
+                    var availableDays: [WeekDay] = []
+                    if let dayString = menuItemJson["available_days"] as? String,
+                       let day = WeekDay(rawValue: dayString.lowercased()) {
+                        availableDays.append(day)
                     }
-                    print("Processed available days: \(availableDays.map { $0.rawValue })")
                     
                     // Process meal categories
-                    let categoriesData = try? JSONSerialization.jsonObject(with: categoriesResponse.data, options: []) as? [[String: Any]]
-                    let mealCategories = (categoriesData ?? []).compactMap { dict -> MealCategory? in
-                        guard let categoryDict = dict["mealcategory"] as? [String: Any],
-                              let name = categoryDict["name"] as? String else {
-                            return nil
-                        }
-                        return MealCategory(rawValue: name.lowercased())
+                    var mealCategories: [MealCategory] = []
+                    if let categoryString = menuItemJson["meal_category"] as? String,
+                       let category = MealCategory(rawValue: categoryString.lowercased()) {
+                        mealCategories.append(category)
                     }
-                    print("Processed meal categories: \(mealCategories.map { $0.rawValue })")
+                    
+                    // Process availability
+                    var availability: [Availabiltiy] = []
+                    if let availabilityString = menuItemJson["availability"] as? String,
+                       let availabilityStatus = Availabiltiy(rawValue: availabilityString) {
+                        availability.append(availabilityStatus)
+                    }
                     
                     let menuItem = MenuItem(
                         itemID: itemID,
                         kitchenID: kitchenID,
                         kitchenName: kitchenName,
-                        distance: 0,
+                        distance: (menuItemJson["distance"] as? NSNumber)?.doubleValue ?? 0.0,
                         availableDate: nil,
                         name: name,
                         description: description,
@@ -308,21 +237,21 @@ class SupabaseController {
                         imageURL: imageURL,
                         orderDeadline: orderDeadline,
                         recievingDeadline: menuItemJson["receiving_deadline"] as? String,
-                        availability: [.Available],
+                        availability: availability.isEmpty ? [.Available] : availability,
                         availableDays: availableDays,
                         mealCategory: mealCategories
                     )
                     
-                    print("✅ Successfully processed menu item: \(name)")
                     menuItems.append(menuItem)
+                    
                 } catch {
                     print("❌ Error processing menu item: \(error.localizedDescription)")
                     continue
                 }
             }
             
-            print("\n✅ Successfully processed all menu items")
             return menuItems
+            
         } catch {
             print("\n❌ Error fetching menu items:")
             print("- Type: \(type(of: error))")
