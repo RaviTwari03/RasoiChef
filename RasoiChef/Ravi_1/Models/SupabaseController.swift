@@ -541,27 +541,7 @@ class SupabaseController {
                 .insert(dbOrder)
                 .execute()
             
-            print("✅ Successfully inserted order")
-            
-            // Then, insert each order item
-            print("\n📤 Inserting order items...")
-            for item in order.items {
-                let dbOrderItem = DBOrderItem(
-                    order_id: order.orderID,
-                    item_id: item.menuItemID,
-                    quantity: item.quantity,
-                    price: item.price
-                )
-                
-                try await client.database
-                    .from("orderitem")
-                    .insert(dbOrderItem)
-                    .execute()
-                
-                print("✅ Successfully inserted order item: \(item.menuItemID)")
-            }
-            
-            print("\n✅ Order insertion completed successfully")
+            print("✅ Order insertion completed successfully")
             
         } catch {
             print("\n❌ Error inserting order:")
