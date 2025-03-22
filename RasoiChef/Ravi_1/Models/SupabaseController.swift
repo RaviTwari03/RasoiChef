@@ -345,18 +345,18 @@ class SupabaseController {
             let response = try await client.database
                 .from("subscriptionplan")
                 .select("""
-                    id,
+                    plan_id,
                     kitchen_id,
-                    kitchen (
+                    kitchen!inner (
                         name,
                         location
                     ),
-                    name,
+                    plan_name,
                     start_date,
                     end_date,
                     total_price,
                     intake_limit,
-                    image_url
+                    plan_image
                 """)
                 .execute()
             
@@ -374,17 +374,17 @@ class SupabaseController {
             print("Found \(plansData.count) subscription plan records")
             
             return try plansData.compactMap { planJson in
-                guard let planID = planJson["id"] as? String,
+                guard let planID = planJson["plan_id"] as? String,
                       let kitchenData = planJson["kitchen"] as? [String: Any],
                       let kitchenName = kitchenData["name"] as? String,
                       let location = kitchenData["location"] as? String,
                       let kitchenID = planJson["kitchen_id"] as? String,
-                      let planName = planJson["name"] as? String,
+                      let planName = planJson["plan_name"] as? String,
                       let startDate = planJson["start_date"] as? String,
                       let endDate = planJson["end_date"] as? String,
                       let totalPrice = (planJson["total_price"] as? NSNumber)?.doubleValue ?? planJson["total_price"] as? Double,
                       let planIntakeLimit = (planJson["intake_limit"] as? NSNumber)?.intValue ?? planJson["intake_limit"] as? Int,
-                      let planImage = planJson["image_url"] as? String
+                      let planImage = planJson["plan_image"] as? String
                 else {
                     print("\n❌ Missing required fields for subscription plan")
                     print("Available fields and types:")
