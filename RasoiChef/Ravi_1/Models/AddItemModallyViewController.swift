@@ -294,4 +294,21 @@ class AddItemModallyViewController: UIViewController, UIViewControllerTransition
                 }
             }
         }
+        
+        private func loadImage(from url: URL) {
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                guard let self = self,
+                      let data = data,
+                      let image = UIImage(data: data) else {
+                    DispatchQueue.main.async {
+                        self?.AddDishImage.image = UIImage(systemName: "photo") // Fallback image
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.AddDishImage.image = image
+                }
+            }.resume()
+        }
     }

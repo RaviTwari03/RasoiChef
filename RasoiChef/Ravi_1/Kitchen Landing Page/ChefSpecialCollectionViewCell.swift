@@ -104,7 +104,14 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialDishNameLabel.text = specialDish.name
         specialDishPriceLabel.text = "₹\(specialDish.price)"
         specialDishRating.text = "\(specialDish.rating)"
-        specialDishImage.image = UIImage(named: specialDish.imageURL)
+        
+        // Load image from URL
+        if let imageURL = URL(string: specialDish.imageURL) {
+            loadImage(from: imageURL)
+        } else {
+            specialDishImage.image = UIImage(systemName: "photo") // Fallback image
+        }
+        
         specialDishIntakeLimtLabel.text = "Mon,Wed"
         
         // Calculate current state
@@ -295,4 +302,21 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         specialCard.layer.shadowOpacity = 0.4
         specialCard.backgroundColor = .white
    }
+    
+    private func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self,
+                  let data = data,
+                  let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    self?.specialDishImage.image = UIImage(systemName: "photo") // Fallback image
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.specialDishImage.image = image
+            }
+        }.resume()
+    }
 }

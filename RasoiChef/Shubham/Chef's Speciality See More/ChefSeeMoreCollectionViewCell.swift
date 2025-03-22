@@ -33,13 +33,36 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
         kitchenName.text = specialDish.kitchenName
         Ratings.text = "\(specialDish.rating)"
         Distance.text = "\(specialDish.distance) km"
-        DishImage.image = UIImage(named: specialDish.imageURL)
+        
+        // Load image from URL
+        if let imageURL = URL(string: specialDish.imageURL) {
+            loadImage(from: imageURL)
+        } else {
+            DishImage.image = UIImage(systemName: "photo") // Fallback image
+        }
 
         if specialDish.mealCategory.contains(.veg) {
             vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
         } else {
             vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
+    }
+
+    private func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self,
+                  let data = data,
+                  let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    self?.DishImage.image = UIImage(systemName: "photo") // Fallback image
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.DishImage.image = image
+            }
+        }.resume()
     }
 
     
