@@ -543,6 +543,52 @@ class SupabaseController {
             
             print("✅ Order insertion completed successfully")
             
+            // Update intake limits for each item
+            print("\n🔄 Updating intake limits...")
+            for item in order.items {
+                // First try to find and update in menuitem table
+                let menuItemResponse = try await client.database
+                    .from("menuitem")
+                    .select("intake_limit")
+                    .eq("item_id", value: item.menuItemID)
+                    .execute()
+                
+                if let json = try JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [[String: Any]],
+                   let firstItem = json.first,
+                   let currentLimit = firstItem["intake_limit"] as? Int {
+                    // Update intake limit
+                    let newLimit = max(0, currentLimit - item.quantity)
+                    try await client.database
+                        .from("menuitem")
+                        .update(["intake_limit": newLimit])
+                        .eq("item_id", value: item.menuItemID)
+                        .execute()
+                    print("✅ Updated menu item intake limit: \(item.menuItemID) -> \(newLimit)")
+                } else {
+                    // If not found in menuitem, try chef_specialty_dishes
+                    let specialResponse = try await client.database
+                        .from("chef_specialty_dishes")
+                        .select("intake_limit")
+                        .eq("dish_id", value: item.menuItemID)
+                        .execute()
+                    
+                    if let json = try JSONSerialization.jsonObject(with: specialResponse.data, options: []) as? [[String: Any]],
+                       let firstItem = json.first,
+                       let currentLimit = firstItem["intake_limit"] as? Int {
+                        // Update intake limit
+                        let newLimit = max(0, currentLimit - item.quantity)
+                        try await client.database
+                            .from("chef_specialty_dishes")
+                            .update(["intake_limit": newLimit])
+                            .eq("dish_id", value: item.menuItemID)
+                            .execute()
+                        print("✅ Updated chef special intake limit: \(item.menuItemID) -> \(newLimit)")
+                    }
+                }
+            }
+            
+            print("✅ All intake limits updated successfully")
+            
         } catch {
             print("\n❌ Error inserting order:")
             print("- Type: \(type(of: error))")
