@@ -139,56 +139,85 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.delegate = self
             cell.updateMenuDetails(with: indexPath)
             
-            // Check if the menu item's time has passed
+            // Get the menu item and current time information
             let menuItem = KitchenDataController.menuItems[indexPath.row]
             let currentHour = Calendar.current.component(.hour, from: Date())
+            let currentDay = Calendar.current.component(.weekday, from: Date())
             
-//            let isAvailable: Bool = {
-//                switch menuItem.availableMealTypes.first {
-//                case .breakfast where currentHour < 6:   return true  // Available until 6 AM
-//                case .lunch where currentHour < 11:      return true  // Available until 11 AM
-//                case .snacks where currentHour < 15:     return true  // Available until 3 PM
-//                case .dinner where currentHour < 19:     return true  // Available until 7 PM
-//                default: return false
-//                }
-//            }()
+            // Convert weekday number to WeekDay enum (1 = Sunday, 2 = Monday, etc.)
+            let weekdayMap: [Int: WeekDay] = [
+                1: .sunday,
+                2: .monday,
+                3: .tuesday,
+                4: .wednesday,
+                5: .thursday,
+                6: .friday,
+                7: .saturday
+            ]
             
-            // Apply blur effect and disable interaction if time has passed
-//            if !isAvailable {
-//                // Add blur effect
-//                let blurEffect = UIBlurEffect(style: .light)
-//                let blurView = UIVisualEffectView(effect: blurEffect)
-//                blurView.frame = cell.contentView.bounds
-//                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//                blurView.tag = 100 // Tag for identification
-//                
-//                // Remove existing blur if any
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                cell.contentView.addSubview(blurView)
-//                cell.contentView.sendSubviewToBack(blurView)
-//                
-//                // Disable interaction
-//                cell.isUserInteractionEnabled = false
-//                cell.addButton.isEnabled = false
-//                cell.contentView.alpha = 0.7
-//            } else {
-//                // Remove blur effect if exists
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                // Enable interaction
-//                cell.isUserInteractionEnabled = true
-//                cell.addButton.isEnabled = true
-//                cell.contentView.alpha = 1.0
-//            }
+            let today = weekdayMap[currentDay] ?? .monday
+            
+            let isAvailable: Bool = {
+                // First check if the item is marked as available in Supabase
+                guard menuItem.availability.contains(.Available) else {
+                    return false
+                }
+                
+                // Check if the item is available on the current day
+                guard menuItem.availableDays.contains(today) else {
+                    return false
+                }
+                
+                // Check if current time is within the meal type's time window
+                if let mealType = menuItem.availableMealTypes.first {
+                    switch mealType {
+                    case .breakfast where currentHour >= 6 && currentHour < 11:  return true
+                    case .lunch where currentHour >= 11 && currentHour < 15:     return true
+                    case .snacks where currentHour >= 15 && currentHour < 19:    return true
+                    case .dinner where currentHour >= 19 || currentHour < 6:     return true
+                    default: return false
+                    }
+                }
+                
+                return false
+            }()
+            
+            // Apply blur effect and disable interaction if item is not available
+            if !isAvailable {
+                // Add blur effect
+                let blurEffect = UIBlurEffect(style: .light)
+                let blurView = UIVisualEffectView(effect: blurEffect)
+                blurView.frame = cell.contentView.bounds
+                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                blurView.tag = 100 // Tag for identification
+                
+                // Remove existing blur if any
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                cell.contentView.addSubview(blurView)
+                cell.contentView.sendSubviewToBack(blurView)
+                
+                // Disable interaction
+                cell.isUserInteractionEnabled = false
+                cell.addButton.isEnabled = false
+                cell.contentView.alpha = 0.7
+            } else {
+                // Remove blur effect if exists
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                // Enable interaction
+                cell.isUserInteractionEnabled = true
+                cell.addButton.isEnabled = true
+                cell.contentView.alpha = 1.0
+            }
             
             return cell
             
