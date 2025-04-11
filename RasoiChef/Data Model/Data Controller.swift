@@ -33,54 +33,64 @@ class KitchenDataController {
 
     // MARK: - Data Loading
     
-    static func loadData() async {
+    static func loadData() async throws {
         print("\n🔄 Starting data loading process...")
         
         do {
-            await withThrowingTaskGroup(of: Void.self) { group in
+            try await withThrowingTaskGroup(of: Void.self) { group in
                 // Fetch kitchens
                 group.addTask {
                     print("\n📥 Fetching kitchens...")
-                    let allKitchens = try await SupabaseController.shared.fetchKitchens()
-                    print("✅ Successfully loaded \(allKitchens.count) kitchens")
-                    kitchens = allKitchens
+                    do {
+                        let allKitchens = try await SupabaseController.shared.fetchKitchens()
+                        print("✅ Successfully loaded \(allKitchens.count) kitchens")
+                        kitchens = allKitchens
+                    } catch {
+                        print("❌ Error fetching kitchens: \(error.localizedDescription)")
+                        throw error
+                    }
                 }
                 
                 // Fetch menu items
                 group.addTask {
                     print("\n📥 Fetching menu items...")
-                    let allMenuItems = try await SupabaseController.shared.fetchMenuItems()
-                    print("✅ Successfully loaded \(allMenuItems.count) menu items")
-                    
-                    // Sort menu items into different categories
-                    menuItems = allMenuItems
-                    
-                    // Sort by meal type with detailed logging
-                    print("\n📊 Categorizing menu items...")
-                    
-                    GlobalbreakfastMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.breakfast) }
-                    print("\n🍳 Breakfast Items (\(GlobalbreakfastMenuItems.count)):")
-                    GlobalbreakfastMenuItems.forEach { print("- \($0.name) from \($0.kitchenName)") }
-                    
-                    GloballunchMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.lunch) }
-                    print("\n🍱 Lunch Items (\(GloballunchMenuItems.count)):")
-                    GloballunchMenuItems.forEach { print("- \($0.name) from \($0.kitchenName)") }
-                    
-                    GlobalsnacksMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.snacks) }
-                    print("\n🥨 Snacks Items (\(GlobalsnacksMenuItems.count)):")
-                    GlobalsnacksMenuItems.forEach { print("- \($0.name) from \($0.kitchenName)") }
-                    
-                    GlobaldinnerMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.dinner) }
-                    print("\n🍽️ Dinner Items (\(GlobaldinnerMenuItems.count)):")
-                    GlobaldinnerMenuItems.forEach { print("- \($0.name) from \($0.kitchenName)") }
+                    do {
+                        let allMenuItems = try await SupabaseController.shared.fetchMenuItems()
+                        print("✅ Successfully loaded \(allMenuItems.count) menu items")
+                        
+                        // Sort menu items into different categories
+                        menuItems = allMenuItems
+                        
+                        // Sort by meal type with detailed logging
+                        print("\n📊 Categorizing menu items...")
+                        
+                        GlobalbreakfastMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.breakfast) }
+                        GloballunchMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.lunch) }
+                        GlobalsnacksMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.snacks) }
+                        GlobaldinnerMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.dinner) }
+                        
+                        print("\n📊 Menu Items Summary:")
+                        print("- Breakfast: \(GlobalbreakfastMenuItems.count)")
+                        print("- Lunch: \(GloballunchMenuItems.count)")
+                        print("- Snacks: \(GlobalsnacksMenuItems.count)")
+                        print("- Dinner: \(GlobaldinnerMenuItems.count)")
+                    } catch {
+                        print("❌ Error fetching menu items: \(error.localizedDescription)")
+                        throw error
+                    }
                 }
                 
                 // Fetch subscription plans
                 group.addTask {
                     print("\n📥 Fetching subscription plans...")
-                    let allSubscriptionPlans = try await SupabaseController.shared.fetchSubscriptionPlans()
-                    print("✅ Successfully loaded \(allSubscriptionPlans.count) subscription plans")
-                    subscriptionPlan = allSubscriptionPlans
+                    do {
+                        let allSubscriptionPlans = try await SupabaseController.shared.fetchSubscriptionPlans()
+                        print("✅ Successfully loaded \(allSubscriptionPlans.count) subscription plans")
+                        subscriptionPlan = allSubscriptionPlans
+                    } catch {
+                        print("❌ Error fetching subscription plans: \(error.localizedDescription)")
+                        throw error
+                    }
                 }
                 
                 // Fetch chef specialty dishes
@@ -89,22 +99,16 @@ class KitchenDataController {
                     do {
                         let allChefSpecialtyDishes = try await SupabaseController.shared.fetchChefSpecialtyDishes()
                         print("✅ Successfully loaded \(allChefSpecialtyDishes.count) chef specialty dishes")
-                        print("\n📋 Chef Specialty Dishes Details:")
-                        allChefSpecialtyDishes.forEach { dish in
-                            print("- \(dish.name) from \(dish.kitchenName)")
-                            print("  Price: ₹\(dish.price)")
-                            print("  Rating: \(dish.rating)")
-                            print("  Meal Categories: \(dish.mealCategory.map { $0.rawValue }.joined(separator: ", "))")
-                        }
                         chefSpecialtyDishes = allChefSpecialtyDishes
                         globalChefSpecial = allChefSpecialtyDishes
                     } catch {
                         print("❌ Error fetching chef specialty dishes: \(error.localizedDescription)")
+                        throw error
                     }
                 }
                 
-                // Wait for all tasks to complete
-                try? await group.waitForAll()
+                // Wait for all tasks to complete and handle any errors
+                try await group.waitForAll()
             }
             
             // Print final statistics
@@ -113,6 +117,13 @@ class KitchenDataController {
             print("- Menu Items: \(menuItems.count)")
             print("- Chef Specialty Dishes: \(chefSpecialtyDishes.count)")
             print("- Subscription Plans: \(subscriptionPlan.count)")
+            
+            if kitchens.isEmpty && menuItems.isEmpty && chefSpecialtyDishes.isEmpty && subscriptionPlan.isEmpty {
+                throw NSError(domain: "DataLoadingError", 
+                            code: -1, 
+                            userInfo: [NSLocalizedDescriptionKey: "No data was loaded from any source"])
+            }
+            
             print("✅ All data loaded successfully")
             
         } catch {
@@ -124,6 +135,7 @@ class KitchenDataController {
                 print("- Code: \(nsError.code)")
                 print("- User Info: \(nsError.userInfo)")
             }
+            throw error
         }
     }
 

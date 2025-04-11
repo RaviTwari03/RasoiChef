@@ -72,19 +72,19 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
             self.scrollToCurrentMeal()
         }
         
-        startPlaceholderAnimation()
-        
         // Load initial data if needed
         Task {
-            await KitchenDataController.loadData()
-            
-            // Check if data was loaded successfully
-            if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
-                DispatchQueue.main.async {
-                    self.LandingPage.reloadData()
+            do {
+                try await KitchenDataController.loadData()
+                
+                // Check if data was loaded successfully
+                if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
+                    DispatchQueue.main.async {
+                        self.LandingPage.reloadData()
+                    }
                 }
-            } else {
-                print("❌ Error: No data was loaded")
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     // Show an error alert to the user
                     let alert = UIAlertController(
@@ -515,28 +515,42 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     @objc private func refreshData() {
         print("\n🔄 Refreshing data...")
         Task {
-            await KitchenDataController.loadData()
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+            do {
+                try await KitchenDataController.loadData()
                 
-                // Check if data was loaded successfully
-                if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
-                    self.LandingPage.reloadData()
-                    self.kitchenCollectionView?.reloadData()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     
-                    // Show success message
-                    let banner = UILabel()
-                    banner.text = "✅ Content updated"
-                    banner.textAlignment = .center
-                } else {
+                    // Check if data was loaded successfully
+                    if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
+                        self.LandingPage.reloadData()
+                        self.kitchenCollectionView?.reloadData()
+                        
+                        // Show success message
+                        let banner = UILabel()
+                        banner.text = "✅ Content updated"
+                        banner.textAlignment = .center
+                    } else {
+                        // Show error message
+                        let banner = UILabel()
+                        banner.text = "❌ Failed to update content"
+                        banner.textAlignment = .center
+                    }
+                    
+                    self.refreshControl.endRefreshing()
+                }
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
                     // Show error message
                     let banner = UILabel()
-                    banner.text = "❌ Failed to update content"
+                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
                     banner.textAlignment = .center
+                    
+                    self.refreshControl.endRefreshing()
                 }
-                
-                self.refreshControl.endRefreshing()
             }
         }
     }

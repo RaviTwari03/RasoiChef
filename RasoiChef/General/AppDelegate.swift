@@ -11,8 +11,8 @@ import Supabase
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let supabase = SupabaseClient(supabaseURL: URL(string: "https://lplftokvbtoqqietgujl.supabase.co")!,
-                                  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbGZ0b2t2YnRvcXFpZXRndWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk4NzA2NzQsImV4cCI6MjA1NTQ0NjY3NH0.2EOleVodMu4KFH2Zn6jMyXniMckbTdKlf45beahOlHM")
+    let supabase = SupabaseClient(supabaseURL: URL(string: "https://outrozdhosucrncnpoze.supabase.co")!,
+                                  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91dHJvemRob3N1Y3JuY25wb3plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNjM1NDMsImV4cCI6MjA1OTgzOTU0M30.iUqo3FODlyjj8On1PtbUqmUVHNwyBiez4MGi4WZDJSM")
 
     func application(
         _ application: UIApplication,

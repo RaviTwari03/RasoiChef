@@ -205,27 +205,41 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     @objc private func refreshData() {
         print("\n🔄 Refreshing menu data...")
         Task {
-            await KitchenDataController.loadData()
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+            do {
+                try await KitchenDataController.loadData()
                 
-                // Check if data was loaded successfully
-                if !KitchenDataController.menuItems.isEmpty {
-                    self.KitchenMenuList.reloadData()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     
-                    // Show success message
-                    let banner = UILabel()
-                    banner.text = "✅ Content updated"
-                    banner.textAlignment = .center
-                } else {
+                    // Check if data was loaded successfully
+                    if !KitchenDataController.menuItems.isEmpty {
+                        self.KitchenMenuList.reloadData()
+                        
+                        // Show success message
+                        let banner = UILabel()
+                        banner.text = "✅ Content updated"
+                        banner.textAlignment = .center
+                    } else {
+                        // Show error message
+                        let banner = UILabel()
+                        banner.text = "❌ Failed to update content"
+                        banner.textAlignment = .center
+                    }
+                    
+                    self.refreshControl.endRefreshing()
+                }
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
                     // Show error message
                     let banner = UILabel()
-                    banner.text = "❌ Failed to update content"
+                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
                     banner.textAlignment = .center
+                    
+                    self.refreshControl.endRefreshing()
                 }
-                
-                self.refreshControl.endRefreshing()
             }
         }
     }

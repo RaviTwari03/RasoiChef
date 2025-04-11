@@ -28,27 +28,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let maxRetries = 3
             
             while retryCount < maxRetries {
-                await KitchenDataController.loadData()
-                
-                // Check if data was loaded successfully
-                if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
-                    // Print statistics about loaded data
-                    print("\n📊 Data Loading Statistics:")
-                    print("- Kitchens loaded: \(KitchenDataController.kitchens.count)")
-                    print("- Menu Items loaded: \(KitchenDataController.menuItems.count)")
-                    print("- Breakfast Items: \(KitchenDataController.GlobalbreakfastMenuItems.count)")
-                    print("- Lunch Items: \(KitchenDataController.GloballunchMenuItems.count)")
-                    print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
-                    print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
-                    print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
-                    print("- Chef Specialty Dishes: \(KitchenDataController.chefSpecialtyDishes.count)")
+                do {
+                    try await KitchenDataController.loadData()
                     
-                    // If successful, break the retry loop
-                    break
+                    // Check if data was loaded successfully
+                    if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
+                        // Print statistics about loaded data
+                        print("\n📊 Data Loading Statistics:")
+                        print("- Kitchens loaded: \(KitchenDataController.kitchens.count)")
+                        print("- Menu Items loaded: \(KitchenDataController.menuItems.count)")
+                        print("- Breakfast Items: \(KitchenDataController.GlobalbreakfastMenuItems.count)")
+                        print("- Lunch Items: \(KitchenDataController.GloballunchMenuItems.count)")
+                        print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
+                        print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
+                        print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
+                        print("- Chef Specialty Dishes: \(KitchenDataController.chefSpecialtyDishes.count)")
+                        
+                        // If successful, break the retry loop
+                        break
+                    }
+                } catch {
+                    print("\n❌ Error loading data (Attempt \(retryCount + 1)/\(maxRetries)): \(error.localizedDescription)")
                 }
                 
                 retryCount += 1
-                print("\n❌ No data loaded (Attempt \(retryCount)/\(maxRetries))")
                 
                 if retryCount < maxRetries {
                     print("Retrying in 2 seconds...")
