@@ -155,29 +155,29 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         // Process regular cart items
         for cartItem in cartItems {
-            var menuItemID = "Unknown Item"
+            var menuItemID = ""
             var price: Double = 0.0
             var kitchenName = "Unknown Kitchen"
             var kitchenID = ""
 
             switch (cartItem.menuItem, cartItem.chefSpecial) {
             case let (menuItem?, nil):
-                menuItemID = menuItem.name
+                menuItemID = menuItem.itemID  // Use itemID instead of name
                 price = menuItem.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             case let (nil, chefSpecial?):
-                menuItemID = chefSpecial.name
+                menuItemID = chefSpecial.dishID  // Use dishID instead of name
                 price = chefSpecial.price
                 kitchenName = chefSpecial.kitchenName
                 kitchenID = chefSpecial.kitchenID
             case let (menuItem?, chefSpecial?):
-                menuItemID = "\(menuItem.name) / \(chefSpecial.name)"
+                menuItemID = menuItem.itemID  // Use primary item's ID
                 price = menuItem.price + chefSpecial.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             default:
-                break
+                continue  // Skip if no valid item
             }
 
             orderItems.append(OrderItem(
@@ -239,15 +239,15 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         // Create and return order with selected delivery type
         let order = Order(
-            orderID: UUID().uuidString,  // Use full UUID
-            userID: UUID().uuidString,  // Generate a UUID for user
+            orderID: UUID().uuidString,
+            userID: UUID().uuidString,  // This should be the actual user ID
             kitchenName: kitchenName,
-            kitchenID: kitchenID,  // Use the actual kitchen ID
+            kitchenID: kitchenID,
             items: orderItems,
             item: nil,
             status: .placed,
             totalAmount: totalAmount,
-            deliveryAddress: firstCartItem?.userAdress ?? "Unknown Address",
+            deliveryAddress: selectedAddress ?? "No address selected",
             deliveryDate: Date(),
             deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
         )

@@ -58,11 +58,54 @@ class MyOrdersTableViewCell: UITableViewCell {
         locationLabel.text = order.deliveryAddress
         kitchenName.text = order.kitchenName
         
-        let numberedItems = order.items.enumerated().map { index, item in
-            return "\(index + 1). \(item.menuItemID)"
-        }.joined(separator: "\n")
-           
-        itemsLabel.text = numberedItems
+        // Format items with names and quantities
+        Task {
+            var itemStrings: [String] = []
+            
+            for (index, item) in order.items.enumerated() {
+                do {
+                    // Try to find item in menu_items
+                    let menuItemResponse = try await SupabaseController.shared.client.database
+                        .from("menu_items")
+                        .select("name")
+                        .eq("item_id", value: item.menuItemID)
+                        .single()
+                        .execute()
+                    
+                    if let json = try JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [String: Any],
+                       let itemName = json["name"] as? String {
+                        itemStrings.append("\(index + 1). \(itemName) x\(item.quantity)")
+                    } else {
+                        // If not found in menu_items, try chef_specialty_dishes
+                        let specialResponse = try await SupabaseController.shared.client.database
+                            .from("chef_specialty_dishes")
+                            .select("name")
+                            .eq("dish_id", value: item.menuItemID)
+                            .single()
+                            .execute()
+                        
+                        if let json = try JSONSerialization.jsonObject(with: specialResponse.data, options: []) as? [String: Any],
+                           let itemName = json["name"] as? String {
+                            itemStrings.append("\(index + 1). \(itemName) x\(item.quantity)")
+                        } else {
+                            itemStrings.append("\(index + 1). Item #\(item.menuItemID) x\(item.quantity)")
+                        }
+                    }
+                } catch {
+                    print("Error fetching item name: \(error)")
+                    itemStrings.append("\(index + 1). Item #\(item.menuItemID) x\(item.quantity)")
+                }
+            }
+            
+            // Update UI on main thread
+            DispatchQueue.main.async {
+                self.itemsLabel.text = itemStrings.joined(separator: "\n")
+            }
+        }
+        
+        // Update track button based on order status
+        trackButton.isEnabled = order.status != .delivered
+        trackButton.alpha = order.status != .delivered ? 1.0 : 0.5
     }
     
     private func formatDate(_ date: Date) -> String {

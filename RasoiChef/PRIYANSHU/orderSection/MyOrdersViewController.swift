@@ -82,22 +82,47 @@ class MyOrdersViewController: UIViewController {
     }
     
     func loadData() {
-            let allOrders = OrderDataController.shared.getOrders()
-            currentOrders = allOrders.filter { $0.status != .delivered }
-            pastOrders = allOrders.filter { $0.status == .delivered }
-        
-        // Show or hide the "No Active Orders" label and table view
-               if currentOrders.isEmpty  && pastOrders.isEmpty{
-                   noActiveOrdersLabel.isHidden = false
-                   tableView?.isHidden = true // Hide the table view if there are no current orders
-                } else {
-                   noActiveOrdersLabel.isHidden = true
-                    tableView?.isHidden = false // Show the table view if there are current orders
+        Task {
+            do {
+                guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                    print("❌ No authenticated user found")
+                    DispatchQueue.main.async {
+                        self.noActiveOrdersLabel.isHidden = false
+                        self.tableView?.isHidden = true
+                    }
+                    return
                 }
-        
-
-            tableView?.reloadData()
+                
+                let userID = session.user.id.uuidString
+                print("🔄 Fetching orders for authenticated user: \(userID)")
+                let orders = try await SupabaseController.shared.fetchOrders(for: userID)
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.currentOrders = orders.filter { $0.status != .delivered }
+                    self.pastOrders = orders.filter { $0.status == .delivered }
+                    
+                    // Show or hide the "No Active Orders" label and table view
+                    if self.currentOrders.isEmpty && self.pastOrders.isEmpty {
+                        self.noActiveOrdersLabel.isHidden = false
+                        self.tableView?.isHidden = true
+                    } else {
+                        self.noActiveOrdersLabel.isHidden = true
+                        self.tableView?.isHidden = false
+                    }
+                    
+                    self.tableView?.reloadData()
+                }
+            } catch {
+                print("❌ Error fetching orders: \(error.localizedDescription)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.noActiveOrdersLabel.isHidden = false
+                    self.tableView?.isHidden = true
+                }
+            }
         }
+    }
     
     func showPricePopup(for order: Order) {
         let popup = PricePopupView(frame: self.view.bounds)
