@@ -14,11 +14,13 @@ class MyOrdersViewController: UIViewController {
     
     @IBOutlet weak var subscribedPlansView: UIView!
     
-        var currentOrders: [Order] = []
-        var pastOrders: [Order] = []
-        var displayedOrders: [Order] = [] 
+    private let refreshControl = UIRefreshControl()
+    
+    var currentOrders: [Order] = []
+    var pastOrders: [Order] = []
+    var displayedOrders: [Order] = [] 
    
-        static var shared = MyOrdersViewController()
+    static var shared = MyOrdersViewController()
     
     private let noActiveOrdersLabel: UILabel = {
            let label = UILabel()
@@ -33,7 +35,9 @@ class MyOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
+        // Setup refresh control
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -72,6 +76,11 @@ class MyOrdersViewController: UIViewController {
         loadData()
         
     }
+    
+    @objc private func refreshData() {
+        fetchOrders()
+    }
+    
     func loadData() {
             let allOrders = OrderDataController.shared.getOrders()
             currentOrders = allOrders.filter { $0.status != .delivered }
@@ -133,58 +142,50 @@ class MyOrdersViewController: UIViewController {
     
     
     
-
-}
-
-
-
-
-extension MyOrdersViewController:UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        if currentOrders.isEmpty && pastOrders.isEmpty {
-                return 0  // Jab kuch nahi hai to section hi nahi dikhana
-            }
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    private func fetchOrders() {
+        // Show loading indicator
+        refreshControl.beginRefreshing()
         
-        if section == 0 {
-            return currentOrders.count
-        } else {
-            return pastOrders.count
+        Task {
+            do {
+                guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                    throw NSError(domain: "OrderError", 
+                                code: -1, 
+                                userInfo: [NSLocalizedDescriptionKey: "No authenticated user found"])
+                }
+                
+                let userID = session.user.id.uuidString
+                print("🔄 Fetching orders for authenticated user: \(userID)")
+                let orders = try await SupabaseController.shared.fetchOrders(for: userID)
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.currentOrders = orders.filter { $0.status != .delivered }
+                    self.pastOrders = orders.filter { $0.status == .delivered }
+                    self.updateEmptyState()
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                }
+            } catch {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    print("Error fetching orders: \(error.localizedDescription)")
+                    self.refreshControl.endRefreshing()
+                    // You might want to show an error alert here
+                }
+            }
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-            let headerView = UIView()
-//            headerView.backgroundColor = .lightGray
-
-            let titleLabel = UILabel()
-            titleLabel.text = section == 0 ? "Current Orders" : "Past Orders"
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-            titleLabel.textColor = .black
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-            headerView.addSubview(titleLabel)
-
-            NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
-                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
-            ])
-
-            return headerView
+    private func updateEmptyState() {
+        if currentOrders.isEmpty && pastOrders.isEmpty {
+            noActiveOrdersLabel.isHidden = false
+            tableView.isHidden = true
+        } else {
+            noActiveOrdersLabel.isHidden = true
+            tableView.isHidden = false
         }
-    
-
-        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 44
-        }
-    
-    
-   
-
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
    
@@ -258,6 +259,56 @@ extension MyOrdersViewController: MyOrderTableViewCellDelegate {
         navigationController?.pushViewController(trackVC, animated: true)
     }
     
+}
+
+extension MyOrdersViewController: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2  // Current Orders and Past Orders
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return currentOrders.count
+        } else {
+            return pastOrders.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .systemBackground
+        
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        if section == 0 {
+            label.text = "Current Orders"
+        } else {
+            label.text = "Past Orders"
+        }
+        
+        headerView.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+            label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+        ])
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // Only show header if section has rows
+        if section == 0 && currentOrders.isEmpty {
+            return 0
+        }
+        if section == 1 && pastOrders.isEmpty {
+            return 0
+        }
+        return 44
+    }
 }
 
 

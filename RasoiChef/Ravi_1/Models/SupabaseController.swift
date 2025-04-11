@@ -519,7 +519,7 @@ class SupabaseController {
         let order_id: String
         let user_id: String
         let kitchen_id: String
-        let status_id: Int
+        let status: String
         let total_amount: Double
         let delivery_address: String
         let delivery_date: String
@@ -561,7 +561,7 @@ class SupabaseController {
                 order_id: order.orderID,
                 user_id: order.userID,
                 kitchen_id: order.kitchenID,
-                status_id: 1,
+                status: order.status.rawValue,
                 total_amount: order.totalAmount,
                 delivery_address: order.deliveryAddress,
                 delivery_date: formattedDate,
@@ -579,9 +579,9 @@ class SupabaseController {
             // Update intake limits for each item
             print("\n🔄 Updating intake limits...")
             for item in order.items {
-                // First try to find and update in menuitem table
+                // First try to find and update in menu_items table
                 let menuItemResponse = try await client.database
-                    .from("menuitem")
+                    .from("menu_items")
                     .select("intake_limit")
                     .eq("item_id", value: item.menuItemID)
                     .execute()
@@ -592,13 +592,13 @@ class SupabaseController {
                     // Update intake limit
                     let newLimit = max(0, currentLimit - item.quantity)
                     try await client.database
-                        .from("menuitem")
+                        .from("menu_items")
                         .update(["intake_limit": newLimit])
                         .eq("item_id", value: item.menuItemID)
                         .execute()
                     print("✅ Updated menu item intake limit: \(item.menuItemID) -> \(newLimit)")
                 } else {
-                    // If not found in menuitem, try chef_specialty_dishes
+                    // If not found in menu_items, try chef_specialty_dishes
                     let specialResponse = try await client.database
                         .from("chef_specialty_dishes")
                         .select("intake_limit")
@@ -693,6 +693,130 @@ class SupabaseController {
             print("✅ Successfully created user record")
         } catch {
             print("\n❌ Error creating user record:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
+    func fetchOrders(for userID: String) async throws -> [Order] {
+        print("\n🔄 Fetching orders for user: \(userID)")
+        
+        do {
+            let response = try await client.database
+                .from("orders")
+                .select("""
+                    order_id,
+                    user_id,
+                    kitchen_id,
+                    status,
+                    total_amount,
+                    delivery_address,
+                    delivery_date,
+                    delivery_type,
+                    kitchens (
+                        name
+                    )
+                """)
+                .eq("user_id", value: userID)
+                .order("delivery_date", ascending: false)
+                .execute()
+            
+            print("📥 Raw Orders Response:")
+            print(String(data: response.data, encoding: .utf8) ?? "No data")
+            
+            let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+            guard let ordersData = json else {
+                print("❌ Failed to decode JSON data")
+                throw NSError(domain: "OrderError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode orders data"])
+            }
+            
+            print("✅ Successfully decoded JSON data")
+            print("Found \(ordersData.count) orders")
+            
+            var orders: [Order] = []
+            
+            for orderJson in ordersData {
+                guard let orderID = orderJson["order_id"] as? String,
+                      let kitchenID = orderJson["kitchen_id"] as? String,
+                      let kitchenData = orderJson["kitchens"] as? [String: Any],
+                      let kitchenName = kitchenData["name"] as? String,
+                      let status = orderJson["status"] as? String,
+                      let totalAmount = orderJson["total_amount"] as? Double,
+                      let deliveryAddress = orderJson["delivery_address"] as? String,
+                      let deliveryDateString = orderJson["delivery_date"] as? String,
+                      let deliveryType = orderJson["delivery_type"] as? String else {
+                    print("❌ Missing required fields for order:")
+                    print(orderJson)
+                    continue
+                }
+                
+                // Convert date string to Date
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                guard let deliveryDate = dateFormatter.date(from: deliveryDateString) else {
+                    print("❌ Invalid date format: \(deliveryDateString)")
+                    continue
+                }
+                
+                // Fetch order items
+                let itemsResponse = try await client.database
+                    .from("order_items")
+                    .select("""
+                        menu_item_id,
+                        quantity,
+                        price
+                    """)
+                    .eq("order_id", value: orderID)
+                    .execute()
+                
+                print("📥 Raw Order Items Response for order \(orderID):")
+                print(String(data: itemsResponse.data, encoding: .utf8) ?? "No data")
+                
+                let itemsJson = try JSONSerialization.jsonObject(with: itemsResponse.data, options: []) as? [[String: Any]]
+                var orderItems: [OrderItem] = []
+                
+                if let itemsData = itemsJson {
+                    for itemJson in itemsData {
+                        guard let menuItemID = itemJson["menu_item_id"] as? String,
+                              let quantity = itemJson["quantity"] as? Int,
+                              let price = itemJson["price"] as? Double else {
+                            print("❌ Missing required fields for order item:")
+                            print(itemJson)
+                            continue
+                        }
+                        
+                        let orderItem = OrderItem(
+                            menuItemID: menuItemID,
+                            quantity: quantity,
+                            price: price
+                        )
+                        orderItems.append(orderItem)
+                    }
+                }
+                
+                let order = Order(
+                    orderID: orderID,
+                    userID: userID,
+                    kitchenName: kitchenName,
+                    kitchenID: kitchenID,
+                    items: orderItems,
+                    item: nil,
+                    status: OrderStatus(rawValue: status) ?? .placed,
+                    totalAmount: totalAmount,
+                    deliveryAddress: deliveryAddress,
+                    deliveryDate: deliveryDate,
+                    deliveryType: deliveryType
+                )
+                
+                orders.append(order)
+            }
+            
+            print("✅ Successfully processed \(orders.count) orders")
+            return orders
+            
+        } catch {
+            print("\n❌ Error fetching orders:")
             print("- Type: \(type(of: error))")
             print("- Description: \(error.localizedDescription)")
             throw error
