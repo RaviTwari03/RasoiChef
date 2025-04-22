@@ -346,36 +346,52 @@ class SupabaseController {
             print("✅ Successfully decoded JSON data")
             print("Found \(plansData.count) subscription plan records")
             
-            return try plansData.compactMap { planJson in
-                guard let planID = planJson["plan_id"] as? String,
-                      let kitchenID = planJson["kitchen_id"] as? String,
-                      let location = planJson["location"] as? String,
-                      let startDate = planJson["start_date"] as? String,
-                      let endDate = planJson["end_date"] as? String,
-                      let totalPrice = (planJson["total_price"] as? NSNumber)?.doubleValue ?? planJson["total_price"] as? Double,
-                      let planName = planJson["plan_name"] as? String,
-                      let planIntakeLimit = (planJson["intake_limit"] as? NSNumber)?.intValue ?? planJson["intake_limit"] as? Int,
-                      let planImage = planJson["plan_image"] as? String
-                else {
-                    print("\n❌ Missing required fields for subscription plan")
-                    return nil
+            var subscriptionPlans: [SubscriptionPlan] = []
+            
+            for planJson in plansData {
+                do {
+                    // Extract values with proper type casting
+                    let planID = planJson["plan_id"] as? String ?? UUID().uuidString
+                    let kitchenID = planJson["kitchen_id"] as? String ?? ""
+                    let location = planJson["location"] as? String ?? ""
+                    let startDate = planJson["start_date"] as? String ?? ""
+                    let endDate = planJson["end_date"] as? String ?? ""
+                    let totalPrice = (planJson["total_price"] as? NSNumber)?.doubleValue ?? 
+                                   (planJson["total_price"] as? Double) ?? 0.0
+                    let planName = planJson["plan_name"] as? String ?? ""
+                    let planIntakeLimit = (planJson["intake_limit"] as? NSNumber)?.intValue ?? 
+                                        (planJson["intake_limit"] as? Int) ?? 0
+                    let planImage = planJson["plan_image"] as? String ?? ""
+                    
+                    let plan = SubscriptionPlan(
+                        planID: planID,
+                        kitchenName: "",  // This can be fetched separately if needed
+                        userID: nil,      // This will be set when user subscribes
+                        kitchenID: kitchenID,
+                        location: location,
+                        startDate: startDate,
+                        endDate: endDate,
+                        totalPrice: totalPrice,
+                        planName: planName,
+                        PlanIntakeLimit: planIntakeLimit,
+                        planImage: planImage,
+                        weeklyMeals: nil  // This can be populated separately if needed
+                    )
+                    
+                    subscriptionPlans.append(plan)
+                    print("✅ Successfully processed plan: \(planName)")
+                    
+                } catch {
+                    print("❌ Error processing subscription plan: \(error.localizedDescription)")
+                    continue
                 }
-                
-                return SubscriptionPlan(
-                    planID: planID,
-                    kitchenName: "",
-                    userID: nil,
-                    kitchenID: kitchenID,
-                    location: location,
-                    startDate: startDate,
-                    endDate: endDate,
-                    totalPrice: totalPrice,
-                    planName: planName,
-                    PlanIntakeLimit: planIntakeLimit,
-                    planImage: planImage,
-                    weeklyMeals: nil
-                )
             }
+            
+            print("\n✅ Successfully processed all subscription plans")
+            print("Total plans loaded: \(subscriptionPlans.count)")
+            
+            return subscriptionPlans
+            
         } catch {
             print("\n❌ Error fetching subscription plans:")
             print("- Error type: \(type(of: error))")
