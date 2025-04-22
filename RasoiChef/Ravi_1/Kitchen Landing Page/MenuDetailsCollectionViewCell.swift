@@ -122,6 +122,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         // Update meal type and timing details
         if let firstMealType = menuItem.availableMealTypes.first {
             mealTimeLabel.text = firstMealType.rawValue.capitalized
+        } else {
+            mealTimeLabel.text = "Not specified"
         }
         
         // Update order deadline and delivery time
@@ -139,7 +141,32 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         
         // Update meal image
         if !menuItem.imageURL.isEmpty {
-            mealImageView.image = UIImage(named: menuItem.imageURL)
+            if let imageUrl = URL(string: menuItem.imageURL) {
+                URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
+                    if let error = error {
+                        print("Error loading image: \(error)")
+                        DispatchQueue.main.async {
+                            self?.mealImageView.image = UIImage(named: "defaultFoodImage")
+                        }
+                        return
+                    }
+                    
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            self?.mealImageView.image = image
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            self?.mealImageView.image = UIImage(named: "defaultFoodImage")
+                        }
+                    }
+                }.resume()
+            } else {
+                // If the URL is invalid, try loading as a local image name
+                mealImageView.image = UIImage(named: menuItem.imageURL) ?? UIImage(named: "defaultFoodImage")
+            }
+        } else {
+            mealImageView.image = UIImage(named: "defaultFoodImage")
         }
         
         // Update availability status
