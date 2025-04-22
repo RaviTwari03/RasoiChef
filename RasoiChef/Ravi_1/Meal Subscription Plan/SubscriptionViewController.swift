@@ -293,15 +293,16 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             for tag in selectedTags {
                 if let mealType = MealType(rawValue: weeklyMeals[section].meals[tag] ?? "") {
                     let menuItem = MenuItem(
-                        itemID: "\(section)-\(tag)",
+                        itemID: UUID().uuidString,
                         kitchenID: "kitchen001",
-                        kitchenName: "Kanha Ji Rasoi",
+                        kitchenName: "Kanjha Ji Rasoi",
                         distance: 0.0,
+                        availableDate: nil,
                         name: mealType.rawValue,
                         description: "Delicious \(mealType.rawValue) meal",
                         price: Double(tag),
                         rating: 4.5,
-                        availableMealTypes: [mealType],
+                        availableMealTypes: mealType,
                         portionSize: "Medium",
                         intakeLimit: 1,
                         imageURL: "",

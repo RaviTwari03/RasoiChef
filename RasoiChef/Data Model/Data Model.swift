@@ -83,22 +83,22 @@ struct Kitchen {
 struct MenuItem {
     let itemID: String
     let kitchenID: String
-    let kitchenName :String
+    let kitchenName: String
     var distance: Double
     var availableDate: Date?
     var name: String
     var description: String
     var price: Double
     var rating: Float
-    var availableMealTypes: [MealType]
+    var availableMealTypes: MealType?  // Changed from array to optional single value
     var portionSize: String
     var intakeLimit: Int
     var imageURL: String
-    var orderDeadline : String
-    var recievingDeadline : String?
+    var orderDeadline: String
+    var recievingDeadline: String?
     var availability: [Availabiltiy]
     var availableDays: [WeekDay]
-    var mealCategory : [MealCategory]
+    var mealCategory: [MealCategory]
 }
 struct GlobalMenuItem{
     let itemID: String

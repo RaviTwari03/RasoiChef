@@ -120,8 +120,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         
         // Update meal type and timing details
-        if let firstMealType = menuItem.availableMealTypes.first {
-            mealTimeLabel.text = firstMealType.rawValue.capitalized
+        if let mealType = menuItem.availableMealTypes {
+            mealTimeLabel.text = mealType.rawValue.capitalized
         } else {
             mealTimeLabel.text = "Not specified"
         }

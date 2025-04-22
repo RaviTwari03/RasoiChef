@@ -64,10 +64,10 @@ class KitchenDataController {
                         // Sort by meal type with detailed logging
                         print("\n📊 Categorizing menu items...")
                         
-                        GlobalbreakfastMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.breakfast) }
-                        GloballunchMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.lunch) }
-                        GlobalsnacksMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.snacks) }
-                        GlobaldinnerMenuItems = allMenuItems.filter { $0.availableMealTypes.contains(.dinner) }
+                        GlobalbreakfastMenuItems = allMenuItems.filter { $0.availableMealTypes == .breakfast }
+                        GloballunchMenuItems = allMenuItems.filter { $0.availableMealTypes == .lunch }
+                        GlobalsnacksMenuItems = allMenuItems.filter { $0.availableMealTypes == .snacks }
+                        GlobaldinnerMenuItems = allMenuItems.filter { $0.availableMealTypes == .dinner }
                         
                         print("\n📊 Menu Items Summary:")
                         print("- Breakfast: \(GlobalbreakfastMenuItems.count)")

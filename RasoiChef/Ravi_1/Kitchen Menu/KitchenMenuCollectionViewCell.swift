@@ -129,7 +129,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                     dishDescription.text = menuItem.description
                 }
 
-                dishTime.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
+                dishTime.text = menuItem.availableMealTypes?.rawValue.capitalized ?? "Not specified"
                 dishDeliveryExpected.text = menuItem.orderDeadline
                 dishImge.image = UIImage(named: menuItem.imageURL)
                 dishprice.text = "₹\(menuItem.price)"

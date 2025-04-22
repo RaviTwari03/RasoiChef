@@ -220,13 +220,9 @@ class SupabaseController {
                     let distance = (menuItemJson["distance"] as? NSNumber)?.doubleValue ?? (menuItemJson["distance"] as? Double) ?? 0.0
                     
                     // Process meal types
-                    var mealTypes: [MealType] = []
-                    if let mealTypeArray = menuItemJson["available_meal_types"] as? [String] {
-                        for mealTypeString in mealTypeArray {
-                            if let mealType = MealType(rawValue: mealTypeString.lowercased()) {
-                                mealTypes.append(mealType)
-                            }
-                        }
+                    var mealType: MealType? = nil
+                    if let mealTypeString = menuItemJson["available_meal_types"] as? String {
+                        mealType = MealType(rawValue: mealTypeString)
                     }
                     
                     // Process available days
@@ -264,6 +260,7 @@ class SupabaseController {
                     dateFormatter.dateFormat = "yyyy-MM-dd"
                     let parsedDate = availableDate.isEmpty ? nil : dateFormatter.date(from: availableDate)
                     
+                    // Create MenuItem from menu_items data
                     let menuItem = MenuItem(
                         itemID: itemID,
                         kitchenID: kitchenID,
@@ -274,7 +271,7 @@ class SupabaseController {
                         description: description,
                         price: price,
                         rating: rating,
-                        availableMealTypes: mealTypes,
+                        availableMealTypes: mealType,
                         portionSize: portionSize,
                         intakeLimit: intakeLimit,
                         imageURL: imageURL,
@@ -404,7 +401,7 @@ class SupabaseController {
                                     description: menuItemData["description"] as? String ?? "",
                                     price: menuItemData["price"] as? Double ?? 0.0,
                                     rating: 0,
-                                    availableMealTypes: [mealType],
+                                    availableMealTypes: mealType,
                                     portionSize: "",
                                     intakeLimit: 0,
                                     imageURL: menuItemData["image_url"] as? String ?? "",

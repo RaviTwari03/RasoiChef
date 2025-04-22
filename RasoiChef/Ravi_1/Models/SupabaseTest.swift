@@ -34,7 +34,7 @@ class SupabaseTest {
                         - Kitchen: \(item.kitchenName)
                         - Price: \(item.price)
                         - Rating: \(item.rating)
-                        - Meal Types: \(item.availableMealTypes.map { $0.rawValue }.joined(separator: ", "))
+                        - Meal Type: \(item.availableMealTypes?.rawValue ?? "Not specified")
                         - Categories: \(item.mealCategory.map { $0.rawValue }.joined(separator: ", "))
                         - Available Days: \(item.availableDays.map { $0.rawValue }.joined(separator: ", "))
                         """)

@@ -108,7 +108,10 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
                 // Check meal availability based on current time
                 let currentHour = Calendar.current.component(.hour, from: Date())
                 let isAvailable: Bool = {
-                    switch menuItem.availableMealTypes.first {
+                    guard let mealType = menuItem.availableMealTypes else {
+                        return false
+                    }
+                    switch mealType {
                     case .breakfast where currentHour < 6:   return true  // Until 6 AM
                     case .lunch where currentHour < 11:      return true  // Until 11 AM
                     case .snacks where currentHour < 15:     return true  // Until 3 PM
