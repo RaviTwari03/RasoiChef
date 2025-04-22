@@ -9,51 +9,22 @@ import UIKit
 
 class KitchenDetailsCollectionViewCell: UICollectionViewCell {
     
-    
     @IBOutlet var kitchenProfileImage: UIImageView!
     @IBOutlet var kitchenDistance: UILabel!
     @IBOutlet var kitchenCuisine: UILabel!
     @IBOutlet var kitchenRatings: UILabel!
     @IBOutlet var kitchenName: UILabel!
     
-//    
-//    func configure(with kitchen: Kitchen) {
-//        // Update kitchen name
-//        kitchenName.text = kitchen.name
-//        
-//        // Update distance
-//        kitchenDistance.text = String(format: "%.1f km", kitchen.distance)
-//        
-//        // Update rating
-//        kitchenRatings.text = String(format: "%.1f", kitchen.rating)
-//        
-//        // Update cuisines and veg status
-//        var statusText = kitchen.isPureVeg ? "Pure Veg • " : "Mixed • "
-//        statusText += kitchen.cuisines.map { $0.rawValue.capitalized }.joined(separator: ", ")
-//        kitchenCuisine.text = statusText
-//        
-//        // Update kitchen image if available
-//        if let imageUrl = URL(string: kitchen.kitchenImage) {
-//            URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, _ in
-//                if let data = data, let image = UIImage(data: data) {
-//                    DispatchQueue.main.async {
-//                        self?.kitchenProfileImage.image = image
-//                    }
-//                }
-//            }.resume()
-//        } else {
-//            // Set a default image
-//            kitchenProfileImage.image = UIImage(named: "KitchenImage")
-//        }
-//    }
+    var selectedKitchen: Kitchen?
     
-    func configure(for indexPath: IndexPath) {
-        let kitchen = KitchenDataController.kitchens[indexPath.row]
+    func configure(with kitchen: Kitchen?) {
+        guard let kitchen = kitchen ?? selectedKitchen else { return }
         
+        // Update kitchen details
         kitchenName.text = kitchen.name
         kitchenDistance.text = String(format: "%.1f km", kitchen.distance)
         
-        // Update cuisine display for single cuisine
+        // Update cuisine display
         if let cuisine = kitchen.cuisine {
             kitchenCuisine.text = cuisine.rawValue.capitalized
         } else {
@@ -69,10 +40,22 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
                     DispatchQueue.main.async {
                         self?.kitchenProfileImage.image = image
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.kitchenProfileImage.image = UIImage(named: "defaultKitchenImage")
+                    }
                 }
             }.resume()
         } else {
             kitchenProfileImage.image = UIImage(named: "defaultKitchenImage")
         }
+    }
+    
+    // Keep the existing configure(for:) method for backward compatibility
+    func configure(for indexPath: IndexPath) {
+        guard indexPath.row < KitchenDataController.kitchens.count else { return }
+        let kitchen = KitchenDataController.kitchens[indexPath.row]
+        selectedKitchen = kitchen
+        configure(with: kitchen)
     }
 }

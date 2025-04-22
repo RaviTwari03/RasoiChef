@@ -133,7 +133,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenDetails", for: indexPath) as! KitchenDetailsCollectionViewCell
             cell.layer.cornerRadius = 8.0
-            cell.configure(for: indexPath)
+            if let selectedKitchen = kitchenData {
+                cell.configure(with: selectedKitchen)
+            } else {
+                cell.configure(for: indexPath)
+            }
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeader", for: indexPath) as! MenuListHeaderCollectionViewCell
