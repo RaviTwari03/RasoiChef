@@ -24,7 +24,7 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
     func updateSpecialDishDetails(with restaurant: Kitchen) {
         Kitchen_Name.text = restaurant.name
         DistanceLabel.text = "\(restaurant.distance) km"
-        Cuisine_Label.text = restaurant.cuisines.map { $0.rawValue }.joined(separator: ", ")
+        Cuisine_Label.text = restaurant.cuisine?.rawValue.capitalized ?? "Not specified"
         Ratings_Label.text = "\(restaurant.rating)"
         Kichen_Image.image = UIImage(named: restaurant.kitchenImage)
         

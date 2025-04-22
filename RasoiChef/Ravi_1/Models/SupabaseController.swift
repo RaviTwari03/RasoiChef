@@ -62,7 +62,7 @@ class SupabaseController {
                     distance,
                     kitchen_image,
                     is_pure_veg,
-                    cuisines
+                    "Cuisine"
                 """)
                 .execute()
             
@@ -106,21 +106,17 @@ class SupabaseController {
                     let kitchenImage = kitchenJson["kitchen_image"] as? String ?? ""
                     let isPureVeg = kitchenJson["is_pure_veg"] as? Bool ?? false
                     
-                    // Process cuisine
-                    var cuisines: [Cuisine] = []
-                    if let cuisineArray = kitchenJson["cuisines"] as? [String] {
-                        for cuisineString in cuisineArray {
-                            if let cuisine = Cuisine(rawValue: cuisineString.lowercased()) {
-                                cuisines.append(cuisine)
-                            }
-                        }
+                    // Process cuisine - take the first cuisine if available
+                    var cuisine: Cuisine? = nil
+                    if let cuisineString = kitchenJson["Cuisine"] as? String {
+                        cuisine = Cuisine(rawValue: cuisineString)  // Enum cases should match exactly
                     }
                     
                     let kitchen = Kitchen(
                         kitchenID: kitchenID,
                         name: name,
                         location: location,
-                        cuisines: cuisines,
+                        cuisine: cuisine,
                         rating: rating,
                         isOnline: isOnline,
                         distance: distance,

@@ -71,7 +71,7 @@ struct Kitchen {
     let kitchenID: String
     var name: String
     var location: String
-    var cuisines: [Cuisine]
+    var cuisine: Cuisine?  // Changed from cuisines array to optional single Cuisine
     var rating: Float
     var isOnline: Bool
     var distance: Double

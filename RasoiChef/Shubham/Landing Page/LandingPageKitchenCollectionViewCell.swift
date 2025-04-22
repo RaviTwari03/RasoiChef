@@ -23,7 +23,7 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
         
         KitchenName.text = kitchen.name
         Distance.text = String(format: "%.1f km", kitchen.distance)
-        CuisineLabel.text = kitchen.cuisines.map { $0.rawValue.capitalized }.joined(separator: ", ")
+        CuisineLabel.text = kitchen.cuisine?.rawValue.capitalized ?? "Not specified"
         RatingsLabel.text = String(format: "%.1f", kitchen.rating)
         
         // Load kitchen image

@@ -53,11 +53,13 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         kitchenName.text = kitchen.name
         kitchenDistance.text = String(format: "%.1f km", kitchen.distance)
         
-        // Update cuisine display
-        let cuisineText = kitchen.cuisines.map { $0.rawValue }.joined(separator: ", ")
-        kitchenCuisine.text = cuisineText
+        // Update cuisine display for single cuisine
+        if let cuisine = kitchen.cuisine {
+            kitchenCuisine.text = cuisine.rawValue.capitalized
+        } else {
+            kitchenCuisine.text = "Not specified"
+        }
         
-        // Update rating with proper formatting
         kitchenRatings.text = String(format: "%.1f", kitchen.rating)
         
         // Load kitchen image

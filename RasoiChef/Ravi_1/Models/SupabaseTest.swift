@@ -18,7 +18,7 @@ class SupabaseTest {
                         - Online: \(kitchen.isOnline)
                         - Distance: \(kitchen.distance)
                         - Pure Veg: \(kitchen.isPureVeg)
-                        - Cuisines: \(kitchen.cuisines.map { $0.rawValue }.joined(separator: ", "))
+                        - Cuisines: \(kitchen.cuisine?.rawValue ?? "Not specified")
                         """)
                 }
                 
