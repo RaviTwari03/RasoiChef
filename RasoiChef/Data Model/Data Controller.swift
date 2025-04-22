@@ -243,5 +243,36 @@ class KitchenDataController {
             address: "Galgotias University, Greater Noida"
         )
     ]
+
+    // MARK: - Kitchen-Specific Data
+    
+    static func getKitchenMenuItems(forKitchenID kitchenID: String) -> [MenuItem] {
+        return menuItems.filter { $0.kitchenID == kitchenID }
+    }
+    
+    static func getKitchenChefSpecialtyDishes(forKitchenID kitchenID: String) -> [ChefSpecialtyDish] {
+        return chefSpecialtyDishes.filter { $0.kitchenID == kitchenID }
+    }
+    
+    static func getKitchenSubscriptionPlans(forKitchenID kitchenID: String) -> [SubscriptionPlan] {
+        return subscriptionPlan.filter { $0.kitchenID == kitchenID }
+    }
+    
+    static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
+        // Filter menu items for this kitchen
+        menuItems = getKitchenMenuItems(forKitchenID: kitchenID)
+        
+        // Filter and update meal type specific arrays
+        GlobalbreakfastMenuItems = menuItems.filter { $0.availableMealTypes == .breakfast }
+        GloballunchMenuItems = menuItems.filter { $0.availableMealTypes == .lunch }
+        GlobalsnacksMenuItems = menuItems.filter { $0.availableMealTypes == .snacks }
+        GlobaldinnerMenuItems = menuItems.filter { $0.availableMealTypes == .dinner }
+        
+        // Filter chef specialty dishes for this kitchen
+        chefSpecialtyDishes = getKitchenChefSpecialtyDishes(forKitchenID: kitchenID)
+        
+        // Filter subscription plans for this kitchen
+        subscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
+    }
 }
 

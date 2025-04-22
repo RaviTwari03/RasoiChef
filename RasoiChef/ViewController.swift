@@ -29,6 +29,12 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         self.title = "Kanha Ji Rasoi"
         self.navigationItem.largeTitleDisplayMode = .never
         
+        // Load kitchen-specific data if a kitchen is selected
+        if let kitchen = kitchenData {
+            KitchenDataController.loadKitchenSpecificData(forKitchenID: kitchen.kitchenID)
+            self.title = kitchen.name
+        }
+        
         // Registering Nibs for Cells
         let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
         let menuDetailsNib = UINib(nibName: "MenuDetails", bundle: nil)
