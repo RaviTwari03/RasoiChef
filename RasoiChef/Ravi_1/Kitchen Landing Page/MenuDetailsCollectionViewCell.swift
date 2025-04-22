@@ -116,8 +116,10 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     }
     
     func updateMenuDetails(with indexPath: IndexPath) {
+        let items = KitchenDataController.filteredMenuItems.isEmpty ? KitchenDataController.menuItems : KitchenDataController.filteredMenuItems
+        let menuItem = items[indexPath.row]
+        
         self.indexPath = indexPath
-        let menuItem = KitchenDataController.menuItems[indexPath.row]
         
         // Update meal type and timing details
         if let mealType = menuItem.availableMealTypes {
@@ -140,33 +142,10 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         mealRatingLabel.text = String(format: "%.1f", menuItem.rating)
         
         // Update meal image
-        if !menuItem.imageURL.isEmpty {
-            if let imageUrl = URL(string: menuItem.imageURL) {
-                URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
-                    if let error = error {
-                        print("Error loading image: \(error)")
-                        DispatchQueue.main.async {
-                            self?.mealImageView.image = UIImage(named: "defaultFoodImage")
-                        }
-                        return
-                    }
-                    
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            self?.mealImageView.image = image
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            self?.mealImageView.image = UIImage(named: "defaultFoodImage")
-                        }
-                    }
-                }.resume()
-            } else {
-                // If the URL is invalid, try loading as a local image name
-                mealImageView.image = UIImage(named: menuItem.imageURL) ?? UIImage(named: "defaultFoodImage")
-            }
+        if let imageURL = URL(string: menuItem.imageURL) {
+            loadImage(from: imageURL)
         } else {
-            mealImageView.image = UIImage(named: "defaultFoodImage")
+            mealImageView.image = UIImage(systemName: "photo") // Fallback image
         }
         
         // Update availability status
@@ -298,6 +277,28 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         // Update visibility
         stepperStackView.isHidden = cartQuantity == 0
         addButton.isHidden = cartQuantity > 0
+    }
+    
+    private func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            if let error = error {
+                print("Error loading image: \(error)")
+                DispatchQueue.main.async {
+                    self?.mealImageView.image = UIImage(named: "defaultFoodImage")
+                }
+                return
+            }
+            
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.mealImageView.image = image
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.mealImageView.image = UIImage(named: "defaultFoodImage")
+                }
+            }
+        }.resume()
     }
 }
 //extension MenuDetailsCollectionViewCell: AddItemDelegate {

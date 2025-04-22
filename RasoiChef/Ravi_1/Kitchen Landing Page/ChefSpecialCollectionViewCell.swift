@@ -94,13 +94,11 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
         updateButtonState(enabled: true)
     }
     
-    func updateChefSpecialtyDetails(for indexPath: IndexPath) {
-        self.indexPath = indexPath
-        guard indexPath.row < KitchenDataController.chefSpecialtyDishes.count else { return }
+    func updateChefSpecialDetails(with indexPath: IndexPath) {
+        let items = KitchenDataController.filteredChefSpecialtyDishes.isEmpty ? KitchenDataController.chefSpecialtyDishes : KitchenDataController.filteredChefSpecialtyDishes
+        let specialDish = items[indexPath.row]
         
-        let specialDish = KitchenDataController.chefSpecialtyDishes[indexPath.row]
-        
-        // Update basic details
+        // Update UI with chef special details
         specialDishNameLabel.text = specialDish.name
         specialDishPriceLabel.text = "₹\(specialDish.price)"
         specialDishRating.text = "\(specialDish.rating)"
@@ -304,18 +302,23 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
    }
     
     private func loadImage(from url: URL) {
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self,
-                  let data = data,
-                  let image = UIImage(data: data) else {
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            if let error = error {
+                print("Error loading image: \(error)")
                 DispatchQueue.main.async {
-                    self?.specialDishImage.image = UIImage(systemName: "photo") // Fallback image
+                    self?.specialDishImage.image = UIImage(named: "defaultFoodImage")
                 }
                 return
             }
             
-            DispatchQueue.main.async {
-                self.specialDishImage.image = image
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.specialDishImage.image = image
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.specialDishImage.image = UIImage(named: "defaultFoodImage")
+                }
             }
         }.resume()
     }

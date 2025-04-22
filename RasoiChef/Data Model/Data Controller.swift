@@ -17,14 +17,21 @@ class KitchenDataController {
     static var users: [User] = []
     static var kitchens: [Kitchen] = []
     static var menuItems: [MenuItem] = []
+    static var filteredMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var subscriptionMenuItems: [MenuItem] = []
     static var chefSpecialtyDishes: [ChefSpecialtyDish] = []
+    static var filteredChefSpecialtyDishes: [ChefSpecialtyDish] = [] // For kitchen-specific view
     static var globalChefSpecial: [ChefSpecialtyDish] = []
     static var subscriptionPlan: [SubscriptionPlan] = []
+    static var filteredSubscriptionPlan: [SubscriptionPlan] = [] // For kitchen-specific view
     static var GloballunchMenuItems: [MenuItem] = []
     static var GlobalbreakfastMenuItems: [MenuItem] = []
     static var GlobalsnacksMenuItems: [MenuItem] = []
     static var GlobaldinnerMenuItems: [MenuItem] = []
+    static var filteredLunchMenuItems: [MenuItem] = [] // For kitchen-specific view
+    static var filteredBreakfastMenuItems: [MenuItem] = [] // For kitchen-specific view
+    static var filteredSnacksMenuItems: [MenuItem] = [] // For kitchen-specific view
+    static var filteredDinnerMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var cartItems: [CartItem] = []
     static var orders: [Order] = []
     static var subscriptionPlans: [SubscriptionPlan] = []
@@ -260,19 +267,19 @@ class KitchenDataController {
     
     static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
         // Filter menu items for this kitchen
-        menuItems = getKitchenMenuItems(forKitchenID: kitchenID)
+        filteredMenuItems = getKitchenMenuItems(forKitchenID: kitchenID)
         
         // Filter and update meal type specific arrays
-        GlobalbreakfastMenuItems = menuItems.filter { $0.availableMealTypes == .breakfast }
-        GloballunchMenuItems = menuItems.filter { $0.availableMealTypes == .lunch }
-        GlobalsnacksMenuItems = menuItems.filter { $0.availableMealTypes == .snacks }
-        GlobaldinnerMenuItems = menuItems.filter { $0.availableMealTypes == .dinner }
+        filteredBreakfastMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .breakfast }
+        filteredLunchMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .lunch }
+        filteredSnacksMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .snacks }
+        filteredDinnerMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .dinner }
         
         // Filter chef specialty dishes for this kitchen
-        chefSpecialtyDishes = getKitchenChefSpecialtyDishes(forKitchenID: kitchenID)
+        filteredChefSpecialtyDishes = getKitchenChefSpecialtyDishes(forKitchenID: kitchenID)
         
         // Filter subscription plans for this kitchen
-        subscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
+        filteredSubscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
     }
 }
 

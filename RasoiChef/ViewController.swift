@@ -110,15 +110,15 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 1:
             return 1
         case 2:
-            return KitchenDataController.menuItems.count
+            return kitchenData != nil ? KitchenDataController.filteredMenuItems.count : KitchenDataController.menuItems.count
         case 3:
             return 1
         case 4:
-            return KitchenDataController.chefSpecialtyDishes.count
+            return kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes.count : KitchenDataController.chefSpecialtyDishes.count
         case 5:
             return 1
         case 6:
-            return KitchenDataController.subscriptionPlan.count
+            return kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan.count : KitchenDataController.subscriptionPlan.count
         default:
             return 0
         }
@@ -143,10 +143,13 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
+            
+            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+            let menuItem = menuItems[indexPath.row]
+            
             cell.updateMenuDetails(with: indexPath)
             
             // Get the menu item and current time information
-            let menuItem = KitchenDataController.menuItems[indexPath.row]
             let currentHour = Calendar.current.component(.hour, from: Date())
             let currentDay = Calendar.current.component(.weekday, from: Date())
             
@@ -233,7 +236,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             return cell
         case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
-            cell.updateChefSpecialtyDetails(for: indexPath)
+            let dishes = kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes : KitchenDataController.chefSpecialtyDishes
+            cell.updateChefSpecialDetails(with: indexPath)
             cell.delegate = self
             
             return cell
@@ -244,6 +248,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             
         case 6:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
+            let plans = kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan : KitchenDataController.subscriptionPlan
             cell.updateSubscriptionPlanData(for: indexPath)
             cell.layer.cornerRadius = 15.0
             cell.delegate = self
