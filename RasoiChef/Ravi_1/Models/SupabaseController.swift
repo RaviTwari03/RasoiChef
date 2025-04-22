@@ -318,7 +318,8 @@ class SupabaseController {
         print("- Table: subscription_plans")
         
         do {
-            let response = try await client.database
+            // First fetch the subscription plans
+            let plansResponse = try await client.database
                 .from("subscription_plans")
                 .select("""
                     plan_id,
@@ -335,51 +336,120 @@ class SupabaseController {
             
             print("\n📥 Raw Subscription Plans Response:")
             
-            // Convert Data to JSON
-            let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+            // Convert Plans Data to JSON
+            let json = try JSONSerialization.jsonObject(with: plansResponse.data, options: []) as? [[String: Any]]
             guard let plansData = json else {
-                print("❌ Failed to decode JSON data")
-                print("Raw data size: \(response.data.count) bytes")
+                print("❌ Failed to decode subscription plans JSON data")
                 throw NSError(domain: "SupabaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode JSON data"])
             }
             
-            print("✅ Successfully decoded JSON data")
+            print("✅ Successfully decoded subscription plans JSON data")
             print("Found \(plansData.count) subscription plan records")
             
             var subscriptionPlans: [SubscriptionPlan] = []
             
+            // Process each plan
             for planJson in plansData {
                 do {
-                    // Extract values with proper type casting
                     let planID = planJson["plan_id"] as? String ?? UUID().uuidString
-                    let kitchenID = planJson["kitchen_id"] as? String ?? ""
-                    let location = planJson["location"] as? String ?? ""
-                    let startDate = planJson["start_date"] as? String ?? ""
-                    let endDate = planJson["end_date"] as? String ?? ""
-                    let totalPrice = (planJson["total_price"] as? NSNumber)?.doubleValue ?? 
-                                   (planJson["total_price"] as? Double) ?? 0.0
-                    let planName = planJson["plan_name"] as? String ?? ""
-                    let planIntakeLimit = (planJson["intake_limit"] as? NSNumber)?.intValue ?? 
-                                        (planJson["intake_limit"] as? Int) ?? 0
-                    let planImage = planJson["plan_image"] as? String ?? ""
                     
+                    // Fetch meals for this plan
+                    print("\n🔄 Fetching meals for plan: \(planID)")
+                    let mealsResponse = try await client.database
+                        .from("subscription_meals")
+                        .select("""
+                            day,
+                            meal_time,
+                            menu_item_id,
+                            menu_items (
+                                item_id,
+                                name,
+                                description,
+                                price,
+                                image_url,
+                                available_meal_types
+                            )
+                        """)
+                        .eq("plan_id", value: planID)
+                        .execute()
+                    
+                    // Convert Meals Data to JSON
+                    let mealsJson = try JSONSerialization.jsonObject(with: mealsResponse.data, options: []) as? [[String: Any]]
+                    
+                    // Create weeklyMeals dictionary
+                    var weeklyMeals: [WeekDay: [MealType: MenuItem?]] = [:]
+                    
+                    if let mealsData = mealsJson {
+                        for mealJson in mealsData {
+                            if let dayString = mealJson["day"] as? String,
+                               let mealTimeString = mealJson["meal_time"] as? String,
+                               let menuItemData = mealJson["menu_items"] as? [String: Any] {
+                                
+                                // Convert day string to WeekDay
+                                guard let weekDay = WeekDay(rawValue: dayString.lowercased()) else {
+                                    print("❌ Invalid weekday: \(dayString)")
+                                    continue
+                                }
+                                
+                                // Convert meal_time to MealType
+                                guard let mealType = MealType(rawValue: mealTimeString.capitalized) else {
+                                    print("❌ Invalid meal type: \(mealTimeString)")
+                                    continue
+                                }
+                                
+                                // Create MenuItem from menu_items data
+                                let menuItem = MenuItem(
+                                    itemID: menuItemData["item_id"] as? String ?? "",
+                                    kitchenID: "",  // These fields aren't needed for subscription display
+                                    kitchenName: "",
+                                    distance: 0,
+                                    availableDate: nil,
+                                    name: menuItemData["name"] as? String ?? "",
+                                    description: menuItemData["description"] as? String ?? "",
+                                    price: menuItemData["price"] as? Double ?? 0.0,
+                                    rating: 0,
+                                    availableMealTypes: [mealType],
+                                    portionSize: "",
+                                    intakeLimit: 0,
+                                    imageURL: menuItemData["image_url"] as? String ?? "",
+                                    orderDeadline: "",
+                                    recievingDeadline: nil,
+                                    availability: [.Available],
+                                    availableDays: [weekDay],
+                                    mealCategory: []
+                                )
+                                
+                                // Initialize the day's meals if needed
+                                if weeklyMeals[weekDay] == nil {
+                                    weeklyMeals[weekDay] = [:]
+                                }
+                                
+                                // Add the meal to the weekly schedule
+                                weeklyMeals[weekDay]?[mealType] = menuItem
+                            }
+                        }
+                    }
+                    
+                    // Create the subscription plan with the meals
                     let plan = SubscriptionPlan(
                         planID: planID,
-                        kitchenName: "",  // This can be fetched separately if needed
-                        userID: nil,      // This will be set when user subscribes
-                        kitchenID: kitchenID,
-                        location: location,
-                        startDate: startDate,
-                        endDate: endDate,
-                        totalPrice: totalPrice,
-                        planName: planName,
-                        PlanIntakeLimit: planIntakeLimit,
-                        planImage: planImage,
-                        weeklyMeals: nil  // This can be populated separately if needed
+                        kitchenName: "",
+                        userID: nil,
+                        kitchenID: planJson["kitchen_id"] as? String ?? "",
+                        location: planJson["location"] as? String ?? "",
+                        startDate: planJson["start_date"] as? String ?? "",
+                        endDate: planJson["end_date"] as? String ?? "",
+                        totalPrice: (planJson["total_price"] as? NSNumber)?.doubleValue ?? 
+                                  (planJson["total_price"] as? Double) ?? 0.0,
+                        planName: planJson["plan_name"] as? String ?? "",
+                        PlanIntakeLimit: (planJson["intake_limit"] as? NSNumber)?.intValue ?? 
+                                       (planJson["intake_limit"] as? Int) ?? 0,
+                        planImage: planJson["plan_image"] as? String ?? "",
+                        weeklyMeals: weeklyMeals
                     )
                     
                     subscriptionPlans.append(plan)
-                    print("✅ Successfully processed plan: \(planName)")
+                    print("✅ Successfully processed plan: \(plan.planName ?? "")")
                     
                 } catch {
                     print("❌ Error processing subscription plan: \(error.localizedDescription)")
