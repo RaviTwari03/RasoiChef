@@ -119,14 +119,37 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         self.indexPath = indexPath
         let menuItem = KitchenDataController.menuItems[indexPath.row]
         
-        // Update basic details
-        mealTimeLabel.text = "\(menuItem.availableMealTypes.map { $0.rawValue.capitalized }.joined(separator: ", "))"
-        orderDeadlineLabel.text = menuItem.orderDeadline
-        expectedDeliveryLabel.text = menuItem.recievingDeadline
+        // Update meal type and timing details
+        if let firstMealType = menuItem.availableMealTypes.first {
+            mealTimeLabel.text = firstMealType.rawValue.capitalized
+        }
+        
+        // Update order deadline and delivery time
+        orderDeadlineLabel.text = "Order Before \(menuItem.orderDeadline)"
+        if let receivingTime = menuItem.recievingDeadline {
+            expectedDeliveryLabel.text = "Delivery Expected by \(receivingTime)"
+        }
+        
+        // Update meal name and price
         mealNameLabel.text = menuItem.name
         mealPriceLabel.text = "₹\(menuItem.price)"
-        mealRatingLabel.text = "\(menuItem.rating)"
-        mealImageView.image = UIImage(named: menuItem.imageURL)
+        
+        // Update rating
+        mealRatingLabel.text = String(format: "%.1f", menuItem.rating)
+        
+        // Update meal image
+        if !menuItem.imageURL.isEmpty {
+            mealImageView.image = UIImage(named: menuItem.imageURL)
+        }
+        
+        // Update availability status
+        if menuItem.intakeLimit > 0 {
+            availabiltyLabel.text = "Available (\(menuItem.intakeLimit) left)"
+            availabiltyLabel.textColor = .systemGreen
+        } else {
+            availabiltyLabel.text = "Unavailable"
+            availabiltyLabel.textColor = .systemRed
+        }
         
         updateCartState(for: menuItem)
         applyCardStyle1()
@@ -206,9 +229,9 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         cardViewKitchen.layer.shadowColor = UIColor.black.cgColor
         cardViewKitchen.layer.shadowOffset = CGSize(width: 0, height: 2)
         cardViewKitchen.layer.shadowRadius = 2.5
-        cardViewKitchen.layer.shadowOpacity = 0.4
+        cardViewKitchen.layer.shadowOpacity = 0.2
         cardViewKitchen.backgroundColor = .white
-   }
+    }
 
     func updateIntakeLimit(for indexPath: IndexPath) {
         self.indexPath = indexPath

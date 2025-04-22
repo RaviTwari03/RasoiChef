@@ -52,7 +52,12 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         
         kitchenName.text = kitchen.name
         kitchenDistance.text = String(format: "%.1f km", kitchen.distance)
-        kitchenCuisine.text = kitchen.cuisines.map { $0.rawValue.capitalized }.joined(separator: ", ")
+        
+        // Update cuisine display
+        let cuisineText = kitchen.cuisines.map { $0.rawValue }.joined(separator: ", ")
+        kitchenCuisine.text = cuisineText
+        
+        // Update rating with proper formatting
         kitchenRatings.text = String(format: "%.1f", kitchen.rating)
         
         // Load kitchen image
@@ -67,7 +72,5 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         } else {
             kitchenProfileImage.image = UIImage(named: "defaultKitchenImage")
         }
-        
-        
     }
 }
