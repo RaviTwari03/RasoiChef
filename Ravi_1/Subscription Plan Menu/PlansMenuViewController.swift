@@ -1,17 +1,4 @@
-//
-//  PlansMenuViewController.swift
-//  RasoiChef
-//
-//  Created by Ravi Tiwari on 29/01/25.
-//
-
-import UIKit
-
-enum LocalWeekDay: String {
-    case sunday, monday, tuesday, wednesday, thursday, friday, saturday
-}
-
-class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource , WeekDaysSelectionDelegate{
+class PlansMenuViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, WeekDaysSelectionDelegate {
     
     enum DayOfWeek: String, CaseIterable {
         case sunday, monday, tuesday, wednesday, thursday, friday, saturday
@@ -23,17 +10,34 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
     }
 
     @IBOutlet var subscriptionPlan: UICollectionView!
-    
     private var selectedDay: String = "Monday" // Default selection
     private var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    
-    // Add the missing properties
     private var currentMenuItems: [MealType: MenuItem?] = [:]
     private let orderedMealTypes: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
     
+    // Debug flag
+    private let debug = true
+    
+    private func logDebug(_ message: String) {
+        if debug {
+            print("📝 [PlansMenu] \(message)")
+        }
+    }
+    
+    private func logError(_ message: String, error: Error? = nil) {
+        if let error = error {
+            print("❌ [PlansMenu] \(message): \(error.localizedDescription)")
+        } else {
+            print("❌ [PlansMenu] \(message)")
+        }
+    }
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        // Initialize with Monday's menu
+        updateMenuForSelectedDay()
+        logCollectionViewState("After viewDidLoad")
     }
     
     // MARK: - Setup UI
@@ -62,9 +66,9 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return days.count // 7 Days in a Week
+            return days.count
         case 1:
-            return getMenuForSelectedDay().count
+            return orderedMealTypes.count  // Always return 4 for breakfast, lunch, snacks, dinner
         default:
             return 0
         }
@@ -73,59 +77,42 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
     // MARK: - Cell Configuration
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
-        case 0:  // Week Days Section
+        case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeekDays", for: indexPath) as! WeekDaysCollectionViewCell
             let day = days[indexPath.item]
-            
             cell.configure(with: day)
             cell.delegate = self
             cell.highlightSelection(day == selectedDay)
-            
             cell.layer.cornerRadius = 10.0
             cell.layer.borderWidth = 1.0
             cell.layer.borderColor = UIColor.accent.cgColor
             return cell
-  
-        case 1:  // Menu Items Section
             
+        case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlansMenu", for: indexPath) as! PlansMenuCollectionViewCell
-            let meals = getMenuForSelectedDay()
             
-            // ✅ Define a fixed meal order
-            let orderedMealTypes: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+            // Get the meal type for this index
+            let mealType = orderedMealTypes[indexPath.item]
             
-            // ✅ Get meals in fixed order (ignore missing ones)
-            let sortedMeals = orderedMealTypes.compactMap { mealType -> (MealType, MenuItem)? in
-                if let mealItem = meals[mealType] ?? nil {  // ✅ Check for nil before using
-                    return (mealType, mealItem)
-                }
-                return nil
+            // Get the menu item for this meal type
+            if let menuItem = currentMenuItems[mealType] ?? nil {
+                cell.updateMenuDetails(
+                    mealType: mealType.rawValue,
+                    mealName: menuItem.name,
+                    mealDescription: menuItem.description,
+                    mealImageName: menuItem.imageURL.isEmpty ? "default_meal" : menuItem.imageURL
+                )
+            } else {
+                // Handle case where no menu item exists for this meal type
+                cell.updateMenuDetails(
+                    mealType: mealType.rawValue,
+                    mealName: "No meal available",
+                    mealDescription: "No meal scheduled for this time",
+                    mealImageName: "default_meal"
+                )
             }
-
-            // ✅ Prevent out-of-bounds crash if no meals exist
-            guard indexPath.item < sortedMeals.count else {
-                return UICollectionViewCell()
-            }
-
-            // ✅ Get the current meal for this cell
-            let (mealKey, mealItem) = sortedMeals[indexPath.item]
-
-            // ✅ Extract meal details safely
-            let mealName = mealItem.name
-            let mealDescription = mealItem.description
-            let mealImageName = mealItem.imageURL.isEmpty ? "default_meal" : mealItem.imageURL
-
-            // ✅ Update the cell with sorted meal details
-            cell.updateMenuDetails(
-                mealType: mealKey.rawValue,
-                mealName: mealName,
-                mealDescription: mealDescription,
-                mealImageName: mealImageName
-            )
-
             return cell
-
-
+            
         default:
             return UICollectionViewCell()
         }
@@ -133,26 +120,51 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
 
     // MARK: - Day Selection
     func didSelectDay(_ day: String) {
+        // First update the data
         selectedDay = day
         updateMenuForSelectedDay()
-        subscriptionPlan.reloadData()
+        
+        // Then update UI for both sections
+        UIView.performWithoutAnimation {
+            // Update the days section to reflect selection
+            let daySection = IndexSet(integer: 0)
+            subscriptionPlan.reloadSections(daySection)
+            
+            // Update the menu section with new data
+            let menuSection = IndexSet(integer: 1)
+            subscriptionPlan.reloadSections(menuSection)
+        }
     }
-
-    // ✅ FIXED: Returns full MenuItem instead of just meal name
-    private func getMenuForSelectedDay() -> [MealType: MenuItem?] {
-        guard let plan = KitchenDataController.subscriptionPlan.first else { return [:] }
-
+    
+    private func updateMenuForSelectedDay() {
         // Convert selectedDay string to DayOfWeek
         let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
-
+        
         // Convert DayOfWeek to WeekDay
         let weekDayEnum = selectedDayEnum.toWeekDay()
-
-        // Fetch meals for the selected day
-        return plan.weeklyMeals?[weekDayEnum] ?? [:]  // Returns [MealType: MenuItem?]
+        
+        // Get menu items for selected day
+        if let plan = KitchenDataController.subscriptionPlan.first,
+           let dayMeals = plan.weeklyMeals?[weekDayEnum] {
+            currentMenuItems = dayMeals
+        } else {
+            // Initialize with empty menu items for all meal types
+            currentMenuItems = Dictionary(uniqueKeysWithValues: orderedMealTypes.map { ($0, nil) })
+        }
+    }
+    
+    private func logCollectionViewState(_ context: String) {
+        logDebug("\n=== Collection View State: \(context) ===")
+        logDebug("Number of sections: \(subscriptionPlan.numberOfSections)")
+        for section in 0..<subscriptionPlan.numberOfSections {
+            logDebug("Section \(section) has \(subscriptionPlan.numberOfItems(inSection: section)) items")
+        }
+        logDebug("Selected day: \(selectedDay)")
+        logDebug("Current menu items: \(currentMenuItems.keys.map { $0.rawValue })")
+        logDebug("=====================================\n")
     }
 
-    // MARK: - Layout for Sections
+    // MARK: - Layout Generation
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { (sectionIndex, environment) -> NSCollectionLayoutSection? in
             switch sectionIndex {
@@ -190,7 +202,6 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
-
         return section
     }
 
@@ -207,19 +218,4 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true)
     }
-
-    private func updateMenuForSelectedDay() {
-        let selectedDayEnum = DayOfWeek(rawValue: selectedDay.lowercased()) ?? .monday
-        let weekDayEnum = selectedDayEnum.toWeekDay()
-        currentMenuItems.removeAll()
-        if let plan = KitchenDataController.subscriptionPlan.first,
-           let dayMeals = plan.weeklyMeals?[weekDayEnum] {
-            currentMenuItems = dayMeals
-        }
-        for mealType in orderedMealTypes {
-            if currentMenuItems[mealType] == nil {
-                currentMenuItems[mealType] = nil
-            }
-        }
-    }
-}
+} 
