@@ -30,11 +30,12 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
     
     func updateSpecialDishDetails(for indexPath: IndexPath) {
         let specialDish = KitchenDataController.globalChefSpecial[indexPath.row]
+        print("Debug - Kitchen Name: \(specialDish.kitchenName)")
         SpecialKitchenNameLabel.text = specialDish.kitchenName
         SpecialDishName.text = specialDish.name
         SpecialPriceLabel.text = "₹\(specialDish.price)"
         SpecialRating.text = "\(String(describing: specialDish.rating))"
-
+        
         // Load image from URL
         if let imageURL = URL(string: specialDish.imageURL) {
             loadImage(from: imageURL)
@@ -42,7 +43,13 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
             specialDishImage.image = UIImage(systemName: "photo") // Fallback image
         }
         
-        timeIcon.image = UIImage(named: "LunchIcon")
+        // Use fallback for timeIcon if named image isn't found
+        if let lunchIcon = UIImage(named: "LunchIcon") {
+            timeIcon.image = lunchIcon
+        } else {
+            timeIcon.image = UIImage(systemName: "clock.fill") // Fallback to system clock icon
+        }
+        
         specialDishImage.layer.cornerRadius = 10
         
         if specialDish.mealCategory.contains(.veg) {

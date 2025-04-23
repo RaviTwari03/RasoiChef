@@ -472,23 +472,13 @@ class SupabaseController {
         print("\n🔄 Starting chef specialty dishes fetch process...")
         print("📊 Query details:")
         print("- Table: chef_specialty_dishes")
-        print("- Columns: dish_id, kitchen_id, name, description, price, rating, image_url, distance, intake_limit, meal_category")
+        print("- Joining with: kitchens")
+        print("- Columns: All relevant columns including kitchen name")
         
         do {
             let response = try await client.database
                 .from("chef_specialty_dishes")
-                .select("""
-                    dish_id,
-                    kitchen_id,
-                    name,
-                    description,
-                    price,
-                    rating,
-                    image_url,
-                    meal_categories,
-                    distance,
-                    intake_limit
-                """)
+                .select("*, kitchens(name)")
                 .execute()
             
             print("\n📥 Raw Chef Specialty Dishes Response:")
@@ -537,6 +527,9 @@ class SupabaseController {
                     let distance = (dishJson["distance"] as? NSNumber)?.doubleValue ?? (dishJson["distance"] as? Double) ?? 0.0
                     let intakeLimit = (dishJson["intake_limit"] as? NSNumber)?.intValue ?? (dishJson["intake_limit"] as? Int) ?? 10
                     
+                    // Get kitchen name from the joined kitchens table
+                    let kitchenName = (dishJson["kitchens"] as? [String: Any])?["name"] as? String ?? "Unknown Kitchen"
+                    
                     // Process meal category
                     var mealCategories: [MealCategory] = []
                     if let categoryArray = dishJson["meal_categories"] as? [String] {
@@ -548,7 +541,7 @@ class SupabaseController {
                     }
                     
                     let specialtyDish = ChefSpecialtyDish(
-                        kitchenName: "",
+                        kitchenName: kitchenName,
                         dishID: dishID,
                         kitchenID: kitchenID,
                         name: name,
@@ -563,7 +556,7 @@ class SupabaseController {
                     
                     print("✅ Successfully created ChefSpecialtyDish object:")
                     print("- Name: \(specialtyDish.name)")
-                    print("- Kitchen: \(specialtyDish.kitchenID)")
+                    print("- Kitchen: \(specialtyDish.kitchenName)")
                     print("- Price: ₹\(specialtyDish.price)")
                     print("- Rating: \(specialtyDish.rating)")
                     
