@@ -68,15 +68,23 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         
         // Find the first menu item of the current meal type
         let targetMealType: MealType = [.breakfast, .lunch, .snacks, .dinner][targetIndex]
+        let items = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
         
-        if let firstIndex = KitchenDataController.menuItems.firstIndex(where: { item in
+        if let firstIndex = items.firstIndex(where: { item in
             item.availableMealTypes == targetMealType
-        }) {
+        }), firstIndex < items.count {
             let indexPath = IndexPath(item: firstIndex, section: 2)  // section 2 is MenuDetails
             
-            // Scroll to the item
+            // Scroll to the item only if the section has items
             DispatchQueue.main.async { [weak self] in
-                self?.collectionView1.scrollToItem(
+                guard let self = self,
+                      let collectionView = self.collectionView1,
+                      indexPath.section < collectionView.numberOfSections,
+                      indexPath.item < collectionView.numberOfItems(inSection: indexPath.section) else {
+                    return
+                }
+                
+                collectionView.scrollToItem(
                     at: indexPath,
                     at: .centeredHorizontally,
                     animated: true
