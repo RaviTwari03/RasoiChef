@@ -41,7 +41,7 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
             imageLoadTask = URLSession.shared.dataTask(with: imageUrl) { [weak self] data, response, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        print("Error loading image: \(error)")
+                      //  print("Error loading image: \(error)")
                         self?.BannerImage.image = UIImage(named: bannerData.icon) // Fallback to local image
                         return
                     }

@@ -81,7 +81,7 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
         if let imageUrl = URL(string: menuItem.imageURL ?? "") {
             URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
                 if let error = error {
-                    print("Error loading image: \(error)")
+                    //print("Error loading image: \(error)")
                     DispatchQueue.main.async {
                         self?.mealImage.image = UIImage(named: "defaultFoodImage")
                     }

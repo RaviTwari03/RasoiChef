@@ -304,7 +304,7 @@ class ChefSpecialCollectionViewCell: UICollectionViewCell {
     private func loadImage(from url: URL) {
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             if let error = error {
-                print("Error loading image: \(error)")
+               // print("Error loading image: \(error)")
                 DispatchQueue.main.async {
                     self?.specialDishImage.image = UIImage(named: "defaultFoodImage")
                 }
