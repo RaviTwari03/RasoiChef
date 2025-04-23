@@ -1,16 +1,29 @@
 import UIKit
 
 enum MealTiming: String {
-    case breakfast = "breakfastIcon"
-    case lunch = "lunchIcon"
-    case snacks = "snacksIcon"
-    case dinner = "dinnerIcon"
+    case breakfast = "BreakfastIcon"
+    case lunch = "LunchIcon"
+    case snacks = "SnacksIcon"
+    case dinner = "DinnerIcon"
+    
+    var iconName: String {
+        return self.rawValue
+    }
 }
 
 
 enum MealCategory: String {
-    case veg = "vegIcon"
-    case nonVeg = "nonVegIcon"
+    case veg = "veg"
+    case nonVeg = "non-veg"
+    
+    var iconName: String {
+        switch self {
+        case .veg:
+            return "vegIcon"
+        case .nonVeg:
+            return "nonVegIcon"
+        }
+    }
 }
 
 

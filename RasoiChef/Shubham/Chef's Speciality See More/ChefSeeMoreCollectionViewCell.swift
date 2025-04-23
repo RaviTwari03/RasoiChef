@@ -41,10 +41,21 @@ class ChefSeeMoreCollectionViewCell: UICollectionViewCell {
             DishImage.image = UIImage(systemName: "photo") // Fallback image
         }
 
+        // Set veg/non-veg icon
         if specialDish.mealCategory.contains(.veg) {
-            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+            print("Debug - Setting veg icon for dish:", specialDish.name)
+            if let vegIcon = UIImage(named: "vegIcon") {
+                vegNonvegIcon.image = vegIcon
+            } else {
+                vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+            }
         } else {
-            vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+            print("Debug - Setting non-veg icon for dish:", specialDish.name)
+            if let nonVegIcon = UIImage(named: "nonVegIcon") {
+                vegNonvegIcon.image = nonVegIcon
+            } else {
+                vegNonvegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+            }
         }
     }
 

@@ -43,13 +43,8 @@ class LandingPageChefSpecialCollectionViewCell: UICollectionViewCell {
             specialDishImage.image = UIImage(systemName: "photo") // Fallback image
         }
         
-        // Use fallback for timeIcon if named image isn't found
-        if let lunchIcon = UIImage(named: "LunchIcon") {
-            timeIcon.image = lunchIcon
-        } else {
-            timeIcon.image = UIImage(systemName: "clock.fill") // Fallback to system clock icon
-        }
-        
+        // Set timeIcon directly from assets
+        timeIcon.image = UIImage(named: "LunchIcon") ?? UIImage(systemName: "clock.fill")
         specialDishImage.layer.cornerRadius = 10
         
         if specialDish.mealCategory.contains(.veg) {

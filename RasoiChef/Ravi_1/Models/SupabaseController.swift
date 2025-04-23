@@ -533,10 +533,20 @@ class SupabaseController {
                     // Process meal category
                     var mealCategories: [MealCategory] = []
                     if let categoryArray = dishJson["meal_categories"] as? [String] {
+                        print("Debug - Meal Categories from DB:", categoryArray)
                         for categoryString in categoryArray {
-                            if let category = MealCategory(rawValue: categoryString.lowercased()) {
-                                mealCategories.append(category)
+                            // Convert database value to enum case
+                            let category: MealCategory
+                            switch categoryString.lowercased() {
+                            case "veg":
+                                category = .veg
+                            case "non-veg", "nonveg", "non_veg":
+                                category = .nonVeg
+                            default:
+                                print("⚠️ Unknown meal category:", categoryString)
+                                continue
                             }
+                            mealCategories.append(category)
                         }
                     }
                     

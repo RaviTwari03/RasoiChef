@@ -34,22 +34,9 @@ class PlansMenuCollectionViewCell: UICollectionViewCell {
         // Load from assets
         MealImage.image = UIImage(named: mealImageName) ?? UIImage(named: "default_meal")
         
-        
-        let mealcategoryImage: String
-            switch mealType {
-            case "Breakfast":
-                mealcategoryImage = "BreakfastIcon"
-            case "Lunch":
-                mealcategoryImage = "LunchIcon"
-            case "Dinner":
-                mealcategoryImage = "DinnerIcon"
-            case "Snacks":
-                mealcategoryImage = "SnacksIcon"
-            default:
-                mealcategoryImage = "default_meal"
-            }
-            
-            mealcategoriesImage.image = UIImage(named: mealcategoryImage)
+        // Set meal category icon directly from assets
+        let mealcategoryImage = UIImage(named: "\(mealType)Icon") ?? UIImage(systemName: "clock.fill")
+        mealcategoriesImage.image = mealcategoryImage
     }
 
 
