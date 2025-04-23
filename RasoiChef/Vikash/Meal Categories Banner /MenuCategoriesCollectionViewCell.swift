@@ -71,12 +71,36 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
     func updateMealDetails(with menuItem: MenuItem) {
         self.menuItem = menuItem
         mealNameLabel.text = menuItem.name
-        mealImage.image = UIImage(named: menuItem.imageURL ?? "")
         kitchenNameLabel.text = menuItem.kitchenName
         KitchenDistance.text = "\(menuItem.distance) km"
         Ratings.text = "\(menuItem.rating)"
         priceLabel.text = "₹\(menuItem.price)"
         descriptionLabel.text = menuItem.description
+        
+        // Load image from URL
+        if let imageUrl = URL(string: menuItem.imageURL ?? "") {
+            URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
+                if let error = error {
+                    print("Error loading image: \(error)")
+                    DispatchQueue.main.async {
+                        self?.mealImage.image = UIImage(named: "defaultFoodImage")
+                    }
+                    return
+                }
+                
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.mealImage.image = image
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.mealImage.image = UIImage(named: "defaultFoodImage")
+                    }
+                }
+            }.resume()
+        } else {
+            mealImage.image = UIImage(named: "defaultFoodImage")
+        }
 
         if menuItem.mealCategory.contains(.veg) {
             vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
@@ -84,25 +108,24 @@ class MenuCategoriesCollectionViewCell: UICollectionViewCell {
             vegNonVegIcon.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
         
-            let currentHour = Calendar.current.component(.hour, from: Date())
+        let currentHour = Calendar.current.component(.hour, from: Date())
 
-            let isAddButtonDisabled: Bool
-            switch mealTiming {
-            case .breakfast:
-                isAddButtonDisabled = currentHour >= 7 && currentHour < 21
-            case .lunch:
-                isAddButtonDisabled = currentHour >= 11 && currentHour < 21
-            case .snacks:
-                isAddButtonDisabled = currentHour >= 16 && currentHour < 21
-            case .dinner:
-                isAddButtonDisabled = currentHour >= 20 && currentHour < 21
-            }
+        let isAddButtonDisabled: Bool
+        switch mealTiming {
+        case .breakfast:
+            isAddButtonDisabled = currentHour >= 7 && currentHour < 21
+        case .lunch:
+            isAddButtonDisabled = currentHour >= 11 && currentHour < 21
+        case .snacks:
+            isAddButtonDisabled = currentHour >= 16 && currentHour < 21
+        case .dinner:
+            isAddButtonDisabled = currentHour >= 20 && currentHour < 21
+        }
 
         DispatchQueue.main.async {
-                self.addButton.isEnabled = !isAddButtonDisabled
-                self.addButton.alpha = isAddButtonDisabled ? 0.8 : 1.0
-            }
-        
+            self.addButton.isEnabled = !isAddButtonDisabled
+            self.addButton.alpha = isAddButtonDisabled ? 0.8 : 1.0
+        }
         
         updateCartAndIntakeState()
     }
