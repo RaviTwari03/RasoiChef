@@ -21,29 +21,29 @@ struct LoginView: View {
             ZStack {
                 Color.white.ignoresSafeArea()
                 
-                ScrollView {
-                    VStack(spacing: 25) {
-                        // Food Images Grid
-                        ZStack {
-                            Image("WhatsApp Image 2025-01-16 at 20.47.08")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 300)
-                                .clipped()
-                            
-//                            // Overlay gradient
-//                            LinearGradient(
-//                                gradient: Gradient(colors: [.white.opacity(0), .white]),
-//                                startPoint: .top,
-//                                endPoint: .bottom
-//                            )
-                        }
-                        .frame(height: 300)
+                VStack(spacing: 0) {
+                    // Food Images Grid
+                    ZStack {
+                        Image("WhatsApp Image 2025-01-16 at 20.47.08")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: UIScreen.main.bounds.height * 0.29)
+                            .clipped()
                         
+                       //  Overlay gradient
+                        LinearGradient(
+                            gradient: Gradient(colors: [.clear, .white.opacity(0.2), .white]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+                    
+                    // Main Content
+                    VStack(spacing: 15) {
                         // Welcome Text
-                        VStack(spacing: 8) {
+                        VStack(spacing: 10) {
                             Text("Welcome Back!")
-                                .font(.title)
+                                .font(.title2)
                                 .fontWeight(.bold)
                             
                             Text("Please login to continue")
@@ -52,7 +52,7 @@ struct LoginView: View {
                         }
                         
                         // Login Form
-                        VStack(spacing: 16) {
+                        VStack(spacing: 15) {
                             // Email Field
                             TextField("Email", text: $viewModel.email)
                                 .textContentType(.emailAddress)
@@ -60,14 +60,14 @@ struct LoginView: View {
                                 .autocorrectionDisabled()
                                 .padding()
                                 .background(Color(.systemGray6))
-                                .cornerRadius(10)
+                                .cornerRadius(12)
                             
                             // Password Field
                             SecureField("Password", text: $viewModel.password)
                                 .textContentType(.password)
                                 .padding()
                                 .background(Color(.systemGray6))
-                                .cornerRadius(10)
+                                .cornerRadius(12)
                             
                             // Forgot Password Button
                             HStack {
@@ -76,10 +76,9 @@ struct LoginView: View {
                                     showForgotPassword = true
                                 }
                                 .foregroundColor(.accentColor)
-                                .font(.footnote)
+                                .font(.subheadline)
                             }
                         }
-                        .padding(.horizontal)
                         
                         // Error Message
                         if !viewModel.errorMessage.isEmpty {
@@ -110,28 +109,34 @@ struct LoginView: View {
                             .padding()
                             .background(Color.accentColor)
                             .foregroundColor(.white)
-                            .cornerRadius(25)
+                            .cornerRadius(15)
+                            .shadow(color: Color.accentColor.opacity(0.3), radius: 5, x: 0, y: 3)
                         }
-                        .padding(.horizontal)
                         .disabled(viewModel.isLoading)
                         
                         // Social Login Options
-                        VStack(spacing: 16) {
+                        VStack(spacing: 15) {
                             Text("Or continue with")
                                 .foregroundColor(.gray)
-                                .font(.footnote)
+                                .font(.subheadline)
                             
-                            HStack(spacing: 20) {
+                            HStack(spacing: 15) {
                                 // Google Sign In
                                 Button(action: { viewModel.signInWithGoogle() }) {
                                     HStack {
                                         Image(systemName: "g.circle.fill")
+                                            .font(.title3)
                                         Text("Google")
+                                            .font(.headline)
                                     }
+                                    .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(25)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .fill(Color.white)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                                    )
                                 }
                                 
                                 // Apple Sign In
@@ -140,12 +145,13 @@ struct LoginView: View {
                                 } onCompletion: { result in
                                     viewModel.handleAppleSignInCompletion(result)
                                 }
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 50)
-                                .cornerRadius(25)
+                                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                                .frame(maxWidth: .infinity, maxHeight: 45)
+                                .cornerRadius(15)
                             }
                         }
-                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 20)
                         
                         // Sign Up Link
                         NavigationLink(destination: SignUpView(), isActive: $isShowingSignUp) {
@@ -156,10 +162,12 @@ struct LoginView: View {
                                     .foregroundColor(.accentColor)
                                     .fontWeight(.semibold)
                             }
-                            .font(.footnote)
+                            .font(.subheadline)
                         }
                     }
-                    .padding(.bottom, 30)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, UIScreen.main.bounds.height * 0.03)
                 }
             }
             .navigationBarHidden(true)
