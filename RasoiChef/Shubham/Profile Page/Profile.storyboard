@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_3" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HpC-en-Ube">
-                                <rect key="frame" x="0.0" y="62" width="402" height="778"/>
+                                <rect key="frame" x="0.0" y="124" width="402" height="682"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KUQ-Kw-bHG">
                                         <rect key="frame" x="0.0" y="0.0" width="402" height="755"/>
@@ -336,6 +336,9 @@
                                                         <buttonConfiguration key="configuration" style="plain" title="Logout">
                                                             <fontDescription key="titleFontDescription" type="system" pointSize="14"/>
                                                         </buttonConfiguration>
+                                                        <connections>
+                                                            <action selector="logoutButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="liJ-CB-f6L"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -423,17 +426,17 @@
             <objects>
                 <viewController storyboardIdentifier="ProfileEditViewController" id="MI5-5z-Ati" userLabel="Edit Profile View Controller" customClass="ProfileEditViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6BF-md-Tnh">
-                        <rect key="frame" x="0.0" y="0.0" width="402" height="864"/>
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="802"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QaW-II-9bK">
-                                <rect key="frame" x="140" y="20" width="123" height="30"/>
+                                <rect key="frame" x="140" y="82" width="123" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="UserImage" translatesAutoresizingMaskIntoConstraints="NO" id="nmN-BV-CjR">
-                                <rect key="frame" x="101.66666666666669" y="58" width="200" height="200"/>
+                                <rect key="frame" x="101.66666666666669" y="120" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="35N-yd-RPA"/>
                                     <constraint firstAttribute="width" constant="200" id="9kI-D8-j92"/>
@@ -445,7 +448,7 @@
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9ld-Vd-Xop">
-                                <rect key="frame" x="40" y="278" width="322" height="75"/>
+                                <rect key="frame" x="40" y="340" width="322" height="75"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ua-8d-vFj">
                                         <rect key="frame" x="10" y="5" width="53" height="24"/>
@@ -488,7 +491,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gTf-K8-ZUq">
-                                <rect key="frame" x="40" y="361" width="322" height="75"/>
+                                <rect key="frame" x="40" y="423" width="322" height="75"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="In0-6g-PdG">
                                         <rect key="frame" x="10" y="5" width="49" height="24"/>
@@ -532,7 +535,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4bh-nZ-PDC">
-                                <rect key="frame" x="40" y="444" width="322" height="75"/>
+                                <rect key="frame" x="40" y="506" width="322" height="75"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phone Number" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I3O-QG-VMx">
                                         <rect key="frame" x="10" y="5" width="135" height="24"/>
@@ -576,7 +579,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xqK-lD-Z9Z">
-                                <rect key="frame" x="151" y="539" width="100" height="40"/>
+                                <rect key="frame" x="151" y="601" width="100" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="JKK-yX-kbu"/>
                                     <constraint firstAttribute="width" constant="100" id="lWf-H5-wGS"/>
@@ -590,7 +593,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HRY-w3-Xjb">
-                                <rect key="frame" x="255" y="211" width="30" height="30"/>
+                                <rect key="frame" x="255" y="273" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="8PN-Ri-P2b"/>
                                     <constraint firstAttribute="width" constant="30" id="niH-cd-Wpu"/>
