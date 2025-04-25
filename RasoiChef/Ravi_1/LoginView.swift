@@ -2,6 +2,7 @@ import SwiftUI
 import Supabase
 import AuthenticationServices
 import UIKit
+import SwiftSMTP
 
 struct SignUpView1: View {
     var body: some View {
@@ -13,6 +14,7 @@ struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var isShowingSignUp = false
     @Environment(\.colorScheme) var colorScheme
+    @State private var showForgotPassword = false
     
     var body: some View {
         NavigationView {
@@ -71,9 +73,9 @@ struct LoginView: View {
                             HStack {
                                 Spacer()
                                 Button("Forgot Password?") {
-                                    viewModel.forgotPassword()
+                                    showForgotPassword = true
                                 }
-                                .foregroundColor(.orange)
+                                .foregroundColor(.accentColor)
                                 .font(.footnote)
                             }
                         }
@@ -106,7 +108,7 @@ struct LoginView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.orange)
+                            .background(Color.accentColor)
                             .foregroundColor(.white)
                             .cornerRadius(25)
                         }
@@ -151,7 +153,7 @@ struct LoginView: View {
                                 Text("Don't have an account?")
                                     .foregroundColor(.gray)
                                 Text("Sign Up")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(.accentColor)
                                     .fontWeight(.semibold)
                             }
                             .font(.footnote)
@@ -161,7 +163,232 @@ struct LoginView: View {
                 }
             }
             .navigationBarHidden(true)
+            .sheet(isPresented: $showForgotPassword) {
+                ForgotPasswordView()
+            }
         }
+    }
+}
+
+struct ForgotPasswordView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var email = ""
+    @State private var otp = ""
+    @State private var newPassword = ""
+    @State private var confirmPassword = ""
+    @State private var message = ""
+    @State private var isLoading = false
+    @State private var messageColor: Color = .red
+    @State private var showOTPField = false
+    @State private var generatedOTP = ""
+    @State private var showNewPassword = false
+    @State private var showConfirmPassword = false
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text(showOTPField ? "Reset Password" : "Verify Email")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                
+                if !showOTPField {
+                    Text("Enter your email address to receive a verification code.")
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Email", text: $email)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                } else {
+                    Text("Enter the verification code and your new password.")
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.gray)
+                    
+                    TextField("Verification Code", text: $otp)
+                        .keyboardType(.numberPad)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                    
+                    // New Password with eye button
+                    HStack {
+                        if showNewPassword {
+                            TextField("New Password", text: $newPassword)
+                                .textContentType(.newPassword)
+                        } else {
+                            SecureField("New Password", text: $newPassword)
+                                .textContentType(.newPassword)
+                        }
+                        
+                        Button(action: {
+                            showNewPassword.toggle()
+                        }) {
+                            Image(systemName: showNewPassword ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    
+                    // Confirm Password with eye button
+                    HStack {
+                        if showConfirmPassword {
+                            TextField("Confirm Password", text: $confirmPassword)
+                                .textContentType(.newPassword)
+                        } else {
+                            SecureField("Confirm Password", text: $confirmPassword)
+                                .textContentType(.newPassword)
+                        }
+                        
+                        Button(action: {
+                            showConfirmPassword.toggle()
+                        }) {
+                            Image(systemName: showConfirmPassword ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                }
+                
+                if !message.isEmpty {
+                    Text(message)
+                        .foregroundColor(messageColor)
+                        .font(.footnote)
+                }
+                
+                Button(action: {
+                    Task {
+                        if showOTPField {
+                            await verifyOTPAndResetPassword()
+                        } else {
+                            await sendOTP()
+                        }
+                    }
+                }) {
+                    HStack {
+                        Text(showOTPField ? "Reset Password" : "Send Verification Code")
+                            .fontWeight(.semibold)
+                        
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .padding(.leading, 5)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(25)
+                }
+                .disabled(isLoading)
+                
+                Spacer()
+            }
+            .padding()
+            .navigationBarItems(trailing: Button("Close") {
+                dismiss()
+            })
+        }
+    }
+    
+    private func generateOTP() -> String {
+        let digits = "0123456789"
+        return String((0..<6).map { _ in digits.randomElement()! })
+    }
+    
+    func verifyOTPAndResetPassword() async {
+        // Validate inputs
+        guard !otp.isEmpty else {
+            message = "Please enter the verification code"
+            messageColor = .red
+            return
+        }
+        
+        guard otp == generatedOTP else {
+            message = "Invalid verification code"
+            messageColor = .red
+            return
+        }
+        
+        guard !newPassword.isEmpty else {
+            message = "Please enter a new password"
+            messageColor = .red
+            return
+        }
+        
+        guard newPassword == confirmPassword else {
+            message = "Passwords do not match"
+            messageColor = .red
+            return
+        }
+        
+        guard newPassword.count >= 8 else {
+            message = "Password must be at least 8 characters"
+            messageColor = .red
+            return
+        }
+        
+        isLoading = true
+        message = ""
+        
+        do {
+            // Update the user's password using Supabase's updateUser method
+            try await SupabaseController.shared.client.auth.update(user: .init(
+                password: newPassword
+            ))
+            
+            message = "Password has been reset successfully"
+            messageColor = .green
+            
+            // Dismiss the sheet after 2 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                dismiss()
+            }
+            
+        } catch {
+            print("Password reset error: \(error)")
+            message = "Failed to reset password: \(error.localizedDescription)"
+            messageColor = .red
+        }
+        
+        isLoading = false
+    }
+    
+    func sendOTP() async {
+        guard !email.isEmpty else {
+            message = "Please enter your email"
+            messageColor = .red
+            return
+        }
+        
+        isLoading = true
+        message = ""
+        
+        do {
+            // Generate OTP
+            generatedOTP = generateOTP()
+            
+            // Send OTP via email
+            try await EmailService.shared.sendOTP(to: email, otp: generatedOTP, isPasswordReset: true)
+            
+            message = "Verification code sent to your email"
+            messageColor = .green
+            showOTPField = true
+            
+        } catch {
+            message = "Failed to send verification code: \(error.localizedDescription)"
+            messageColor = .red
+        }
+        
+        isLoading = false
     }
 }
 

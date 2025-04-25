@@ -12,22 +12,22 @@ import SwiftUI
 class ProfileViewController: UIViewController {
 
 //    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
+      @IBOutlet weak var nameLabel: UILabel!
+      @IBOutlet weak var emailLabel: UILabel!
     
     private let supabase = SupabaseController.shared.client
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Load initial data
-        loadProfileData()
-    }
+      override func viewDidLoad() {
+          super.viewDidLoad()
+          // Load initial data
+          loadProfileData()
+          }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        // Reload profile data every time the view appears
-        loadProfileData()
-    }
+          override func viewWillAppear(_ animated: Bool) {
+              super.viewWillAppear(animated)
+              // Reload profile data every time the view appears
+              loadProfileData()
+          }
     
     func loadProfileData() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
@@ -36,7 +36,7 @@ class ProfileViewController: UIViewController {
         nameLabel.text = savedName
         emailLabel.text = savedEmail
     }
-    
+
     @IBAction func logoutButtonPressed(_ sender: UIButton) {
         // Show confirmation alert
         let alert = UIAlertController(
@@ -92,19 +92,19 @@ class ProfileViewController: UIViewController {
         }
     }
 
-    // Prepare for segue to EditProfileViewController
+      // Prepare for segue to EditProfileViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "editProfileSegue",
-           let editVC = segue.destination as? ProfileEditViewController {
-            // Pass current name and email to the Edit Profile screen
-            editVC.name = nameLabel.text
-            editVC.email = emailLabel.text
-            editVC.delegate = self
+            if segue.identifier == "editProfileSegue",
+               let editVC = segue.destination as? ProfileEditViewController {
+                // Pass current name and email to the Edit Profile screen
+                editVC.name = nameLabel.text
+                editVC.email = emailLabel.text
+                editVC.delegate = self
+            }
         }
     }
-}
 
-// Extend ProfileViewController to conform to the delegate
+  // Extend ProfileViewController to conform to the delegate
 extension ProfileViewController: EditProfileDelegate {
     func didUpdateProfile(name: String, email: String) {
         // Update the profile labels

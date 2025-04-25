@@ -6,43 +6,75 @@ import SwiftSMTP
 class EmailService {
     static let shared = EmailService()
     private let smtp: SMTP
+    private let senderEmail = "rt9593878@gmail.com"
+    private let appPassword = "ibda bytr uomg scxw"
     
     private init() {
         smtp = SMTP(
-            hostname: "smtp.gmail.com",     // Update with your SMTP server
-            email: "rt9593878@gmail.com",  // Update with your email
-            password: "ibda bytr uomg scxw"   // Update with your app-specific password
+            hostname: "smtp.gmail.com",
+            email: senderEmail,
+            password: appPassword,
+            port: 465,               // Changed to SSL port
+            tlsMode: .requireTLS,
+            tlsConfiguration: nil,
+            authMethods: [.plain],
+            domainName: "gmail.com",
+            timeout: 30              // Increased timeout
         )
     }
     
-    func sendOTP(to email: String, otp: String) async throws {
-        let mail = Mail(
-            from: Mail.User(name: "RasoiChef", email: "rt9593878@gmail.com"),
-            to: [Mail.User(name: "", email: email)],
-            subject: "Welcome to RasoiChef - Verify Your Email",
-            text: """
+    func sendOTP(to email: String, otp: String, isPasswordReset: Bool = false) async throws {
+        print("Attempting to send email to: \(email)")
+        print("Using sender email: \(senderEmail)")
+        
+        let subject = isPasswordReset ? "RasoiChef - Password Reset Code" : "Welcome to RasoiChef - Verify Your Email"
+        let text = isPasswordReset ? """
             Dear User,
-            
-            Welcome to RasoiChef! We're excited to have you join our culinary community.
-            
+
+            You have requested to reset your password for RasoiChef.
+
             Your verification code is: \(otp)
-            
+
+            Please enter this code in the app to reset your password. This code will expire in 10 minutes for security purposes.
+
+            If you didn't request this code, please ignore this email and ensure your account is secure.
+
+            Best regards,
+            The RasoiChef Team
+            """ : """
+            Dear User,
+
+            Welcome to RasoiChef! We're excited to have you join our culinary community.
+
+            Your verification code is: \(otp)
+
             Please enter this code in the app to complete your registration. This code will expire in 10 minutes for security purposes.
-            
+
             If you didn't request this code, please ignore this email.
-            
+
             Happy Eating!
-            
+
             Best regards,
             The RasoiChef Team
             """
+        
+        let mail = Mail(
+            from: Mail.User(name: "RasoiChef", email: senderEmail),
+            to: [Mail.User(name: "", email: email)],
+            subject: subject,
+            text: text
         )
+        
+        print("Sending email with subject: \(subject)")
         
         return try await withCheckedThrowingContinuation { continuation in
             smtp.send(mail) { error in
                 if let error = error {
+                    print("SMTP Error Details: \(error)")
+                    print("Error Description: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 } else {
+                    print("Email sent successfully!")
                     continuation.resume()
                 }
             }
