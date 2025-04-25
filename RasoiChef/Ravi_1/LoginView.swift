@@ -123,15 +123,15 @@ struct LoginView: View {
                             HStack(spacing: 15) {
                                 // Google Sign In
                                 Button(action: { viewModel.signInWithGoogle() }) {
-                                    HStack {
-                                        Image(systemName: "g.circle.fill")
-                                            .font(.title3)
-                                        Text("Google")
-                                            .font(.headline)
+                                    HStack(spacing: 8) {
+                                        Image("google")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 24, height: 24)
                                     }
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
+                                    .frame(height: 45)
                                     .background(
                                         RoundedRectangle(cornerRadius: 15)
                                             .fill(Color.white)
@@ -140,15 +140,28 @@ struct LoginView: View {
                                 }
                                 
                                 // Apple Sign In
-                                SignInWithAppleButton { request in
+                                Button(action: {
+                                    let request = ASAuthorizationAppleIDProvider().createRequest()
+                                    request.requestedScopes = [.fullName, .email]
                                     viewModel.handleAppleSignInRequest(request)
-                                } onCompletion: { result in
-                                    viewModel.handleAppleSignInCompletion(result)
+                                }) {
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "apple.logo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 45)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .fill(colorScheme == .dark ? .black : .white)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                                    )
                                 }
-                                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                                .frame(maxWidth: .infinity, maxHeight: 45)
-                                .cornerRadius(15)
                             }
+                            .frame(height: 45)
                         }
                         
                         Spacer(minLength: 20)
