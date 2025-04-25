@@ -1,6 +1,7 @@
 import SwiftUI
 import Supabase
 import AuthenticationServices
+import UIKit
 
 struct SignUpView: View {
     var body: some View {
@@ -28,12 +29,12 @@ struct LoginView: View {
                                 .frame(height: 300)
                                 .clipped()
                             
-                            // Overlay gradient
-                            LinearGradient(
-                                gradient: Gradient(colors: [.white.opacity(0), .white]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
+//                            // Overlay gradient
+//                            LinearGradient(
+//                                gradient: Gradient(colors: [.white.opacity(0), .white]),
+//                                startPoint: .top,
+//                                endPoint: .bottom
+//                            )
                         }
                         .frame(height: 300)
                         
@@ -88,7 +89,9 @@ struct LoginView: View {
                         // Login Button
                         Button(action: {
                             Task {
-                                await viewModel.login()
+                                if await viewModel.login() {
+                                    viewModel.navigateToMainTabBar()
+                                }
                             }
                         }) {
                             HStack {
@@ -171,10 +174,10 @@ class LoginViewModel: ObservableObject {
     private let supabase = SupabaseController.shared.client
     
     @MainActor
-    func login() async {
+    func login() async -> Bool {
         guard !email.isEmpty && !password.isEmpty else {
             errorMessage = "Please enter both email and password"
-            return
+            return false
         }
         
         isLoading = true
@@ -188,11 +191,34 @@ class LoginViewModel: ObservableObject {
             UserDefaults.standard.set(email, forKey: "userEmail")
             let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
             UserDefaults.standard.set(savedName, forKey: "userName")
+            isLoading = false
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            isLoading = false
+            return false
         }
-        
-        isLoading = false
+    }
+    
+    func navigateToMainTabBar() {
+        DispatchQueue.main.async {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
+                // Get the window scene
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first {
+                    window.rootViewController = tabBarController
+                    window.makeKeyAndVisible()
+                    
+                    // Add animation for smooth transition
+                    UIView.transition(with: window,
+                                    duration: 0.3,
+                                    options: .transitionCrossDissolve,
+                                    animations: nil,
+                                    completion: nil)
+                }
+            }
+        }
     }
     
     func forgotPassword() {
@@ -248,7 +274,9 @@ class LoginViewModel: ObservableObject {
                                 idToken: tokenString
                             )
                         )
-                        // Handle successful sign in
+                        await MainActor.run {
+                            self.navigateToMainTabBar()
+                        }
                     } catch {
                         await MainActor.run {
                             errorMessage = "Apple sign in failed: \(error.localizedDescription)"

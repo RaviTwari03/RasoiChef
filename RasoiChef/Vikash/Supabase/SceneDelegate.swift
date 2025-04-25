@@ -7,6 +7,7 @@
 
 import UIKit
 import Supabase
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -73,12 +74,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        // Set up your initial view controller here
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let initialViewController = storyboard.instantiateInitialViewController() {
-            window?.rootViewController = initialViewController
-            window?.makeKeyAndVisible()
+        // Check if user is logged in
+        if let _ = UserDefaults.standard.string(forKey: "userEmail") {
+            // User is logged in, show MainTabBar
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
+                window?.rootViewController = tabBarController
+            }
+        } else {
+            // User is not logged in, show LoginView
+            let loginView = LoginView()
+            let hostingController = UIHostingController(rootView: loginView)
+            window?.rootViewController = hostingController
         }
+        
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
