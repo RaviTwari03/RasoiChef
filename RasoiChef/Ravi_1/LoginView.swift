@@ -3,7 +3,7 @@ import Supabase
 import AuthenticationServices
 import UIKit
 
-struct SignUpView: View {
+struct SignUpView1: View {
     var body: some View {
         Text("Sign Up View")
     }
