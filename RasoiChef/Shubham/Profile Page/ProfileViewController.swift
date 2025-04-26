@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class ProfileViewController: UIViewController {
 
@@ -32,12 +33,13 @@ class ProfileViewController: UIViewController {
               loadProfileData()
           }
     
-//    @IBAction func yourOrdersButton(_ sender: Any) {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil) // or your storyboard name
-//            if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
-//                navigationController?.pushViewController(myOrdersVC, animated: true)
-//            }
-//    }
+    @IBAction func favouriteButtonTapped(_ sender: Any) {
+        let favouriteSwiftUIView = favouritesView()
+            let hostingController = UIHostingController(rootView: NavigationView { favouriteSwiftUIView })
+
+            navigationController?.pushViewController(hostingController, animated: true)
+    }
+    
     
     
     func loadProfileData() {
