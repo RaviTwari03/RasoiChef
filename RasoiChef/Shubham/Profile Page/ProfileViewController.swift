@@ -13,10 +13,17 @@ class ProfileViewController: UIViewController {
       @IBOutlet weak var nameLabel: UILabel!
       @IBOutlet weak var emailLabel: UILabel!
 
-      override func viewDidLoad() {
+    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var viewShadow: UIView!
+    @IBOutlet weak var viewShadow1: UIView!
+    @IBOutlet weak var viewShadow2: UIView!
+    @IBOutlet weak var viewShadow3: UIView!
+    
+    override func viewDidLoad() {
           super.viewDidLoad()
           // Load initial data
           loadProfileData()
+        setupShadow()
           }
 
           override func viewWillAppear(_ animated: Bool) {
@@ -25,13 +32,49 @@ class ProfileViewController: UIViewController {
               loadProfileData()
           }
     
+//    @IBAction func yourOrdersButton(_ sender: Any) {
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil) // or your storyboard name
+//            if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
+//                navigationController?.pushViewController(myOrdersVC, animated: true)
+//            }
+//    }
+    
+    
     func loadProfileData() {
         let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
         let savedEmail = UserDefaults.standard.string(forKey: "userEmail") ?? ""
 
         nameLabel.text = savedName
         emailLabel.text = savedEmail
+        
+        if let imageData = UserDefaults.standard.data(forKey: "userProfileImage"),
+               let image = UIImage(data: imageData) {
+                profileImageView.image = image // make sure your IBOutlet for profileImageView is uncommented
+            }
     }
+    func setupShadow() {
+        viewShadow.layer.shadowColor = UIColor.black.cgColor
+        viewShadow.layer.shadowOpacity = 0.5
+        viewShadow.layer.shadowOffset = CGSize(width: 0, height: 2)
+        viewShadow.layer.shadowRadius = 2.5
+        viewShadow.layer.masksToBounds = false
+        viewShadow1.layer.shadowColor = UIColor.black.cgColor
+        viewShadow1.layer.shadowOpacity = 0.5
+        viewShadow1.layer.shadowOffset = CGSize(width: 0, height: 2)
+        viewShadow1.layer.shadowRadius = 2.5
+        viewShadow1.layer.masksToBounds = false
+        viewShadow2.layer.shadowColor = UIColor.black.cgColor
+        viewShadow2.layer.shadowOpacity = 0.5
+        viewShadow2.layer.shadowOffset = CGSize(width: 0, height: 2)
+        viewShadow2.layer.shadowRadius = 2.5
+        viewShadow2.layer.masksToBounds = false
+        viewShadow3.layer.shadowColor = UIColor.black.cgColor
+        viewShadow3.layer.shadowOpacity = 0.5
+        viewShadow3.layer.shadowOffset = CGSize(width: 0, height: 2)
+        viewShadow3.layer.shadowRadius = 2.5
+        viewShadow3.layer.masksToBounds = false
+    }
+
 
 
 
@@ -49,12 +92,18 @@ class ProfileViewController: UIViewController {
 
   // Extend ProfileViewController to conform to the delegate
 extension ProfileViewController: EditProfileDelegate {
-    func didUpdateProfile(name: String, email: String) {
+    func didUpdateProfile(name: String, email: String, profileImage: UIImage?) {
         // Update the profile labels
         UserDefaults.standard.set(name, forKey: "userName")
         UserDefaults.standard.set(email, forKey: "userEmail")
 
         nameLabel.text = name
         emailLabel.text = email
+        if let image = profileImage {
+                    if let imageData = image.jpegData(compressionQuality: 0.8) {
+                        UserDefaults.standard.set(imageData, forKey: "userProfileImage")
+                    }
+                }
     }
 }
+
