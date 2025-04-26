@@ -124,10 +124,10 @@ struct LoginView: View {
                                 // Google Sign In
                                 Button(action: { viewModel.signInWithGoogle() }) {
                                     HStack(spacing: 8) {
-                                        Image("google")
+                                        Image(systemName: "g.circle.fill")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(width: 24, height: 24)
+                                            .frame(width: 20, height: 20)
                                     }
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
@@ -135,9 +135,10 @@ struct LoginView: View {
                                     .background(
                                         RoundedRectangle(cornerRadius: 15)
                                             .fill(Color.white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                                     )
                                 }
+                                .frame(maxWidth: .infinity)
                                 
                                 // Apple Sign In
                                 Button(action: {
@@ -157,11 +158,13 @@ struct LoginView: View {
                                     .background(
                                         RoundedRectangle(cornerRadius: 15)
                                             .fill(colorScheme == .dark ? .black : .white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                                     )
                                 }
+                                .frame(maxWidth: .infinity)
                             }
                             .frame(height: 45)
+                            .padding(.horizontal, 40)
                         }
                         
                         Spacer(minLength: 20)
