@@ -453,13 +453,17 @@ class LoginViewModel: ObservableObject {
     
     func navigateToMainTabBar() {
         DispatchQueue.main.async {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
-                // Get the window scene
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = windowScene.windows.first {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
                     window.rootViewController = tabBarController
                     window.makeKeyAndVisible()
+                    
+                    // Setup location manager after successful login
+                    if let sceneDelegate = windowScene.delegate as? SceneDelegate {
+                        sceneDelegate.setupLocationManager()
+                    }
                     
                     // Add animation for smooth transition
                     UIView.transition(with: window,

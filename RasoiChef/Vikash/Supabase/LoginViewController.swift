@@ -98,6 +98,9 @@ class LoginViewController: UIViewController , UITextFieldDelegate{
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.window?.rootViewController = homeVC
                 sceneDelegate.window?.makeKeyAndVisible()
+                
+                // Setup location manager after successful login
+                sceneDelegate.setupLocationManager()
             }
         }
     }

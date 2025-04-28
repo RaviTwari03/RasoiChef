@@ -25,8 +25,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         // Initialize window
         window = UIWindow(windowScene: windowScene)
         
-        // Setup location manager
-        setupLocationManager()
+        // Check if user is logged in
+        if let _ = UserDefaults.standard.string(forKey: "userEmail") {
+            // User is logged in, show MainTabBar
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
+                window?.rootViewController = tabBarController
+                // Setup location manager for already logged in users
+                setupLocationManager()
+            }
+        } else {
+            // User is not logged in, show LoginView
+            let loginView = LoginView()
+            let hostingController = UIHostingController(rootView: loginView)
+            window?.rootViewController = hostingController
+        }
+        
+        window?.makeKeyAndVisible()
         
         // Load data from Supabase with retry mechanism
         Task {
@@ -79,22 +94,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
                 }
             }
         }
-        
-        // Check if user is logged in
-        if let _ = UserDefaults.standard.string(forKey: "userEmail") {
-            // User is logged in, show MainTabBar
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
-                window?.rootViewController = tabBarController
-            }
-        } else {
-            // User is not logged in, show LoginView
-            let loginView = LoginView()
-            let hostingController = UIHostingController(rootView: loginView)
-            window?.rootViewController = hostingController
-        }
-        
-            window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -125,7 +124,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         // to restore the scene back to its current state.
     }
 
-    private func setupLocationManager() {
+    // Make setupLocationManager public so it can be called from LoginView
+    func setupLocationManager() {
+        // Only setup if not already initialized
+        guard locationManager == nil else { return }
+        
+        print("📍 Setting up location manager...")
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
