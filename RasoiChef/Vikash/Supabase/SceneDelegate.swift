@@ -8,10 +8,13 @@
 import UIKit
 import Supabase
 import SwiftUI
+import CoreLocation
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelegate {
     
     var window: UIWindow?
+    private var locationManager: CLLocationManager?
+    private let supabase = SupabaseController.shared.client
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         print("\n🚀 App is starting...")
@@ -21,6 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Initialize window
         window = UIWindow(windowScene: windowScene)
+        
+        // Setup location manager
+        setupLocationManager()
         
         // Load data from Supabase with retry mechanism
         Task {
@@ -117,6 +123,74 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+
+    private func setupLocationManager() {
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        
+        // Request location permission
+        locationManager?.requestWhenInUseAuthorization()
+    }
+    
+    // MARK: - CLLocationManagerDelegate
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("📍 Location access granted")
+            locationManager?.startUpdatingLocation()
+        case .denied, .restricted:
+            print("❌ Location access denied")
+            // Show alert to user about importance of location
+            DispatchQueue.main.async {
+                let alert = UIAlertController(
+                    title: "Location Access Required",
+                    message: "RasoiChef needs your location to find nearby kitchens and deliver food to your address. Please enable location access in Settings.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+                    if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsUrl)
+                    }
+                })
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                self.window?.rootViewController?.present(alert, animated: true)
+            }
+        case .notDetermined:
+            print("📍 Location permission not determined")
+        @unknown default:
+            break
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        print("📍 Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+        
+        // Store location locally
+        UserDefaults.standard.set(location.coordinate.latitude, forKey: "userLatitude")
+        UserDefaults.standard.set(location.coordinate.longitude, forKey: "userLongitude")
+        
+        // Update location in Supabase
+        Task {
+            do {
+                // Get current user's email from UserDefaults
+                if let userEmail = UserDefaults.standard.string(forKey: "userEmail") {
+                    try await supabase.database
+                        .from("users")
+                        .update([
+                            "latitude": location.coordinate.latitude,
+                            "longitude": location.coordinate.longitude
+                        ])
+                        .eq("email", value: userEmail)
+                        .execute()
+                    print("✅ Successfully updated user location in Supabase")
+                }
+            } catch {
+                print("❌ Error updating location in Supabase: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
