@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBar") as? UITabBarController {
                 window?.rootViewController = tabBarController
-                // Setup location manager for already logged in users
+                // Setup location manager only after successful login
                 setupLocationManager()
             }
         } else {
@@ -126,10 +126,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
     // Make setupLocationManager public so it can be called from LoginView
     func setupLocationManager() {
-        // Only setup if not already initialized
         guard locationManager == nil else { return }
         
-        print("📍 Setting up location manager...")
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
@@ -142,10 +140,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            print("📍 Location access granted")
             locationManager?.startUpdatingLocation()
         case .denied, .restricted:
-            print("❌ Location access denied")
             // Show alert to user about importance of location
             DispatchQueue.main.async {
                 let alert = UIAlertController(
@@ -162,7 +158,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
                 self.window?.rootViewController?.present(alert, animated: true)
             }
         case .notDetermined:
-            print("📍 Location permission not determined")
+            break
         @unknown default:
             break
         }
@@ -170,17 +166,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        print("📍 Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
         
         // Store location locally
         UserDefaults.standard.set(location.coordinate.latitude, forKey: "userLatitude")
         UserDefaults.standard.set(location.coordinate.longitude, forKey: "userLongitude")
         
-        // Update location in Supabase
+        // Update location in Supabase and calculate distances
         Task {
             do {
                 // Get current user's email from UserDefaults
                 if let userEmail = UserDefaults.standard.string(forKey: "userEmail") {
+                    // 1. Update user's location in users table
                     try await supabase.database
                         .from("users")
                         .update([
@@ -189,10 +185,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
                         ])
                         .eq("email", value: userEmail)
                         .execute()
-                    print("✅ Successfully updated user location in Supabase")
+                    
+                    // 2. Fetch all kitchens to calculate distances
+                    let response = try await supabase.database
+                        .from("kitchens")
+                        .select("kitchen_id, latitude, longitude")
+                        .execute()
+                    
+                    let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+                    
+                    // 3. Calculate and update distances for each kitchen
+                    if let kitchens = json {
+                        for kitchen in kitchens {
+                            if let kitchenId = kitchen["kitchen_id"] as? String,
+                               let kitchenLat = kitchen["latitude"] as? Double,
+                               let kitchenLong = kitchen["longitude"] as? Double {
+                                
+                                // Calculate distance using CLLocation
+                                let userLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                                let kitchenLocation = CLLocation(latitude: kitchenLat, longitude: kitchenLong)
+                                
+                                // Get distance in kilometers
+                                let distanceInMeters = userLocation.distance(from: kitchenLocation)
+                                let distanceInKm = Double(round(100 * distanceInMeters / 1000) / 100) // Round to 2 decimal places
+                                
+                                // Update distance in kitchens table
+                                try await supabase.database
+                                    .from("kitchens")
+                                    .update(["distance": distanceInKm])
+                                    .eq("kitchen_id", value: kitchenId)
+                                    .execute()
+                            }
+                        }
+                    }
                 }
             } catch {
-                print("❌ Error updating location in Supabase: \(error.localizedDescription)")
+                // Handle error silently
             }
         }
     }
