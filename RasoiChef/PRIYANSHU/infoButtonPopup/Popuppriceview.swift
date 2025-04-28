@@ -135,14 +135,25 @@ class PricePopupView: UIView {
 
     // Configure the popup with data
     func configure(price: String, gst: String, discount: String, grandTotal: String) {
+        // Convert strings to numbers and format them with two decimal places
+        let priceNumber = Double(price) ?? 0
+        let gstNumber = Double(gst) ?? 0
+        let discountNumber = Double(discount) ?? 0
+        let grandTotalNumber = Double(grandTotal) ?? 0
+        
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.minimumFractionDigits = 2
+        numberFormatter.maximumFractionDigits = 2
+        
         priceTitleLabel.text = "Price"
-        priceValueLabel.text = "₹\(price)"
+        priceValueLabel.text = "₹\(numberFormatter.string(from: NSNumber(value: priceNumber)) ?? "0.00")"
         gstTitleLabel.text = "GST"
-        gstValueLabel.text = "₹\(gst)"
+        gstValueLabel.text = "₹\(numberFormatter.string(from: NSNumber(value: gstNumber)) ?? "0.00")"
         discountTitleLabel.text = "Discount"
-        discountValueLabel.text = "-₹\(discount)"
+        discountValueLabel.text = "-₹\(numberFormatter.string(from: NSNumber(value: discountNumber)) ?? "0.00")"
         grandTotalTitleLabel.text = "Grand Total"
-        grandTotalValueLabel.text = "₹\(grandTotal)"
+        grandTotalValueLabel.text = "₹\(numberFormatter.string(from: NSNumber(value: grandTotalNumber)) ?? "0.00")"
     }
 
     @objc private func dismissPopup() {

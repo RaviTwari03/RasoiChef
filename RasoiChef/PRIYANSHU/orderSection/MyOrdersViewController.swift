@@ -10,9 +10,7 @@ import UIKit
 class MyOrdersViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
-    
-    
-    @IBOutlet weak var subscribedPlansView: UIView!
+    @IBOutlet var subscribedPlansView: UIView!
     
     private let refreshControl = UIRefreshControl()
     
@@ -40,15 +38,15 @@ class MyOrdersViewController: UIViewController {
         tableView.refreshControl = refreshControl
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
-                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
-            ])
-        
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
         tableView.dataSource = self
         tableView.delegate = self
-        // Do any additional setup after loading the view.
         
         let myOrderNib = UINib(nibName: "MyOrdersTableViewCell", bundle: nil)
         tableView.register(myOrderNib, forCellReuseIdentifier: "MyOrdersTableViewCell")
@@ -56,25 +54,24 @@ class MyOrdersViewController: UIViewController {
         let pastOrderNib = UINib(nibName: "pastOrderTableViewCell", bundle: nil)
         tableView.register(pastOrderNib, forCellReuseIdentifier: "pastOrderTableViewCell")
         
-        
         tableView.sectionHeaderTopPadding = 10
         
         // Add the noActiveOrdersLabel to the view
-              view.addSubview(noActiveOrdersLabel)
+        view.addSubview(noActiveOrdersLabel)
         
-               // Set up constraints for the label
-                NSLayoutConstraint.activate([
-                    noActiveOrdersLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    noActiveOrdersLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                    noActiveOrdersLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-                    noActiveOrdersLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-               ])
+        // Set up constraints for the label
+        NSLayoutConstraint.activate([
+            noActiveOrdersLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noActiveOrdersLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            noActiveOrdersLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            noActiveOrdersLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
         // Initially hide the label
-             noActiveOrdersLabel.isHidden = true
+        noActiveOrdersLabel.isHidden = true
         
         tableView.reloadData()
         loadData()
-        
     }
     
     @objc private func refreshData() {
@@ -134,38 +131,11 @@ class MyOrdersViewController: UIViewController {
         self.view.addSubview(popup)
     }
     
-    
-    
-    @IBAction func segmentChanged(_ sender: Any) {
-        
-        switch (sender as AnyObject).selectedSegmentIndex {
-        case 0:
-            // Show Orders section
-            tableView.isHidden = false
-            subscribedPlansView.isHidden = true
-            loadData()
-          
-        case 1:
-            // Show Subscribed Plans section
-            tableView.isHidden = true
-            subscribedPlansView.isHidden = false
-            noActiveOrdersLabel.isHidden = true
-        default:
-            break
-            
-        }
-    }
-    
-    
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         loadData()
         tableView.reloadData()
     }
-    
-    
     
     private func fetchOrders() {
         // Show loading indicator

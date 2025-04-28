@@ -111,7 +111,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
    }
    
    // Function to update the badge count on My Orders tab
-   func updateMyOrdersBadge() {
+    @objc func updateMyOrdersBadge() {
        if let tabItems = self.tabBarController?.tabBar.items {
            let myOrdersTabItem = tabItems[1] // Assuming My Orders is at index 1
            
@@ -132,8 +132,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                    // Fetch orders from database
                    let orders = try await SupabaseController.shared.fetchOrders(for: finalUserID)
                    
-                   // Count active orders (placed or delivered)
-                   let activeOrdersCount = orders.filter { $0.status == .placed || $0.status == .delivered }.count
+                   // Count only active orders (not delivered)
+                   let activeOrdersCount = orders.filter { $0.status != .delivered }.count
                    
                    // Update badge on main thread
                    DispatchQueue.main.async {
@@ -159,6 +159,9 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
            locationManager.desiredAccuracy = kCLLocationAccuracyBest
            
            NotificationCenter.default.addObserver(self, selector: #selector(reloadCart), name: NSNotification.Name("CartUpdated"), object: nil)
+
+           // Add observer for app becoming active
+           NotificationCenter.default.addObserver(self, selector: #selector(updateMyOrdersBadge), name: UIApplication.willEnterForegroundNotification, object: nil)
 
            
            CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
