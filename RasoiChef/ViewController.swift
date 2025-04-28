@@ -204,41 +204,41 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             }()
             
             // Apply blur effect and disable interaction if item is not available
-            if !isAvailable {
-                // Add blur effect
-                let blurEffect = UIBlurEffect(style: .light)
-                let blurView = UIVisualEffectView(effect: blurEffect)
-                blurView.frame = cell.contentView.bounds
-                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                blurView.tag = 100 // Tag for identification
-                
-                // Remove existing blur if any
-                cell.contentView.subviews.forEach { view in
-                    if view.tag == 100 {
-                        view.removeFromSuperview()
-                    }
-                }
-                
-                cell.contentView.addSubview(blurView)
-                cell.contentView.sendSubviewToBack(blurView)
-                
-                // Disable interaction
-                cell.isUserInteractionEnabled = false
-                cell.addButton.isEnabled = false
-                cell.contentView.alpha = 0.7
-            } else {
-                // Remove blur effect if exists
-                cell.contentView.subviews.forEach { view in
-                    if view.tag == 100 {
-                        view.removeFromSuperview()
-                    }
-                }
-                
-                // Enable interaction
-                cell.isUserInteractionEnabled = true
-                cell.addButton.isEnabled = true
-                cell.contentView.alpha = 1.0
-            }
+//            if !isAvailable {
+//                // Add blur effect
+//                let blurEffect = UIBlurEffect(style: .light)
+//                let blurView = UIVisualEffectView(effect: blurEffect)
+//                blurView.frame = cell.contentView.bounds
+//                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//                blurView.tag = 100 // Tag for identification
+//                
+//                // Remove existing blur if any
+//                cell.contentView.subviews.forEach { view in
+//                    if view.tag == 100 {
+//                        view.removeFromSuperview()
+//                    }
+//                }
+//                
+//                cell.contentView.addSubview(blurView)
+//                cell.contentView.sendSubviewToBack(blurView)
+//                
+//                // Disable interaction
+//                cell.isUserInteractionEnabled = false
+//                cell.addButton.isEnabled = false
+//                cell.contentView.alpha = 0.7
+//            } else {
+//                // Remove blur effect if exists
+//                cell.contentView.subviews.forEach { view in
+//                    if view.tag == 100 {
+//                        view.removeFromSuperview()
+//                    }
+//                }
+//                
+//                // Enable interaction
+//                cell.isUserInteractionEnabled = true
+//                cell.addButton.isEnabled = true
+//                cell.contentView.alpha = 1.0
+//            }
             
             return cell
             
