@@ -155,9 +155,9 @@ struct SignUpView: View {
                         // OTP Field
                         TextField("Enter OTP from Email", text: $viewModel.otp)
                             .keyboardType(.numberPad)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(10)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
                     }
                 }
                 .padding(.horizontal)
@@ -175,7 +175,7 @@ struct SignUpView: View {
                         if viewModel.showOTPField {
                             await viewModel.verifyOTP()
                         } else {
-                            await viewModel.signUp()
+                        await viewModel.signUp()
                         }
                     }
                 }) {

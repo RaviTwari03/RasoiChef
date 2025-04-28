@@ -22,13 +22,13 @@ struct LoginView: View {
                 Color.white.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Food Images Grid
-                    ZStack {
-                        Image("WhatsApp Image 2025-01-16 at 20.47.08")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                        // Food Images Grid
+                        ZStack {
+                        Image("food1")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
                             .frame(height: UIScreen.main.bounds.height * 0.29)
-                            .clipped()
+                                .clipped()
                         
                        //  Overlay gradient
                         LinearGradient(
@@ -62,12 +62,25 @@ struct LoginView: View {
                                 .background(Color(.systemGray6))
                                 .cornerRadius(12)
                             
-                            // Password Field
+                            // Password Field with eye icon
+                            HStack {
+                                Group {
+                                    if viewModel.showPassword {
+                                        TextField("Password", text: $viewModel.password)
+                                            .textContentType(.password)
+                                    } else {
                             SecureField("Password", text: $viewModel.password)
                                 .textContentType(.password)
+                                    }
+                                }
+                                Button(action: { viewModel.showPassword.toggle() }) {
+                                    Image(systemName: viewModel.showPassword ? "eye.slash.fill" : "eye.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
                                 .padding()
                                 .background(Color(.systemGray6))
-                                .cornerRadius(12)
+                            .cornerRadius(12)
                             
                             // Forgot Password Button
                             HStack {
@@ -121,47 +134,19 @@ struct LoginView: View {
                                 .font(.subheadline)
                             
                             HStack(spacing: 15) {
-                                // Google Sign In
-                                Button(action: { viewModel.signInWithGoogle() }) {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "g.circle.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
+                                // System Apple Sign In Button
+                                SignInWithAppleButton(
+                                    .signIn,
+                                    onRequest: { request in
+                                        request.requestedScopes = [.fullName, .email]
+                                    },
+                                    onCompletion: { result in
+                                        viewModel.handleAppleSignInCompletion(result)
                                     }
-                                    .foregroundColor(.black)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 45)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .fill(Color.white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                                    )
-                                }
-                                .frame(maxWidth: .infinity)
-                                
-                                // Apple Sign In
-                                Button(action: {
-                                    let request = ASAuthorizationAppleIDProvider().createRequest()
-                                    request.requestedScopes = [.fullName, .email]
-                                    viewModel.handleAppleSignInRequest(request)
-                                }) {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "apple.logo")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
-                                    }
-                                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 45)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .fill(colorScheme == .dark ? .black : .white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                                    )
-                                }
-                                .frame(maxWidth: .infinity)
+                                )
+                                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                                .frame(height: 45)
+                                .cornerRadius(15)
                             }
                             .frame(height: 45)
                             .padding(.horizontal, 40)
@@ -421,6 +406,7 @@ class LoginViewModel: ObservableObject {
     @Published var password = ""
     @Published var errorMessage = ""
     @Published var isLoading = false
+    @Published var showPassword = false
     
     private let supabase = SupabaseController.shared.client
     
@@ -487,35 +473,21 @@ class LoginViewModel: ObservableObject {
         }
     }
     
-    func signInWithGoogle() {
-        Task {
-            do {
-                let redirectURL = URL(string: "io.supabase.rasoi-chef://login-callback")!
-                try await supabase.auth.signInWithOAuth(
-                    provider: .google,
-                    redirectTo: redirectURL
-                )
-            } catch {
-                await MainActor.run {
-                    errorMessage = "Google sign in failed: \(error.localizedDescription)"
-                }
-            }
-        }
-    }
-    
-    func handleAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName, .email]
-    }
-    
     func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) {
         switch result {
         case .success(let authorization):
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
                 guard let identityToken = appleIDCredential.identityToken,
                       let tokenString = String(data: identityToken, encoding: .utf8) else {
-                    errorMessage = "Could not get identity token"
+                    let msg = "Could not get identity token"
+                    print(msg)
+                    errorMessage = msg
                     return
                 }
+                // Extract user details
+                let userID = appleIDCredential.user
+                let email = appleIDCredential.email ?? ""
+                let fullName = [appleIDCredential.fullName?.givenName, appleIDCredential.fullName?.familyName].compactMap { $0 }.joined(separator: " ")
                 
                 Task {
                     do {
@@ -525,18 +497,55 @@ class LoginViewModel: ObservableObject {
                                 idToken: tokenString
                             )
                         )
+                        // Save details to UserDefaults
+                        if !email.isEmpty {
+                            UserDefaults.standard.set(email, forKey: "userEmail")
+                        }
+                        if !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+                            UserDefaults.standard.set(fullName, forKey: "userName")
+                        }
+                        UserDefaults.standard.set(userID, forKey: "userID")
+                        // Save to database if new user (only if email/name available)
+                        if !email.isEmpty && !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+                            try? await SupabaseController.shared.createUserRecord(userID: userID, name: fullName, email: email)
+                        }
                         await MainActor.run {
                             self.navigateToMainTabBar()
                         }
                     } catch {
+                        let msg = "Apple sign in failed: \(error.localizedDescription)"
+                        print(msg)
                         await MainActor.run {
-                            errorMessage = "Apple sign in failed: \(error.localizedDescription)"
+                            errorMessage = msg
                         }
                     }
                 }
             }
         case .failure(let error):
-            errorMessage = "Apple sign in failed: \(error.localizedDescription)"
+            let nsError = error as NSError
+            let msg = "Apple sign in failed: \(error.localizedDescription) (code: \(nsError.code), domain: \(nsError.domain))"
+            print("ASAuthorizationController credential request failed with error: \(msg)")
+            errorMessage = msg
+            // If error code 1000, prompt user to open Settings
+            if nsError.domain == "com.apple.AuthenticationServices.AuthorizationError" && nsError.code == 1000 {
+                DispatchQueue.main.async {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let rootVC = windowScene.windows.first?.rootViewController {
+                        let alert = UIAlertController(
+                            title: "Apple ID Required",
+                            message: "You are not signed in to an Apple ID. Please sign in from Settings to use Sign in with Apple.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        })
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        rootVC.present(alert, animated: true)
+                    }
+                }
+            }
         }
     }
 }
