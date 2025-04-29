@@ -334,7 +334,7 @@ class SignUpViewModel: ObservableObject {
                 "full_name": .string(fullName)
             ]
             
-            // Sign up the user
+            // First sign up the user with Supabase Auth
             let session = try await supabase.auth.signUp(
                 email: email,
                 password: password,
@@ -344,13 +344,17 @@ class SignUpViewModel: ObservableObject {
             // Get the user ID
             let userId = session.user.id
             
-            // Insert user data into the users table
+            // Encrypt the password
+            let encryptedPassword = PasswordEncryption.shared.encryptPassword(password)
+            
+            // Insert user data into the users table with encrypted password
             try await supabase.database
                 .from("users")
                 .insert([
                     "user_id": userId.uuidString,
                     "name": fullName,
-                    "email": email
+                    "email": email,
+                    "encrypted_password": encryptedPassword
                 ])
                 .execute()
             

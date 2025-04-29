@@ -349,10 +349,46 @@ struct ForgotPasswordView: View {
         message = ""
         
         do {
-            // Update the user's password using Supabase's updateUser method
-            try await SupabaseController.shared.client.auth.update(user: .init(
-                password: newPassword
-            ))
+            print("Starting password reset process...")
+            
+            // Encrypt the new password
+            let encryptedPassword = PasswordEncryption.shared.encryptPassword(newPassword)
+            print("Password encrypted successfully")
+            
+            // Update the encrypted password in the users table
+            print("Updating encrypted password for email: \(email)")
+            
+            // Build and execute the update query
+            let updateResponse = try await SupabaseController.shared.client.database
+                .from("users")
+                .update(["encrypted_password": encryptedPassword])
+                .eq("email", value: email.lowercased().trimmingCharacters(in: .whitespaces))
+                .execute()
+            
+            print("Update response received")
+            if let responseString = String(data: updateResponse.data, encoding: .utf8) {
+                print("Update response: \(responseString)")
+            }
+            
+            // Verify the update
+            let verifyResponse = try await SupabaseController.shared.client.database
+                .from("users")
+                .select("encrypted_password")
+                .eq("email", value: email.lowercased().trimmingCharacters(in: .whitespaces))
+                .execute()
+            
+            print("Verifying update...")
+            if let verifyData = String(data: verifyResponse.data, encoding: .utf8) {
+                print("Verification response: \(verifyData)")
+            }
+            
+            // Also try to update auth password (but don't fail if it doesn't work)
+            do {
+                try await SupabaseController.shared.client.auth.resetPasswordForEmail(email)
+                print("Auth password reset email sent")
+            } catch {
+                print("Note: Auth password reset failed, but database update succeeded")
+            }
             
             message = "Password has been reset successfully"
             messageColor = .green
@@ -363,7 +399,15 @@ struct ForgotPasswordView: View {
             }
             
         } catch {
-            print("Password reset error: \(error)")
+            print("\nPassword Reset Error Details:")
+            print("Error type: \(type(of: error))")
+            print("Error description: \(error.localizedDescription)")
+            
+            if let supabaseError = error as? PostgrestError {
+                print("Supabase error code: \(supabaseError.code)")
+                print("Supabase message: \(supabaseError.message)")
+            }
+            
             message = "Failed to reset password: \(error.localizedDescription)"
             messageColor = .red
         }
@@ -378,27 +422,112 @@ struct ForgotPasswordView: View {
             return
         }
         
+        let cleanedEmail = email.lowercased().trimmingCharacters(in: .whitespaces)
         isLoading = true
         message = ""
         
         do {
-            // Generate OTP
-            generatedOTP = generateOTP()
+            print("Checking email: \(cleanedEmail)")
             
-            // Send OTP via email
-            try await EmailService.shared.sendOTP(to: email, otp: generatedOTP, isPasswordReset: true)
+            // First verify if the email exists in the users table with a more explicit query
+            let query = SupabaseController.shared.client.database
+                .from("users")
+                .select("""
+                    email,
+                    user_id
+                """)
+                .eq("email", value: cleanedEmail)
             
-            message = "Verification code sent to your email"
-            messageColor = .green
-            showOTPField = true
+            print("Executing query...")
+            
+            let response = try await query.execute()
+            print("Database response received")
+            
+            // Print detailed response information
+            print("Response status: \(response.status)")
+            print("Response data: \(String(data: response.data, encoding: .utf8) ?? "nil")")
+            
+            // Print the raw JSON for debugging
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print("Raw JSON response: \(jsonString)")
+            }
+            
+            // Try a different query to list all emails
+            print("\nFetching all emails for debugging...")
+            let allEmailsQuery = SupabaseController.shared.client.database
+                .from("users")
+                .select("email")
+            
+            print("Executing all emails query...")
+            let allEmailsResponse = try await allEmailsQuery.execute()
+            
+            if let allEmailsJson = String(data: allEmailsResponse.data, encoding: .utf8) {
+                print("All emails in database: \(allEmailsJson)")
+            }
+            
+            // Try to decode the response
+            let decoder = JSONDecoder()
+            if let users = try? decoder.decode([EmailResponse].self, from: response.data),
+               !users.isEmpty {
+                print("Found user with email: \(users[0].email)")
+                
+                // Email exists, proceed with OTP
+                generatedOTP = generateOTP()
+                print("Generated OTP: \(generatedOTP)")
+                
+                do {
+                    try await EmailService.shared.sendOTP(to: cleanedEmail, otp: generatedOTP, isPasswordReset: true)
+                    message = "Verification code sent to your email"
+                    messageColor = .green
+                    showOTPField = true
+                } catch {
+                    print("Failed to send email: \(error)")
+                    message = "Error sending verification code. Please try again."
+                    messageColor = .red
+                }
+            } else {
+                print("\nDebug Information:")
+                print("1. Cleaned Email: \(cleanedEmail)")
+                print("2. Response Data Length: \(response.data.count) bytes")
+                print("3. Trying to decode raw data...")
+                
+                if let rawString = String(data: response.data, encoding: .utf8) {
+                    print("Raw data as string: \(rawString)")
+                }
+                
+                message = "No account found with this email address"
+                messageColor = .red
+            }
             
         } catch {
-            message = "Failed to send verification code: \(error.localizedDescription)"
+            print("\nDatabase Error Details:")
+            print("Error type: \(type(of: error))")
+            print("Error description: \(error.localizedDescription)")
+            if let supabaseError = error as? PostgrestError {
+                print("Supabase error code: \(supabaseError.code)")
+                print("Supabase message: \(supabaseError.message)")
+            }
+            message = "Error verifying email. Please try again."
             messageColor = .red
         }
         
         isLoading = false
     }
+}
+
+// Add this struct for decoding the response
+private struct UserEmail: Codable {
+    let email: String
+}
+
+// Add this struct at the top level of the file if not already present
+private struct UserResponse: Codable {
+    let email: String
+}
+
+// Add this at the top of the file, outside any class or struct
+private struct EmailResponse: Codable {
+    let email: String
 }
 
 class LoginViewModel: ObservableObject {
@@ -421,17 +550,55 @@ class LoginViewModel: ObservableObject {
         errorMessage = ""
         
         do {
-            let session = try await supabase.auth.signIn(
-                email: email,
-                password: password
-            )
-            UserDefaults.standard.set(email, forKey: "userEmail")
-            let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
-            UserDefaults.standard.set(savedName, forKey: "userName")
+            // First verify the encrypted password
+            let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
+            
+            // Fetch user from database to get stored encrypted password
+            let response = try await supabase.database
+                .from("users")
+                .select("encrypted_password")
+                .eq("email", value: email)
+                .single()
+                .execute()
+            
+            // Decode the response
+            do {
+                let userData = try JSONDecoder().decode([String: String].self, from: response.data)
+                guard let storedPassword = userData["encrypted_password"] else {
+                    errorMessage = "Invalid email or password"
+                    isLoading = false
+                    return false
+                }
+                
+                // Verify password
+                if encryptedAttempt == storedPassword {
+                    // If password matches, proceed with Supabase auth
+                    let session = try await supabase.auth.signIn(
+                        email: email,
+                        password: password
+                    )
+                    
+                    // Store user information
+                    UserDefaults.standard.set(email, forKey: "userEmail")
+                    let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
+                    UserDefaults.standard.set(savedName, forKey: "userName")
+                    
+                    isLoading = false
+                    return true
+                }
+            } catch {
+                print("JSON decoding error: \(error)")
+                errorMessage = "Invalid email or password"
+                isLoading = false
+                return false
+            }
+            
+            errorMessage = "Invalid email or password"
             isLoading = false
-            return true
+            return false
+            
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = "Login failed: \(error.localizedDescription)"
             isLoading = false
             return false
         }

@@ -9,6 +9,16 @@ import UIKit
 import Supabase
 import SwiftUI
 
+//struct User: Codable {
+//    let user_id: UUID
+//    let email: String?
+//    let name: String?
+//}
+
+struct UserResponse1: Codable {
+    let email: String
+}
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
@@ -50,6 +60,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                 } catch {
                     print("\n❌ Error loading data (Attempt \(retryCount + 1)/\(maxRetries)): \(error.localizedDescription)")
+                    if let supabaseError = error as? PostgrestError {
+                        print("Supabase error code: \(supabaseError.code)")
+                        print("Supabase message: \(supabaseError.message)")
+                    }
                 }
                 
                 retryCount += 1
