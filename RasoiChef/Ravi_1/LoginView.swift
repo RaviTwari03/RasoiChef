@@ -573,9 +573,6 @@ class LoginViewModel: ObservableObject {
         do {
             // First verify the encrypted password
             let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
-            print("\nLogin Debug Info:")
-            print("Attempting login for email: \(email)")
-            print("Encrypted attempt: \(encryptedAttempt)")
             
             // Fetch user from database to get stored encrypted password
             let response = try await supabase.database
@@ -589,14 +586,10 @@ class LoginViewModel: ObservableObject {
             do {
                 let userData = try JSONDecoder().decode([String: String].self, from: response.data)
                 guard let storedPassword = userData["encrypted_password"] else {
-                    print("No stored password found for email: \(email)")
                     errorMessage = "Invalid email or password"
                     isLoading = false
                     return false
                 }
-                
-                print("Stored encrypted password: \(storedPassword)")
-                print("Passwords match: \(encryptedAttempt == storedPassword)")
                 
                 // Verify password
                 if encryptedAttempt == storedPassword {
@@ -615,7 +608,6 @@ class LoginViewModel: ObservableObject {
                     return true
                 }
             } catch {
-                print("JSON decoding error: \(error)")
                 errorMessage = "Invalid email or password"
                 isLoading = false
                 return false
