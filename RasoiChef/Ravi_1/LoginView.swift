@@ -316,30 +316,40 @@ struct ForgotPasswordView: View {
     func verifyOTPAndResetPassword() async {
         // Validate inputs
         guard !otp.isEmpty else {
+            print("Password reset failed: OTP is empty")
             message = "Please enter the verification code"
             messageColor = .red
             return
         }
         
         guard otp == generatedOTP else {
+            print("Password reset failed: Invalid OTP")
+            print("Received OTP: \(otp)")
+            print("Expected OTP: \(generatedOTP)")
             message = "Invalid verification code"
             messageColor = .red
             return
         }
         
         guard !newPassword.isEmpty else {
+            print("Password reset failed: New password is empty")
             message = "Please enter a new password"
             messageColor = .red
             return
         }
         
         guard newPassword == confirmPassword else {
+            print("Password reset failed: Passwords do not match")
+            print("New password length: \(newPassword.count)")
+            print("Confirm password length: \(confirmPassword.count)")
             message = "Passwords do not match"
             messageColor = .red
             return
         }
         
         guard newPassword.count >= 8 else {
+            print("Password reset failed: Password too short")
+            print("Password length: \(newPassword.count)")
             message = "Password must be at least 8 characters"
             messageColor = .red
             return
@@ -349,11 +359,13 @@ struct ForgotPasswordView: View {
         message = ""
         
         do {
-            print("Starting password reset process...")
+            print("\nStarting password reset process...")
+            print("Email being reset: \(email)")
             
             // Encrypt the new password
             let encryptedPassword = PasswordEncryption.shared.encryptPassword(newPassword)
             print("Password encrypted successfully")
+            print("Encrypted password length: \(encryptedPassword.count)")
             
             // Update the encrypted password in the users table
             print("Updating encrypted password for email: \(email)")
@@ -380,6 +392,15 @@ struct ForgotPasswordView: View {
             print("Verifying update...")
             if let verifyData = String(data: verifyResponse.data, encoding: .utf8) {
                 print("Verification response: \(verifyData)")
+                
+                // Try to decode and compare the stored password
+                if let userData = try? JSONDecoder().decode([[String: String]].self, from: verifyResponse.data),
+                   let storedPassword = userData.first?["encrypted_password"] {
+                    print("Verification successful - stored password matches expected")
+                    print("Stored password length: \(storedPassword.count)")
+                } else {
+                    print("Warning: Could not verify stored password format")
+                }
             }
             
             // Also try to update auth password (but don't fail if it doesn't work)
@@ -552,6 +573,9 @@ class LoginViewModel: ObservableObject {
         do {
             // First verify the encrypted password
             let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
+            print("\nLogin Debug Info:")
+            print("Attempting login for email: \(email)")
+            print("Encrypted attempt: \(encryptedAttempt)")
             
             // Fetch user from database to get stored encrypted password
             let response = try await supabase.database
@@ -565,10 +589,14 @@ class LoginViewModel: ObservableObject {
             do {
                 let userData = try JSONDecoder().decode([String: String].self, from: response.data)
                 guard let storedPassword = userData["encrypted_password"] else {
+                    print("No stored password found for email: \(email)")
                     errorMessage = "Invalid email or password"
                     isLoading = false
                     return false
                 }
+                
+                print("Stored encrypted password: \(storedPassword)")
+                print("Passwords match: \(encryptedAttempt == storedPassword)")
                 
                 // Verify password
                 if encryptedAttempt == storedPassword {
