@@ -87,6 +87,18 @@ struct SignUpView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var colorScheme
     
+    // Password strength color
+    private func strengthColor(_ strength: Double) -> Color {
+        switch strength {
+        case 0.0..<0.3:
+            return .red
+        case 0.3..<0.7:
+            return .orange
+        default:
+            return .green
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
@@ -170,36 +182,80 @@ struct SignUpView: View {
                             .padding(.horizontal)
                     }
                     
-                    // Password Field with validation
-                    HStack {
-                        SecureField("Password", text: $viewModel.password)
+                    // Password Field with validation and visibility toggle
+                    VStack(spacing: 8) {
+                        HStack {
+                            Group {
+                                if viewModel.showPassword {
+                                    TextField("Password", text: $viewModel.password)
+                                } else {
+                                    SecureField("Password", text: $viewModel.password)
+                                }
+                            }
                             .textContentType(.newPassword)
                             .onChange(of: viewModel.password) { _ in
                                 viewModel.validatePasswordDebounced()
                             }
-                        
-                        // Password validation indicator
-                        Group {
-                            switch viewModel.passwordValidationState {
-                            case .none:
-                                EmptyView()
-                            case .validating:
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                                    .scaleEffect(0.8)
-                            case .valid:
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                            case .invalid:
-                                Image(systemName: "exclamationmark.circle.fill")
-                                    .foregroundColor(.red)
+                            
+                            // Password visibility toggle
+                            Button(action: {
+                                viewModel.showPassword.toggle()
+                            }) {
+                                Image(systemName: viewModel.showPassword ? "eye.slash.fill" : "eye.fill")
+                                    .foregroundColor(.gray)
                             }
+                            .padding(.horizontal, 8)
+                            
+                            // Password validation indicator
+                            Group {
+                                switch viewModel.passwordValidationState {
+                                case .none:
+                                    EmptyView()
+                                case .validating:
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle())
+                                        .scaleEffect(0.8)
+                                case .valid:
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                case .invalid:
+                                    Image(systemName: "exclamationmark.circle.fill")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                            .frame(width: 20)
                         }
-                        .frame(width: 20)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        
+                        // Password strength bar
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                Rectangle()
+                                    .fill(Color(.systemGray5))
+                                    .frame(height: 4)
+                                
+                                Rectangle()
+                                    .fill(strengthColor(viewModel.passwordStrength))
+                                    .frame(width: geometry.size.width * CGFloat(viewModel.passwordStrength), height: 4)
+                            }
+                            .cornerRadius(2)
+                        }
+                        .frame(height: 4)
+                        .padding(.horizontal)
+                        
+                        // Password strength label
+                        HStack {
+                            Text(viewModel.passwordStrength == 0 ? "Password Strength" :
+                                    viewModel.passwordStrength < 0.3 ? "Weak" :
+                                    viewModel.passwordStrength < 0.7 ? "Medium" : "Strong")
+                                .font(.caption)
+                                .foregroundColor(strengthColor(viewModel.passwordStrength))
+                            Spacer()
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
                     
                     // Password validation message
                     if !viewModel.passwordErrorMessage.isEmpty {
@@ -210,13 +266,28 @@ struct SignUpView: View {
                             .padding(.horizontal)
                     }
                     
-                    // Confirm Password Field with validation
+                    // Confirm Password Field with validation and visibility toggle
                     HStack {
-                        SecureField("Confirm Password", text: $viewModel.confirmPassword)
-                            .textContentType(.newPassword)
-                            .onChange(of: viewModel.confirmPassword) { _ in
-                                viewModel.validatePasswordDebounced()
+                        Group {
+                            if viewModel.showConfirmPassword {
+                                TextField("Confirm Password", text: $viewModel.confirmPassword)
+                            } else {
+                                SecureField("Confirm Password", text: $viewModel.confirmPassword)
                             }
+                        }
+                        .textContentType(.newPassword)
+                        .onChange(of: viewModel.confirmPassword) { _ in
+                            viewModel.validatePasswordDebounced()
+                        }
+                        
+                        // Confirm password visibility toggle
+                        Button(action: {
+                            viewModel.showConfirmPassword.toggle()
+                        }) {
+                            Image(systemName: viewModel.showConfirmPassword ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.horizontal, 8)
                         
                         // Confirm password validation indicator
                         Group {
@@ -360,6 +431,9 @@ class SignUpViewModel: ObservableObject {
     @Published var passwordErrorMessage = ""
     @Published var confirmPasswordValidationState: ValidationState = .none
     @Published var confirmPasswordErrorMessage = ""
+    @Published var showPassword = false
+    @Published var showConfirmPassword = false
+    @Published var passwordStrength: Double = 0.0 // 0.0 to 1.0
     
     private let supabase = SupabaseController.shared.client
     private var generatedOTP: String = ""
@@ -419,15 +493,31 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
+    // Calculate password strength percentage
+    private func calculatePasswordStrength(_ password: String) -> Double {
+        let criteria = validatePassword(password).0
+        var strength = 0.0
+        
+        if criteria.hasMinLength { strength += 0.2 }
+        if criteria.hasUppercase { strength += 0.2 }
+        if criteria.hasLowercase { strength += 0.2 }
+        if criteria.hasNumber { strength += 0.2 }
+        if criteria.hasSpecialChar { strength += 0.2 }
+        
+        return strength
+    }
+    
     // Update password validation state
     func validatePasswordDebounced() {
         if password.isEmpty {
             passwordValidationState = .none
             passwordErrorMessage = ""
+            passwordStrength = 0.0
         } else {
             let (criteria, message) = validatePassword(password)
             passwordValidationState = criteria.isValid ? .valid : .invalid
             passwordErrorMessage = message
+            passwordStrength = calculatePasswordStrength(password)
         }
         validateConfirmPassword()
     }
