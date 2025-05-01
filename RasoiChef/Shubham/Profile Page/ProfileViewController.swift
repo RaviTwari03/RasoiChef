@@ -19,6 +19,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var viewShadow1: UIView!
     @IBOutlet weak var viewShadow2: UIView!
     @IBOutlet weak var viewShadow3: UIView!
+    private let supabase = SupabaseController.shared.client
+    
     
     override func viewDidLoad() {
           super.viewDidLoad()
@@ -72,6 +74,62 @@ class ProfileViewController: UIViewController {
         viewShadow3.layer.shadowRadius = 2.5
         viewShadow3.layer.masksToBounds = false
     }
+    
+    
+    @IBAction func logoutButtonPressed(_ sender: UIButton) {
+        // Show confirmation alert
+        let alert = UIAlertController(
+            title: "Logout",
+            message: "Are you sure you want to logout?",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { [weak self] _ in
+            self?.performLogout()
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    private func performLogout() {
+        Task {
+            do {
+                // Sign out from Supabase
+                try await supabase.auth.signOut()
+                
+                // Clear UserDefaults
+                UserDefaults.standard.removeObject(forKey: "userEmail")
+                UserDefaults.standard.removeObject(forKey: "userName")
+                
+                // Switch to LoginView
+                await MainActor.run {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let window = windowScene.windows.first {
+                        let loginView = LoginView()
+                        let hostingController = UIHostingController(rootView: loginView)
+                        
+                        UIView.transition(with: window,
+                                          duration: 0.3,
+                                          options: .transitionCrossDissolve,
+                                          animations: {
+                            window.rootViewController = hostingController
+                        })
+                        window.makeKeyAndVisible()
+                    }
+                }
+            } catch {
+                print("Error during logout: \(error)")
+                let alert = UIAlertController(
+                    title: "Logout Error",
+                    message: "Failed to logout. Please try again.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+            }
+        }
+    }
 
 
 
@@ -94,9 +152,8 @@ extension ProfileViewController: EditProfileDelegate {
         // Update the profile labels
         UserDefaults.standard.set(name, forKey: "userName")
         UserDefaults.standard.set(email, forKey: "userEmail")
-
+        
         nameLabel.text = name
         emailLabel.text = email
     }
 }
-
