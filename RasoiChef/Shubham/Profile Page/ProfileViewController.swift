@@ -49,10 +49,6 @@ class ProfileViewController: UIViewController {
         nameLabel.text = savedName
         emailLabel.text = savedEmail
         
-        if let imageData = UserDefaults.standard.data(forKey: "userProfileImage"),
-               let image = UIImage(data: imageData) {
-                profileImageView.image = image // make sure your IBOutlet for profileImageView is uncommented
-            }
     }
     func setupShadow() {
         viewShadow.layer.shadowColor = UIColor.black.cgColor
@@ -94,18 +90,13 @@ class ProfileViewController: UIViewController {
 
   // Extend ProfileViewController to conform to the delegate
 extension ProfileViewController: EditProfileDelegate {
-    func didUpdateProfile(name: String, email: String, profileImage: UIImage?) {
+    func didUpdateProfile(name: String, email: String) {
         // Update the profile labels
         UserDefaults.standard.set(name, forKey: "userName")
         UserDefaults.standard.set(email, forKey: "userEmail")
 
         nameLabel.text = name
         emailLabel.text = email
-        if let image = profileImage {
-                    if let imageData = image.jpegData(compressionQuality: 0.8) {
-                        UserDefaults.standard.set(imageData, forKey: "userProfileImage")
-                    }
-                }
     }
 }
 
