@@ -22,13 +22,13 @@ struct LoginView: View {
                 Color.white.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Food Images Grid
-                    ZStack {
-                        Image("WhatsApp Image 2025-01-16 at 20.47.08")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                        // Food Images Grid
+                        ZStack {
+                        Image("food1")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
                             .frame(height: UIScreen.main.bounds.height * 0.29)
-                            .clipped()
+                                .clipped()
                         
                        //  Overlay gradient
                         LinearGradient(
@@ -62,12 +62,25 @@ struct LoginView: View {
                                 .background(Color(.systemGray6))
                                 .cornerRadius(12)
                             
-                            // Password Field
+                            // Password Field with eye icon
+                            HStack {
+                                Group {
+                                    if viewModel.showPassword {
+                                        TextField("Password", text: $viewModel.password)
+                                            .textContentType(.password)
+                                    } else {
                             SecureField("Password", text: $viewModel.password)
                                 .textContentType(.password)
+                                    }
+                                }
+                                Button(action: { viewModel.showPassword.toggle() }) {
+                                    Image(systemName: viewModel.showPassword ? "eye.slash.fill" : "eye.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
                                 .padding()
                                 .background(Color(.systemGray6))
-                                .cornerRadius(12)
+                            .cornerRadius(12)
                             
                             // Forgot Password Button
                             HStack {
@@ -121,47 +134,19 @@ struct LoginView: View {
                                 .font(.subheadline)
                             
                             HStack(spacing: 15) {
-                                // Google Sign In
-                                Button(action: { viewModel.signInWithGoogle() }) {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "g.circle.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
+                                // System Apple Sign In Button
+                                SignInWithAppleButton(
+                                    .signIn,
+                                    onRequest: { request in
+                                        request.requestedScopes = [.fullName, .email]
+                                    },
+                                    onCompletion: { result in
+                                        viewModel.handleAppleSignInCompletion(result)
                                     }
-                                    .foregroundColor(.black)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 45)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .fill(Color.white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                                    )
-                                }
-                                .frame(maxWidth: .infinity)
-                                
-                                // Apple Sign In
-                                Button(action: {
-                                    let request = ASAuthorizationAppleIDProvider().createRequest()
-                                    request.requestedScopes = [.fullName, .email]
-                                    viewModel.handleAppleSignInRequest(request)
-                                }) {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "apple.logo")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
-                                    }
-                                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 45)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .fill(colorScheme == .dark ? .black : .white)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                                    )
-                                }
-                                .frame(maxWidth: .infinity)
+                                )
+                                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                                .frame(height: 45)
+                                .cornerRadius(15)
                             }
                             .frame(height: 45)
                             .padding(.horizontal, 40)
@@ -331,30 +316,40 @@ struct ForgotPasswordView: View {
     func verifyOTPAndResetPassword() async {
         // Validate inputs
         guard !otp.isEmpty else {
+            print("Password reset failed: OTP is empty")
             message = "Please enter the verification code"
             messageColor = .red
             return
         }
         
         guard otp == generatedOTP else {
+            print("Password reset failed: Invalid OTP")
+            print("Received OTP: \(otp)")
+            print("Expected OTP: \(generatedOTP)")
             message = "Invalid verification code"
             messageColor = .red
             return
         }
         
         guard !newPassword.isEmpty else {
+            print("Password reset failed: New password is empty")
             message = "Please enter a new password"
             messageColor = .red
             return
         }
         
         guard newPassword == confirmPassword else {
+            print("Password reset failed: Passwords do not match")
+            print("New password length: \(newPassword.count)")
+            print("Confirm password length: \(confirmPassword.count)")
             message = "Passwords do not match"
             messageColor = .red
             return
         }
         
         guard newPassword.count >= 8 else {
+            print("Password reset failed: Password too short")
+            print("Password length: \(newPassword.count)")
             message = "Password must be at least 8 characters"
             messageColor = .red
             return
@@ -364,10 +359,57 @@ struct ForgotPasswordView: View {
         message = ""
         
         do {
-            // Update the user's password using Supabase's updateUser method
-            try await SupabaseController.shared.client.auth.update(user: .init(
-                password: newPassword
-            ))
+            print("\nStarting password reset process...")
+            print("Email being reset: \(email)")
+            
+            // Encrypt the new password
+            let encryptedPassword = PasswordEncryption.shared.encryptPassword(newPassword)
+            print("Password encrypted successfully")
+            print("Encrypted password length: \(encryptedPassword.count)")
+            
+            // Update the encrypted password in the users table
+            print("Updating encrypted password for email: \(email)")
+            
+            // Build and execute the update query
+            let updateResponse = try await SupabaseController.shared.client.database
+                .from("users")
+                .update(["encrypted_password": encryptedPassword])
+                .eq("email", value: email.lowercased().trimmingCharacters(in: .whitespaces))
+                .execute()
+            
+            print("Update response received")
+            if let responseString = String(data: updateResponse.data, encoding: .utf8) {
+                print("Update response: \(responseString)")
+            }
+            
+            // Verify the update
+            let verifyResponse = try await SupabaseController.shared.client.database
+                .from("users")
+                .select("encrypted_password")
+                .eq("email", value: email.lowercased().trimmingCharacters(in: .whitespaces))
+                .execute()
+            
+            print("Verifying update...")
+            if let verifyData = String(data: verifyResponse.data, encoding: .utf8) {
+                print("Verification response: \(verifyData)")
+                
+                // Try to decode and compare the stored password
+                if let userData = try? JSONDecoder().decode([[String: String]].self, from: verifyResponse.data),
+                   let storedPassword = userData.first?["encrypted_password"] {
+                    print("Verification successful - stored password matches expected")
+                    print("Stored password length: \(storedPassword.count)")
+                } else {
+                    print("Warning: Could not verify stored password format")
+                }
+            }
+            
+            // Also try to update auth password (but don't fail if it doesn't work)
+            do {
+                try await SupabaseController.shared.client.auth.resetPasswordForEmail(email)
+                print("Auth password reset email sent")
+            } catch {
+                print("Note: Auth password reset failed, but database update succeeded")
+            }
             
             message = "Password has been reset successfully"
             messageColor = .green
@@ -378,7 +420,15 @@ struct ForgotPasswordView: View {
             }
             
         } catch {
-            print("Password reset error: \(error)")
+            print("\nPassword Reset Error Details:")
+            print("Error type: \(type(of: error))")
+            print("Error description: \(error.localizedDescription)")
+            
+            if let supabaseError = error as? PostgrestError {
+                print("Supabase error code: \(supabaseError.code)")
+                print("Supabase message: \(supabaseError.message)")
+            }
+            
             message = "Failed to reset password: \(error.localizedDescription)"
             messageColor = .red
         }
@@ -393,22 +443,92 @@ struct ForgotPasswordView: View {
             return
         }
         
+        let cleanedEmail = email.lowercased().trimmingCharacters(in: .whitespaces)
         isLoading = true
         message = ""
         
         do {
-            // Generate OTP
-            generatedOTP = generateOTP()
+            print("Checking email: \(cleanedEmail)")
             
-            // Send OTP via email
-            try await EmailService.shared.sendOTP(to: email, otp: generatedOTP, isPasswordReset: true)
+            // First verify if the email exists in the users table with a more explicit query
+            let query = SupabaseController.shared.client.database
+                .from("users")
+                .select("""
+                    email,
+                    user_id
+                """)
+                .eq("email", value: cleanedEmail)
             
-            message = "Verification code sent to your email"
-            messageColor = .green
-            showOTPField = true
+            print("Executing query...")
+            
+            let response = try await query.execute()
+            print("Database response received")
+            
+            // Print detailed response information
+            print("Response status: \(response.status)")
+            print("Response data: \(String(data: response.data, encoding: .utf8) ?? "nil")")
+            
+            // Print the raw JSON for debugging
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print("Raw JSON response: \(jsonString)")
+            }
+            
+            // Try a different query to list all emails
+            print("\nFetching all emails for debugging...")
+            let allEmailsQuery = SupabaseController.shared.client.database
+                .from("users")
+                .select("email")
+            
+            print("Executing all emails query...")
+            let allEmailsResponse = try await allEmailsQuery.execute()
+            
+            if let allEmailsJson = String(data: allEmailsResponse.data, encoding: .utf8) {
+                print("All emails in database: \(allEmailsJson)")
+            }
+            
+            // Try to decode the response
+            let decoder = JSONDecoder()
+            if let users = try? decoder.decode([EmailResponse].self, from: response.data),
+               !users.isEmpty {
+                print("Found user with email: \(users[0].email)")
+                
+                // Email exists, proceed with OTP
+                generatedOTP = generateOTP()
+                print("Generated OTP: \(generatedOTP)")
+                
+                do {
+                    try await EmailService.shared.sendOTP(to: cleanedEmail, otp: generatedOTP, isPasswordReset: true)
+                    message = "Verification code sent to your email"
+                    messageColor = .green
+                    showOTPField = true
+                } catch {
+                    print("Failed to send email: \(error)")
+                    message = "Error sending verification code. Please try again."
+                    messageColor = .red
+                }
+            } else {
+                print("\nDebug Information:")
+                print("1. Cleaned Email: \(cleanedEmail)")
+                print("2. Response Data Length: \(response.data.count) bytes")
+                print("3. Trying to decode raw data...")
+                
+                if let rawString = String(data: response.data, encoding: .utf8) {
+                    print("Raw data as string: \(rawString)")
+                }
+                
+                message = "No account found with this email address"
+                messageColor = .red
+            }
             
         } catch {
-            message = "Failed to send verification code: \(error.localizedDescription)"
+            print("\nDatabase Error Details:")
+            print("Error type: \(type(of: error))")
+            print("Error description: \(error.localizedDescription)")
+            if let supabaseError = error as? PostgrestError {
+                print("Supabase error code: \(supabaseError.code)")
+                print("Supabase message: \(supabaseError.message)")
+            }
+            message = "Error verifying email. Please try again."
             messageColor = .red
         }
         
@@ -416,11 +536,27 @@ struct ForgotPasswordView: View {
     }
 }
 
+// Add this struct for decoding the response
+private struct UserEmail: Codable {
+    let email: String
+}
+
+// Add this struct at the top level of the file if not already present
+private struct UserResponse: Codable {
+    let email: String
+}
+
+// Add this at the top of the file, outside any class or struct
+private struct EmailResponse: Codable {
+    let email: String
+}
+
 class LoginViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var errorMessage = ""
     @Published var isLoading = false
+    @Published var showPassword = false
     
     private let supabase = SupabaseController.shared.client
     
@@ -435,17 +571,54 @@ class LoginViewModel: ObservableObject {
         errorMessage = ""
         
         do {
-            let session = try await supabase.auth.signIn(
-                email: email,
-                password: password
-            )
-            UserDefaults.standard.set(email, forKey: "userEmail")
-            let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
-            UserDefaults.standard.set(savedName, forKey: "userName")
+            // First verify the encrypted password
+            let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
+            
+            // Fetch user from database to get stored encrypted password
+            let response = try await supabase.database
+                .from("users")
+                .select("encrypted_password")
+                .eq("email", value: email)
+                .single()
+                .execute()
+            
+            // Decode the response
+            do {
+                let userData = try JSONDecoder().decode([String: String].self, from: response.data)
+                guard let storedPassword = userData["encrypted_password"] else {
+                    errorMessage = "Invalid email or password"
+                    isLoading = false
+                    return false
+                }
+                
+                // Verify password
+                if encryptedAttempt == storedPassword {
+                    // If password matches, proceed with Supabase auth
+                    let session = try await supabase.auth.signIn(
+                        email: email,
+                        password: password
+                    )
+                    
+                    // Store user information
+                    UserDefaults.standard.set(email, forKey: "userEmail")
+                    let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
+                    UserDefaults.standard.set(savedName, forKey: "userName")
+                    
+                    isLoading = false
+                    return true
+                }
+            } catch {
+                errorMessage = "Invalid email or password"
+                isLoading = false
+                return false
+            }
+            
+            errorMessage = "Invalid email or password"
             isLoading = false
-            return true
+            return false
+            
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = "Login failed: \(error.localizedDescription)"
             isLoading = false
             return false
         }
@@ -491,35 +664,21 @@ class LoginViewModel: ObservableObject {
         }
     }
     
-    func signInWithGoogle() {
-        Task {
-            do {
-                let redirectURL = URL(string: "io.supabase.rasoi-chef://login-callback")!
-                try await supabase.auth.signInWithOAuth(
-                    provider: .google,
-                    redirectTo: redirectURL
-                )
-            } catch {
-                await MainActor.run {
-                    errorMessage = "Google sign in failed: \(error.localizedDescription)"
-                }
-            }
-        }
-    }
-    
-    func handleAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName, .email]
-    }
-    
     func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) {
         switch result {
         case .success(let authorization):
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
                 guard let identityToken = appleIDCredential.identityToken,
                       let tokenString = String(data: identityToken, encoding: .utf8) else {
-                    errorMessage = "Could not get identity token"
+                    let msg = "Could not get identity token"
+                    print(msg)
+                    errorMessage = msg
                     return
                 }
+                // Extract user details
+                let userID = appleIDCredential.user
+                let email = appleIDCredential.email ?? ""
+                let fullName = [appleIDCredential.fullName?.givenName, appleIDCredential.fullName?.familyName].compactMap { $0 }.joined(separator: " ")
                 
                 Task {
                     do {
@@ -529,18 +688,55 @@ class LoginViewModel: ObservableObject {
                                 idToken: tokenString
                             )
                         )
+                        // Save details to UserDefaults
+                        if !email.isEmpty {
+                            UserDefaults.standard.set(email, forKey: "userEmail")
+                        }
+                        if !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+                            UserDefaults.standard.set(fullName, forKey: "userName")
+                        }
+                        UserDefaults.standard.set(userID, forKey: "userID")
+                        // Save to database if new user (only if email/name available)
+                        if !email.isEmpty && !fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+                            try? await SupabaseController.shared.createUserRecord(userID: userID, name: fullName, email: email)
+                        }
                         await MainActor.run {
                             self.navigateToMainTabBar()
                         }
                     } catch {
+                        let msg = "Apple sign in failed: \(error.localizedDescription)"
+                        print(msg)
                         await MainActor.run {
-                            errorMessage = "Apple sign in failed: \(error.localizedDescription)"
+                            errorMessage = msg
                         }
                     }
                 }
             }
         case .failure(let error):
-            errorMessage = "Apple sign in failed: \(error.localizedDescription)"
+            let nsError = error as NSError
+            let msg = "Apple sign in failed: \(error.localizedDescription) (code: \(nsError.code), domain: \(nsError.domain))"
+            print("ASAuthorizationController credential request failed with error: \(msg)")
+            errorMessage = msg
+            // If error code 1000, prompt user to open Settings
+            if nsError.domain == "com.apple.AuthenticationServices.AuthorizationError" && nsError.code == 1000 {
+                DispatchQueue.main.async {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let rootVC = windowScene.windows.first?.rootViewController {
+                        let alert = UIAlertController(
+                            title: "Apple ID Required",
+                            message: "You are not signed in to an Apple ID. Please sign in from Settings to use Sign in with Apple.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        })
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        rootVC.present(alert, animated: true)
+                    }
+                }
+            }
         }
     }
 }
