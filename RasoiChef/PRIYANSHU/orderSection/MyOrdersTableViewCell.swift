@@ -33,6 +33,10 @@ class MyOrdersTableViewCell: UITableViewCell {
         // Configure items label
         itemsLabel.numberOfLines = 0
         itemsLabel.lineBreakMode = .byWordWrapping
+        
+        // Configure location label
+        locationLabel.numberOfLines = 2
+        locationLabel.lineBreakMode = .byWordWrapping
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
