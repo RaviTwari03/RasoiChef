@@ -22,9 +22,6 @@
                                     <segment title="Orders"/>
                                     <segment title="Subscribed Plans"/>
                                 </segments>
-                                <connections>
-                                    <action selector="segmentChanged:" destination="PGd-HJ-QzC" eventType="valueChanged" id="QIW-bN-om6"/>
-                                </connections>
                             </segmentedControl>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" id="80G-gY-6Uh">
                                 <rect key="frame" x="0.0" y="225" width="393" height="593"/>
@@ -125,9 +122,6 @@
                             <constraint firstAttribute="trailing" secondItem="gaS-nn-knc" secondAttribute="trailing" id="y4L-9v-0dk"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="tableViewSubscriptionPlan" destination="gaS-nn-knc" id="fY9-oH-I0j"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FzH-Yh-bMX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

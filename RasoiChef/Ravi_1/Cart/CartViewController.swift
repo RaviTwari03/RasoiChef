@@ -54,6 +54,9 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                    print("\n📤 Saving order to Supabase...")
                    try await SupabaseController.shared.insertOrder(order: order)
                    
+                   // Add order to OrderDataController
+                   OrderDataController.shared.addOrder(order: order)
+                   
                    DispatchQueue.main.async {
                        print("✅ Order successfully placed and saved")
                        
@@ -108,11 +111,38 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
    }
    
    // Function to update the badge count on My Orders tab
-   func updateMyOrdersBadge() {
+    @objc func updateMyOrdersBadge() {
        if let tabItems = self.tabBarController?.tabBar.items {
            let myOrdersTabItem = tabItems[1] // Assuming My Orders is at index 1
-           let activeOrdersCount = OrderDataController.shared.getActiveOrdersCount()
-           myOrdersTabItem.badgeValue = activeOrdersCount > 0 ? "\(activeOrdersCount)" : nil
+           
+           // Fetch active orders count from database
+           Task {
+               do {
+                   // Get current user ID
+                   var userID = UserDefaults.standard.string(forKey: "userID")
+                   if userID == nil {
+                       if let session = try await SupabaseController.shared.getCurrentSession() {
+                           userID = session.user.id.uuidString
+                           UserDefaults.standard.set(userID, forKey: "userID")
+                       }
+                   }
+                   
+                   guard let finalUserID = userID else { return }
+                   
+                   // Fetch orders from database
+                   let orders = try await SupabaseController.shared.fetchOrders(for: finalUserID)
+                   
+                   // Count only active orders (not delivered)
+                   let activeOrdersCount = orders.filter { $0.status != .delivered }.count
+                   
+                   // Update badge on main thread
+                   DispatchQueue.main.async {
+                       myOrdersTabItem.badgeValue = activeOrdersCount > 0 ? "\(activeOrdersCount)" : nil
+                   }
+               } catch {
+                   print("Error fetching orders for badge count: \(error)")
+               }
+           }
        }
    }
    @objc func reloadCart() {
@@ -129,6 +159,9 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
            locationManager.desiredAccuracy = kCLLocationAccuracyBest
            
            NotificationCenter.default.addObserver(self, selector: #selector(reloadCart), name: NSNotification.Name("CartUpdated"), object: nil)
+
+           // Add observer for app becoming active
+           NotificationCenter.default.addObserver(self, selector: #selector(updateMyOrdersBadge), name: UIApplication.willEnterForegroundNotification, object: nil)
 
            
            CartItem.register(UINib(nibName: "UserCartAddress", bundle: nil), forCellReuseIdentifier: "UserCartAddress")
@@ -491,6 +524,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cartItems = CartViewController.cartItems
         CartItem.reloadData()
+        updateMyOrdersBadge() // Update badge count when view appears
     }
 
        func calculateTotalItemPrice() -> Double {
@@ -559,6 +593,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                }
 
                updateTabBarBadge()
+           
            }
 
        func didTapSeeMorePlanYourMeal() {
@@ -816,10 +851,14 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // Save order to Supabase
                 try await SupabaseController.shared.insertOrder(order: order)
                 
+                // Add order to OrderDataController
+                OrderDataController.shared.addOrder(order: order)
+                
                 // Clear cart and update UI
                 CartViewController.cartItems.removeAll()
                 CartViewController.subscriptionPlan1.removeAll()
                 updateTabBarBadge()
+                updateMyOrdersBadge()
                 CartItem.reloadData()
                 
                 showAlert(title: "Success", message: "Your order has been placed successfully!")

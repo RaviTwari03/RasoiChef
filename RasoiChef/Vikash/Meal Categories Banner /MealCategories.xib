@@ -56,8 +56,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dot.square" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ZNv-a3-OBz">
-                                <rect key="frame" x="10" y="11.666666666666663" width="20" height="17"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZNv-a3-OBz">
+                                <rect key="frame" x="10" y="10" width="20" height="20"/>
                                 <color key="tintColor" red="0.25264382839999999" green="0.5" blue="0.25766681920000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="1fc-mU-VP1"/>
@@ -224,7 +224,6 @@
     </objects>
     <resources>
         <image name="StarRatings" width="128" height="128"/>
-        <image name="dot.square" catalog="system" width="128" height="114"/>
         <image name="location.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

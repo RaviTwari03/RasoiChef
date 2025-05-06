@@ -7,13 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C46F09BC2DBF832C00AA8C79 /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C46F09BB2DBF832C00AA8C79 /* SwiftSMTP */; };
 		E306F8D92D6D79D00021398C /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8D82D6D79D00021398C /* Auth */; };
 		E306F8DB2D6D79D00021398C /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DA2D6D79D00021398C /* Functions */; };
 		E306F8DD2D6D79D00021398C /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DC2D6D79D00021398C /* PostgREST */; };
 		E306F8DF2D6D79D00021398C /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DE2D6D79D00021398C /* Realtime */; };
 		E306F8E12D6D79D00021398C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8E02D6D79D00021398C /* Storage */; };
 		E306F8E32D6D79D00021398C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8E22D6D79D00021398C /* Supabase */; };
+<<<<<<< HEAD
 		F5C0A5902DBF7B7000843FCC /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = F5C0A58F2DBF7B7000843FCC /* SwiftSMTP */; };
+=======
+>>>>>>> Priyanshu
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +55,11 @@
 				E306F8E32D6D79D00021398C /* Supabase in Frameworks */,
 				E306F8D92D6D79D00021398C /* Auth in Frameworks */,
 				E306F8E12D6D79D00021398C /* Storage in Frameworks */,
+<<<<<<< HEAD
 				F5C0A5902DBF7B7000843FCC /* SwiftSMTP in Frameworks */,
+=======
+				C46F09BC2DBF832C00AA8C79 /* SwiftSMTP in Frameworks */,
+>>>>>>> Priyanshu
 				E306F8DF2D6D79D00021398C /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,7 +109,11 @@
 				E306F8DE2D6D79D00021398C /* Realtime */,
 				E306F8E02D6D79D00021398C /* Storage */,
 				E306F8E22D6D79D00021398C /* Supabase */,
+<<<<<<< HEAD
 				F5C0A58F2DBF7B7000843FCC /* SwiftSMTP */,
+=======
+				C46F09BB2DBF832C00AA8C79 /* SwiftSMTP */,
+>>>>>>> Priyanshu
 			);
 			productName = RasoiChef;
 			productReference = 0599B1462D35112A00F8CEE0 /* RasoiChef.app */;
@@ -133,7 +145,11 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */,
+<<<<<<< HEAD
 				F5C0A58E2DBF7B7000843FCC /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+=======
+				C46F09BA2DBF832C00AA8C79 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+>>>>>>> Priyanshu
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0599B1472D35112A00F8CEE0 /* Products */;
@@ -173,7 +189,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YUHS7WP24P;
+				DEVELOPMENT_TEAM = Y74W2UU3Y5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RasoiChef/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -187,7 +203,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.exapmle;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.exapmle.RasoiChef;
+>>>>>>> Priyanshu
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -202,7 +222,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YUHS7WP24P;
+				DEVELOPMENT_TEAM = Y74W2UU3Y5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RasoiChef/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -216,7 +236,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.exapmle;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.exapmle.RasoiChef;
+>>>>>>> Priyanshu
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -367,6 +391,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C46F09BA2DBF832C00AA8C79 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 		E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
@@ -375,6 +407,7 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+<<<<<<< HEAD
 		F5C0A58E2DBF7B7000843FCC /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Kitura/Swift-SMTP";
@@ -383,9 +416,16 @@
 				minimumVersion = 6.0.0;
 			};
 		};
+=======
+>>>>>>> Priyanshu
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C46F09BB2DBF832C00AA8C79 /* SwiftSMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C46F09BA2DBF832C00AA8C79 /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
+			productName = SwiftSMTP;
+		};
 		E306F8D82D6D79D00021398C /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */;
@@ -416,11 +456,14 @@
 			package = E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
 		};
+<<<<<<< HEAD
 		F5C0A58F2DBF7B7000843FCC /* SwiftSMTP */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F5C0A58E2DBF7B7000843FCC /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
 			productName = SwiftSMTP;
 		};
+=======
+>>>>>>> Priyanshu
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0599B13E2D35112A00F8CEE0 /* Project object */;

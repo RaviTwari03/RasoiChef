@@ -153,7 +153,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                case 1:
                    return KitchenDataController.chefSpecialtyDishes.count
                case 2:
-                   return KitchenDataController.kitchens.count
+                   return min(5, KitchenDataController.kitchens.count)
                default:
                    return 0
                }
@@ -311,12 +311,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Define group size and layout
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(140))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         // Add content insets to the group
         group.interItemSpacing = .fixed(10)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 10.0)
+           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 10.0, trailing: 10.0)
         
         // Create the section
         let section = NSCollectionLayoutSection(group: group)
