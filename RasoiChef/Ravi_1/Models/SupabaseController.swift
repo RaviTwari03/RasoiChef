@@ -606,6 +606,13 @@ class SupabaseController {
         let delivery_address: String
         let delivery_date: String
         let delivery_type: String
+        let order_items: [OrderItemJSON]
+    }
+
+    private struct OrderItemJSON: Encodable {
+        let menu_item_id: String
+        let quantity: Int
+        let price: Double
     }
 
     private struct DBOrderItem: Encodable {
@@ -639,6 +646,16 @@ class SupabaseController {
             print("- User ID: \(order.userID)")
             print("- Kitchen ID: \(order.kitchenID)")
             
+            // Convert order items to array of OrderItemJSON
+            let orderItemsJSON = order.items.map { item -> OrderItemJSON in
+                return OrderItemJSON(
+                    menu_item_id: item.menuItemID,
+                    quantity: item.quantity,
+                    price: item.price
+                )
+            }
+            
+            // Create the order object with order_items included
             let dbOrder = DBOrder(
                 order_id: order.orderID,
                 user_id: order.userID,
@@ -647,16 +664,18 @@ class SupabaseController {
                 total_amount: order.totalAmount,
                 delivery_address: order.deliveryAddress,
                 delivery_date: formattedDate,
-                delivery_type: order.deliveryType
+                delivery_type: order.deliveryType,
+                order_items: orderItemsJSON
             )
             
-            // Insert order
+            // Insert order with items
             try await client.database
                 .from("orders")
                 .insert(dbOrder)
                 .execute()
             
             print("✅ Order insertion completed successfully")
+            print("📦 Saved order items: \(orderItemsJSON)")
             
             // Update intake limits for each item
             print("\n🔄 Updating intake limits...")
