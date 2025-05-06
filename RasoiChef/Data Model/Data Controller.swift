@@ -55,7 +55,7 @@ class KitchenDataController {
                         print("✅ Successfully loaded \(allKitchens.count) kitchens")
                         
                         // Filter kitchens by distance and sort them
-                        let filteredKitchens = filterKitchensByDistance(allKitchens, maxDistance: 500.0)
+                        let filteredKitchens = filterKitchensByDistance(allKitchens, maxDistance: 150.0)
                         kitchens = sortKitchensByDistance(filteredKitchens)
                     } catch {
                         print("❌ Error fetching kitchens: \(error.localizedDescription)")
