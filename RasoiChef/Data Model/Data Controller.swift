@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class KitchenDataController {
     static let shared = KitchenDataController()
@@ -16,6 +17,7 @@ class KitchenDataController {
     // MARK: - Data Storage
     static var users: [User] = []
     static var kitchens: [Kitchen] = []
+    static var filteredKitchens: [Kitchen] = [] // For filtered kitchen view
     static var menuItems: [MenuItem] = []
     static var filteredMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var subscriptionMenuItems: [MenuItem] = []
@@ -51,7 +53,10 @@ class KitchenDataController {
                     do {
                         let allKitchens = try await SupabaseController.shared.fetchKitchens()
                         print("✅ Successfully loaded \(allKitchens.count) kitchens")
-                        kitchens = allKitchens
+                        
+                        // Filter kitchens by distance and sort them
+                        let filteredKitchens = filterKitchensByDistance(allKitchens, maxDistance: 500.0)
+                        kitchens = sortKitchensByDistance(filteredKitchens)
                     } catch {
                         print("❌ Error fetching kitchens: \(error.localizedDescription)")
                         throw error
@@ -144,6 +149,26 @@ class KitchenDataController {
             }
             throw error
         }
+    }
+
+    // MARK: - Helper Functions
+    
+    /// Filter kitchens by distance from user's current location
+    /// - Parameters:
+    ///   - kitchens: Array of all kitchens
+    ///   - maxDistance: Maximum distance in kilometers
+    /// - Returns: Array of kitchens within the specified distance
+    static func filterKitchensByDistance(_ kitchens: [Kitchen], maxDistance: Double) -> [Kitchen] {
+        return kitchens.filter { kitchen in
+            kitchen.distance <= maxDistance
+        }
+    }
+    
+    /// Sort kitchens by distance from nearest to farthest
+    /// - Parameter kitchens: Array of kitchens to sort
+    /// - Returns: Sorted array of kitchens
+    static func sortKitchensByDistance(_ kitchens: [Kitchen]) -> [Kitchen] {
+        return kitchens.sorted { $0.distance < $1.distance }
     }
 
     // MARK: - User Management
