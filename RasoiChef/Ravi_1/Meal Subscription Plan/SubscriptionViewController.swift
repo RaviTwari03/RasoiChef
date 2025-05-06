@@ -308,7 +308,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                         imageURL: "",
                         orderDeadline: "10:00 AM",
                         availability: [],
-                        availableDays: [day],
+                        availableDays: day,
                         mealCategory: []
                     )
 

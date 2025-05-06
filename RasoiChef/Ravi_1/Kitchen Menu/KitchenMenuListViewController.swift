@@ -46,7 +46,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         // Print initial menu items state
         print("\n=== Menu Items State at ViewDidLoad ===")
         print("Total filtered menu items: \(KitchenDataController.filteredMenuItems.count)")
-        let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays.contains(selectedDay) }
+        let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays == selectedDay }
         print("Filtered menu items for \(selectedDay): \(filteredMenu.count)")
         
         // Debug: Print all menu items and their available days
@@ -54,7 +54,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         for (index, item) in KitchenDataController.filteredMenuItems.enumerated() {
             print("\nItem \(index + 1):")
             print("- Name: \(item.name)")
-            print("- Available Days: \(item.availableDays.map { $0.rawValue })")
+            print("- Available Day: \(item.availableDays.rawValue)")
             print("- Meal Type: \(String(describing: item.availableMealTypes))")
             print("- Kitchen: \(item.kitchenName)")
         }
@@ -69,7 +69,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
                         guard let self = self else { return }
                         print("\n=== Menu Items State after Loading ===")
                         print("Total filtered menu items: \(KitchenDataController.filteredMenuItems.count)")
-                        let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays.contains(self.selectedDay) }
+                        let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays == self.selectedDay }
                         print("Filtered menu items for \(self.selectedDay): \(filteredMenu.count)")
                         
                         // Debug: Print all menu items after loading
@@ -77,7 +77,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
                         for (index, item) in KitchenDataController.filteredMenuItems.enumerated() {
                             print("\nItem \(index + 1):")
                             print("- Name: \(item.name)")
-                            print("- Available Days: \(item.availableDays.map { $0.rawValue })")
+                            print("- Available Day: \(item.availableDays.rawValue)")
                             print("- Meal Type: \(String(describing: item.availableMealTypes))")
                             print("- Kitchen: \(item.kitchenName)")
                         }
@@ -125,11 +125,22 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     
     // MARK: - Number of Items in Section
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1 // Calendar section
-        } else {
-            // Use filtered menu items instead of global menu items
-            return KitchenDataController.filteredMenuItems.filter { $0.availableDays.contains(selectedDay) }.count
+        switch section {
+        case 0:
+            return 7 // Calendar days
+        case 1:
+            let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays == selectedDay }
+            print("\n=== Number of Items Debug ===")
+            print("Section: \(section)")
+            print("Selected Day: \(selectedDay)")
+            print("Total Menu Items: \(KitchenDataController.filteredMenuItems.count)")
+            print("Filtered Menu Items: \(filteredMenu.count)")
+            if let firstItem = KitchenDataController.filteredMenuItems.first {
+                print("First Item Available Day: \(firstItem.availableDays)")
+            }
+            return filteredMenu.count
+        default:
+            return 0
         }
     }
 
@@ -137,28 +148,29 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     
     // MARK: - Cell for Item at IndexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenuCalender", for: indexPath) as! KitchenMenuCalenderCollectionViewCell
             cell.updateMenuListDate(for: indexPath)
             return cell
             
-        } else {
+        case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenMenu", for: indexPath) as! KitchenMenuCollectionViewCell
+            let filteredMenu = KitchenDataController.filteredMenuItems.filter { $0.availableDays == selectedDay }
             
-            // Filter menu items for the selected day from the filtered menu items
-            let dayFilteredItems = KitchenDataController.filteredMenuItems.filter { $0.availableDays.contains(selectedDay) }
-            
-            if indexPath.row < dayFilteredItems.count {
-                let menuItem = dayFilteredItems[indexPath.row]
+            if indexPath.row < filteredMenu.count {
+                let menuItem = filteredMenu[indexPath.row]
                 print("Configuring cell at index \(indexPath.row) with menu item: \(menuItem.name)")
                 cell.updateMealDetails(with: menuItem, at: indexPath)
             } else {
-                print("Index \(indexPath.row) is out of bounds for filtered menu count: \(dayFilteredItems.count)")
+                print("Index \(indexPath.row) is out of bounds for filtered menu count: \(filteredMenu.count)")
             }
             
             cell.delegate = self
             return cell
             
+        default:
+            return UICollectionViewCell()
         }
     }
 

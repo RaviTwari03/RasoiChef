@@ -185,7 +185,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 }
                 
                 // Check if the item is available on the current day
-                guard menuItem.availableDays.contains(today) else {
+                guard menuItem.availableDays == today else {
                     return false
                 }
                 

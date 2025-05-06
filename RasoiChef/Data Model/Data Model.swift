@@ -103,14 +103,14 @@ struct MenuItem {
     var description: String
     var price: Double
     var rating: Float
-    var availableMealTypes: MealType?  // Changed from array to optional single value
+    var availableMealTypes: MealType?
     var portionSize: String
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline: String
     var recievingDeadline: String?
     var availability: [Availabiltiy]
-    var availableDays: [WeekDay]
+    var availableDays: WeekDay
     var mealCategory: [MealCategory]
 }
 struct GlobalMenuItem{

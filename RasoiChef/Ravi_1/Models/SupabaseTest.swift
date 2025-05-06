@@ -36,7 +36,7 @@ class SupabaseTest {
                         - Rating: \(item.rating)
                         - Meal Type: \(item.availableMealTypes?.rawValue ?? "Not specified")
                         - Categories: \(item.mealCategory.map { $0.rawValue }.joined(separator: ", "))
-                        - Available Days: \(item.availableDays.map { $0.rawValue }.joined(separator: ", "))
+                        - Available Day: \(item.availableDays.rawValue)
                         """)
                 }
             } catch {
