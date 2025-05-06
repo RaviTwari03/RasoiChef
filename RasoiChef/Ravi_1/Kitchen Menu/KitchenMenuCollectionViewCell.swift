@@ -41,11 +41,39 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         override func awakeFromNib() {
                   super.awakeFromNib()
                   
-                  // Set up observers
-                  NotificationCenter.default.addObserver(self, selector: #selector(cartUpdated), name: NSNotification.Name("CartUpdated"), object: nil)
-                  NotificationCenter.default.addObserver(self, selector: #selector(handleOrderPlacement), name: NSNotification.Name("OrderPlaced"), object: nil)
+                  // Debug prints to identify nil outlets
+                  print("=== IBOutlet Debug ===")
+                  print("dishNameLabel: \(dishNameLabel != nil)")
+                  print("ratingLabel: \(ratingLabel != nil)")
+                  print("dishprice: \(dishprice != nil)")
+                  print("dishTime: \(dishTime != nil)")
+                  print("dishDeliveryExpected: \(dishDeliveryExpected != nil)")
+                  print("dishDescription: \(dishDescription != nil)")
+                  print("dishImge: \(dishImge != nil)")
+                  print("vegImage: \(vegImage != nil)")
+                  print("cardViewKitchenMenu: \(cardViewKitchenMenu != nil)")
+                  print("dishIntakLimit: \(dishIntakLimit != nil)")
+                  print("addButton: \(addButton != nil)")
+                  print("stepperStackView: \(stepperStackView != nil)")
+                  print("quantityLabel: \(quantityLabel != nil)")
+                  print("stepper: \(stepper != nil)")
                   
-                  // Initial stepper setup
+                  // Set up observers
+                  NotificationCenter.default.addObserver(
+                      self,
+                      selector: #selector(cartUpdated),
+                      name: NSNotification.Name("CartUpdated"),
+                      object: nil
+                  )
+                  
+                  NotificationCenter.default.addObserver(
+                      self,
+                      selector: #selector(handleOrderPlacement),
+                      name: NSNotification.Name("OrderPlaced"),
+                      object: nil
+                  )
+                  
+                  // Initial stepper setup - with safe unwrapping
                   if let stepper = stepper {
                       stepper.minimumValue = 0
                       stepper.stepValue = 1
@@ -53,7 +81,7 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                       stepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
                   }
                   
-                  // Initial UI state
+                  // Initial UI state - with safe unwrapping
                   stepperStackView?.isHidden = true
                   addButton?.isHidden = false
                   quantityLabel?.text = "0"
@@ -139,18 +167,18 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     }
 
     func updateMealDetails(with menuItem: MenuItem, at indexPath: IndexPath) {
-        // Update basic details
-        dishNameLabel.text = menuItem.name
-        ratingLabel.text = String(format: "%.1f", menuItem.rating)
-        dishprice.text = "₹\(menuItem.price)"
-        dishTime.text = menuItem.availableMealTypes?.rawValue.capitalized ?? "Not specified"
-        dishDeliveryExpected.text = "Order Before \(menuItem.orderDeadline)"
+        // Update basic details with safe unwrapping
+        dishNameLabel?.text = menuItem.name
+        ratingLabel?.text = String(format: "%.1f", menuItem.rating)
+        dishprice?.text = "₹\(menuItem.price)"
+        dishTime?.text = menuItem.availableMealTypes?.rawValue.capitalized ?? "Not specified"
+        dishDeliveryExpected?.text = "Order Before \(menuItem.orderDeadline)"
         
         // Handle veg/non-veg icon
         if menuItem.mealCategory.contains(.veg) {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+            vegImage?.image = UIImage(systemName: "dot.square")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
         } else {
-            vegImage.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+            vegImage?.image = UIImage(systemName: "dot.square")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         }
         
         // Handle description with read more functionality
@@ -163,13 +191,13 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
             attributedString.addAttribute(.foregroundColor, value: UIColor.systemGreen, range: readMoreRange)
             attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: readMoreRange)
             
-            dishDescription.attributedText = attributedString
-            dishDescription.isUserInteractionEnabled = true
+            dishDescription?.attributedText = attributedString
+            dishDescription?.isUserInteractionEnabled = true
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(readMoreTapped))
-            dishDescription.addGestureRecognizer(tapGesture)
+            dishDescription?.addGestureRecognizer(tapGesture)
         } else {
-            dishDescription.text = menuItem.description
+            dishDescription?.text = menuItem.description
         }
         
         // Load image from URL
@@ -177,23 +205,23 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
             URLSession.shared.dataTask(with: imageURL) { [weak self] data, _, error in
                 if let error = error {
                     DispatchQueue.main.async {
-                        self?.dishImge.image = UIImage(named: "defaultFoodImage")
+                        self?.dishImge?.image = UIImage(named: "defaultFoodImage")
                     }
                     return
                 }
                 
                 if let data = data, let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        self?.dishImge.image = image
+                        self?.dishImge?.image = image
                     }
                 } else {
                     DispatchQueue.main.async {
-                        self?.dishImge.image = UIImage(named: "defaultFoodImage")
+                        self?.dishImge?.image = UIImage(named: "defaultFoodImage")
                     }
                 }
             }.resume()
         } else {
-            dishImge.image = UIImage(named: "defaultFoodImage")
+            dishImge?.image = UIImage(named: "defaultFoodImage")
         }
         
         // Check availability and update UI accordingly
@@ -204,7 +232,13 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
         updateIntakeLimit(for: indexPath)
         
         // Apply card styling
-        applyCardStyle1()
+        setupCardStyle()
+        
+        // Print debug info for this specific menu item
+        print("=== Menu Item Debug ===")
+        print("Updating cell with menu item: \(menuItem.name)")
+        print("Price: \(menuItem.price)")
+        print("Description: \(menuItem.description)")
     }
 
     private func setupCardStyle() {

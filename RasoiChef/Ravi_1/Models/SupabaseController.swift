@@ -228,11 +228,23 @@ class SupabaseController {
                     // Process available days
                     var availableDays: [WeekDay] = []
                     if let dayArray = menuItemJson["available_days"] as? [String] {
+                        print("\nProcessing available days for \(name):")
+                        print("Raw days from DB: \(dayArray)")
                         for dayString in dayArray {
+                            print("Processing day: \(dayString)")
                             if let day = WeekDay(rawValue: dayString.lowercased()) {
+                                print("✅ Successfully parsed day: \(day)")
                                 availableDays.append(day)
+                            } else {
+                                print("❌ Failed to parse day: \(dayString)")
                             }
                         }
+                        print("Final available days: \(availableDays.map { $0.rawValue })")
+                    } else {
+                        print("❌ No available_days found for \(name)")
+                        // If no days specified, make it available all days
+                        availableDays = WeekDay.allCases
+                        print("Defaulting to all days: \(availableDays.map { $0.rawValue })")
                     }
                     
                     // Process meal categories
