@@ -16,6 +16,7 @@ class KitchenDataController {
     // MARK: - Data Storage
     static var users: [User] = []
     static var kitchens: [Kitchen] = []
+    static var filteredKitchens: [Kitchen] = [] // For kitchen-specific view
     static var menuItems: [MenuItem] = []
     static var filteredMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var subscriptionMenuItems: [MenuItem] = []
@@ -266,10 +267,27 @@ class KitchenDataController {
     }
     
     static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
+        // Filter kitchens for this specific kitchen
+        filteredKitchens = kitchens.filter { $0.kitchenID == kitchenID }
+        
         // Filter menu items for this kitchen
         filteredMenuItems = getKitchenMenuItems(forKitchenID: kitchenID)
         
-        // Filter and update meal type specific arrays
+        // Define standard meal type order
+        let mealTypeOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+        
+        // Sort filtered menu items by meal type order
+        filteredMenuItems.sort { item1, item2 in
+            guard let type1 = item1.availableMealTypes,
+                  let type2 = item2.availableMealTypes,
+                  let index1 = mealTypeOrder.firstIndex(of: type1),
+                  let index2 = mealTypeOrder.firstIndex(of: type2) else {
+                return false
+            }
+            return index1 < index2
+        }
+        
+        // Filter and update meal type specific arrays in order
         filteredBreakfastMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .breakfast }
         filteredLunchMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .lunch }
         filteredSnacksMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .snacks }

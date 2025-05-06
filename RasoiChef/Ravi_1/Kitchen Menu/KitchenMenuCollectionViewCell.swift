@@ -14,6 +14,9 @@ protocol KitchenMenuDetailsCellDelegate: AnyObject {
 
 class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     
+    // Add standard meal type order
+    static let standardMealOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+    
     var isExpanded: Bool = false
 
     
@@ -42,21 +45,21 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
                   super.awakeFromNib()
                   
                   // Debug prints to identify nil outlets
-                  print("=== IBOutlet Debug ===")
-                  print("dishNameLabel: \(dishNameLabel != nil)")
-                  print("ratingLabel: \(ratingLabel != nil)")
-                  print("dishprice: \(dishprice != nil)")
-                  print("dishTime: \(dishTime != nil)")
-                  print("dishDeliveryExpected: \(dishDeliveryExpected != nil)")
-                  print("dishDescription: \(dishDescription != nil)")
-                  print("dishImge: \(dishImge != nil)")
-                  print("vegImage: \(vegImage != nil)")
-                  print("cardViewKitchenMenu: \(cardViewKitchenMenu != nil)")
-                  print("dishIntakLimit: \(dishIntakLimit != nil)")
-                  print("addButton: \(addButton != nil)")
-                  print("stepperStackView: \(stepperStackView != nil)")
-                  print("quantityLabel: \(quantityLabel != nil)")
-                  print("stepper: \(stepper != nil)")
+//                  print("=== IBOutlet Debug ===")
+//                  print("dishNameLabel: \(dishNameLabel != nil)")
+//                  print("ratingLabel: \(ratingLabel != nil)")
+//                  print("dishprice: \(dishprice != nil)")
+//                  print("dishTime: \(dishTime != nil)")
+//                  print("dishDeliveryExpected: \(dishDeliveryExpected != nil)")
+//                  print("dishDescription: \(dishDescription != nil)")
+//                  print("dishImge: \(dishImge != nil)")
+//                  print("vegImage: \(vegImage != nil)")
+//                  print("cardViewKitchenMenu: \(cardViewKitchenMenu != nil)")
+//                  print("dishIntakLimit: \(dishIntakLimit != nil)")
+//                  print("addButton: \(addButton != nil)")
+//                  print("stepperStackView: \(stepperStackView != nil)")
+//                  print("quantityLabel: \(quantityLabel != nil)")
+//                  print("stepper: \(stepper != nil)")
                   
                   // Set up observers
                   NotificationCenter.default.addObserver(
@@ -167,11 +170,14 @@ class KitchenMenuCollectionViewCell: UICollectionViewCell  {
     }
 
     func updateMealDetails(with menuItem: MenuItem, at indexPath: IndexPath) {
+        // Get the meal type based on standard order
+        let mealType = KitchenMenuCollectionViewCell.standardMealOrder[indexPath.row % KitchenMenuCollectionViewCell.standardMealOrder.count]
+        
         // Update basic details with safe unwrapping
         dishNameLabel?.text = menuItem.name
         ratingLabel?.text = String(format: "%.1f", menuItem.rating)
         dishprice?.text = "₹\(menuItem.price)"
-        dishTime?.text = menuItem.availableMealTypes?.rawValue.capitalized ?? "Not specified"
+        dishTime?.text = mealType.rawValue.capitalized
         dishDeliveryExpected?.text = "Order Before \(menuItem.orderDeadline)"
         
         // Handle veg/non-veg icon

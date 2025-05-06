@@ -63,13 +63,17 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // Define standard meal type order
+        let mealTypeOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+        
         // Get current meal type index
         let targetIndex = getCurrentMealTypeIndex()
+        let targetMealType = mealTypeOrder[targetIndex]
         
-        // Find the first menu item of the current meal type
-        let targetMealType: MealType = [.breakfast, .lunch, .snacks, .dinner][targetIndex]
+        // Get sorted items
         let items = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
         
+        // Find the first menu item of the current meal type
         if let firstIndex = items.firstIndex(where: { item in
             item.availableMealTypes == targetMealType
         }), firstIndex < items.count {
