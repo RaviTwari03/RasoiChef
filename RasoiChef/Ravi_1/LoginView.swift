@@ -403,14 +403,6 @@ struct ForgotPasswordView: View {
                 }
             }
             
-            // Also try to update auth password (but don't fail if it doesn't work)
-            do {
-                try await SupabaseController.shared.client.auth.resetPasswordForEmail(email)
-                print("Auth password reset email sent")
-            } catch {
-                print("Note: Auth password reset failed, but database update succeeded")
-            }
-            
             message = "Password has been reset successfully"
             messageColor = .green
             
@@ -564,6 +556,7 @@ class LoginViewModel: ObservableObject {
     func login() async -> Bool {
         guard !email.isEmpty && !password.isEmpty else {
             errorMessage = "Please enter both email and password"
+            print("Login failed: Email or password is empty")
             return false
         }
         
@@ -573,6 +566,9 @@ class LoginViewModel: ObservableObject {
         do {
             // First verify the encrypted password
             let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
+            print("[Login] Attempting login for email: \(email)")
+            print("[Login] Password entered: \(password)")
+            print("[Login] Encrypted attempt: \(encryptedAttempt)")
             
             // Fetch user from database to get stored encrypted password
             let response = try await supabase.database
@@ -581,24 +577,23 @@ class LoginViewModel: ObservableObject {
                 .eq("email", value: email)
                 .single()
                 .execute()
-            
+            print("[Login] Supabase response status: \(response.status)")
+            if let responseString = String(data: response.data, encoding: .utf8) {
+                print("[Login] Supabase response data: \(responseString)")
+            }
             // Decode the response
             do {
                 let userData = try JSONDecoder().decode([String: String].self, from: response.data)
                 guard let storedPassword = userData["encrypted_password"] else {
+                    print("[Login] No encrypted_password found in userData: \(userData)")
                     errorMessage = "Invalid email or password"
                     isLoading = false
                     return false
                 }
-                
+                print("[Login] Stored encrypted password: \(storedPassword)")
                 // Verify password
                 if encryptedAttempt == storedPassword {
-                    // If password matches, proceed with Supabase auth
-                    let session = try await supabase.auth.signIn(
-                        email: email,
-                        password: password
-                    )
-                    
+                    print("[Login] Password match! Logging in user...")
                     // Store user information
                     UserDefaults.standard.set(email, forKey: "userEmail")
                     let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
@@ -606,8 +601,11 @@ class LoginViewModel: ObservableObject {
                     
                     isLoading = false
                     return true
+                } else {
+                    print("[Login] Password mismatch! Encrypted attempt: \(encryptedAttempt), Stored: \(storedPassword)")
                 }
             } catch {
+                print("[Login] Error decoding userData: \(error.localizedDescription)")
                 errorMessage = "Invalid email or password"
                 isLoading = false
                 return false
@@ -618,6 +616,7 @@ class LoginViewModel: ObservableObject {
             return false
             
         } catch {
+            print("[Login] Login failed with error: \(error.localizedDescription)")
             errorMessage = "Login failed: \(error.localizedDescription)"
             isLoading = false
             return false
@@ -650,18 +649,9 @@ class LoginViewModel: ObservableObject {
     }
     
     func forgotPassword() {
-        Task {
-            do {
-                try await supabase.auth.resetPasswordForEmail(email)
-                await MainActor.run {
-                    errorMessage = "Password reset email sent. Please check your inbox."
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = "Failed to send reset email: \(error.localizedDescription)"
-                }
-            }
-        }
+        // This function is now deprecated and does nothing.
+        // All password resets are handled via the encrypted password in the users table.
+        errorMessage = "Please use the 'Forgot Password' flow to reset your password."
     }
     
     func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) {

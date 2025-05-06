@@ -82,7 +82,7 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         case 0:
             return 7 // Assuming 7 days in a week
         case 1:
-            return KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }.count
+            return 7/*KitchenDataController.menuItems.filter { $0.availableDays.contains(selectedDay) }.count*/
         default:
             return 0
         }
