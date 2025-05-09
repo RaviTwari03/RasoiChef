@@ -72,6 +72,7 @@ class MyOrdersViewController: UIViewController {
         
         tableView.reloadData()
         loadData()
+       
     }
     
     @objc private func refreshData() {
@@ -228,6 +229,8 @@ class MyOrdersViewController: UIViewController {
 extension MyOrdersViewController:UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+       
+        
         return 230
     }
     

@@ -24,19 +24,59 @@ class MyOrdersTableViewCell: UITableViewCell {
     @IBOutlet weak var itemsLabel: UILabel!
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var trackButton: UIButton!
+    @IBOutlet weak var itemsHeaderLabel: UILabel?
+    @IBOutlet weak var paymentDetailsLabel: UILabel?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCardStyle()
         contentView.layer.cornerRadius = 10
         
-        // Configure items label
+        // Defensive: Always configure itemsLabel to avoid truncation
         itemsLabel.numberOfLines = 0
         itemsLabel.lineBreakMode = .byWordWrapping
+        itemsLabel.adjustsFontSizeToFitWidth = false
+        itemsLabel.minimumScaleFactor = 1.0
+        itemsLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
+        itemsLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        itemsLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        if let itemsHeaderLabel = itemsHeaderLabel, let paymentDetailsLabel = paymentDetailsLabel {
+            itemsHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
+            paymentDetailsLabel.translatesAutoresizingMaskIntoConstraints = false
+
+            // Remove all constraints related to these labels (to avoid duplicates)
+            if let superview = itemsLabel.superview {
+                for constraint in superview.constraints {
+                    if constraint.firstItem as? UILabel == itemsLabel || constraint.secondItem as? UILabel == itemsLabel ||
+                        constraint.firstItem as? UILabel == paymentDetailsLabel || constraint.secondItem as? UILabel == paymentDetailsLabel ||
+                        constraint.firstItem as? UILabel == itemsHeaderLabel || constraint.secondItem as? UILabel == itemsHeaderLabel {
+                        superview.removeConstraint(constraint)
+                    }
+                }
+            }
+            // Add constraints to ensure proper vertical stacking and stretching
+            NSLayoutConstraint.activate([
+                itemsHeaderLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+                itemsHeaderLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+                itemsHeaderLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+
+                itemsLabel.topAnchor.constraint(equalTo: itemsHeaderLabel.bottomAnchor, constant: 4),
+                itemsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+                itemsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+                itemsLabel.bottomAnchor.constraint(equalTo: paymentDetailsLabel.topAnchor, constant: -8),
+
+                paymentDetailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+                paymentDetailsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+                paymentDetailsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            ])
+        }
         
         // Configure location label
         locationLabel.numberOfLines = 2
         locationLabel.lineBreakMode = .byWordWrapping
+        kitchenName.setContentHuggingPriority(.required, for: .vertical)
+        kitchenName.setContentCompressionResistancePriority(.required, for: .vertical)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

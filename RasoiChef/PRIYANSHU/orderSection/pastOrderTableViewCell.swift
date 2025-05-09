@@ -54,15 +54,114 @@ class pastOrderTableViewCell: UITableViewCell {
         orderIDLabel.text = "Order ID - \(order.orderID)"
         dateLabel.text = formatDate(order.deliveryDate)
         locationLabel.text = order.deliveryAddress
-        kitchenName.text = order.kitchenID
+        kitchenName.text = order.kitchenName
         
-        let numberedItems = order.items.enumerated().map { index, item in
-               return "\(index + 1). \(item.menuItemID)"
-           }.joined(separator: "\n")
-           
-           itemsLabel.text = numberedItems
+        // Set loading state for items
+        itemsLabel.text = "Items :\nLoading items..."
+        Task {
+            do {
+                // Fetch order with items
+                let response = try await SupabaseController.shared.client.database
+                    .from("orders")
+                    .select("order_items")
+                    .eq("order_id", value: order.orderID)
+                    .single()
+                    .execute()
+                
+                print("Order response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
+                
+                // Parse the response data
+                guard let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] else {
+                    print("Failed to parse order response")
+                    DispatchQueue.main.async {
+                        self.itemsLabel.text = "Error loading items"
+                    }
+                    return
+                }
+                
+                // Handle both string and array formats for order_items
+                var orderItems: [[String: Any]] = []
+                
+                if let orderItemsString = json["order_items"] as? String {
+                    // If order_items is a string, parse it as JSON
+                    if let data = orderItemsString.data(using: .utf8),
+                       let parsedItems = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                        orderItems = parsedItems
+                    }
+                } else if let itemsArray = json["order_items"] as? [[String: Any]] {
+                    // If order_items is already an array
+                    orderItems = itemsArray
+                }
+                
+                print("Found order items: \(orderItems)")
+                var itemStrings: [String] = []
+                
+                for (index, item) in orderItems.enumerated() {
+                    guard let menuItemID = item["menu_item_id"] as? String,
+                          let quantity = item["quantity"] as? Int else {
+                        print("Missing required fields in order item: \(item)")
+                        continue
+                    }
+                    
+                    // Try to find item name in menu_items
+                    do {
+                        let menuItemResponse = try await SupabaseController.shared.client.database
+                            .from("menu_items")
+                            .select("name")
+                            .eq("item_id", value: menuItemID)
+                            .single()
+                            .execute()
+                        
+                        if let menuJson = try? JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [String: Any],
+                           let itemName = menuJson["name"] as? String {
+                            itemStrings.append("\(index + 1). \(itemName) x\(quantity)")
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching menu item: \(error)")
+                    }
+                    
+                    // Try chef_specialty_dishes if not found in menu_items
+                    do {
+                        let specialResponse = try await SupabaseController.shared.client.database
+                            .from("chef_specialty_dishes")
+                            .select("name")
+                            .eq("dish_id", value: menuItemID)
+                            .single()
+                            .execute()
+                        
+                        if let specialJson = try? JSONSerialization.jsonObject(with: specialResponse.data, options: []) as? [String: Any],
+                           let itemName = specialJson["name"] as? String {
+                            itemStrings.append("\(index + 1). \(itemName) x\(quantity)")
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching specialty dish: \(error)")
+                    }
+                    
+                    // If we couldn't find the item name in either table
+                    itemStrings.append("\(index + 1). Item #\(menuItemID) x\(quantity)")
+                }
+                
+                // Update UI on main thread
+                DispatchQueue.main.async {
+                    if itemStrings.isEmpty {
+                        self.itemsLabel.text = "No items found"
+                    } else {
+                        self.itemsLabel.text = itemStrings.joined(separator: "\n")
+                    }
+                }
+            } catch {
+                print("Error fetching order items: \(error)")
+                DispatchQueue.main.async {
+                    self.itemsLabel.text = "Error loading items"
+                }
+            }
+        }
         
-
+        // Update track button based on order status
+       // trackButton.isEnabled = order.status != .delivered
+       // trackButton.alpha = order.status != .delivered ? 1.0 : 0.5
     }
     
 
