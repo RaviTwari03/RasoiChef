@@ -163,7 +163,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
             let menuItem = menuItems[indexPath.row]
             
-            cell.updateMenuDetails(with: indexPath)
+            cell.updateMenuDetails(with: indexPath, menuItem: menuItem)
             
             // Get the menu item and current time information
             let currentHour = Calendar.current.component(.hour, from: Date())
@@ -403,7 +403,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     //    MARK: - For ADD button in the menu items cell
     func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
         guard let indexPath = collectionView1.indexPath(for: cell) else { return }
-        let selectedItem = KitchenDataController.menuItems[indexPath.row]
+        let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+        let selectedItem = menuItems[indexPath.row]
         print("Add button tapped for meal: \(selectedItem.name)")
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -421,7 +422,6 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         } else {
             print("Error: Could not instantiate AddItemModallyViewController")
         }
-        
     }
     
     
