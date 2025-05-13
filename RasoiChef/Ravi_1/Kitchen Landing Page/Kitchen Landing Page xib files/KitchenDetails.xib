@@ -39,7 +39,7 @@
                         <rect key="frame" x="357" y="264.66666666666669" width="20" height="17.000000000000057"/>
                         <color key="tintColor" red="0.25264382839999999" green="0.5" blue="0.25766681920000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="20" id="pBZ-i0-kzN"/>
+                            <constraint firstAttribute="width" constant="32" id="Iqp-Ug-Cqb"/>
                             <constraint firstAttribute="height" constant="20" id="q0j-NS-BY1"/>
                         </constraints>
                     </imageView>
@@ -47,7 +47,7 @@
                         <rect key="frame" x="316" y="314" width="20" height="20"/>
                         <color key="tintColor" red="0.25264382839999999" green="0.5" blue="0.25766681920000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="20" id="DTs-6z-ezP"/>
+                            <constraint firstAttribute="height" constant="32" id="Hgc-Uh-Xzf"/>
                             <constraint firstAttribute="width" constant="20" id="Edv-Bd-MUT"/>
                         </constraints>
                     </imageView>
@@ -80,8 +80,8 @@
                             <constraint firstAttribute="width" constant="393" id="NRz-46-2n0"/>
                         </constraints>
                     </imageView>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5t-30-LtK">
-                        <rect key="frame" x="326" y="7" width="54" height="35"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5t-30-LtK">
+                        <rect key="frame" x="340" y="10" width="32" height="32"/>
                         <color key="tintColor" red="0.82745099070000006" green="0.31372550129999999" blue="0.25098040700000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
@@ -108,7 +108,7 @@
                     <constraint firstItem="f5t-30-LtK" firstAttribute="top" secondItem="kEX-ot-PqW" secondAttribute="top" constant="7" id="eYu-bf-f1E"/>
                     <constraint firstItem="lsG-bm-9h9" firstAttribute="top" secondItem="alG-V3-vRL" secondAttribute="bottom" constant="8" id="g0C-uT-0Ze"/>
                     <constraint firstItem="bKR-wE-NkE" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" id="geC-cf-2aJ"/>
-                    <constraint firstItem="f5t-30-LtK" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" constant="326" id="gsK-re-4ou"/>
+                    <constraint firstItem="f5t-30-LtK" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" constant="340" id="gsK-re-4ou"/>
                     <constraint firstItem="alG-V3-vRL" firstAttribute="leading" secondItem="aSK-rG-ydI" secondAttribute="leading" id="inC-16-263"/>
                     <constraint firstItem="aSK-rG-ydI" firstAttribute="leading" secondItem="xaT-Sz-tUf" secondAttribute="leading" id="ky0-Dg-k2b"/>
                     <constraint firstAttribute="trailing" secondItem="bKR-wE-NkE" secondAttribute="trailing" id="lLn-Gt-i8r"/>

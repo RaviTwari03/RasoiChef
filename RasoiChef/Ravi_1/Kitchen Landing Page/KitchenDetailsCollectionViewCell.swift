@@ -37,10 +37,17 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         
         kitchenRatings.text = String(format: "%.1f", kitchen.rating)
         
-        // Configure favorite button
-        favoritesbutton.setImage(UIImage(systemName: "heart"), for: .normal)
-        favoritesbutton.setImage(UIImage(systemName: "heart.fill"), for: .selected)
+        // Configure favorite button to match design
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
+        favoritesbutton.setImage(UIImage(systemName: "heart", withConfiguration: config), for: .normal)
+        favoritesbutton.setImage(UIImage(systemName: "heart.fill", withConfiguration: config), for: .selected)
         favoritesbutton.tintColor = .systemRed
+        favoritesbutton.backgroundColor = .white.withAlphaComponent(0.9)
+        favoritesbutton.layer.cornerRadius = 16 // Half of the button's height/width
+        favoritesbutton.layer.shadowColor = UIColor.black.cgColor
+        favoritesbutton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        favoritesbutton.layer.shadowRadius = 2
+        favoritesbutton.layer.shadowOpacity = 0.1
         favoritesbutton.isSelected = kitchen.isFavorite
         
         // Load kitchen image
