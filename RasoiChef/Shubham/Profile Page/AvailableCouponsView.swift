@@ -1,30 +1,30 @@
 //
-//  favouritesView.swift
+//  AvailableCouponsView.swift
 //  RasoiChef
 //
-//  Created by Shubham Jaiswal on 26/04/25.
+//  Created by Shubham Jaiswal on 13/05/25.
 //
 
 import SwiftUI
 
-struct favouritesView: View {
+struct AvailableCouponsView: View {
     var body: some View {
         VStack(spacing: 10) {
             Spacer()
             
-            Image(systemName: "heart.slash")
+            Image(systemName: "tag.slash")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
                 .foregroundColor(.gray.opacity(0.6))
             
-            Text("No Favourites Yet")
+            Text("No Coupons Available")
                 .font(.title2)
                 .fontWeight(.semibold)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
             
-            Text("Your favourite dishes will appear here.")
+            Text("Currently, there are no active coupons.\nPlease check back later.")
                 .font(.subheadline)
                 .foregroundColor(.gray.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -34,10 +34,10 @@ struct favouritesView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
-        .navigationTitle("Favourites")
+        .navigationTitle("Available Coupons")
     }
 }
 
 #Preview {
-    favouritesView()
+    AvailableCouponsView()
 }

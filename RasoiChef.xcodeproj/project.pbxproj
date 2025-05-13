@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		517D43A22DD33F8100803C08 /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 517D43A12DD33F8100803C08 /* SwiftSMTP */; };
 		E306F8D92D6D79D00021398C /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8D82D6D79D00021398C /* Auth */; };
 		E306F8DB2D6D79D00021398C /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DA2D6D79D00021398C /* Functions */; };
 		E306F8DD2D6D79D00021398C /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DC2D6D79D00021398C /* PostgREST */; };
@@ -50,6 +51,7 @@
 				E306F8E32D6D79D00021398C /* Supabase in Frameworks */,
 				E306F8D92D6D79D00021398C /* Auth in Frameworks */,
 				E306F8E12D6D79D00021398C /* Storage in Frameworks */,
+				517D43A22DD33F8100803C08 /* SwiftSMTP in Frameworks */,
 				E306F8DF2D6D79D00021398C /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +101,7 @@
 				E306F8DE2D6D79D00021398C /* Realtime */,
 				E306F8E02D6D79D00021398C /* Storage */,
 				E306F8E22D6D79D00021398C /* Supabase */,
+				517D43A12DD33F8100803C08 /* SwiftSMTP */,
 			);
 			productName = RasoiChef;
 			productReference = 0599B1462D35112A00F8CEE0 /* RasoiChef.app */;
@@ -130,6 +133,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				517D43A02DD33F8100803C08 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0599B1472D35112A00F8CEE0 /* Products */;
@@ -363,6 +367,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		517D43A02DD33F8100803C08 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 		E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
@@ -374,6 +386,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		517D43A12DD33F8100803C08 /* SwiftSMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 517D43A02DD33F8100803C08 /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
+			productName = SwiftSMTP;
+		};
 		E306F8D82D6D79D00021398C /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */;
