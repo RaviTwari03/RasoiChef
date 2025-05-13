@@ -37,8 +37,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 do {
                     try await KitchenDataController.loadData()
                     print("✅ Successfully loaded \(KitchenDataController.kitchens.count) kitchens")
-                    DispatchQueue.main.async { [weak self] in
-                        self?.collectionView1.reloadData()
+                    await MainActor.run {
+                        self.collectionView1.reloadData()
                     }
                 } catch {
                     print("❌ Error loading kitchens: \(error)")
@@ -572,6 +572,9 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
+    @objc func dismissView() {
+        self.dismiss(animated: true, completion: nil)
+    } 
     }
     
 
