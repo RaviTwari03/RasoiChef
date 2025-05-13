@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class KitchenDataController {
     static let shared = KitchenDataController()
@@ -42,22 +43,25 @@ class KitchenDataController {
     // MARK: - Data Loading
     
     static func loadData() async throws {
-        print("\n🔄 Starting data loading process...")
-        
-        do {
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                // Fetch kitchens
-                group.addTask {
-                    print("\n📥 Fetching kitchens...")
-                    do {
-                        let allKitchens = try await SupabaseController.shared.fetchKitchens()
-                        print("✅ Successfully loaded \(allKitchens.count) kitchens")
-                        kitchens = allKitchens
-                    } catch {
-                        print("❌ Error fetching kitchens: \(error.localizedDescription)")
-                        throw error
-                    }
-                }
+           print("\n🔄 Starting data loading process...")
+           
+           do {
+               try await withThrowingTaskGroup(of: Void.self) { group in
+                   // Fetch kitchens
+                   group.addTask {
+                       print("\n📥 Fetching kitchens...")
+                       do {
+                           let allKitchens = try await SupabaseController.shared.fetchKitchens()
+                           print("✅ Successfully loaded \(allKitchens.count) kitchens")
+                           
+                           // Filter kitchens by distance and sort them
+                           let filteredKitchens = filterKitchensByDistance(allKitchens, maxDistance: 150.0)
+                           kitchens = sortKitchensByDistance(filteredKitchens)
+                       } catch {
+                           print("❌ Error fetching kitchens: \(error.localizedDescription)")
+                           throw error
+                       }
+                   }
                 
                 // Fetch menu items
                 group.addTask {
@@ -146,6 +150,28 @@ class KitchenDataController {
             throw error
         }
     }
+    
+    
+    
+    // MARK: - Helper Functions
+        
+        /// Filter kitchens by distance from user's current location
+        /// - Parameters:
+        ///   - kitchens: Array of all kitchens
+        ///   - maxDistance: Maximum distance in kilometers
+        /// - Returns: Array of kitchens within the specified distance
+        static func filterKitchensByDistance(_ kitchens: [Kitchen], maxDistance: Double) -> [Kitchen] {
+            return kitchens.filter { kitchen in
+                kitchen.distance <= maxDistance
+            }
+        }
+        
+        /// Sort kitchens by distance from nearest to farthest
+        /// - Parameter kitchens: Array of kitchens to sort
+        /// - Returns: Sorted array of kitchens
+        static func sortKitchensByDistance(_ kitchens: [Kitchen]) -> [Kitchen] {
+            return kitchens.sorted { $0.distance < $1.distance }
+        }
 
     // MARK: - User Management
    
@@ -255,49 +281,31 @@ class KitchenDataController {
     // MARK: - Kitchen-Specific Data
     
     static func getKitchenMenuItems(forKitchenID kitchenID: String) -> [MenuItem] {
-        return menuItems.filter { $0.kitchenID == kitchenID }
-    }
-    
-    static func getKitchenChefSpecialtyDishes(forKitchenID kitchenID: String) -> [ChefSpecialtyDish] {
-        return chefSpecialtyDishes.filter { $0.kitchenID == kitchenID }
-    }
-    
-    static func getKitchenSubscriptionPlans(forKitchenID kitchenID: String) -> [SubscriptionPlan] {
-        return subscriptionPlan.filter { $0.kitchenID == kitchenID }
-    }
-    
-    static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
-        // Filter kitchens for this specific kitchen
-        filteredKitchens = kitchens.filter { $0.kitchenID == kitchenID }
-        
-        // Filter menu items for this kitchen
-        filteredMenuItems = getKitchenMenuItems(forKitchenID: kitchenID)
-        
-        // Define standard meal type order
-        let mealTypeOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
-        
-        // Sort filtered menu items by meal type order
-        filteredMenuItems.sort { item1, item2 in
-            guard let type1 = item1.availableMealTypes,
-                  let type2 = item2.availableMealTypes,
-                  let index1 = mealTypeOrder.firstIndex(of: type1),
-                  let index2 = mealTypeOrder.firstIndex(of: type2) else {
-                return false
-            }
-            return index1 < index2
-        }
-        
-        // Filter and update meal type specific arrays in order
-        filteredBreakfastMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .breakfast }
-        filteredLunchMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .lunch }
-        filteredSnacksMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .snacks }
-        filteredDinnerMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .dinner }
-        
-        // Filter chef specialty dishes for this kitchen
-        filteredChefSpecialtyDishes = getKitchenChefSpecialtyDishes(forKitchenID: kitchenID)
-        
-        // Filter subscription plans for this kitchen
-        filteredSubscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
-    }
-}
-
+           return menuItems.filter { $0.kitchenID == kitchenID }
+       }
+       
+       static func getKitchenChefSpecialtyDishes(forKitchenID kitchenID: String) -> [ChefSpecialtyDish] {
+           return chefSpecialtyDishes.filter { $0.kitchenID == kitchenID }
+       }
+       
+       static func getKitchenSubscriptionPlans(forKitchenID kitchenID: String) -> [SubscriptionPlan] {
+           return subscriptionPlan.filter { $0.kitchenID == kitchenID }
+       }
+       
+       static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
+           // Filter menu items for this kitchen
+           filteredMenuItems = getKitchenMenuItems(forKitchenID: kitchenID)
+           
+           // Filter and update meal type specific arrays
+           filteredBreakfastMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .breakfast }
+           filteredLunchMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .lunch }
+           filteredSnacksMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .snacks }
+           filteredDinnerMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .dinner }
+           
+           // Filter chef specialty dishes for this kitchen
+           filteredChefSpecialtyDishes = getKitchenChefSpecialtyDishes(forKitchenID: kitchenID)
+           
+           // Filter subscription plans for this kitchen
+           filteredSubscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
+       }
+   }
