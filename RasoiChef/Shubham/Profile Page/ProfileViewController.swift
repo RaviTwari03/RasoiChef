@@ -95,31 +95,38 @@ class ProfileViewController: UIViewController {
     private func performLogout() {
         Task {
             do {
+                print("🔄 Starting logout process...")
+                
                 // Sign out from Supabase
                 try await supabase.auth.signOut()
+                print("✅ Signed out from Supabase")
                 
-                // Clear UserDefaults
-                UserDefaults.standard.removeObject(forKey: "userEmail")
-                UserDefaults.standard.removeObject(forKey: "userName")
+                // Clear all UserDefaults
+                if let bundleID = Bundle.main.bundleIdentifier {
+                    UserDefaults.standard.removePersistentDomain(forName: bundleID)
+                }
+                print("✅ Cleared UserDefaults")
                 
                 // Switch to LoginView
                 await MainActor.run {
+                    print("🔄 Switching to LoginView...")
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let window = windowScene.windows.first {
                         let loginView = LoginView()
                         let hostingController = UIHostingController(rootView: loginView)
                         
                         UIView.transition(with: window,
-                                          duration: 0.3,
-                                          options: .transitionCrossDissolve,
-                                          animations: {
+                                       duration: 0.3,
+                                       options: .transitionCrossDissolve,
+                                       animations: {
                             window.rootViewController = hostingController
                         })
                         window.makeKeyAndVisible()
+                        print("✅ Successfully switched to LoginView")
                     }
                 }
             } catch {
-                print("Error during logout: \(error)")
+                print("❌ Error during logout: \(error.localizedDescription)")
                 let alert = UIAlertController(
                     title: "Logout Error",
                     message: "Failed to logout. Please try again.",

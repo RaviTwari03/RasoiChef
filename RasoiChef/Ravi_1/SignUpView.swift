@@ -679,44 +679,43 @@ class SignUpViewModel: ObservableObject {
         errorMessage = ""
         
         do {
-            // Create user metadata dictionary with proper Supabase types
-            let userMetadata: [String: AnyJSON] = [
-                "full_name": .string(fullName)
-            ]
+            print("🔄 Starting user registration process...")
             
             // First sign up the user with Supabase Auth
             let session = try await supabase.auth.signUp(
                 email: email,
-                password: password,
-                data: userMetadata
+                password: password
             )
             
-            // Get the user ID
-            let userId = session.user.id
+            print("✅ User created in auth.users")
             
-            // Encrypt the password
-            let encryptedPassword = PasswordEncryption.shared.encryptPassword(password)
-            
-            // Insert user data into the users table with encrypted password
+            // Insert user data into the users table
             try await supabase.database
                 .from("users")
                 .insert([
-                    "user_id": userId.uuidString,
+                    "user_id": session.user.id.uuidString,
                     "name": fullName,
-                    "email": email,
-                    "encrypted_password": encryptedPassword
+                    "email": email.lowercased()
                 ])
                 .execute()
+            
+            print("✅ User data inserted into public.users table")
             
             // Save user data locally
             UserDefaults.standard.set(email, forKey: "userEmail")
             UserDefaults.standard.set(fullName, forKey: "userName")
-            UserDefaults.standard.set(userId.uuidString, forKey: "userID")
+            UserDefaults.standard.set(session.user.id.uuidString, forKey: "userID")
+            
+            print("✅ User data saved to UserDefaults")
+            print("- Email: \(email)")
+            print("- Name: \(fullName)")
+            print("- UserID: \(session.user.id.uuidString)")
             
             // Navigate to main screen
             navigateToMainTabBar()
             
         } catch {
+            print("❌ Registration failed: \(error.localizedDescription)")
             errorMessage = "Registration failed: \(error.localizedDescription)"
         }
         
