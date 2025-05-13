@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -80,6 +80,15 @@
                             <constraint firstAttribute="width" constant="393" id="NRz-46-2n0"/>
                         </constraints>
                     </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5t-30-LtK">
+                        <rect key="frame" x="326" y="7" width="54" height="35"/>
+                        <color key="tintColor" red="0.82745099070000006" green="0.31372550129999999" blue="0.25098040700000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
+                        <connections>
+                            <action selector="favoriteButtonTapped:" destination="ehu-Tx-755" eventType="touchUpInside" id="Aac-yn-hcQ"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="kzh-o3-C6S" secondAttribute="trailing" constant="16" id="8V8-HI-TOR"/>
@@ -89,19 +98,23 @@
                     <constraint firstItem="bKR-wE-NkE" firstAttribute="centerX" secondItem="kEX-ot-PqW" secondAttribute="centerX" id="DIL-5G-fo2"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" constant="16" id="FEI-sQ-PgE"/>
                     <constraint firstItem="kzh-o3-C6S" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="13" id="FVp-zN-Q50"/>
+                    <constraint firstAttribute="trailing" secondItem="f5t-30-LtK" secondAttribute="trailing" constant="13" id="G5d-Op-PCB"/>
                     <constraint firstItem="Ibw-uj-kA0" firstAttribute="centerY" secondItem="ayP-D3-u3W" secondAttribute="centerY" id="PSF-K7-TyN"/>
                     <constraint firstItem="ayP-D3-u3W" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="alG-V3-vRL" secondAttribute="trailing" constant="30" id="UQt-l8-R9X"/>
                     <constraint firstItem="Ibw-uj-kA0" firstAttribute="leading" secondItem="ayP-D3-u3W" secondAttribute="trailing" constant="3" id="UhV-3Q-gKS"/>
                     <constraint firstAttribute="trailing" secondItem="lsG-bm-9h9" secondAttribute="trailing" id="Vzc-yI-bns"/>
                     <constraint firstItem="Ibw-uj-kA0" firstAttribute="top" secondItem="kzh-o3-C6S" secondAttribute="bottom" constant="31.999999999999886" id="XVr-Hg-bmX"/>
                     <constraint firstItem="bKR-wE-NkE" firstAttribute="top" secondItem="kEX-ot-PqW" secondAttribute="top" id="Zem-Xr-OAx"/>
+                    <constraint firstItem="f5t-30-LtK" firstAttribute="top" secondItem="kEX-ot-PqW" secondAttribute="top" constant="7" id="eYu-bf-f1E"/>
                     <constraint firstItem="lsG-bm-9h9" firstAttribute="top" secondItem="alG-V3-vRL" secondAttribute="bottom" constant="8" id="g0C-uT-0Ze"/>
                     <constraint firstItem="bKR-wE-NkE" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" id="geC-cf-2aJ"/>
+                    <constraint firstItem="f5t-30-LtK" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" constant="326" id="gsK-re-4ou"/>
                     <constraint firstItem="alG-V3-vRL" firstAttribute="leading" secondItem="aSK-rG-ydI" secondAttribute="leading" id="inC-16-263"/>
                     <constraint firstItem="aSK-rG-ydI" firstAttribute="leading" secondItem="xaT-Sz-tUf" secondAttribute="leading" id="ky0-Dg-k2b"/>
                     <constraint firstAttribute="trailing" secondItem="bKR-wE-NkE" secondAttribute="trailing" id="lLn-Gt-i8r"/>
                     <constraint firstAttribute="trailing" secondItem="lsG-bm-9h9" secondAttribute="trailing" id="lev-wE-JSz"/>
                     <constraint firstItem="lsG-bm-9h9" firstAttribute="leading" secondItem="kEX-ot-PqW" secondAttribute="leading" id="mob-dc-OlV"/>
+                    <constraint firstItem="kzh-o3-C6S" firstAttribute="top" secondItem="f5t-30-LtK" secondAttribute="bottom" constant="221" id="nHc-Mj-b6G"/>
                     <constraint firstItem="xaT-Sz-tUf" firstAttribute="top" secondItem="bKR-wE-NkE" secondAttribute="bottom" constant="8" id="qo7-Jg-UDo"/>
                     <constraint firstAttribute="trailing" secondItem="Ibw-uj-kA0" secondAttribute="trailing" constant="16" id="tsM-vd-WPj"/>
                     <constraint firstItem="alG-V3-vRL" firstAttribute="top" secondItem="aSK-rG-ydI" secondAttribute="bottom" constant="4" id="xdR-qG-gpu"/>
@@ -109,6 +122,7 @@
             </collectionViewCellContentView>
             <size key="customSize" width="227" height="300"/>
             <connections>
+                <outlet property="favoritesbutton" destination="f5t-30-LtK" id="7xT-WC-CpZ"/>
                 <outlet property="kitchenCuisine" destination="alG-V3-vRL" id="iZ8-D7-9Qz"/>
                 <outlet property="kitchenDistance" destination="Z6y-Dn-DcD" id="mHS-WG-yfW"/>
                 <outlet property="kitchenName" destination="xaT-Sz-tUf" id="aYL-xv-bDD"/>
@@ -121,9 +135,10 @@
     <resources>
         <image name="StarRatings" width="128" height="128"/>
         <image name="dot.square" catalog="system" width="128" height="114"/>
+        <image name="heart" catalog="system" width="128" height="107"/>
         <image name="location.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

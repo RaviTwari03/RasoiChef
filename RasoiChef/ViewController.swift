@@ -29,11 +29,33 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         self.title = "Kanha Ji Rasoi"
         self.navigationItem.largeTitleDisplayMode = .never
         
+        // Load kitchens if not already loaded
+        print("🔍 Checking kitchen data...")
+        if KitchenDataController.kitchens.isEmpty {
+            print("🔄 Loading kitchens...")
+            Task {
+                do {
+                    try await KitchenDataController.loadData()
+                    print("✅ Successfully loaded \(KitchenDataController.kitchens.count) kitchens")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.collectionView1.reloadData()
+                    }
+                } catch {
+                    print("❌ Error loading kitchens: \(error)")
+                }
+            }
+        } else {
+            print("✅ Kitchens already loaded: \(KitchenDataController.kitchens.count) kitchens")
+        }
+        
         // Load kitchen-specific data if a kitchen is selected
         if let kitchen = kitchenData {
             KitchenDataController.loadKitchenSpecificData(forKitchenID: kitchen.kitchenID)
             self.title = kitchen.name
         }
+        
+        // Load favorite kitchens
+        KitchenDataController.loadFavorites()
         
         // Registering Nibs for Cells
         let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
@@ -146,9 +168,17 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenDetails", for: indexPath) as! KitchenDetailsCollectionViewCell
             cell.layer.cornerRadius = 8.0
             if let selectedKitchen = kitchenData {
+                print("✅ Configuring cell with selected kitchen: \(selectedKitchen.name)")
                 cell.configure(with: selectedKitchen)
             } else {
-                cell.configure(for: indexPath)
+                print("✅ Configuring cell with kitchen at index: \(indexPath.row)")
+                // Make sure we have kitchens data
+                guard !KitchenDataController.kitchens.isEmpty else {
+                    print("❌ No kitchens data available")
+                    return cell
+                }
+                let kitchen = KitchenDataController.kitchens[indexPath.row]
+                cell.configure(with: kitchen)
             }
             return cell
         case 1:

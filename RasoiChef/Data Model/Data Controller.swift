@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Supabase
 
 class KitchenDataController {
     static let shared = KitchenDataController()
@@ -35,9 +36,117 @@ class KitchenDataController {
     static var filteredDinnerMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var cartItems: [CartItem] = []
     static var orders: [Order] = []
-    static var subscriptionPlans: [SubscriptionPlan] = []
-    static var feedbacks: [Feedback] = []
-    static var coupons: [Coupon] = []
+    static var favoriteKitchens: Set<String> = [] // Store favorite kitchen IDs
+    
+    // MARK: - Favorites Management
+    static func toggleFavorite(for kitchen: Kitchen) -> Bool {
+        print("🔍 Starting toggleFavorite for kitchen: \(kitchen.name)")
+        print("🔍 Searching for kitchen with ID: \(kitchen.kitchenID)")
+        if let index = kitchens.firstIndex(where: { $0.kitchenID == kitchen.kitchenID }) {
+            print("✅ Found kitchen at index: \(index)")
+            let newState = !kitchens[index].isFavorite
+            print("🔄 Toggling favorite state to: \(newState)")
+            kitchens[index].isFavorite = newState
+            
+            print("🔍 Starting async task to update database")
+            Task<Void, Never> { @MainActor in
+                do {
+                    print("🔍 Attempting to get current session...")
+                    guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                        print("❌ No active session found")
+                        print("No active session")
+                        return
+                    }
+                    
+                    let userID = session.user.id
+                    print("✅ Got user ID: \(userID.uuidString)")
+                    
+                    if kitchens[index].isFavorite {
+                        print("🔍 Kitchen is now favorite, adding to database...")
+                        print("🔍 Adding kitchen to favorites - Kitchen ID: \(kitchen.kitchenID), User ID: \(userID.uuidString)")
+                        favoriteKitchens.insert(kitchen.kitchenID)
+                        // Add to database
+                        print("🔄 Attempting to insert favorite - User ID: \(userID.uuidString), Kitchen ID: \(kitchen.kitchenID)")
+                        let response = try await SupabaseController.shared.client.database
+                            .from("kitchen_favorites")
+                            .insert([
+                                "user_id": userID.uuidString,
+                                "kitchen_id": kitchen.kitchenID
+                            ])
+                            .execute()
+                        print("✅ Successfully inserted favorite: \(response)")
+                    } else {
+                        print("🔍 Kitchen is no longer favorite, removing from database...")
+                        favoriteKitchens.remove(kitchen.kitchenID)
+                        // Remove from database
+                        try await SupabaseController.shared.client.database
+                            .from("kitchen_favorites")
+                            .delete()
+                            .eq("user_id", value: userID.uuidString)
+                            .eq("kitchen_id", value: kitchen.kitchenID)
+                            .execute()
+                        print("✅ Successfully removed kitchen from favorites")
+                    }
+                    
+                    // Save favorites to UserDefaults for quick local access
+                    UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                    print("✅ Successfully saved favorites to UserDefaults")
+                } catch {
+                    print("❌ Error updating favorites:")
+                    print("   Error type: \(type(of: error))")
+                    print("   Description: \(error.localizedDescription)")
+                    if let nsError = error as NSError? {
+                        print("   Domain: \(nsError.domain)")
+                        print("   Code: \(nsError.code)")
+                        print("   User Info: \(nsError.userInfo)")
+                    }
+                }
+            }
+            return kitchens[index].isFavorite
+        }
+        return false
+    }
+    
+    static func loadFavorites() {
+        // First load from UserDefaults for quick access
+        if let savedFavorites = UserDefaults.standard.array(forKey: "FavoriteKitchens") as? [String] {
+            favoriteKitchens = Set(savedFavorites)
+        }
+        
+        // Then sync with database
+        Task<Void, Never> { @MainActor in
+            do {
+                guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                    print("No active session")
+                    return
+                }
+                
+                let userID = session.user.id
+                
+                let response = try await SupabaseController.shared.client.database
+                    .from("user_favorites")
+                    .select("kitchen_id")
+                    .eq("user_id", value: userID)
+                    .execute()
+                
+                if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]] {
+                    let dbFavorites = Set(json.compactMap { $0["kitchen_id"] as? String })
+                    favoriteKitchens = dbFavorites
+                    
+                    // Update UserDefaults
+                    UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                    
+                    // Update isFavorite status for all kitchens
+                    for (index, kitchen) in kitchens.enumerated() {
+                        kitchens[index].isFavorite = favoriteKitchens.contains(kitchen.kitchenID)
+                    }
+                }
+            } catch {
+                print("Error loading favorites from database: \(error)")
+            }
+        }
+    }
+    
 
     // MARK: - Data Loading
     
