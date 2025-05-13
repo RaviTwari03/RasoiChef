@@ -90,6 +90,7 @@ struct Kitchen {
     var distance: Double
     var kitchenImage: String
     var isPureVeg: Bool
+    var isFavorite: Bool = false
 }
 
 // Menu Item

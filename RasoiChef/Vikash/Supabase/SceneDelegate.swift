@@ -63,7 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
                         print("- Lunch Items: \(KitchenDataController.GloballunchMenuItems.count)")
                         print("- Snacks Items: \(KitchenDataController.GlobalsnacksMenuItems.count)")
                         print("- Dinner Items: \(KitchenDataController.GlobaldinnerMenuItems.count)")
-                        print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
+                     //   print("- Subscription Plans: \(KitchenDataController.subscriptionPlans.count)")
                         print("- Chef Specialty Dishes: \(KitchenDataController.chefSpecialtyDishes.count)")
                         
                         // If successful, break the retry loop

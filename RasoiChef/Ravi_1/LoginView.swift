@@ -564,56 +564,44 @@ class LoginViewModel: ObservableObject {
         errorMessage = ""
         
         do {
-            // First verify the encrypted password
-            let encryptedAttempt = PasswordEncryption.shared.encryptPassword(password)
             print("[Login] Attempting login for email: \(email)")
-            print("[Login] Password entered: \(password)")
-            print("[Login] Encrypted attempt: \(encryptedAttempt)")
             
-            // Fetch user from database to get stored encrypted password
+            // First authenticate with Supabase Auth
+            let session = try await supabase.auth.signIn(
+                email: email,
+                password: password
+            )
+            
+            print("[Login] Supabase auth successful")
+            
+            // Get user details from our users table
             let response = try await supabase.database
                 .from("users")
-                .select("encrypted_password")
-                .eq("email", value: email)
+                .select("user_id, name, email")
+                .eq("user_id", value: session.user.id.uuidString)
                 .single()
                 .execute()
-            print("[Login] Supabase response status: \(response.status)")
-            if let responseString = String(data: response.data, encoding: .utf8) {
-                print("[Login] Supabase response data: \(responseString)")
-            }
-            // Decode the response
-            do {
-                let userData = try JSONDecoder().decode([String: String].self, from: response.data)
-                guard let storedPassword = userData["encrypted_password"] else {
-                    print("[Login] No encrypted_password found in userData: \(userData)")
-                    errorMessage = "Invalid email or password"
-                    isLoading = false
-                    return false
-                }
-                print("[Login] Stored encrypted password: \(storedPassword)")
-                // Verify password
-                if encryptedAttempt == storedPassword {
-                    print("[Login] Password match! Logging in user...")
-                    // Store user information
-                    UserDefaults.standard.set(email, forKey: "userEmail")
-                    let savedName = UserDefaults.standard.string(forKey: "userName") ?? "User"
-                    UserDefaults.standard.set(savedName, forKey: "userName")
-                    
-                    isLoading = false
-                    return true
-                } else {
-                    print("[Login] Password mismatch! Encrypted attempt: \(encryptedAttempt), Stored: \(storedPassword)")
-                }
-            } catch {
-                print("[Login] Error decoding userData: \(error.localizedDescription)")
-                errorMessage = "Invalid email or password"
-                isLoading = false
-                return false
-            }
             
-            errorMessage = "Invalid email or password"
-            isLoading = false
-            return false
+            print("[Login] Fetched user details from database")
+            
+            // Decode user data
+            if let userData = try? JSONDecoder().decode([String: String].self, from: response.data) {
+                // Store user information
+                UserDefaults.standard.set(email, forKey: "userEmail")
+                UserDefaults.standard.set(userData["name"] ?? "User", forKey: "userName")
+                UserDefaults.standard.set(session.user.id.uuidString, forKey: "userID")
+                
+                print("[Login] User data stored in UserDefaults")
+                print("- Email: \(email)")
+                print("- Name: \(userData["name"] ?? "User")")
+                print("- UserID: \(session.user.id.uuidString)")
+                
+                isLoading = false
+                return true
+            } else {
+                print("[Login] Failed to decode user data")
+                throw NSError(domain: "LoginError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get user details"])
+            }
             
         } catch {
             print("[Login] Login failed with error: \(error.localizedDescription)")
