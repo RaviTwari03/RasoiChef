@@ -405,6 +405,13 @@ struct SignUpView: View {
             }
             .padding(.bottom, 30)
         }
+        .scrollIndicators(.hidden)
+        .safeAreaInset(edge: .top) {
+            Color.clear.frame(height: 0)
+        }
+        .safeAreaInset(edge: .bottom) {
+            Color.clear.frame(height: 0)
+        }
         .navigationBarHidden(true)
         .sheet(isPresented: $viewModel.showTerms) {
             TermsView()
@@ -756,27 +763,137 @@ class SignUpViewModel: ObservableObject {
 }
 
 struct TermsView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                Text("Terms of Service content will go here...")
-                    .padding()
+                VStack(alignment: .leading, spacing: 20) {
+                    Group {
+                        Text("Terms of Service")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        Text("Last Updated: February 2024")
+                            .foregroundColor(.gray)
+                        
+                        Text("1. Acceptance of Terms")
+                            .font(.headline)
+                        Text("By accessing and using the RasoiChef app, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the app.")
+                        
+                        Text("2. User Accounts")
+                            .font(.headline)
+                        Text("You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account. You must immediately notify us of any unauthorized use of your account.")
+                        
+                        Text("3. Content Guidelines")
+                            .font(.headline)
+                        Text("Users may share recipes and food-related content. You agree not to post content that is illegal, offensive, or violates others' rights. We reserve the right to remove any content that violates these guidelines.")
+                    }
+                    
+                    Group {
+                        Text("4. Intellectual Property")
+                            .font(.headline)
+                        Text("All content provided through RasoiChef, including but not limited to text, graphics, logos, and recipes, is protected by intellectual property rights. Users retain ownership of their original content.")
+                        
+                        Text("5. Privacy")
+                            .font(.headline)
+                        Text("Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy.")
+                        
+                        Text("6. Modifications")
+                            .font(.headline)
+                        Text("We reserve the right to modify these terms at any time. Continued use of RasoiChef after changes constitutes acceptance of the modified terms.")
+                        
+                        Text("7. Termination")
+                            .font(.headline)
+                        Text("We may terminate or suspend your account at any time for violations of these terms or for any other reason at our discretion.")
+                    }
+                }
+                .padding()
             }
-            .navigationTitle("Terms of Service")
+            .scrollIndicators(.hidden)
+            .safeAreaInset(edge: .top) {
+                Color.clear.frame(height: 0)
+            }
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Terms of Service")
+                        .font(.headline)
+                }
+            }
         }
     }
 }
 
 struct PrivacyView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                Text("Privacy Policy content will go here...")
-                    .padding()
+                VStack(alignment: .leading, spacing: 20) {
+                    Group {
+                        Text("Privacy Policy")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        Text("Last Updated: February 2024")
+                            .foregroundColor(.gray)
+                        
+                        Text("1. Information We Collect")
+                            .font(.headline)
+                        Text("We collect information you provide directly, including:\n• Name and email address\n• Profile information\n• Recipe content and interactions\n• Device information and usage data")
+                        
+                        Text("2. How We Use Your Information")
+                            .font(.headline)
+                        Text("We use your information to:\n• Provide and improve our services\n• Personalize your experience\n• Communicate with you\n• Ensure security and prevent fraud")
+                        
+                        Text("3. Information Sharing")
+                            .font(.headline)
+                        Text("We do not sell your personal information. We may share your information with:\n• Service providers\n• Legal authorities when required\n• Other users (only public profile information)")
+                    }
+                    
+                    Group {
+                        Text("4. Data Security")
+                            .font(.headline)
+                        Text("We implement appropriate security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.")
+                        
+                        Text("5. Your Rights")
+                            .font(.headline)
+                        Text("You have the right to:\n• Access your personal information\n• Correct inaccurate data\n• Request deletion of your data\n• Opt-out of marketing communications")
+                        
+                        Text("6. Children's Privacy")
+                            .font(.headline)
+                        Text("RasoiChef is not intended for children under 13. We do not knowingly collect information from children under 13.")
+                        
+                        Text("7. Contact Us")
+                            .font(.headline)
+                        Text("If you have questions about this Privacy Policy, please contact us at:\nsupport@rasoichef.com")
+                    }
+                }
+                .padding()
             }
-            .navigationTitle("Privacy Policy")
+            .scrollIndicators(.hidden)
+            .safeAreaInset(edge: .top) {
+                Color.clear.frame(height: 0)
+            }
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Privacy Policy")
+                        .font(.headline)
+                }
+            }
         }
     }
 }
