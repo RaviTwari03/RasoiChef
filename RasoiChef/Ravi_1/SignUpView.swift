@@ -229,32 +229,34 @@ struct SignUpView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         
-                        // Password strength bar
-                        GeometryReader { geometry in
-                            ZStack(alignment: .leading) {
-                                Rectangle()
-                                    .fill(Color(.systemGray5))
-                                    .frame(height: 4)
-                                
-                                Rectangle()
-                                    .fill(strengthColor(viewModel.passwordStrength))
-                                    .frame(width: geometry.size.width * CGFloat(viewModel.passwordStrength), height: 4)
+                        if !viewModel.password.isEmpty {
+                            // Password strength bar
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Rectangle()
+                                        .fill(Color(.systemGray5))
+                                        .frame(height: 4)
+                                    
+                                    Rectangle()
+                                        .fill(strengthColor(viewModel.passwordStrength))
+                                        .frame(width: geometry.size.width * CGFloat(viewModel.passwordStrength), height: 4)
+                                }
+                                .cornerRadius(2)
                             }
-                            .cornerRadius(2)
+                            .frame(height: 4)
+                            .padding(.horizontal)
+                            
+                            // Password strength label
+                            HStack {
+                                Text(viewModel.passwordStrength == 0 ? "Password Strength" :
+                                        viewModel.passwordStrength < 0.3 ? "Weak" :
+                                        viewModel.passwordStrength < 0.7 ? "Medium" : "Strong")
+                                    .font(.caption)
+                                    .foregroundColor(strengthColor(viewModel.passwordStrength))
+                                Spacer()
+                            }
+                            .padding(.horizontal)
                         }
-                        .frame(height: 4)
-                        .padding(.horizontal)
-                        
-                        // Password strength label
-                        HStack {
-                            Text(viewModel.passwordStrength == 0 ? "Password Strength" :
-                                    viewModel.passwordStrength < 0.3 ? "Weak" :
-                                    viewModel.passwordStrength < 0.7 ? "Medium" : "Strong")
-                                .font(.caption)
-                                .foregroundColor(strengthColor(viewModel.passwordStrength))
-                            Spacer()
-                        }
-                        .padding(.horizontal)
                     }
                     
                     // Password validation message
@@ -438,6 +440,7 @@ class SignUpViewModel: ObservableObject {
     private let supabase = SupabaseController.shared.client
     private var generatedOTP: String = ""
     private var emailCheckTask: Task<Void, Never>?
+    private var lastVerifiedEmail: String = ""  // Track the email that was last verified with OTP
     
     enum ValidationState {
         case none
@@ -532,6 +535,14 @@ class SignUpViewModel: ObservableObject {
             emailValidationState = .none
             emailErrorMessage = ""
             return
+        }
+        
+        // Reset OTP field and state if email changes after OTP was shown
+        if showOTPField && email != lastVerifiedEmail {
+            showOTPField = false
+            otp = ""
+            generatedOTP = ""
+            errorMessage = ""
         }
         
         // Start new validation task
@@ -648,6 +659,7 @@ class SignUpViewModel: ObservableObject {
         do {
             // Generate OTP
             generatedOTP = generateOTP()
+            lastVerifiedEmail = email  // Store the email being verified
             
             // Send OTP via email
             try await EmailService.shared.sendOTP(to: email.lowercased().trimmingCharacters(in: .whitespaces), otp: generatedOTP)
