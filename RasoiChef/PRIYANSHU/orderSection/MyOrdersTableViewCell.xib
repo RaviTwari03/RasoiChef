@@ -37,9 +37,9 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Kanha ji rasoi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ls0-Hj-Y3C">
-                                <rect key="frame" x="15" y="30" width="216" height="23"/>
+                                <rect key="frame" x="15" y="30" width="250" height="23"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="216" id="hcy-MV-Gvq"/>
+                                    <constraint firstAttribute="width" constant="250" id="hcy-MV-Gvq"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
                                 <nil key="textColor"/>
@@ -81,7 +81,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hI8-cZ-BUj">
-                                <rect key="frame" x="8" y="159" width="337" height="1"/>
+                                <rect key="frame" x="8" y="167" width="337" height="1"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -124,7 +124,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="d7q-X0-VjG" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="0Fm-0V-Ccm"/>
-                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="159" id="5FW-Qg-H87"/>
+                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="167" id="5FW-Qg-H87"/>
                             <constraint firstItem="P7N-n4-Gmj" firstAttribute="top" secondItem="d7q-X0-VjG" secondAttribute="bottom" constant="2.6666666666666714" id="7Xm-lf-ITP"/>
                             <constraint firstItem="Ls0-Hj-Y3C" firstAttribute="top" secondItem="nHO-Pb-2Be" secondAttribute="bottom" constant="4" id="9DV-f7-Qxr"/>
                             <constraint firstItem="nHO-Pb-2Be" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="BcL-H2-jHv"/>
@@ -145,7 +145,7 @@
                             <constraint firstItem="HEf-py-kwh" firstAttribute="top" secondItem="eBf-NY-qkY" secondAttribute="top" constant="9" id="pm3-wT-wl1"/>
                             <constraint firstItem="P7N-n4-Gmj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="s8f-Bs-YV9"/>
                             <constraint firstAttribute="trailing" secondItem="7ar-RN-KLL" secondAttribute="trailing" constant="8" id="tT3-Ee-ihF"/>
-                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="P7N-n4-Gmj" secondAttribute="bottom" constant="2" id="ud2-k7-bvS"/>
+                            <constraint firstItem="hI8-cZ-BUj" firstAttribute="top" secondItem="P7N-n4-Gmj" secondAttribute="bottom" constant="1" id="ud2-k7-bvS"/>
                             <constraint firstItem="7Xi-ro-JlI" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="15" id="vlR-5g-ahO"/>
                             <constraint firstItem="hI8-cZ-BUj" firstAttribute="leading" secondItem="eBf-NY-qkY" secondAttribute="leading" constant="8" id="yO9-El-sBa"/>
                             <constraint firstAttribute="bottom" secondItem="7Xi-ro-JlI" secondAttribute="bottom" constant="19" id="zbM-YQ-OIr"/>
@@ -188,7 +188,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="tableCellBlueTextColor">
-            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

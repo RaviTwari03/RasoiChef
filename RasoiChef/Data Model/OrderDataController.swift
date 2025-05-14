@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+// Notification name for order updates
+extension Notification.Name {
+    static let ordersDidUpdate = Notification.Name("ordersDidUpdate")
+}
+
 class OrderDataController{
     // Current order data controller
     private var orders: [Order] = []
@@ -17,6 +22,12 @@ class OrderDataController{
     // Get all orders
     func getOrders() -> [Order] {
         return orders
+    }
+
+    // Set orders
+    func setOrders(_ newOrders: [Order]) {
+        orders = newOrders
+        sortOrdersByStatus()
     }
 
     // Get order count
@@ -34,8 +45,18 @@ class OrderDataController{
 
     // Sort orders into current and past orders based on their status
     func sortOrdersByStatus() {
-        MyOrdersViewController.shared.currentOrders = orders.filter { $0.status != .delivered }
-        MyOrdersViewController.shared.pastOrders = orders.filter { $0.status == .delivered }
+        let currentOrders = orders.filter { $0.status != .delivered }
+        let pastOrders = orders.filter { $0.status == .delivered }
+        
+        // Post notification with the sorted orders
+        NotificationCenter.default.post(
+            name: .ordersDidUpdate,
+            object: nil,
+            userInfo: [
+                "currentOrders": currentOrders,
+                "pastOrders": pastOrders
+            ]
+        )
     }
 
     // Get count of active orders (placed or delivered)
@@ -46,11 +67,7 @@ class OrderDataController{
     // Load dummy orders (currently empty)
     func loadDummyOrders() {
         // Dummy orders with different statuses
-        orders = [
-//            Order(orderID: "1234", userID: "1234", kitchenName: "Raja's Kitchen", kitchenID: "1", items: [OrderItem(menuItemID: "1", quantity: 1, price: 300.0)], status: .delivered, totalAmount:300.0 , deliveryAddress: "Galgotias university", deliveryDate: Date(), deliveryType:"delivery")
-            
-        ]
-
+        orders = []
         sortOrdersByStatus()  // Ensure the orders are categorized correctly into current and past orders
     }
     
