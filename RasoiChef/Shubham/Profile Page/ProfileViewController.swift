@@ -37,8 +37,8 @@ class ProfileViewController: UIViewController {
     
     @IBAction func yourOrdersButtonTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Priyanshu", bundle: nil)
-            if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
-                self.navigationController?.pushViewController(myOrdersVC, animated: true)
+        if let ordersVC = storyboard.instantiateViewController(withIdentifier: "OrdersHostingController") as? OrdersHostingController {
+            self.navigationController?.pushViewController(ordersVC, animated: true)
             }
     }
     @IBAction func favouriteButtonTapped(_ sender: Any) {

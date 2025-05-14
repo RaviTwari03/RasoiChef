@@ -79,28 +79,6 @@ struct OrdersView: View {
     @Namespace private var animation
 
     var body: some View {
-        ZStack {
-            // Blur and popup overlay at the root level
-            if showingPricePopup, let order = selectedOrder {
-                VisualEffectBlur(blurStyle: .systemMaterial)
-                    .ignoresSafeArea()
-                    .transition(.opacity)
-                    .zIndex(10)
-                    .onTapGesture { withAnimation { showingPricePopup = false } }
-                VStack {
-                    Spacer()
-                    OrderPricePopupView(
-                        price: String(format: "%.2f", order.totalAmount),
-                        gst: String(format: "%.2f", order.totalAmount * 0.18),
-                        discount: "20.00",
-                        grandTotal: String(format: "%.2f", order.totalAmount + (order.totalAmount * 0.18) - 20.00),
-                        onClose: { withAnimation { showingPricePopup = false } }
-                    )
-                    Spacer()
-                }
-                .transition(.opacity)
-                .zIndex(11)
-            }
             NavigationView {
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [Color(.systemGroupedBackground), Color(.systemGray6)]), startPoint: .top, endPoint: .bottom)
@@ -175,7 +153,6 @@ struct OrdersView: View {
                 .sheet(isPresented: $showingTrackOrder) {
                     if let order = selectedOrder {
                         TrackOrderView(order: order)
-                    }
                 }
             }
         }
@@ -347,93 +324,74 @@ struct OrderCard: View {
     let onTrack: (Order) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(order.orderID)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.primary)
-                    HStack(spacing: 6) {
-                        Image(systemName: "fork.knife")
-                            .foregroundColor(.gray)
-                        Text(order.kitchenName)
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.primary)
-                    }
-                    if !order.deliveryAddress.isEmpty {
-                        HStack(spacing: 6) {
-                            Image(systemName: "mappin.and.ellipse")
-                                .foregroundColor(.gray)
-                            Text(order.deliveryAddress)
-                                .font(.system(size: 15))
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
+        VStack(alignment: .leading, spacing: 8) {
+            // Order header
+            HStack {
+                Text("Order #\(order.orderID)")
+                    .font(.headline)
                 Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "clock")
-                            .foregroundColor(.gray)
-                        Text(order.deliveryDate, style: .date)
-                            .font(.system(size: 15))
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
-            Divider().padding(.vertical, 2)
-            OrderItemsList(orderID: order.orderID, menuItems: menuItems)
-                .padding(.top, 2)
-            Divider().padding(.vertical, 2)
-            HStack(spacing: 16) {
                 if isCurrent {
                     Button(action: { onTrack(order) }) {
-                        Text("Track Order")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.blue)
-                            .cornerRadius(12)
+                        Text("Track")
+                            .foregroundColor(.blue)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                } else {
-                    Text("Delivered")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.green)
-                        .cornerRadius(12)
-                }
-                HStack(spacing: 8) {
-                    Button(action: { onInfo(order) }) {
-                        Text("Payment Details")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(Color.blue)
-                            .padding(.vertical, 0)
-                            .padding(.horizontal, 0)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    Button(action: { onInfo(order) }) {
-                        Image(systemName: "info.circle")
-                            .font(.system(size: 22, weight: .regular))
-                            .foregroundColor(Color.blue)
-                            .padding(.vertical, 12)
-                    }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
-            .padding(.top, 4)
+            
+            // Order details
+            Text(order.kitchenName)
+                .font(.subheadline)
+            Text(order.deliveryAddress)
+                .font(.caption)
+                .foregroundColor(.gray)
+            
+            // Items list
+            VStack(alignment: .leading) {
+                Text("Items:")
+                    .font(.subheadline)
+                    .padding(.top, 4)
+                ForEach(order.items, id: \.menuItemID) { item in
+                    if let menuItem = menuItems.first(where: { $0.itemID == item.menuItemID }) {
+                        Text("\(menuItem.name) x\(item.quantity)")
+                            .font(.caption)
+                    }
+                }
+            }
+            
+            // Order status and total
+            HStack {
+                Text(order.status.rawValue)
+                    .font(.caption)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(order.status == .delivered ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
+                    .cornerRadius(4)
+                Spacer()
+                Text("₹\(order.totalAmount, specifier: "%.2f")")
+                    .fontWeight(.semibold)
+            }
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(.systemBackground))
-                .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
-        )
-        .padding(.horizontal, 8)
-        .padding(.vertical, 0)
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 2)
+        .padding(.horizontal)
+    }
+}
+
+struct OrderPriceRow: View {
+    let title: String
+    let value: String
+    var fontWeight: Font.Weight = .regular
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .fontWeight(fontWeight)
+            Spacer()
+            Text(value)
+                .fontWeight(fontWeight)
+        }
     }
 }
 
@@ -459,9 +417,9 @@ struct OrderPricePopupView: View {
                     .font(.title2).bold()
                     .padding(.bottom, 8)
                 VStack(spacing: 10) {
-                    PriceRow(title: "Subtotal", value: "₹\(price)")
-                    PriceRow(title: "GST (18%)", value: "₹\(gst)")
-                    PriceRow(title: "Discount", value: "-₹\(discount)")
+                    OrderPriceRow(title: "Subtotal", value: "₹\(price)")
+                    OrderPriceRow(title: "GST (18%)", value: "₹\(gst)")
+                    OrderPriceRow(title: "Discount", value: "-₹\(discount)")
                         .foregroundColor(.green)
                 }
                 .padding(.horizontal, 16)
@@ -476,19 +434,23 @@ struct OrderPricePopupView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
-                Button(action: {
+                Button {
                     if let onClose = onClose {
                         onClose()
                     } else {
                         presentationMode.wrappedValue.dismiss()
                     }
-                }) {
+                } label: {
                     Text("Close")
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.horizontal, 32)
                         .padding(.vertical, 12)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                        .background(
+                            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), 
+                                         startPoint: .leading, 
+                                         endPoint: .trailing)
+                        )
                         .cornerRadius(20)
                 }
                 .padding(.bottom, 20)
@@ -501,22 +463,6 @@ struct OrderPricePopupView: View {
                 .shadow(color: Color(.black).opacity(0.15), radius: 18, x: 0, y: 8)
         )
         .padding(.horizontal, 24)
-    }
-}
-
-struct PriceRow: View {
-    let title: String
-    let value: String
-    var fontWeight: Font.Weight = .regular
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .fontWeight(fontWeight)
-            Spacer()
-            Text(value)
-                .fontWeight(fontWeight)
-        }
     }
 }
 
@@ -559,33 +505,29 @@ struct OrderTrackingCell: View {
     let hideLastLine: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: 20) {
+        HStack(alignment: .top, spacing: 16) {
+            // Status indicator
             VStack(spacing: 0) {
                 Circle()
-                    .fill(isCompleted ? Color.green : Color.orange)
+                    .fill(isCompleted ? Color.green : Color.gray)
                     .frame(width: 12, height: 12)
                 if !hideLastLine {
                     Rectangle()
                         .fill(isCompleted ? Color.green : Color.gray)
-                        .frame(width: 2, height: 55)
+                        .frame(width: 2)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 5) {
-                HStack {
+            // Status details
+            VStack(alignment: .leading, spacing: 4) {
                     Text(status)
                         .font(.headline)
-                    Spacer()
-                    Text(time)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-
-                if !description.isEmpty {
                     Text(description)
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                }
+                Text(time)
+                    .font(.caption)
+                    .foregroundColor(.gray)
             }
         }
         .padding(.vertical, 8)

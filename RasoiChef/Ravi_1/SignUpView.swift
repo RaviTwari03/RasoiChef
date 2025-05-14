@@ -230,32 +230,32 @@ struct SignUpView: View {
                         .cornerRadius(10)
                         
                         if !viewModel.password.isEmpty {
-                            // Password strength bar
-                            GeometryReader { geometry in
-                                ZStack(alignment: .leading) {
-                                    Rectangle()
-                                        .fill(Color(.systemGray5))
-                                        .frame(height: 4)
-                                    
-                                    Rectangle()
-                                        .fill(strengthColor(viewModel.passwordStrength))
-                                        .frame(width: geometry.size.width * CGFloat(viewModel.passwordStrength), height: 4)
-                                }
-                                .cornerRadius(2)
+                        // Password strength bar
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                Rectangle()
+                                    .fill(Color(.systemGray5))
+                                    .frame(height: 4)
+                                
+                                Rectangle()
+                                    .fill(strengthColor(viewModel.passwordStrength))
+                                    .frame(width: geometry.size.width * CGFloat(viewModel.passwordStrength), height: 4)
                             }
-                            .frame(height: 4)
-                            .padding(.horizontal)
-                            
-                            // Password strength label
-                            HStack {
-                                Text(viewModel.passwordStrength == 0 ? "Password Strength" :
-                                        viewModel.passwordStrength < 0.3 ? "Weak" :
-                                        viewModel.passwordStrength < 0.7 ? "Medium" : "Strong")
-                                    .font(.caption)
-                                    .foregroundColor(strengthColor(viewModel.passwordStrength))
-                                Spacer()
-                            }
-                            .padding(.horizontal)
+                            .cornerRadius(2)
+                        }
+                        .frame(height: 4)
+                        .padding(.horizontal)
+                        
+                        // Password strength label
+                        HStack {
+                            Text(viewModel.passwordStrength == 0 ? "Password Strength" :
+                                    viewModel.passwordStrength < 0.3 ? "Weak" :
+                                    viewModel.passwordStrength < 0.7 ? "Medium" : "Strong")
+                                .font(.caption)
+                                .foregroundColor(strengthColor(viewModel.passwordStrength))
+                            Spacer()
+                        }
+                        .padding(.horizontal)
                         }
                     }
                     
@@ -808,7 +808,7 @@ struct TermsView: View {
                         Text("We may terminate or suspend your account at any time for violations of these terms or for any other reason at our discretion.")
                     }
                 }
-                .padding()
+                    .padding()
             }
             .scrollIndicators(.hidden)
             .safeAreaInset(edge: .top) {
@@ -876,7 +876,7 @@ struct PrivacyView: View {
                         Text("If you have questions about this Privacy Policy, please contact us at:\nsupport@rasoichef.com")
                     }
                 }
-                .padding()
+                    .padding()
             }
             .scrollIndicators(.hidden)
             .safeAreaInset(edge: .top) {
