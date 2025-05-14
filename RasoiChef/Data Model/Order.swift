@@ -90,7 +90,7 @@
 //
 //}
 //
-//// MARK: - Chef’s Special Dishes Model
+//// MARK: - Chef's Special Dishes Model
 //struct ChefsSpecial {
 //    let name: String
 //    let price: Double
@@ -236,11 +236,11 @@
 //}
 //
 //enum OrderStatus: String {
-//    case placed
-//    case confirmed
-//    case prepared
-//    case outForDelivery
-//    case delivered
+//    case placed = "Placed"
+//    case confirmed = "Confirmed"
+//    case prepared = "Prepared"
+//    case outForDelivery = "Out for Delivery"
+//    case delivered = "Delivered"
 //}
 //
 //enum Cuisine: String {
@@ -299,8 +299,8 @@
 //    var specialRequest: String?
 //}
 //
-// //Order
-//struct Order {
+//Order
+//struct Order: Identifiable {
 //    let orderID: String
 //    let userID: String // Foreign Key to User
 //    let kitchenID: String // Foreign Key to Kitchen
@@ -310,6 +310,10 @@
 //    var deliveryAddress: String
 //    var deliveryDate: Date
 //    var deliveryType: String // "Delivery" or "Self Pickup"
+//    var kitchenName: String
+//    
+//    // Identifiable conformance
+//    var id: String { orderID }
 //}
 //
 //// Order Item (Nested within Order)
@@ -318,7 +322,7 @@
 //    var quantity: Int
 //    var price: Double
 //}
-//
+
 //// Subscription Plan
 //struct SubscriptionPlan {
 //    let planID: String

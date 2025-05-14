@@ -11,58 +11,14 @@
         <!--My Orders-->
         <scene sceneID="O74-Yy-zbg">
             <objects>
-                <viewController storyboardIdentifier="MyOrdersViewController" id="PGd-HJ-QzC" customClass="MyOrdersViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OrdersHostingController" id="PGd-HJ-QzC" customClass="OrdersHostingController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QbZ-qI-8lL">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="697"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Fbf-Ke-DVv">
-                                <rect key="frame" x="16" y="165" width="361" height="32"/>
-                                <segments>
-                                    <segment title="Orders"/>
-                                    <segment title="Subscribed Plans"/>
-                                </segments>
-                            </segmentedControl>
-                            <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" id="80G-gY-6Uh">
-                                <rect key="frame" x="0.0" y="225" width="393" height="593"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="3Dm-l8-eF6" kind="embed" id="DOl-Yg-Kgl"/>
-                                </connections>
-                            </containerView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="0Br-s5-7Yv">
-                                <rect key="frame" x="0.0" y="204" width="393" height="614"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MyOrderTableViewCell" id="XNd-jH-8Sc">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XNd-jH-8Sc" id="hsx-3Q-W2S">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                                <sections/>
-                            </tableView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="9jl-YG-SdF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="Fbf-Ke-DVv" secondAttribute="trailing" constant="16" id="1WM-qk-BqN"/>
-                            <constraint firstItem="9jl-YG-SdF" firstAttribute="trailing" secondItem="0Br-s5-7Yv" secondAttribute="trailing" id="WqU-ZJ-7zy"/>
-                            <constraint firstItem="0Br-s5-7Yv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" id="XCd-q9-7tm"/>
-                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="leading" secondItem="9jl-YG-SdF" secondAttribute="leading" constant="16" id="agQ-69-A9t"/>
-                            <constraint firstItem="Fbf-Ke-DVv" firstAttribute="top" secondItem="9jl-YG-SdF" secondAttribute="top" constant="10" id="hSJ-QN-0nP"/>
-                            <constraint firstItem="0Br-s5-7Yv" firstAttribute="top" secondItem="Fbf-Ke-DVv" secondAttribute="bottom" constant="5" id="mmt-h0-Ej1"/>
-                            <constraint firstItem="9jl-YG-SdF" firstAttribute="bottom" secondItem="0Br-s5-7Yv" secondAttribute="bottom" id="zt2-sW-3N2"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Orders" id="Rrf-Zx-cwv"/>
-                    <connections>
-                        <outlet property="subscribedPlansView" destination="80G-gY-6Uh" id="TDX-Ic-vH4"/>
-                        <outlet property="tableView" destination="0Br-s5-7Yv" id="EYN-zK-Yhc"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x17-5q-9OE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -74,7 +30,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ESf-EO-cLD" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="My Orders" image="list.bullet.clipboard" catalog="system" selectedImage="list.bullet.clipboard.fill" id="wJ0-hb-olg"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="lZO-3q-ifp">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" largeTitles="YES" id="lZO-3q-ifp">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -93,11 +49,11 @@
             <objects>
                 <viewController storyboardIdentifier="subscriptionPlansModifyViewController" title="subscriptionPlans" id="3Dm-l8-eF6" customClass="subscriptionPlansModifyViewController" customModule="RasoiChef" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Omb-G4-9Jt">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="593"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="gaS-nn-knc">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="593"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="subscriptionPlansTableViewCell" id="7f7-H4-DLp">
