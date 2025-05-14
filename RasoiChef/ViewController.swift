@@ -149,10 +149,10 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             return 1
         case 4:
             return kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes.count : KitchenDataController.chefSpecialtyDishes.count
-//        case 5:
-//            return 1
-//        case 6:
-//            return kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan.count : KitchenDataController.subscriptionPlan.count
+        case 5:
+            return 1
+        case 6:
+            return kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan.count : KitchenDataController.subscriptionPlan.count
         default:
             return 0
         }
@@ -287,19 +287,19 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.delegate = self
             
             return cell
-//        case 5:
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
-//            cell.delegate = self
-//            return cell
-//            
-//        case 6:
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
-//            let plans = kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan : KitchenDataController.subscriptionPlan
-//            cell.updateSubscriptionPlanData(for: indexPath)
-//            cell.layer.cornerRadius = 15.0
-//            cell.delegate = self
-//            return cell
-//            
+        case 5:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
+            cell.delegate = self
+            return cell
+            
+        case 6:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
+            let plans = kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan : KitchenDataController.subscriptionPlan
+            cell.updateSubscriptionPlanData(for: indexPath)
+            cell.layer.cornerRadius = 15.0
+            cell.delegate = self
+            return cell
+            
         default:
             return UICollectionViewCell()
         }
@@ -476,12 +476,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 print("Error: Could not instantiate KitchenChefSpecialViewController")
             }
         case 3:
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let thirdScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(thirdScreenVC, animated: true)
-            } else {
-                print("Error: Could not instantiate KitchenChefSpecialViewController")
-            }
+            let subscriptionVC = MealSubscriptionPlanHostingController(rootView: MealSubscriptionPlanView())
+            self.navigationController?.pushViewController(subscriptionVC, animated: true)
         default:
             break
         }
@@ -530,10 +526,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                                       preferredStyle: .alert)
         
         let acceptAction = UIAlertAction(title: "Accept", style: .default) { _ in
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(firstScreenVC, animated: true)
-            }
+            let subscriptionVC = MealSubscriptionPlanHostingController(rootView: MealSubscriptionPlanView())
+            self.navigationController?.pushViewController(subscriptionVC, animated: true)
         }
         
         let declineAction = UIAlertAction(title: "Decline", style: .cancel, handler: nil)

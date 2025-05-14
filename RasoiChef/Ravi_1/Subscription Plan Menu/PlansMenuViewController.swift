@@ -198,10 +198,8 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
     @objc func didTapSeeMoreToSubscriptionPlans() {
         let alert = UIAlertController(title: "", message: "This kitchen provides plans for a minimum of 2 days and a maximum of 7 days.", preferredStyle: .alert)
         let acceptAction = UIAlertAction(title: "Accept", style: .default) { _ in
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(firstScreenVC, animated: true)
-            }
+            let subscriptionVC = MealSubscriptionPlanHostingController(rootView: MealSubscriptionPlanView())
+            self.navigationController?.pushViewController(subscriptionVC, animated: true)
         }
         alert.addAction(acceptAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
