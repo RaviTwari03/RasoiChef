@@ -39,15 +39,16 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
         }
         
         if restaurant.isOnline {
-            availability_Label.text = "Online"
-            availability_Label.textColor = UIColor.systemGreen
-            onlineOrOfflineIcon.tintColor = UIColor.systemGreen
-        } else {
-            availability_Label.text = "Offline"
-            availability_Label.textColor = UIColor.systemGray
-            onlineOrOfflineIcon.tintColor = UIColor.systemGray
-            container_View.alpha = 0.8
-        }
+                    availability_Label.text = "Online"
+                    availability_Label.textColor = UIColor.systemGreen
+                    onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                    container_View.alpha = 1.0 // Full opacity for online kitchens
+                } else {
+                    availability_Label.text = "Offline"
+                    availability_Label.textColor = UIColor.systemGray
+                    onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                    container_View.alpha = 0.8 // Reduced opacity only for offline kitchens
+                }
     }
 
     

@@ -291,20 +291,18 @@ func configureItemCountLabel() {
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 { // Existing logic for "LandingPageKitchen"
-            let selectedKitchen = KitchenDataController.kitchens[indexPath.item]
-            if !selectedKitchen.isOnline {
-                        return // Prevent navigation if kitchen is offline
-                    }
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
-                
-                kitchenDetailVC.kitchenData = KitchenDataController.kitchens[indexPath.item]
-                
-                self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+            if indexPath.section == 0 {
+                let selectedKitchen = filteredKitchens[indexPath.item]
+                if !selectedKitchen.isOnline {
+                    return // Prevent navigation if kitchen is offline
+                }
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let kitchenDetailVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController {
+                    kitchenDetailVC.kitchenData = selectedKitchen
+                    self.navigationController?.pushViewController(kitchenDetailVC, animated: true)
+                }
             }
         }
-    }
 
     @objc private func refreshData() {
         print("\n🔄 Refreshing kitchens data...")
