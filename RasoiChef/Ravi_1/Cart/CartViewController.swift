@@ -185,107 +185,63 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func createOrderFromCart(cartItems: [CartItem], subscriptionPlan: [SubscriptionPlan]) -> Order? {
         var orderItems: [OrderItem] = []
+        var totalAmount: Double = 0.0
+        var kitchenName = ""
+        var kitchenID = ""
 
         // Process regular cart items
         for cartItem in cartItems {
             var menuItemID = ""
             var price: Double = 0.0
-            var kitchenName = "Unknown Kitchen"
-            var kitchenID = ""
 
             switch (cartItem.menuItem, cartItem.chefSpecial) {
             case let (menuItem?, nil):
-                menuItemID = menuItem.itemID  // Use itemID instead of name
+                menuItemID = menuItem.itemID
                 price = menuItem.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             case let (nil, chefSpecial?):
-                menuItemID = chefSpecial.dishID  // Use dishID instead of name
+                menuItemID = chefSpecial.dishID
                 price = chefSpecial.price
                 kitchenName = chefSpecial.kitchenName
                 kitchenID = chefSpecial.kitchenID
             case let (menuItem?, chefSpecial?):
-                menuItemID = menuItem.itemID  // Use primary item's ID
+                menuItemID = menuItem.itemID
                 price = menuItem.price + chefSpecial.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             default:
-                continue  // Skip if no valid item
+                continue
             }
+
+            let itemTotal = price * Double(cartItem.quantity)
+            totalAmount += itemTotal
 
             orderItems.append(OrderItem(
                 menuItemID: menuItemID,
                 quantity: cartItem.quantity,
-                price: price * Double(cartItem.quantity)
+                price: itemTotal
             ))
         }
 
-        // Process subscription plans separately
-        for subscription in subscriptionPlan {
-            let subscriptionOrder = SubscriptionPlan(
-                //subscriptionID: UUID().uuidString,
-                planID: subscription.planID,
-                kitchenName: subscription.kitchenName,
-                userID: UUID().uuidString, // Replace with actual user ID
-                location: subscription.location ?? "Unknown Location",
-                //                location : selectedAddress ?? "No address selected",
-                startDate: subscription.startDate,
-                endDate: subscription.endDate,
-                totalPrice: subscription.totalPrice,
-              
-               
-                planName: subscription.planName ?? "Unknown Plan",
-                PlanIntakeLimit: 4
-                
-                
-            )
+        // Generate 8-digit order number
+        let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))
 
-            // Add subscription to OrderDataController
-            OrderDataController.shared.addSubscription(SubscriptionPlan: subscriptionOrder)
-        }
-
-        // If no cart items, return nil (only subscriptions were added)
-        if orderItems.isEmpty {
-            return nil
-        }
-
-        // Calculate total amount for the order
-        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price }
-
-        // Get kitchen details from first cart item
-        let firstCartItem = cartItems.first
-        var kitchenName = firstCartItem?.menuItem?.kitchenName ?? "Unknown Kitchen"
-        var kitchenID = firstCartItem?.menuItem?.kitchenID ?? ""
-        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
-               case let (menuItem?, nil):
-                   kitchenName = menuItem.kitchenName
-                   kitchenID = menuItem.kitchenID
-               case let (nil, chefSpecial?):
-                   kitchenName = chefSpecial.kitchenName
-                   kitchenID = chefSpecial.kitchenID
-               case let (menuItem?, chefSpecial?):
-                   kitchenName = menuItem.kitchenName
-                   kitchenID = menuItem.kitchenID
-               default:
-                   break
-               }
-
-        // Create and return order with selected delivery type
-        let order = Order(
+        // Create the order
+        return Order(
             orderID: UUID().uuidString,
-            userID: UUID().uuidString,  // This should be the actual user ID
+            orderNumber: orderNumber,
+            userID: UserDefaults.standard.string(forKey: "userID") ?? "",
             kitchenName: kitchenName,
             kitchenID: kitchenID,
             items: orderItems,
             item: nil,
             status: .placed,
             totalAmount: totalAmount,
-            deliveryAddress: selectedAddress ?? "No address selected",
+            deliveryAddress: cartItems.first?.userAdress ?? "",
             deliveryDate: Date(),
-            deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
+            deliveryType: "Delivery"
         )
-
-        return order
     }
        func numberOfSections(in tableView: UITableView) -> Int {
            return 6
@@ -811,11 +767,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 // Create an order from cart items
                 let orderID = UUID().uuidString
+                let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))  // Generate 8-digit order number
                 let totalAmount = calculateGrandTotal()
                 let deliveryType = isDeliverySelected ? "Delivery" : "Self-Pickup"
                 
                 let order = Order(
                     orderID: orderID,
+                    orderNumber: orderNumber,  // Add the order number
                     userID: finalUserID,  // Use the verified user ID
                     kitchenName: kitchenName,
                     kitchenID: kitchenID,

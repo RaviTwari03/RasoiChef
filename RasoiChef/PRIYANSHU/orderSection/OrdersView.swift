@@ -73,32 +73,46 @@ struct PastOrdersSection: View {
 
 struct OrdersView: View {
     @StateObject private var viewModel = OrdersViewModel()
-    @State private var showingPricePopup = false
+    @State private var showingFullScreenPaymentAlert = false
     @State private var selectedOrder: Order?
     @State private var showingTrackOrder = false
     @Namespace private var animation
 
     var body: some View {
         ZStack {
-            // Blur and popup overlay at the root level
-            if showingPricePopup, let order = selectedOrder {
-                VisualEffectBlur(blurStyle: .systemMaterial)
+            if showingFullScreenPaymentAlert, let order = selectedOrder {
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .transition(.opacity)
                     .zIndex(10)
-                    .onTapGesture { withAnimation { showingPricePopup = false } }
-                VStack {
-                    Spacer()
-                    OrderPricePopupView(
-                        price: String(format: "%.2f", order.totalAmount),
-                        gst: String(format: "%.2f", order.totalAmount * 0.18),
-                        discount: "20.00",
-                        grandTotal: String(format: "%.2f", order.totalAmount + (order.totalAmount * 0.18) - 20.00),
-                        onClose: { withAnimation { showingPricePopup = false } }
-                    )
-                    Spacer()
+                VStack(spacing: 0) {
+                    ZStack(alignment: .topTrailing) {
+                        VStack(spacing: 16) {
+                            Text("Payment Details")
+                                .font(.title2).bold()
+                                .padding(.top, 8)
+                            paymentDetailRow(label: "Subtotal", value: String(format: "₹%.2f", order.totalAmount))
+                            paymentDetailRow(label: "GST (18%)", value: String(format: "₹%.2f", order.totalAmount * 0.18))
+                            paymentDetailRow(label: "Discount", value: String(format: "-₹%.2f", 20.00), valueColor: .green)
+                            Divider().padding(.vertical, 4)
+                            paymentDetailRow(label: "Grand Total", value: String(format: "₹%.2f", order.totalAmount + (order.totalAmount * 0.18) - 20.00), valueColor: .blue)
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 20)
+                        Button(action: { withAnimation { showingFullScreenPaymentAlert = false } }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                                .foregroundColor(.gray)
+                                .background(Color.white.opacity(0.001))
+                        }
+                        .padding(12)
+                    }
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .shadow(radius: 20)
                 }
-                .transition(.opacity)
+                .frame(maxWidth: 340)
                 .zIndex(11)
             }
             NavigationView {
@@ -112,7 +126,7 @@ struct OrdersView: View {
                                 ForEach(viewModel.currentOrders) { order in
                                     OrderCard(order: order, isCurrent: true, menuItems: viewModel.menuItems, onInfo: { order in
                                         selectedOrder = order
-                                        withAnimation { showingPricePopup = true }
+                                        withAnimation { showingFullScreenPaymentAlert = true }
                                     }, onTrack: { order in
                                         selectedOrder = order
                                         showingTrackOrder = true
@@ -127,7 +141,7 @@ struct OrdersView: View {
                                 ForEach(viewModel.pastOrders) { order in
                                     OrderCard(order: order, isCurrent: false, menuItems: viewModel.menuItems, onInfo: { order in
                                         selectedOrder = order
-                                        withAnimation { showingPricePopup = true }
+                                        withAnimation { showingFullScreenPaymentAlert = true }
                                     }, onTrack: { _ in })
                                     .matchedGeometryEffect(id: order.orderID, in: animation)
                                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -180,6 +194,20 @@ struct OrdersView: View {
             }
         }
     }
+
+    // Helper for bold payment detail rows
+    @ViewBuilder
+    private func paymentDetailRow(label: String, value: String, valueColor: Color = .primary) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.primary)
+            Spacer()
+            Text(value)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(valueColor)
+        }
+    }
 }
 
 struct SectionHeader: View {
@@ -200,87 +228,29 @@ struct SectionHeader: View {
     }
 }
 
-class OrderItemsListViewModel: ObservableObject {
-    @Published var itemDetails: [(name: String, quantity: Int)] = []
-    private let items: [OrderItem]
-
-    init(items: [OrderItem]) {
-        self.items = items
-        fetchItemNames()
-    }
-
-    private func fetchItemNames() {
-        Task {
-            var details: [(String, Int)] = []
-            for item in items {
-                if let name = await fetchMenuItemName(for: item.menuItemID) {
-                    details.append((name, item.quantity))
-                } else if let name = await fetchChefSpecialName(for: item.menuItemID) {
-                    details.append((name, item.quantity))
-                } else {
-                    details.append(("Item #\(item.menuItemID)", item.quantity))
-                }
-            }
-            await MainActor.run {
-                self.itemDetails = details
-            }
-        }
-    }
-
-    private func fetchMenuItemName(for menuItemID: String) async -> String? {
-        do {
-            let response = try await SupabaseController.shared.client.database
-                .from("menu_items")
-                .select("name")
-                .eq("item_id", value: menuItemID)
-                .single()
-                .execute()
-            if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
-               let name = json["name"] as? String {
-                return name
-            }
-        } catch {}
-        return nil
-    }
-
-    private func fetchChefSpecialName(for dishID: String) async -> String? {
-        do {
-            let response = try await SupabaseController.shared.client.database
-                .from("chef_specialty_dishes")
-                .select("name")
-                .eq("dish_id", value: dishID)
-                .single()
-                .execute()
-            if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
-               let name = json["name"] as? String {
-                return name
-            }
-        } catch {}
-        return nil
-    }
-}
-
 struct OrderItemsList: View {
     let orderID: String
     let menuItems: [MenuItem]
-    @State private var itemDetails: [(name: String, quantity: Int)] = []
-    @State private var isLoading = true
+    @StateObject private var viewModel: OrderItemsListViewModel
+
+    init(orderID: String, menuItems: [MenuItem]) {
+        self.orderID = orderID
+        self.menuItems = menuItems
+        self._viewModel = StateObject(wrappedValue: OrderItemsListViewModel(orderID: orderID))
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if isLoading {
+            if viewModel.isLoading {
                 Text("Loading...")
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                    .onAppear {
-                        fetchOrderItems()
-                    }
-            } else if itemDetails.isEmpty {
+            } else if viewModel.itemDetails.isEmpty {
                 Text("No items found")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             } else {
-                ForEach(Array(itemDetails.enumerated()), id: \.offset) { _, detail in
+                ForEach(Array(viewModel.itemDetails.enumerated()), id: \.offset) { _, detail in
                     HStack {
                         Text(detail.name)
                             .font(.system(size: 16))
@@ -294,43 +264,98 @@ struct OrderItemsList: View {
             }
         }
     }
+}
+
+class OrderItemsListViewModel: ObservableObject {
+    @Published var itemDetails: [(name: String, quantity: Int)] = []
+    @Published var isLoading = true
+    private let orderID: String
+
+    init(orderID: String) {
+        self.orderID = orderID
+        fetchOrderItems()
+    }
 
     private func fetchOrderItems() {
         Task {
             do {
+                // First fetch the order items
                 let response = try await SupabaseController.shared.client.database
                     .from("orders")
                     .select("order_items")
                     .eq("order_id", value: orderID)
                     .single()
                     .execute()
-                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] else {
+
+                print("Raw response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
+
+                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
+                      let orderItemsData = json["order_items"] as? [[String: Any]] else {
+                    print("Failed to parse order items data")
                     await MainActor.run {
                         self.isLoading = false
                     }
                     return
                 }
-                var orderItems: [[String: Any]] = []
-                if let orderItemsString = json["order_items"] as? String {
-                    if let data = orderItemsString.data(using: .utf8),
-                       let parsedItems = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-                        orderItems = parsedItems
-                    }
-                } else if let itemsArray = json["order_items"] as? [[String: Any]] {
-                    orderItems = itemsArray
-                }
+
                 var details: [(String, Int)] = []
-                for item in orderItems {
+                
+                // Process each order item
+                for item in orderItemsData {
                     guard let menuItemID = item["menu_item_id"] as? String,
-                          let quantity = item["quantity"] as? Int else { continue }
-                    let name = menuItems.first(where: { $0.itemID == menuItemID })?.name ?? "Item #\(menuItemID)"
-                    details.append((name, quantity))
+                          let quantity = item["quantity"] as? Int else {
+                        print("Missing required fields in order item: \(item)")
+                        continue
+                    }
+
+                    // Try to fetch the item name from menu_items
+                    do {
+                        let menuItemResponse = try await SupabaseController.shared.client.database
+                            .from("menu_items")
+                            .select("name")
+                            .eq("item_id", value: menuItemID)
+                            .single()
+                            .execute()
+
+                        if let menuJson = try? JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [String: Any],
+                           let name = menuJson["name"] as? String {
+                            print("Found menu item: \(name) with quantity: \(quantity)")
+                            details.append((name, quantity))
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching menu item: \(error)")
+                    }
+
+                    // If not found in menu_items, try chef_specialty_dishes
+                    do {
+                        let specialtyResponse = try await SupabaseController.shared.client.database
+                            .from("chef_specialty_dishes")
+                            .select("name")
+                            .eq("dish_id", value: menuItemID)
+                            .single()
+                            .execute()
+
+                        if let specialtyJson = try? JSONSerialization.jsonObject(with: specialtyResponse.data, options: []) as? [String: Any],
+                           let name = specialtyJson["name"] as? String {
+                            print("Found specialty item: \(name) with quantity: \(quantity)")
+                            details.append((name, quantity))
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching specialty item: \(error)")
+                    }
+
+                    // If item name not found in either table, use a generic name
+                    details.append(("Item #\(menuItemID)", quantity))
                 }
+
                 await MainActor.run {
                     self.itemDetails = details
                     self.isLoading = false
                 }
             } catch {
+                print("Error fetching order items: \(error)")
                 await MainActor.run {
                     self.isLoading = false
                 }
@@ -350,7 +375,7 @@ struct OrderCard: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(order.orderID)
+                    Text(order.orderNumber)
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.primary)
                     HStack(spacing: 6) {
@@ -385,138 +410,53 @@ struct OrderCard: View {
             OrderItemsList(orderID: order.orderID, menuItems: menuItems)
                 .padding(.top, 2)
             Divider().padding(.vertical, 2)
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 if isCurrent {
                     Button(action: { onTrack(order) }) {
                         Text("Track Order")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 8)
                             .background(Color.blue)
                             .cornerRadius(12)
                     }
                     .buttonStyle(PlainButtonStyle())
                 } else {
                     Text("Delivered")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
                         .background(Color.green)
                         .cornerRadius(12)
                 }
-                HStack(spacing: 8) {
+                Spacer()
+                HStack(spacing: 4) {
                     Button(action: { onInfo(order) }) {
                         Text("Payment Details")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(Color.blue)
-                            .padding(.vertical, 0)
-                            .padding(.horizontal, 0)
                     }
                     .buttonStyle(PlainButtonStyle())
                     Button(action: { onInfo(order) }) {
                         Image(systemName: "info.circle")
-                            .font(.system(size: 22, weight: .regular))
+                            .font(.system(size: 20, weight: .regular))
                             .foregroundColor(Color.blue)
-                            .padding(.vertical, 12)
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
             }
             .padding(.top, 4)
         }
-        .padding(20)
+        .padding(.all, 20)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(.systemBackground))
+                .fill(Color.white)
                 .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
         )
-        .padding(.horizontal, 8)
-        .padding(.vertical, 0)
-    }
-}
-
-struct OrderPricePopupView: View {
-    let price: String
-    let gst: String
-    let discount: String
-    let grandTotal: String
-    var onClose: (() -> Void)? = nil
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 16) {
-                // Icon and title
-                Image(systemName: "creditcard.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 44, height: 44)
-                    .foregroundColor(.blue)
-                    .padding(.top, 24)
-                Text("Payment Details")
-                    .font(.title2).bold()
-                    .padding(.bottom, 8)
-                VStack(spacing: 10) {
-                    PriceRow(title: "Subtotal", value: "₹\(price)")
-                    PriceRow(title: "GST (18%)", value: "₹\(gst)")
-                    PriceRow(title: "Discount", value: "-₹\(discount)")
-                        .foregroundColor(.green)
-                }
-                .padding(.horizontal, 16)
-                Divider().padding(.vertical, 8)
-                HStack {
-                    Text("Grand Total")
-                        .font(.title3).bold()
-                    Spacer()
-                    Text("₹\(grandTotal)")
-                        .font(.title3).bold()
-                        .foregroundColor(.blue)
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-                Button(action: {
-                    if let onClose = onClose {
-                        onClose()
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }) {
-                    Text("Close")
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 32)
-                        .padding(.vertical, 12)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
-                        .cornerRadius(20)
-                }
-                .padding(.bottom, 20)
-            }
-        }
-        .frame(width: 320)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(.systemBackground))
-                .shadow(color: Color(.black).opacity(0.15), radius: 18, x: 0, y: 8)
-        )
-        .padding(.horizontal, 24)
-    }
-}
-
-struct PriceRow: View {
-    let title: String
-    let value: String
-    var fontWeight: Font.Weight = .regular
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .fontWeight(fontWeight)
-            Spacer()
-            Text(value)
-                .fontWeight(fontWeight)
-        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
     }
 }
 
@@ -807,4 +747,87 @@ struct VisualEffectBlur: UIViewRepresentable {
     }
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
 }
-#endif 
+#endif
+
+struct OrderPricePopupView: View {
+    let price: String
+    let gst: String
+    let discount: String
+    let grandTotal: String
+    var onClose: (() -> Void)? = nil
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 16) {
+                // Icon and title
+                Image(systemName: "creditcard.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 44, height: 44)
+                    .foregroundColor(.blue)
+                    .padding(.top, 24)
+                Text("Payment Details")
+                    .font(.title2).bold()
+                    .padding(.bottom, 8)
+                VStack(spacing: 10) {
+                    PriceRow(title: "Subtotal", value: "₹\(price)")
+                    PriceRow(title: "GST (18%)", value: "₹\(gst)")
+                    PriceRow(title: "Discount", value: "-₹\(discount)")
+                        .foregroundColor(.green)
+                }
+                .padding(.horizontal, 16)
+                Divider().padding(.vertical, 8)
+                HStack {
+                    Text("Grand Total")
+                        .font(.title3).bold()
+                    Spacer()
+                    Text("₹\(grandTotal)")
+                        .font(.title3).bold()
+                        .foregroundColor(.blue)
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
+                Button(action: {
+                    if let onClose = onClose {
+                        onClose()
+                    } else {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }) {
+                    Text("Close")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 32)
+                        .padding(.vertical, 12)
+                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                        .cornerRadius(20)
+                }
+                .padding(.bottom, 20)
+            }
+        }
+        .frame(width: 320)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color(.systemBackground))
+                .shadow(color: Color(.black).opacity(0.15), radius: 18, x: 0, y: 8)
+        )
+        .padding(.horizontal, 24)
+    }
+}
+
+struct PriceRow: View {
+    let title: String
+    let value: String
+    var fontWeight: Font.Weight = .regular
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .fontWeight(fontWeight)
+            Spacer()
+            Text(value)
+                .fontWeight(fontWeight)
+        }
+    }
+} 
