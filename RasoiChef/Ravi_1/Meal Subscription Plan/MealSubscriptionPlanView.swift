@@ -59,7 +59,6 @@ struct MealSubscriptionPlanView: View {
                             HStack {
                                 Image(systemName: "calendar")
                                     .foregroundColor(.gray)
-                                    .labelsHidden()
                                 Text(endDate, format: .dateTime.day().month().year())
                                     .foregroundColor(.primary)
                             }
