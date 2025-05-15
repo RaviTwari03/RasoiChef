@@ -27,14 +27,16 @@ struct MealSubscriptionPlanView: View {
     
     var totalPrice: Int {
         var total = 0
-        for dayMeals in selectedMeals {
-            for (index, isSelected) in dayMeals.enumerated() {
+        let days = getDaysInRange()
+        
+        for dayIndex in 0..<days.count {
+            for (mealIndex, isSelected) in selectedMeals[dayIndex].enumerated() {
                 if isSelected {
-                    total += mealPrices[index]
+                    total += mealPrices[mealIndex]
                 }
             }
         }
-        return total * getDaysInRange().count
+        return total
     }
     
     var body: some View {
@@ -259,10 +261,10 @@ struct PriceDetailsView: View {
                 .fontWeight(.bold)
             
             VStack(spacing: 15) {
-                PriceRow(icon: "BreakfastIcon", meal: "Breakfast", price: "₹30")
-                PriceRow(icon: "LunchIcon", meal: "Lunch", price: "₹40")
-                PriceRow(icon: "SnacksIcon", meal: "Snacks", price: "₹50")
-                PriceRow(icon: "DinnerIcon", meal: "Dinner", price: "₹60")
+                PriceRow(icon: "BreakfastIcon", meal: "Breakfast", price: "30")
+                PriceRow(icon: "LunchIcon", meal: "Lunch", price: "40")
+                PriceRow(icon: "SnacksIcon", meal: "Snacks", price: "50")
+                PriceRow(icon: "DinnerIcon", meal: "Dinner", price: "60")
             }
             .padding()
             
@@ -286,7 +288,7 @@ struct PriceRow: View {
                 .frame(width: 24, height: 24)
             Text(meal)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(price)
+            Text("₹\(price)")
                 .fontWeight(.semibold)
         }
     }
