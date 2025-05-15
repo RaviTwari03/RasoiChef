@@ -6,11 +6,24 @@ struct MealSubscriptionPlanView: View {
     @State private var endDate = Date()
     @State private var selectedMeals: [[Bool]] = Array(repeating: [true, true, true, true], count: 7)
     @State private var showPriceDetails = false
-    @State private var showEndDatePicker = false
     
     private let mealTypes = ["Breakfast", "Lunch", "Snacks", "Dinner"]
     private let mealPrices = [30, 40, 50, 60]
     private let mealIcons = ["BreakfastIcon", "LunchIcon", "SnacksIcon", "DinnerIcon"]
+    
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        return formatter
+    }()
+    
+    private var minimumDate: Date {
+        Calendar.current.startOfDay(for: Date())
+    }
+    
+    private var maximumDate: Date {
+        Calendar.current.date(byAdding: .day, value: 30, to: minimumDate) ?? Date()
+    }
     
     var totalPrice: Int {
         var total = 0
@@ -36,7 +49,7 @@ struct MealSubscriptionPlanView: View {
                         .padding(.top)
                     
                     // Date Selection
-                    HStack(spacing: 20) {
+                    HStack(spacing: 45) {
                         VStack(alignment: .leading) {
                             Text("Start Date")
                                 .font(.caption)
@@ -44,10 +57,10 @@ struct MealSubscriptionPlanView: View {
                             HStack {
                                 Image(systemName: "calendar")
                                     .foregroundColor(.gray)
-                                Text(startDate, format: .dateTime.day().month().year())
-                                    .foregroundColor(.primary)
+                                DatePicker("", selection: $startDate, in: minimumDate...maximumDate, displayedComponents: .date)
+                                    .labelsHidden()
                             }
-                            .padding(8)
+                            .padding(5)
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
                         }
@@ -59,35 +72,15 @@ struct MealSubscriptionPlanView: View {
                             HStack {
                                 Image(systemName: "calendar")
                                     .foregroundColor(.gray)
-                                Text(endDate, format: .dateTime.day().month().year())
-                                    .foregroundColor(.primary)
+                                DatePicker("", selection: $endDate, in: startDate...Calendar.current.date(byAdding: .day, value: 6, to: startDate)!, displayedComponents: .date)
+                                    .labelsHidden()
                             }
-                            .padding(8)
+                            .padding(5)
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
-                            .onTapGesture {
-                                showEndDatePicker = true
-                            }
                         }
                     }
                     .padding(.horizontal)
-                    .sheet(isPresented: $showEndDatePicker) {
-                        NavigationView {
-                            DatePicker("Select End Date",
-                                     selection: $endDate,
-                                     in: startDate...Calendar.current.date(byAdding: .day, value: 6, to: startDate)!,
-                                     displayedComponents: .date)
-                                .datePickerStyle(.graphical)
-                                .padding()
-                                .navigationTitle("Select End Date")
-                                .navigationBarItems(
-                                    trailing: Button("Done") {
-                                        showEndDatePicker = false
-                                    }
-                                )
-                        }
-                        .presentationDetents([.medium])
-                    }
                     
                     // Selected Range
                     VStack(alignment: .leading, spacing: 18) {
@@ -130,12 +123,14 @@ struct MealSubscriptionPlanView: View {
                     // Meal Table
                     VStack(spacing: 0) {
                         // Header
-                        HStack {
+                        HStack(spacing: 0) {
                             Text("Meals/Day")
                                 .frame(width: 100, alignment: .leading)
                             ForEach(mealTypes, id: \.self) { meal in
                                 Text(meal)
                                     .frame(maxWidth: .infinity)
+                                    .font(.system(size: 15))
+                                    .minimumScaleFactor(0.8)
                             }
                         }
                         .padding(.vertical, 10)
@@ -189,8 +184,8 @@ struct MealSubscriptionPlanView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 30)
                             .padding(.vertical, 12)
-                            .background(Color.orange)
-                            .cornerRadius(25)
+                            .background(Color("AccentColor"))
+                            .cornerRadius(11)
                     }
                 }
                 .padding()
@@ -218,9 +213,7 @@ struct MealSubscriptionPlanView: View {
     }
     
     private func getDateRangeText() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate)) (Total Days: \(getDaysInRange().count))"
+        return "\(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: endDate)) (Total Days: \(getDaysInRange().count))"
     }
     
     init() {
