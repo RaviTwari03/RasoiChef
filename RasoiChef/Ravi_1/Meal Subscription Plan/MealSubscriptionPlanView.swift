@@ -6,6 +6,7 @@ struct MealSubscriptionPlanView: View {
     @State private var endDate = Date()
     @State private var selectedMeals: [[Bool]] = Array(repeating: [true, true, true, true], count: 7)
     @State private var showPriceDetails = false
+    @Environment(\.presentationMode) var presentationMode
     
     private let mealTypes = ["Breakfast", "Lunch", "Snacks", "Dinner"]
     private let mealPrices = [30, 40, 50, 60]
@@ -37,6 +38,35 @@ struct MealSubscriptionPlanView: View {
             }
         }
         return total
+    }
+    
+    private func addToCart() {
+        let subscriptionPlan = SubscriptionPlan(
+            planID: UUID().uuidString,
+            kitchenName: "RasoiChef Kitchen",
+            userID: UUID().uuidString,
+            location: "Default Location",
+            startDate: dateFormatter.string(from: startDate),
+            endDate: dateFormatter.string(from: endDate),
+            totalPrice: Double(totalPrice),
+            planName: "Custom Meal Plan",
+            PlanIntakeLimit: 4
+        )
+        
+        CartViewController.subscriptionPlan1.append(subscriptionPlan)
+        
+        // Post notification to update cart badge
+        NotificationCenter.default.post(name: NSNotification.Name("CartUpdated"), object: nil)
+        
+        // Show banner
+        DispatchQueue.main.async {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                let banner = BannerView()
+                banner.show(message: "Subscription plan added to cart", in: rootViewController)
+            }
+        }
     }
     
     var body: some View {
@@ -179,7 +209,7 @@ struct MealSubscriptionPlanView: View {
                         .fontWeight(.semibold)
                     Spacer()
                     Button(action: {
-                        // Subscribe action
+                        addToCart()
                     }) {
                         Text("Subscribe Plan")
                             .fontWeight(.semibold)
