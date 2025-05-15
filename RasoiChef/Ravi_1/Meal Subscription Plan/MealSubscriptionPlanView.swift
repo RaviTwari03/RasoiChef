@@ -6,6 +6,7 @@ struct MealSubscriptionPlanView: View {
     @State private var endDate = Date()
     @State private var selectedMeals: [[Bool]] = Array(repeating: [true, true, true, true], count: 7)
     @State private var showPriceDetails = false
+    @State private var showEndDatePicker = false
     
     private let mealTypes = ["Breakfast", "Lunch", "Snacks", "Dinner"]
     private let mealPrices = [30, 40, 50, 60]
@@ -43,8 +44,8 @@ struct MealSubscriptionPlanView: View {
                             HStack {
                                 Image(systemName: "calendar")
                                     .foregroundColor(.gray)
-                                DatePicker("", selection: $startDate, displayedComponents: .date)
-                                    .labelsHidden()
+                                Text(startDate, format: .dateTime.day().month().year())
+                                    .foregroundColor(.primary)
                             }
                             .padding(8)
                             .background(Color(.systemGray6))
@@ -58,27 +59,54 @@ struct MealSubscriptionPlanView: View {
                             HStack {
                                 Image(systemName: "calendar")
                                     .foregroundColor(.gray)
-                                DatePicker("", selection: $endDate, in: startDate...Calendar.current.date(byAdding: .day, value: 6, to: startDate)!, displayedComponents: .date)
                                     .labelsHidden()
+                                Text(endDate, format: .dateTime.day().month().year())
+                                    .foregroundColor(.primary)
                             }
                             .padding(8)
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
+                            .onTapGesture {
+                                showEndDatePicker = true
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .sheet(isPresented: $showEndDatePicker) {
+                        NavigationView {
+                            DatePicker("Select End Date",
+                                     selection: $endDate,
+                                     in: startDate...Calendar.current.date(byAdding: .day, value: 6, to: startDate)!,
+                                     displayedComponents: .date)
+                                .datePickerStyle(.graphical)
+                                .padding()
+                                .navigationTitle("Select End Date")
+                                .navigationBarItems(
+                                    trailing: Button("Done") {
+                                        showEndDatePicker = false
+                                    }
+                                )
+                        }
+                        .presentationDetents([.medium])
+                    }
+                    
+                    // Selected Range
+                    VStack(alignment: .leading, spacing: 18) {
+                        Text("Selected Range")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                            Text(getDateRangeText())
+                                .font(.subheadline)
                         }
                     }
                     .padding(.horizontal)
                     
-                    // Selected Range
-                    HStack {
-                        Image(systemName: "calendar")
-                            .foregroundColor(.gray)
-                        Text(getDateRangeText())
-                            .font(.subheadline)
-                    }
-                    .padding(.horizontal)
-                    
                     // Customise Table Section
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             Text("Customise Table")
                                 .font(.title2)
@@ -194,6 +222,11 @@ struct MealSubscriptionPlanView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate)) (Total Days: \(getDaysInRange().count))"
+    }
+    
+    init() {
+        _startDate = State(initialValue: Date())
+        _endDate = State(initialValue: Date())
     }
 }
 
