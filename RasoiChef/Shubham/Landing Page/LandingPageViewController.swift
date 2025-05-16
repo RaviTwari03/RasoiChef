@@ -12,22 +12,56 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     @IBOutlet var LandingPage: UICollectionView!
     @IBOutlet weak var kitchenCollectionView: UICollectionView?
     
-    // Add loading indicator
-    private let loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.hidesWhenStopped = true
-        indicator.color = .systemOrange // Match your app's theme color
-        return indicator
+    // Custom loading view
+    private let loadingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
+        return view
     }()
+    
+    private let symbolImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemOrange
+        if let image = UIImage(systemName: "heart.fill")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)) {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    
+    private let quoteLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Made with love\nServed with care"
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .systemOrange
+        return label
+    }()
+    
+    private var symbolRotationTimer: Timer?
+    private let symbols = [
+        ("heart.fill", "Made with love\nServed with care"),
+        ("sparkles", "Creating magical\nmoments with food"),
+        ("clock", "Fresh food,\nRight on time"),
+        ("leaf.fill", "Fresh ingredients\nHealthy meals"),
+        ("hands.sparkles.fill", "Crafted with care\nJust for you")
+    ]
+    private var currentSymbolIndex = 0
+    
+    private var foodRotationTimer: Timer?
+    private let foodImages = ["PaneerButterMasala", "IdliSambar", "CholeBhature", "DalMakhani", "MasalaDosa"]
+    private var currentFoodIndex = 0
     
     private var placeholderTimer: Timer?
     private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
     private var currentIndex = 0
     private var animatedPlaceholderLabel: UILabel?
-
+    
     let searchController = UISearchController(searchResultsController: nil)
-
     private let refreshControl = UIRefreshControl()
 
     
@@ -36,8 +70,8 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
         
-        // Setup loading indicator
-        setupLoadingIndicator()
+        // Setup loading view
+        setupLoadingView()
         
         // Start loading animation
         showLoadingIndicator()
@@ -543,23 +577,89 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            // Handle search logic
        }
     
-    private func setupLoadingIndicator() {
-        view.addSubview(loadingIndicator)
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.addSubview(symbolImageView)
+        loadingView.addSubview(quoteLabel)
         
         NSLayoutConstraint.activate([
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingView.widthAnchor.constraint(equalToConstant: 200),
+            loadingView.heightAnchor.constraint(equalToConstant: 150),
+            
+            symbolImageView.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor),
+            symbolImageView.topAnchor.constraint(equalTo: loadingView.topAnchor),
+            symbolImageView.widthAnchor.constraint(equalToConstant: 60),
+            symbolImageView.heightAnchor.constraint(equalToConstant: 60),
+            
+            quoteLabel.topAnchor.constraint(equalTo: symbolImageView.bottomAnchor, constant: 15),
+            quoteLabel.leadingAnchor.constraint(equalTo: loadingView.leadingAnchor, constant: 10),
+            quoteLabel.trailingAnchor.constraint(equalTo: loadingView.trailingAnchor, constant: -10),
+            quoteLabel.bottomAnchor.constraint(lessThanOrEqualTo: loadingView.bottomAnchor)
         ])
+        
+        loadingView.isHidden = true
     }
     
     private func showLoadingIndicator() {
-        loadingIndicator.startAnimating()
+        loadingView.isHidden = false
         LandingPage.isHidden = true
+        startSymbolRotation()
     }
     
     private func hideLoadingIndicator() {
-        loadingIndicator.stopAnimating()
+        loadingView.isHidden = true
         LandingPage.isHidden = false
+        stopSymbolRotation()
+    }
+    
+    private func startSymbolRotation() {
+        // Initial rotation animation
+        startRotationAnimation()
+        
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // Update symbol and quote with fade
+            UIView.transition(with: self.symbolImageView,
+                            duration: 0.5,
+                            options: [.transitionCrossDissolve, .allowUserInteraction],
+                            animations: {
+                self.currentSymbolIndex = (self.currentSymbolIndex + 1) % self.symbols.count
+                let (symbolName, quote) = self.symbols[self.currentSymbolIndex]
+                if let image = UIImage(systemName: symbolName)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)) {
+                    self.symbolImageView.image = image
+                }
+                
+                UIView.transition(with: self.quoteLabel,
+                                duration: 0.5,
+                                options: [.transitionCrossDissolve, .allowUserInteraction],
+                                animations: {
+                    self.quoteLabel.text = quote
+                }, completion: nil)
+            }, completion: { _ in
+                // Restart rotation animation after symbol change
+                self.startRotationAnimation()
+            })
+        }
+        symbolRotationTimer?.fire()
+    }
+    
+    private func startRotationAnimation() {
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.toValue = NSNumber(value: Double.pi * 2)
+        rotationAnimation.duration = 2.0
+        rotationAnimation.isCumulative = true
+        rotationAnimation.repeatCount = Float.infinity
+        symbolImageView.layer.add(rotationAnimation, forKey: "rotationAnimation")
+    }
+    
+    private func stopSymbolRotation() {
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = nil
+        symbolImageView.layer.removeAnimation(forKey: "rotationAnimation")
     }
     
     @objc private func refreshData() {
@@ -576,16 +676,6 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                         self.LandingPage.reloadData()
                         self.kitchenCollectionView?.reloadData()
-                        
-                        // Show success message
-                        let banner = UILabel()
-                        banner.text = "✅ Content updated"
-                        banner.textAlignment = .center
-                    } else {
-                        // Show error message
-                        let banner = UILabel()
-                        banner.text = "❌ Failed to update content"
-                        banner.textAlignment = .center
                     }
                     
                     self.refreshControl.endRefreshing()
@@ -597,9 +687,13 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     guard let self = self else { return }
                     
                     // Show error message
-                    let banner = UILabel()
-                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
-                    banner.textAlignment = .center
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to update content. Please try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
                     
                     self.refreshControl.endRefreshing()
                     self.hideLoadingIndicator()
