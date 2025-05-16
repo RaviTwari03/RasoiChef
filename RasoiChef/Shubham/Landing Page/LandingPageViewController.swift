@@ -219,6 +219,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 return cell
                 
             case 1:
+                // Add safety check for chef special dishes
+                guard indexPath.item < KitchenDataController.chefSpecialtyDishes.count else {
+                    return UICollectionViewCell()
+                }
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
                 cell.updateSpecialDishDetails(for: indexPath)
                 cell.delegate = self

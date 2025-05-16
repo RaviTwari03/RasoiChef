@@ -283,33 +283,11 @@ struct TabBarButton: View {
     }
 }
 
-struct PriceDetailsView: View {
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Meal Prices")
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            VStack(spacing: 15) {
-                PriceRow(icon: "BreakfastIcon", meal: "Breakfast", price: "30")
-                PriceRow(icon: "LunchIcon", meal: "Lunch", price: "40")
-                PriceRow(icon: "SnacksIcon", meal: "Snacks", price: "50")
-                PriceRow(icon: "DinnerIcon", meal: "Dinner", price: "60")
-            }
-            .padding()
-            
-            Spacer()
-        }
-        .padding(.top)
-        .presentationDetents([.medium])
-    }
-}
-
-struct PriceRow: View {
+struct MealPriceRow: View {
     let icon: String
     let meal: String
-    let price: String
-    
+    let value: String
+
     var body: some View {
         HStack {
             Image(icon)
@@ -318,9 +296,29 @@ struct PriceRow: View {
                 .frame(width: 24, height: 24)
             Text(meal)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("₹\(price)")
+            Text("₹\(value)")
                 .fontWeight(.semibold)
         }
+    }
+}
+
+struct PriceDetailsView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Meal Prices")
+                .font(.title2)
+                .fontWeight(.bold)
+            VStack(spacing: 15) {
+                MealPriceRow(icon: "BreakfastIcon", meal: "Breakfast", value: "30")
+                MealPriceRow(icon: "LunchIcon", meal: "Lunch", value: "40")
+                MealPriceRow(icon: "SnacksIcon", meal: "Snacks", value: "50")
+                MealPriceRow(icon: "DinnerIcon", meal: "Dinner", value: "60")
+            }
+            .padding()
+            Spacer()
+        }
+        .padding(.top)
+        .presentationDetents([.medium])
     }
 }
 
