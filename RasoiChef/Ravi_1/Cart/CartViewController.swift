@@ -1013,8 +1013,32 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             let content = UNMutableNotificationContent()
-            content.title = "Order Placed Successfully! 🎉"
-            content.body = "Your order from \(kitchenName) has been confirmed. Order ID: \(orderID)"
+            
+            // Get current time to customize message
+            let hour = Calendar.current.component(.hour, from: Date())
+            let title: String
+            let body: String
+            
+            switch hour {
+            case 6..<12: // Morning
+                title = "Breakfast is on the way! 🌅"
+                body = "Your delicious morning feast from \(kitchenName) is being prepared with love and care."
+            case 12..<16: // Afternoon
+                title = "Lunch is coming! 🍱"
+                body = "Get ready for a delightful lunch from \(kitchenName). Your taste buds are in for a treat!"
+            case 16..<19: // Evening
+                title = "Evening delights incoming! 🌆"
+                body = "Time for some evening indulgence! \(kitchenName) is preparing your special treats."
+            case 19..<23: // Night
+                title = "Dinner is being prepared! 🌙"
+                body = "Your perfect dinner from \(kitchenName) will be ready soon. Get your table set!"
+            default: // Late night
+                title = "Your food is on the way! 🌟"
+                body = "\(kitchenName) is preparing your special order with the finest ingredients."
+            }
+            
+            content.title = title
+            content.body = body
             content.sound = .default
             content.badge = 1
             
@@ -1046,8 +1070,20 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             let content = UNMutableNotificationContent()
-            content.title = "Subscription Plan Activated! 🎉"
-            content.body = "Your \(planName) subscription from \(kitchenName) has been confirmed."
+            
+            // Array of engaging messages
+            let messages = [
+                (title: "Welcome to the Family! 🎉", body: "Your \(planName) journey with \(kitchenName) begins now. Get ready for a delightful culinary experience!"),
+                (title: "Your Food Journey Begins! 🌟", body: "Exciting times ahead with your new \(planName) subscription from \(kitchenName)!"),
+                (title: "You're All Set! 🍽️", body: "Your \(planName) subscription is active. Get ready for amazing meals from \(kitchenName)!"),
+                (title: "Welcome Aboard! 🚀", body: "Your culinary adventure with \(kitchenName)'s \(planName) starts now!")
+            ]
+            
+            // Randomly select a message
+            let message = messages.randomElement()!
+            
+            content.title = message.title
+            content.body = message.body
             content.sound = .default
             content.badge = 1
             
