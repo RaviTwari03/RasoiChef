@@ -12,13 +12,20 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
     @IBOutlet var LandingPage: UICollectionView!
     @IBOutlet weak var kitchenCollectionView: UICollectionView?
     
+    // Add loading indicator
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        indicator.color = .systemOrange // Match your app's theme color
+        return indicator
+    }()
     
-        private var placeholderTimer: Timer?
-        private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
-        private var currentIndex = 0
-        private var animatedPlaceholderLabel: UILabel?
+    private var placeholderTimer: Timer?
+    private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
+    private var currentIndex = 0
+    private var animatedPlaceholderLabel: UILabel?
 
-    
     let searchController = UISearchController(searchResultsController: nil)
 
     private let refreshControl = UIRefreshControl()
@@ -28,6 +35,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         super.viewDidLoad()
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
+        
+        // Setup loading indicator
+        setupLoadingIndicator()
+        
+        // Start loading animation
+        showLoadingIndicator()
         
         // Add refresh control
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -75,17 +88,34 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         // Load initial data if needed
         Task {
             do {
+                showLoadingIndicator() // Show loading indicator before starting data load
                 try await KitchenDataController.loadData()
                 
                 // Check if data was loaded successfully
                 if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.LandingPage.reloadData()
+                        self.hideLoadingIndicator() // Hide loading indicator after successful load
+                    }
+                } else {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        // Show an error alert to the user
+                        let alert = UIAlertController(
+                            title: "Data Loading Error",
+                            message: "Failed to load data. Please check your internet connection and try again.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                        self.hideLoadingIndicator() // Hide loading indicator after error
                     }
                 }
             } catch {
                 print("❌ Error: \(error.localizedDescription)")
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     // Show an error alert to the user
                     let alert = UIAlertController(
                         title: "Data Loading Error",
@@ -94,6 +124,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
+                    self.hideLoadingIndicator() // Hide loading indicator after error
                 }
             }
         }
@@ -512,8 +543,28 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            // Handle search logic
        }
     
+    private func setupLoadingIndicator() {
+        view.addSubview(loadingIndicator)
+        
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func showLoadingIndicator() {
+        loadingIndicator.startAnimating()
+        LandingPage.isHidden = true
+    }
+    
+    private func hideLoadingIndicator() {
+        loadingIndicator.stopAnimating()
+        LandingPage.isHidden = false
+    }
+    
     @objc private func refreshData() {
         print("\n🔄 Refreshing data...")
+        showLoadingIndicator()
         Task {
             do {
                 try await KitchenDataController.loadData()
@@ -538,6 +589,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     }
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
                 }
             } catch {
                 print("❌ Error: \(error.localizedDescription)")
@@ -550,6 +602,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     banner.textAlignment = .center
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
                 }
             }
         }

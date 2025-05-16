@@ -21,6 +21,9 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     var selectedItem: MenuItem?
     var selectedChefSpecialtyDish: ChefSpecialtyDish?
     
+    // Add refresh control
+    private let refreshControl = UIRefreshControl()
+    
     //    var selectedItem: MenuItem?
     //  var menuItems: [MenuItem] = []
     
@@ -28,6 +31,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         super.viewDidLoad()
         self.title = "Kanha Ji Rasoi"
         self.navigationItem.largeTitleDisplayMode = .never
+        
+        // Setup refresh control
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        collectionView1.refreshControl = refreshControl
         
         // Load kitchens if not already loaded
         print("🔍 Checking kitchen data...")
@@ -568,7 +576,57 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     }
     @objc func dismissView() {
         self.dismiss(animated: true, completion: nil)
-    } 
     }
+    
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing data...")
+        Task {
+            do {
+                try await KitchenDataController.loadData()
+                
+                // Reload kitchen-specific data if a kitchen is selected
+                if let kitchen = kitchenData {
+                    KitchenDataController.loadKitchenSpecificData(forKitchenID: kitchen.kitchenID)
+                }
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    // Check if data was loaded successfully
+                    if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
+                        self.collectionView1.reloadData()
+                        
+                        // Show success message
+                        let banner = UILabel()
+                        banner.text = "✅ Content updated"
+                        banner.textAlignment = .center
+                        // You might want to add custom banner display logic here
+                    } else {
+                        // Show error message
+                        let banner = UILabel()
+                        banner.text = "❌ Failed to update content"
+                        banner.textAlignment = .center
+                        // You might want to add custom banner display logic here
+                    }
+                    
+                    self.refreshControl.endRefreshing()
+                }
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    // Show error message
+                    let banner = UILabel()
+                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
+                    banner.textAlignment = .center
+                    // You might want to add custom banner display logic here
+                    
+                    self.refreshControl.endRefreshing()
+                }
+            }
+        }
+    }
+}
     
 
