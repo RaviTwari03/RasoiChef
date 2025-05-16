@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 // Extension to make Order conform to Identifiable and Equatable
 extension Order: Identifiable, Equatable {
@@ -392,6 +393,8 @@ struct OrderCard: View {
                             Text(order.deliveryAddress)
                                 .font(.system(size: 15))
                                 .foregroundColor(.gray)
+                                .frame(width:160, alignment: .leading)
+                                .lineLimit(2)
                         }
                     }
                 }
@@ -411,27 +414,6 @@ struct OrderCard: View {
                 .padding(.top, 2)
             Divider().padding(.vertical, 2)
             HStack(spacing: 12) {
-                if isCurrent {
-                    Button(action: { onTrack(order) }) {
-                        Text("Track Order")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 8)
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                } else {
-                    Text("Delivered")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 18)
-                        .padding(.vertical, 8)
-                        .background(Color.green)
-                        .cornerRadius(12)
-                }
-                Spacer()
                 HStack(spacing: 4) {
                     Button(action: { onInfo(order) }) {
                         Text("Payment Details")
@@ -446,6 +428,27 @@ struct OrderCard: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
+                Spacer()
+                if isCurrent {
+                    Button(action: { onTrack(order) }) {
+                        Text("Track Order")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 8)
+                            .background(Color.blue.opacity(0.7))
+                            .cornerRadius(12)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                } else {
+                    Text("Delivered")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
+                        .background(Color.green)
+                        .cornerRadius(12)
+                }
             }
             .padding(.top, 4)
         }
@@ -456,7 +459,7 @@ struct OrderCard: View {
                 .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
         )
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.vertical, 0)
     }
 }
 
@@ -464,22 +467,98 @@ struct TrackOrderView: View {
     let order: Order
     @StateObject private var viewModel = TrackOrderViewModel()
     @Environment(\.presentationMode) var presentationMode
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 28.6139, longitude: 77.2090),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    )
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.statusData.indices, id: \.self) { index in
-                    let (status, description, time, isCompleted) = viewModel.statusData[index]
-                    OrderTrackingCell(
-                        status: status,
-                        description: description,
-                        time: time,
-                        isCompleted: isCompleted,
-                        hideLastLine: index == viewModel.statusData.count - 1 && isCompleted
-                    )
+            VStack(spacing: 0) {
+                // Map or delivery icon
+                Map(coordinateRegion: $region)
+                    .frame(height: 180)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+
+                // Order number and address
+                VStack(spacing: 4) {
+                    Text("Order No: \(order.orderNumber)")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .foregroundColor(.gray)
+                        Text(order.deliveryAddress)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
                 }
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+
+                // Status and ETA
+                VStack(spacing: 8) {
+                    Text(viewModel.currentStatus)
+                        .font(.title2).bold()
+                        .padding(.top, 8)
+                    Text("Estimated delivery: \(viewModel.eta)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.bottom, 8)
+
+                // Progress bar
+                ProgressView(value: viewModel.progress)
+                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 12)
+
+                // Timeline
+                ScrollView {
+                    VStack(spacing: 18) {
+                        ForEach(viewModel.statusData.indices, id: \.self) { idx in
+                            let (status, description, time, isCompleted) = viewModel.statusData[idx]
+                            HStack(alignment: .top, spacing: 16) {
+                                VStack {
+                                    Image(systemName: viewModel.icon(for: status))
+                                        .foregroundColor(isCompleted ? .green : .gray)
+                                        .font(.system(size: 22, weight: .bold))
+                                    if idx < viewModel.statusData.count - 1 {
+                                        Rectangle()
+                                            .fill(isCompleted ? Color.green : Color.gray.opacity(0.3))
+                                            .frame(width: 3, height: 36)
+                                    }
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(status)
+                                        .font(.headline)
+                                        .foregroundColor(isCompleted ? .green : .primary)
+                                    if !description.isEmpty {
+                                        Text(description)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                    if !time.isEmpty {
+                                        Text(time)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                }
+                Spacer()
             }
-            .listStyle(PlainListStyle())
             .navigationTitle("Track Order")
             .navigationBarItems(trailing: Button("Done") {
                 presentationMode.wrappedValue.dismiss()
@@ -491,44 +570,25 @@ struct TrackOrderView: View {
     }
 }
 
-struct OrderTrackingCell: View {
-    let status: String
-    let description: String
-    let time: String
-    let isCompleted: Bool
-    let hideLastLine: Bool
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 20) {
-            VStack(spacing: 0) {
-                Circle()
-                    .fill(isCompleted ? Color.green : Color.orange)
-                    .frame(width: 12, height: 12)
-                if !hideLastLine {
-                    Rectangle()
-                        .fill(isCompleted ? Color.green : Color.gray)
-                        .frame(width: 2, height: 55)
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 5) {
-                HStack {
-                    Text(status)
-                        .font(.headline)
-                    Spacer()
-                    Text(time)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-
-                if !description.isEmpty {
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-            }
+// Extend your TrackOrderViewModel for icons and ETA
+extension TrackOrderViewModel {
+    var currentStatus: String {
+        statusData.last(where: { $0.3 })?.0 ?? "Order Placed"
+    }
+    var eta: String {
+        // Dummy ETA logic, replace with real calculation if available
+        if let delivered = statusData.last, delivered.3 { return "Delivered" }
+        return "20-30 min"
+    }
+    func icon(for status: String) -> String {
+        switch status {
+        case "Order Placed": return "cart.fill"
+        case "Order Confirmed": return "checkmark.seal.fill"
+        case "Order Prepared": return "takeoutbag.and.cup.and.straw.fill"
+        case "Out for Delivery": return "bicycle"
+        case "Delivered": return "house.fill"
+        default: return "circle.fill"
         }
-        .padding(.vertical, 8)
     }
 }
 
@@ -621,11 +681,20 @@ class TrackOrderViewModel: ObservableObject {
         ("Out for Delivery", "", "", false),
         ("Delivered", "", "", false)
     ]
+    @Published var progress: Double = 0.0
 
     private var timer: Timer?
     private var startTime: Date?
 
     func initializeTracking(for order: Order) {
+        // Always reset statusData to initial state for a new order
+        statusData = [
+            ("Order Placed", "You have successfully placed your order.", "", true),
+            ("Order Confirmed", "", "", false),
+            ("Order Prepared", "", "", false),
+            ("Out for Delivery", "", "", false),
+            ("Delivered", "", "", false)
+        ]
         let formatter = DateFormatter()
         formatter.dateFormat = "hh:mm a"
 
@@ -731,6 +800,12 @@ class TrackOrderViewModel: ObservableObject {
         }
 
         defaults.set(statusTimes, forKey: orderKey)
+        updateProgress()
+    }
+
+    private func updateProgress() {
+        let completedSteps = statusData.filter { $0.3 }.count
+        progress = Double(completedSteps) / Double(statusData.count)
     }
 
     deinit {
