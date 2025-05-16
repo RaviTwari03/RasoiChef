@@ -11,6 +11,46 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
     
     var selectedDay: WeekDay = .monday // Default to Monday (Change as needed)
     private let refreshControl = UIRefreshControl()
+    
+    // Custom loading view
+    private let loadingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
+        return view
+    }()
+    
+    private let symbolImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemOrange
+        if let image = UIImage(systemName: "fork.knife")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 30, weight: .medium)) {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    
+    private let quoteLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Loading today's menu..."
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .systemOrange
+        return label
+    }()
+    
+    private var symbolRotationTimer: Timer?
+    private let symbols = [
+        ("fork.knife", "Loading today's menu..."),
+        ("calendar", "Checking daily specials..."),
+        ("leaf.fill", "Fresh menu coming up..."),
+        ("heart.fill", "Curated with love..."),
+        ("star.fill", "Special dishes for you...")
+    ]
+    private var currentSymbolIndex = 0
 
     func KitchenMenuListaddButtonTapped(in cell: KitchenMenuCollectionViewCell) {
         guard let indexPath = KitchenMenuList.indexPath(for: cell) else { return }
@@ -45,6 +85,9 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Menu"
+        
+        // Setup loading view
+        setupLoadingView()
         
         // Print initial menu items state
         print("\n=== Menu Items State at ViewDidLoad ===")
@@ -252,8 +295,94 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
             }
         }
 
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.addSubview(symbolImageView)
+        loadingView.addSubview(quoteLabel)
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingView.widthAnchor.constraint(equalToConstant: 200),
+            loadingView.heightAnchor.constraint(equalToConstant: 100),
+            
+            symbolImageView.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor),
+            symbolImageView.topAnchor.constraint(equalTo: loadingView.topAnchor),
+            symbolImageView.widthAnchor.constraint(equalToConstant: 40),
+            symbolImageView.heightAnchor.constraint(equalToConstant: 40),
+            
+            quoteLabel.topAnchor.constraint(equalTo: symbolImageView.bottomAnchor, constant: 10),
+            quoteLabel.leadingAnchor.constraint(equalTo: loadingView.leadingAnchor, constant: 10),
+            quoteLabel.trailingAnchor.constraint(equalTo: loadingView.trailingAnchor, constant: -10),
+            quoteLabel.bottomAnchor.constraint(lessThanOrEqualTo: loadingView.bottomAnchor)
+        ])
+        
+        loadingView.isHidden = true
+    }
+    
+    private func showLoadingIndicator() {
+        loadingView.isHidden = false
+        KitchenMenuList.isHidden = true
+        startSymbolRotation()
+    }
+    
+    private func hideLoadingIndicator() {
+        loadingView.isHidden = true
+        KitchenMenuList.isHidden = false
+        stopSymbolRotation()
+    }
+    
+    private func startSymbolRotation() {
+        // Initial rotation animation
+        startRotationAnimation()
+        
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // Update symbol and quote with fade
+            UIView.transition(with: self.symbolImageView,
+                            duration: 0.5,
+                            options: [.transitionCrossDissolve, .allowUserInteraction],
+                            animations: {
+                self.currentSymbolIndex = (self.currentSymbolIndex + 1) % self.symbols.count
+                let (symbolName, quote) = self.symbols[self.currentSymbolIndex]
+                if let image = UIImage(systemName: symbolName)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 30, weight: .medium)) {
+                    self.symbolImageView.image = image
+                }
+                
+                UIView.transition(with: self.quoteLabel,
+                                duration: 0.5,
+                                options: [.transitionCrossDissolve, .allowUserInteraction],
+                                animations: {
+                    self.quoteLabel.text = quote
+                }, completion: nil)
+            }, completion: { _ in
+                // Restart rotation animation after symbol change
+                self.startRotationAnimation()
+            })
+        }
+        symbolRotationTimer?.fire()
+    }
+    
+    private func startRotationAnimation() {
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.toValue = NSNumber(value: Double.pi * 2)
+        rotationAnimation.duration = 2.0
+        rotationAnimation.isCumulative = true
+        rotationAnimation.repeatCount = Float.infinity
+        symbolImageView.layer.add(rotationAnimation, forKey: "rotationAnimation")
+    }
+    
+    private func stopSymbolRotation() {
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = nil
+        symbolImageView.layer.removeAnimation(forKey: "rotationAnimation")
+    }
+    
     @objc private func refreshData() {
-        print("\n🔄 Refreshing menu data...")
+        print("\n🔄 Refreshing data...")
+        showLoadingIndicator()
         Task {
             do {
                 try await KitchenDataController.loadData()
@@ -262,33 +391,29 @@ class KitchenMenuListViewController: UIViewController,UICollectionViewDelegate, 
                     guard let self = self else { return }
                     
                     // Check if data was loaded successfully
-                    if !KitchenDataController.menuItems.isEmpty {
+                    if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                         self.KitchenMenuList.reloadData()
-                        
-                        // Show success message
-                        let banner = UILabel()
-                        banner.text = "✅ Content updated"
-                        banner.textAlignment = .center
-                    } else {
-                        // Show error message
-                        let banner = UILabel()
-                        banner.text = "❌ Failed to update content"
-                        banner.textAlignment = .center
                     }
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
                 }
             } catch {
                 print("❌ Error: \(error.localizedDescription)")
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     
-                    // Show error message
-                    let banner = UILabel()
-                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
-                    banner.textAlignment = .center
+                    // Show an error alert to the user
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to update content. Please try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
                 }
             }
         }
