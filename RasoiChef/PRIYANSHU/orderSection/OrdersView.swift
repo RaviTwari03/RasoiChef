@@ -376,7 +376,7 @@ struct OrderCard: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(order.orderNumber)
+                    Text("#"+order.orderNumber)
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.primary)
                     HStack(spacing: 6) {
