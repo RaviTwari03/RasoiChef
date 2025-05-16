@@ -160,6 +160,7 @@ struct CartItem {
 // Order
 struct Order {
     let orderID: String
+    let orderNumber: String  // Added order number field
     let userID: String
     let kitchenName: String
     let kitchenID: String
