@@ -113,14 +113,14 @@ class PlansMenuViewController: UIViewController,UICollectionViewDelegate, UIColl
             // ✅ Extract meal details safely
             let mealName = mealItem.name
             let mealDescription = mealItem.description
-            let mealImageName = mealItem.imageURL.isEmpty ? "default_meal" : mealItem.imageURL
+            let mealImageURL = mealItem.imageURL.isEmpty ? "default_meal" : mealItem.imageURL
 
-            // ✅ Update the cell with sorted meal details
+            // ✅ Update the cell with sorted meal details and image URL
             cell.updateMenuDetails(
                 mealType: mealKey.rawValue,
                 mealName: mealName,
                 mealDescription: mealDescription,
-                mealImageName: mealImageName
+                mealImageName: mealImageURL
             )
 
             return cell
