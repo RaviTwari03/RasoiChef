@@ -8,6 +8,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import UserNotifications
 
 protocol SubscriptionPlanDelegate: AnyObject {
     func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
@@ -32,12 +33,14 @@ struct SubscriptionPlanOrder: Encodable {
     let daily_meal_limit: Int
 }
 
-class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate {
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate, UNUserNotificationCenterDelegate {
     
     private let locationManager = CLLocationManager()
     private var currentLocation: CLLocation?
     private var selectedAddress: String? = nil
     private var geocoder = CLGeocoder()
+    
+    private let notificationCenter = UNUserNotificationCenter.current()
     
     weak var delegate: SubscriptionPlanDelegate?
     @IBOutlet var CartItem: UITableView!
@@ -199,6 +202,12 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
            
            // Request location authorization
            locationManager.requestWhenInUseAuthorization()
+           
+           // Request notification permissions
+           requestNotificationPermissions()
+
+           // Set notification delegate
+           notificationCenter.delegate = self
        }
     
     
@@ -920,8 +929,9 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             )
         }
         
+        let orderID = UUID().uuidString
         let order = Order(
-            orderID: UUID().uuidString,
+            orderID: orderID,
             userID: userID,
             kitchenName: kitchenName,
             kitchenID: kitchenID,
@@ -936,11 +946,23 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         try await SupabaseController.shared.insertOrder(order: order)
         OrderDataController.shared.addOrder(order: order)
+        
+        // Schedule notification for regular order
+        DispatchQueue.main.async { [weak self] in
+            self?.scheduleOrderNotification(orderID: orderID, kitchenName: kitchenName)
+        }
     }
 
     private func processSubscriptionPlans(userID: String) async throws {
         for plan in CartViewController.subscriptionPlan1 {
             try await insertSubscriptionPlan(plan, userID: userID)
+            
+            // Schedule notification for subscription plan
+            if let kitchenName = plan.kitchenName, let planName = plan.planName {
+                DispatchQueue.main.async { [weak self] in
+                    self?.scheduleSubscriptionNotification(planName: planName, kitchenName: kitchenName)
+                }
+            }
         }
     }
 
@@ -958,6 +980,93 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         if let paySection = CartItem.numberOfSections > 5 ? 5 : nil,
            let cell = CartItem.cellForRow(at: IndexPath(row: 0, section: paySection)) as? CartPayTableViewCell {
             cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
+        }
+    }
+
+    private func requestNotificationPermissions() {
+        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("✅ Notification permission granted")
+            } else if let error = error {
+                print("❌ Notification permission error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - UNUserNotificationCenterDelegate Methods
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Show notification even when app is in foreground
+        completionHandler([.banner, .sound, .badge])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Handle notification tap
+        completionHandler()
+    }
+
+    private func scheduleOrderNotification(orderID: String, kitchenName: String) {
+        // Check notification authorization status first
+        notificationCenter.getNotificationSettings { [weak self] settings in
+            guard settings.authorizationStatus == .authorized else {
+                print("❌ Notifications not authorized")
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Order Placed Successfully! 🎉"
+            content.body = "Your order from \(kitchenName) has been confirmed. Order ID: \(orderID)"
+            content.sound = .default
+            content.badge = 1
+            
+            // Show notification after 1 second
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: "order-\(orderID)",
+                content: content,
+                trigger: trigger
+            )
+            
+            self?.notificationCenter.add(request) { error in
+                if let error = error {
+                    print("❌ Notification Error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Order notification scheduled successfully")
+                }
+            }
+        }
+    }
+
+    private func scheduleSubscriptionNotification(planName: String, kitchenName: String) {
+        // Check notification authorization status first
+        notificationCenter.getNotificationSettings { [weak self] settings in
+            guard settings.authorizationStatus == .authorized else {
+                print("❌ Notifications not authorized")
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Subscription Plan Activated! 🎉"
+            content.body = "Your \(planName) subscription from \(kitchenName) has been confirmed."
+            content.sound = .default
+            content.badge = 1
+            
+            // Show notification after 1 second
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: "subscription-\(UUID().uuidString)",
+                content: content,
+                trigger: trigger
+            )
+            
+            self?.notificationCenter.add(request) { error in
+                if let error = error {
+                    print("❌ Notification Error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Subscription notification scheduled successfully")
+                }
+            }
         }
     }
 }

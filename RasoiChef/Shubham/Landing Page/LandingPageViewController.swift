@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import UserNotifications
 
-class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate{
+class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate {
 
     @IBOutlet var LandingPage: UICollectionView!
     @IBOutlet weak var kitchenCollectionView: UICollectionView?
+    
+    // Add UNUserNotificationCenter property
+    private let notificationCenter = UNUserNotificationCenter.current()
     
     // Custom loading view
     private let loadingView: UIView = {
@@ -69,6 +73,9 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         super.viewDidLoad()
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
+        
+        // Request notification permissions
+        requestNotificationPermissions()
         
         // Setup loading view
         setupLoadingView()
@@ -697,6 +704,75 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     
                     self.refreshControl.endRefreshing()
                     self.hideLoadingIndicator()
+                }
+            }
+        }
+    }
+
+    private func requestNotificationPermissions() {
+        // First check current authorization status
+        notificationCenter.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                // Request permission with custom alert
+                DispatchQueue.main.async {
+                    self.showCustomNotificationPermissionAlert()
+                }
+            case .denied:
+                // Show alert to go to settings if previously denied
+                DispatchQueue.main.async {
+                    self.showGoToSettingsAlert()
+                }
+            case .authorized, .provisional, .ephemeral:
+                print("✅ Notifications already authorized")
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    private func showCustomNotificationPermissionAlert() {
+        let alert = UIAlertController(
+            title: "Stay Updated! 📱",
+            message: "Enable notifications to get real-time updates about your orders and exclusive offers from RasoiChef!",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Enable", style: .default) { [weak self] _ in
+            self?.requestSystemNotificationPermission()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Not Now", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func showGoToSettingsAlert() {
+        let alert = UIAlertController(
+            title: "Enable Notifications",
+            message: "To receive order updates and offers, please enable notifications in Settings.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL)
+            }
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func requestSystemNotificationPermission() {
+        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("✅ Notification permission granted")
+            } else if let error = error {
+                print("❌ Notification permission error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.showGoToSettingsAlert()
                 }
             }
         }
