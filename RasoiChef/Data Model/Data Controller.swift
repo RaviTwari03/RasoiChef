@@ -37,149 +37,150 @@ class KitchenDataController {
     static var cartItems: [CartItem] = []
     static var orders: [Order] = []
     static var favoriteKitchens: Set<String> = [] // Store favorite kitchen IDs
+    static var availableCoupons: [Coupon] = []
+    static var userCouponUsage: [UserCouponUsage] = []
+    
+    // MARK: - Supabase Client
+    private static let client = SupabaseController.shared.client
     
     // MARK: - Favorites Management
-     static func toggleFavorite(for kitchen: Kitchen) -> Bool {
-         print("🔍 Starting toggleFavorite for kitchen: \(kitchen.name)")
-         print("🔍 Searching for kitchen with ID: \(kitchen.kitchenID)")
-         if let index = kitchens.firstIndex(where: { $0.kitchenID == kitchen.kitchenID }) {
-             print("✅ Found kitchen at index: \(index)")
-             let newState = !kitchens[index].isFavorite
-             print("🔄 Toggling favorite state to: \(newState)")
-             kitchens[index].isFavorite = newState
-             
-             print("🔍 Starting async task to update database")
-             Task<Void, Never> { @MainActor in
-                 do {
-                     print("🔍 Attempting to get current session...")
-                     guard let session = try await SupabaseController.shared.getCurrentSession() else {
-                         print("❌ No active session found")
-                         print("No active session")
-                         return
-                     }
-                     
-                     let userID = session.user.id
-                     print("✅ Got user ID: \(userID.uuidString)")
-                     
-                     if kitchens[index].isFavorite {
-                         print("🔍 Kitchen is now favorite, adding to database...")
-                         print("🔍 Adding kitchen to favorites - Kitchen ID: \(kitchen.kitchenID), User ID: \(userID.uuidString)")
-                         favoriteKitchens.insert(kitchen.kitchenID)
-                         // Add to database
-                         print("🔄 Attempting to insert favorite - User ID: \(userID.uuidString), Kitchen ID: \(kitchen.kitchenID)")
-                         let response = try await SupabaseController.shared.client
-                             .from("kitchen_favorites")
-                             .insert([
-                                 "user_id": userID.uuidString,
-                                 "kitchen_id": kitchen.kitchenID
-                             ])
-                             .execute()
-                         print("✅ Successfully inserted favorite: \(response)")
-                     } else {
-                         print("🔍 Kitchen is no longer favorite, removing from database...")
-                         favoriteKitchens.remove(kitchen.kitchenID)
-                         // Remove from database
-                         try await SupabaseController.shared.client
-                             .from("kitchen_favorites")
-                             .delete()
-                             .eq("user_id", value: userID.uuidString)
-                             .eq("kitchen_id", value: kitchen.kitchenID)
-                             .execute()
-                         print("✅ Successfully removed kitchen from favorites")
-                     }
-                     
-                     // Save favorites to UserDefaults for quick local access
-                     UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
-                     print("✅ Successfully saved favorites to UserDefaults")
-                     
-                     // Post notification that favorites have been updated
-                     NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
-                     
-                 } catch {
-                     print("❌ Error updating favorites:")
-                     print("   Error type: \(type(of: error))")
-                     print("   Description: \(error.localizedDescription)")
-                     if let nsError = error as NSError? {
-                         print("   Domain: \(nsError.domain)")
-                         print("   Code: \(nsError.code)")
-                         print("   User Info: \(nsError.userInfo)")
-                     }
-                 }
-             }
-             return kitchens[index].isFavorite
-         }
-         return false
-     }
-     
-     static func loadFavorites() {
-         print("\n🔄 Loading favorites...")
-         
-         // First load from UserDefaults for quick access
-         if let savedFavorites = UserDefaults.standard.array(forKey: "FavoriteKitchens") as? [String] {
-             print("📱 Loaded \(savedFavorites.count) favorites from UserDefaults")
-             favoriteKitchens = Set(savedFavorites)
-         } else {
-             print("📱 No favorites found in UserDefaults")
-         }
-         
-         // Then sync with database
-         Task<Void, Never> { @MainActor in
-             do {
-                 print("🔍 Attempting to get current session...")
-                 guard let session = try await SupabaseController.shared.getCurrentSession() else {
-                     print("❌ No active session found")
-                     return
-                 }
-                 
-                 let userID = session.user.id
-                 print("✅ Got user ID: \(userID.uuidString)")
-                 
-                 print("📥 Fetching favorites from database...")
-                 let response = try await SupabaseController.shared.client
-                     .from("kitchen_favorites")
-                     .select("kitchen_id")
-                     .eq("user_id", value: userID.uuidString)
-                     .execute()
-                 
-                 print("📦 Raw response data: \(String(data: response.data, encoding: .utf8) ?? "none")")
-                 
-                 if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]] {
-                     let dbFavorites = Set(json.compactMap { $0["kitchen_id"] as? String })
-                     print("✅ Found \(dbFavorites.count) favorites in database")
-                     print("📋 Database favorites: \(dbFavorites)")
-                     
-                     favoriteKitchens = dbFavorites
-                     
-                     // Update UserDefaults
-                     UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
-                     print("✅ Updated UserDefaults with \(favoriteKitchens.count) favorites")
-                     
-                     // Update isFavorite status for all kitchens
-                     for (index, kitchen) in kitchens.enumerated() {
-                         let isFavorite = favoriteKitchens.contains(kitchen.kitchenID)
-                         kitchens[index].isFavorite = isFavorite
-                         print("🔍 Updated kitchen \(kitchen.name) favorite status to: \(isFavorite)")
-                     }
-                     
-                     // Post notification that favorites have been updated
-                     print("📢 Posting FavoritesUpdated notification")
-                     NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
-                 } else {
-                     print("❌ Failed to parse favorites from database response")
-                 }
-             } catch {
-                 print("❌ Error loading favorites from database:")
-                 print("   Error type: \(type(of: error))")
-                 print("   Description: \(error.localizedDescription)")
-                 if let nsError = error as NSError? {
-                     print("   Domain: \(nsError.domain)")
-                     print("   Code: \(nsError.code)")
-                     print("   User Info: \(nsError.userInfo)")
-                 }
-             }
-         }
-     }
+    static func toggleFavorite(for kitchen: Kitchen) -> Bool {
+        print("🔍 Starting toggleFavorite for kitchen: \(kitchen.name)")
+        print("🔍 Searching for kitchen with ID: \(kitchen.kitchenID)")
+        if let index = kitchens.firstIndex(where: { $0.kitchenID == kitchen.kitchenID }) {
+            print("✅ Found kitchen at index: \(index)")
+            let newState = !kitchens[index].isFavorite
+            print("🔄 Toggling favorite state to: \(newState)")
+            kitchens[index].isFavorite = newState
+            
+            print("🔍 Starting async task to update database")
+            Task<Void, Never> { @MainActor in
+                do {
+                    print("🔍 Attempting to get current session...")
+                    let session = try await client.auth.session
+                    print("✅ Got session for user: \(session.user.id.uuidString)")
+                    
+                    let userID = session.user.id
+                    print("✅ Got user ID: \(userID.uuidString)")
+                    
+                    if kitchens[index].isFavorite {
+                        print("🔍 Kitchen is now favorite, adding to database...")
+                        print("🔍 Adding kitchen to favorites - Kitchen ID: \(kitchen.kitchenID), User ID: \(userID.uuidString)")
+                        favoriteKitchens.insert(kitchen.kitchenID)
+                        // Add to database
+                        print("🔄 Attempting to insert favorite - User ID: \(userID.uuidString), Kitchen ID: \(kitchen.kitchenID)")
+                        let response = try await client
+                            .from("kitchen_favorites")
+                            .insert([
+                                "user_id": userID.uuidString,
+                                "kitchen_id": kitchen.kitchenID
+                            ])
+                            .execute()
+                        print("✅ Successfully inserted favorite: \(response)")
+                    } else {
+                        print("🔍 Kitchen is no longer favorite, removing from database...")
+                        favoriteKitchens.remove(kitchen.kitchenID)
+                        // Remove from database
+                        try await client
+                            .from("kitchen_favorites")
+                            .delete()
+                            .eq("user_id", value: userID.uuidString)
+                            .eq("kitchen_id", value: kitchen.kitchenID)
+                            .execute()
+                        print("✅ Successfully removed kitchen from favorites")
+                    }
+                    
+                    // Save favorites to UserDefaults for quick local access
+                    UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                    print("✅ Successfully saved favorites to UserDefaults")
+                    
+                    // Post notification that favorites have been updated
+                    NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
+                    
+                } catch {
+                    print("❌ Error updating favorites:")
+                    print("   Error type: \(type(of: error))")
+                    print("   Description: \(error.localizedDescription)")
+                    if let nsError = error as NSError? {
+                        print("   Domain: \(nsError.domain)")
+                        print("   Code: \(nsError.code)")
+                        print("   User Info: \(nsError.userInfo)")
+                    }
+                }
+            }
+            return kitchens[index].isFavorite
+        }
+        return false
+    }
     
+    static func loadFavorites() {
+        print("\n🔄 Loading favorites...")
+        
+        // First load from UserDefaults for quick access
+        if let savedFavorites = UserDefaults.standard.array(forKey: "FavoriteKitchens") as? [String] {
+            print("📱 Loaded \(savedFavorites.count) favorites from UserDefaults")
+            favoriteKitchens = Set(savedFavorites)
+        } else {
+            print("📱 No favorites found in UserDefaults")
+        }
+        
+        // Then sync with database
+        Task<Void, Never> { @MainActor in
+            do {
+                print("🔍 Attempting to get current session...")
+                guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                    print("❌ No active session found")
+                    return
+                }
+                
+                let userID = session.user.id
+                print("✅ Got user ID: \(userID.uuidString)")
+                
+                print("📥 Fetching favorites from database...")
+                let response = try await SupabaseController.shared.client
+                    .from("kitchen_favorites")
+                    .select("kitchen_id")
+                    .eq("user_id", value: userID.uuidString)
+                    .execute()
+                
+                print("📦 Raw response data: \(String(data: response.data, encoding: .utf8) ?? "none")")
+                
+                if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]] {
+                    let dbFavorites = Set(json.compactMap { $0["kitchen_id"] as? String })
+                    print("✅ Found \(dbFavorites.count) favorites in database")
+                    print("📋 Database favorites: \(dbFavorites)")
+                    
+                    favoriteKitchens = dbFavorites
+                    
+                    // Update UserDefaults
+                    UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                    print("✅ Updated UserDefaults with \(favoriteKitchens.count) favorites")
+                    
+                    // Update isFavorite status for all kitchens
+                    for (index, kitchen) in kitchens.enumerated() {
+                        let isFavorite = favoriteKitchens.contains(kitchen.kitchenID)
+                        kitchens[index].isFavorite = isFavorite
+                        print("🔍 Updated kitchen \(kitchen.name) favorite status to: \(isFavorite)")
+                    }
+                    
+                    // Post notification that favorites have been updated
+                    print("📢 Posting FavoritesUpdated notification")
+                    NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
+                } else {
+                    print("❌ Failed to parse favorites from database response")
+                }
+            } catch {
+                print("❌ Error loading favorites from database:")
+                print("   Error type: \(type(of: error))")
+                print("   Description: \(error.localizedDescription)")
+                if let nsError = error as NSError? {
+                    print("   Domain: \(nsError.domain)")
+                    print("   Code: \(nsError.code)")
+                    print("   User Info: \(nsError.userInfo)")
+                }
+            }
+        }
+    }
     
 
     // MARK: - Data Loading
@@ -270,8 +271,8 @@ class KitchenDataController {
             print("- Subscription Plans: \(subscriptionPlan.count)")
             
             if kitchens.isEmpty && menuItems.isEmpty && chefSpecialtyDishes.isEmpty && subscriptionPlan.isEmpty {
-                throw NSError(domain: "DataLoadingError", 
-                            code: -1, 
+                throw NSError(domain: "DataLoadingError",
+                            code: -1,
                             userInfo: [NSLocalizedDescriptionKey: "No data was loaded from any source"])
             }
             
@@ -441,6 +442,242 @@ class KitchenDataController {
         
         // Filter subscription plans for this kitchen
         filteredSubscriptionPlan = getKitchenSubscriptionPlans(forKitchenID: kitchenID)
+    }
+
+    // MARK: - Coupon Management
+
+    static func fetchAvailableCoupons() async throws {
+        print("\n🔄 Fetching available coupons...")
+        
+        do {
+            // First try to get the session
+            let session = try await client.auth.session
+            print("✅ Got session for user: \(session.user.id.uuidString)")
+            
+            // Get user ID from session
+            let userId = session.user.id.uuidString
+            
+            // Verify user exists in users table
+            let userResponse = try await client.database
+                .from("users")
+                .select("user_id")
+                .eq("user_id", value: userId)
+                .execute()
+            
+            let users = try JSONDecoder().decode([[String: String]].self, from: userResponse.data)
+            
+            guard !users.isEmpty else {
+                print("❌ User not found in database")
+                throw NSError(domain: "DataController", code: 404, userInfo: [NSLocalizedDescriptionKey: "User account not found. Please log out and sign in again."])
+            }
+            
+            print("✅ User verified in database")
+            
+            // Create a custom decoder with date decoding strategy
+            let decoder = JSONDecoder()
+            
+            // Create a custom date decoding strategy that can handle null values
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            
+            decoder.dateDecodingStrategy = .custom { decoder in
+                let container = try decoder.singleValueContainer()
+                if container.decodeNil() {
+                    return Date()
+                }
+                let dateString = try container.decode(String.self)
+                guard let date = dateFormatter.date(from: dateString) else {
+                    throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+                }
+                return date
+            }
+            
+            // Fetch all coupons
+            let response = try await client
+                .from("coupons")
+                .select()
+                .execute()
+            
+            print("✅ Fetched coupons from database")
+            print("📦 Raw coupon data: \(String(data: response.data, encoding: .utf8) ?? "none")")
+            
+            // Try to parse the raw JSON first to see its structure
+            if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]] {
+                print("📋 JSON structure:")
+                for (index, coupon) in json.enumerated() {
+                    print("\nCoupon \(index + 1):")
+                    for (key, value) in coupon {
+                        print("  \(key): \(value)")
+                    }
+                }
+            }
+            
+            let coupons = try decoder.decode([Coupon].self, from: response.data)
+            print("✅ Decoded \(coupons.count) coupons")
+            
+            // Fetch user's coupon usage
+            let usageResponse = try await client
+                .from("user_coupon_usage")
+                .select()
+                .eq("user_id", value: userId)
+                .execute()
+            
+            print("✅ Fetched user coupon usage")
+            print("📦 Raw usage data: \(String(data: usageResponse.data, encoding: .utf8) ?? "none")")
+            
+            // Try to parse the raw JSON first to see its structure
+            if let json = try? JSONSerialization.jsonObject(with: usageResponse.data, options: []) as? [[String: Any]] {
+                print("📋 Usage JSON structure:")
+                for (index, usage) in json.enumerated() {
+                    print("\nUsage \(index + 1):")
+                    for (key, value) in usage {
+                        print("  \(key): \(value)")
+                    }
+                }
+            }
+            
+            let userUsage = try decoder.decode([UserCouponUsage].self, from: usageResponse.data)
+            print("✅ Decoded \(userUsage.count) user coupon usages")
+            
+            // Update coupon status based on usage
+            var updatedCoupons = coupons
+            for (index, coupon) in coupons.enumerated() {
+                // Check if coupon has been used by this user
+                let isUsed = userUsage.contains { $0.couponId == coupon.id }
+                updatedCoupons[index].isUsed = isUsed
+                
+                // Get order count for this user
+                let orderCount = try await getOrderCount(for: userId)
+                updatedCoupons[index].orderCount = orderCount
+                
+                // Enable coupon based on its type and conditions
+                if coupon.isOneTimeUse {
+                                    // For one-time use coupons, enable if not used
+                                    updatedCoupons[index].isEnabled = !isUsed
+                                } else {
+                                    // For loyalty coupon (multiple use), enable after every 5 orders
+                                    // Reset the enabled status after each use
+                                    let usageCount = userUsage.filter { $0.couponId == coupon.id }.count
+                                    let remainingOrders = orderCount - (usageCount * 5)
+                                    updatedCoupons[index].isEnabled = remainingOrders >= 5
+                                }
+            }
+            
+            // Update the available coupons
+            availableCoupons = updatedCoupons
+            userCouponUsage = userUsage
+            
+            print("✅ Successfully updated coupon data")
+            print("- Available coupons: \(availableCoupons.count)")
+            print("- User coupon usage: \(userCouponUsage.count)")
+            
+        } catch {
+            print("❌ Error fetching coupons: \(error.localizedDescription)")
+            
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .keyNotFound(let key, let context):
+                    print("❌ Missing key: \(key.stringValue)")
+                    print("Context: \(context.debugDescription)")
+                    throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid coupon data format: Missing field '\(key.stringValue)'"])
+                case .typeMismatch(let type, let context):
+                    print("❌ Type mismatch: Expected \(type)")
+                    print("Context: \(context.debugDescription)")
+                    throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid coupon data format: Type mismatch for field '\(context.codingPath.last?.stringValue ?? "unknown")'"])
+                case .valueNotFound(let type, let context):
+                    print("❌ Value not found: Expected \(type)")
+                    print("Context: \(context.debugDescription)")
+                    throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid coupon data format: Missing value for field '\(context.codingPath.last?.stringValue ?? "unknown")'"])
+                case .dataCorrupted(let context):
+                    print("❌ Data corrupted")
+                    print("Context: \(context.debugDescription)")
+                    throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid coupon data format: Data is corrupted"])
+                @unknown default:
+                    print("❌ Unknown decoding error: \(decodingError)")
+                    throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid coupon data format"])
+                }
+            } else if let authError = error as? AuthError {
+                switch authError {
+                case .sessionNotFound:
+                    throw NSError(domain: "DataController", code: 401, userInfo: [NSLocalizedDescriptionKey: "Your session has expired. Please sign in again."])
+                default:
+                    throw NSError(domain: "DataController", code: 401, userInfo: [NSLocalizedDescriptionKey: "Authentication error. Please sign in again."])
+                }
+            } else {
+                throw error
+            }
+        }
+    }
+
+    static func applyCoupon(code: String, orderAmount: Double) async throws -> Coupon {
+        print("\n🔄 Applying coupon: \(code)")
+        
+        let session = try await client.auth.session
+        let userId = session.user.id.uuidString
+        
+        // Find the coupon
+        guard let coupon = availableCoupons.first(where: { $0.code == code }) else {
+            throw NSError(domain: "DataController", code: 404, userInfo: [NSLocalizedDescriptionKey: "Coupon not found"])
+        }
+        
+        // Validate coupon
+        guard coupon.isEnabled else {
+            throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Coupon is not enabled"])
+        }
+        
+        guard orderAmount >= coupon.minimumOrderAmount else {
+            throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Order amount is less than minimum required"])
+        }
+        
+        if coupon.isOneTimeUse {
+            guard !coupon.isUsed else {
+                throw NSError(domain: "DataController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Coupon has already been used"])
+            }
+        }
+        
+        return coupon
+    }
+
+    static func recordCouponUsage(couponId: String, orderId: String) async throws {
+        print("\n🔄 Recording coupon usage for coupon: \(couponId)")
+        
+        let session = try await client.auth.session
+        let userId = session.user.id.uuidString
+        
+        // Format date to ISO 8601 string
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let currentDate = dateFormatter.string(from: Date())
+        
+        // Record usage in database
+        try await client
+            .from("user_coupon_usage")
+            .insert([
+                "user_id": userId,
+                "coupon_id": couponId,
+                "order_id": orderId,
+                "used_at": currentDate
+            ])
+            .execute()
+        
+        // Update local state
+        if let index = availableCoupons.firstIndex(where: { $0.id == couponId }) {
+            availableCoupons[index].isUsed = true
+        }
+        
+        print("✅ Successfully recorded coupon usage")
+    }
+
+    private static func getOrderCount(for userId: String) async throws -> Int {
+        let response = try await client
+            .from("orders")
+            .select("order_id")
+            .eq("user_id", value: userId)
+            .eq("status", value: OrderStatus.delivered.rawValue)
+            .execute()
+        
+        let orders = try JSONDecoder().decode([[String: String]].self, from: response.data)
+        return orders.count
     }
 }
 

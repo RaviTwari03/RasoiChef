@@ -211,7 +211,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C8A-dm-syZ">
-                                                <rect key="frame" x="21" y="353" width="360" height="137"/>
+                                                <rect key="frame" x="21" y="353" width="360" height="102"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="1fe-Ac-YRB">
                                                         <rect key="frame" x="16" y="10" width="89.333333333333329" height="36"/>
@@ -238,13 +238,6 @@
                                                             <constraint firstAttribute="height" constant="32" id="iY7-J3-NIt"/>
                                                         </constraints>
                                                     </imageView>
-                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gift" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Sgo-zv-anh">
-                                                        <rect key="frame" x="44" y="96" width="26" height="26.333333333333343"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="width" constant="26" id="RNu-BK-NY0"/>
-                                                            <constraint firstAttribute="height" constant="27" id="dcK-HO-66N"/>
-                                                        </constraints>
-                                                    </imageView>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xcb-Pr-58D">
                                                         <rect key="frame" x="76.999999999999986" y="54" width="171.66666666666663" height="35.666666666666657"/>
                                                         <color key="tintColor" systemColor="labelColor"/>
@@ -256,28 +249,16 @@
                                                             <action selector="availableCouponsTapped:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="aWr-NS-1gd"/>
                                                         </connections>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rFs-Tu-Y6p">
-                                                        <rect key="frame" x="77" y="91.666666666666629" width="162" height="35.666666666666657"/>
-                                                        <color key="tintColor" systemColor="labelColor"/>
-                                                        <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" title="Applied Coupons">
-                                                            <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
-                                                        </buttonConfiguration>
-                                                    </button>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="Xcb-Pr-58D" firstAttribute="leading" secondItem="4Cy-r8-cEF" secondAttribute="trailing" constant="5" id="2Co-YG-C4U"/>
-                                                    <constraint firstItem="Sgo-zv-anh" firstAttribute="leading" secondItem="4Cy-r8-cEF" secondAttribute="leading" id="9Sq-Je-LKF"/>
-                                                    <constraint firstItem="rFs-Tu-Y6p" firstAttribute="leading" secondItem="Xcb-Pr-58D" secondAttribute="leading" id="EkB-jz-gEL"/>
                                                     <constraint firstItem="Xcb-Pr-58D" firstAttribute="top" secondItem="1fe-Ac-YRB" secondAttribute="bottom" constant="8" id="I1p-d4-1ZJ"/>
                                                     <constraint firstItem="4Cy-r8-cEF" firstAttribute="leading" secondItem="C8A-dm-syZ" secondAttribute="leading" constant="44" id="KeS-BG-jnw"/>
-                                                    <constraint firstAttribute="height" constant="137" id="RSE-4j-Rwd"/>
-                                                    <constraint firstItem="Sgo-zv-anh" firstAttribute="top" secondItem="4Cy-r8-cEF" secondAttribute="bottom" constant="8" symbolic="YES" id="SNo-Jm-IZa"/>
+                                                    <constraint firstAttribute="height" constant="102" id="RSE-4j-Rwd"/>
                                                     <constraint firstItem="1fe-Ac-YRB" firstAttribute="leading" secondItem="C8A-dm-syZ" secondAttribute="leading" constant="16" id="TP1-q6-A1z"/>
                                                     <constraint firstAttribute="width" constant="360" id="XO4-5n-uTG"/>
                                                     <constraint firstItem="4Cy-r8-cEF" firstAttribute="top" secondItem="1fe-Ac-YRB" secondAttribute="bottom" constant="10" id="e3R-ba-J7H"/>
-                                                    <constraint firstItem="rFs-Tu-Y6p" firstAttribute="top" secondItem="Xcb-Pr-58D" secondAttribute="bottom" constant="2" id="sqJ-K6-O8f"/>
                                                     <constraint firstItem="1fe-Ac-YRB" firstAttribute="top" secondItem="C8A-dm-syZ" secondAttribute="top" constant="10" id="xZn-l3-F5t"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
@@ -287,7 +268,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dhF-04-iNu">
-                                                <rect key="frame" x="21" y="511" width="360" height="220"/>
+                                                <rect key="frame" x="21" y="476" width="360" height="220"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="oFL-mh-G7v">
                                                         <rect key="frame" x="15.999999999999996" y="10" width="54.666666666666657" height="36"/>
@@ -666,7 +647,6 @@
         <image name="book.pages" catalog="system" width="107" height="128"/>
         <image name="fork.knife.circle" catalog="system" width="128" height="123"/>
         <image name="gearshape" catalog="system" width="128" height="123"/>
-        <image name="gift" catalog="system" width="128" height="125"/>
         <image name="giftcard" catalog="system" width="128" height="88"/>
         <image name="hand.thumbsup" catalog="system" width="123" height="128"/>
         <image name="heart" catalog="system" width="128" height="107"/>

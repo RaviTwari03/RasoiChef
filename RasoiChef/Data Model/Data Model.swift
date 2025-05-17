@@ -234,12 +234,61 @@ struct Feedback {
 }
 
 // Coupons
-struct Coupon {
-    let couponID: String
-    var code: String
-    var discountPercentage: Float
-    var expirationDate: Date
+//struct Coupon {
+//    let couponID: String
+//    var code: String
+//    var discountPercentage: Float
+//    var expirationDate: Date
+//}
+
+struct Coupon: Identifiable, Codable {
+    let id: String
+    let code: String
+    let title: String
+    let description: String
+    let discountPercentage: Int
+    let minimumOrderAmount: Double
+    let isOneTimeUse: Bool
+    var isUsed: Bool
+    var isEnabled: Bool
+    var orderCount: Int
+    let expirationDate: Date?
+    let createdAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case code
+        case title
+        case description
+        case discountPercentage = "discount_percentage"
+        case minimumOrderAmount = "minimum_order_amount"
+        case isOneTimeUse = "is_one_time_use"
+        case isUsed = "is_used"
+        case isEnabled = "is_enabled"
+        case orderCount = "order_count"
+        case expirationDate = "expiration_date"
+        case createdAt = "created_at"
+    }
 }
+
+// User Coupon Usage
+struct UserCouponUsage: Codable {
+    let id: String
+    let userId: String
+    let couponId: String
+    let usedAt: Date
+    let orderId: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case couponId = "coupon_id"
+        case usedAt = "used_at"
+        case orderId = "order_id"
+    }
+}
+
+
 struct MealBanner {
     let title: String
     let subtitle: String
