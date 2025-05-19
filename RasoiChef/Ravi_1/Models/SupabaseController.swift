@@ -991,6 +991,29 @@ class SupabaseController {
 
     // MARK: - Subscription Plan Order Insertion
     struct DBSubscriptionPlanOrder: Encodable {
+        let subscription_id: String? // Optional since it's auto-generated
+        let user_id: String
+        let kitchen_id: String
+        let plan_name: String
+        let start_date: String
+        let end_date: String
+        let total_days: Int
+        let meals_per_day: [String: Bool]
+        let total_amount: Double
+        let status: String = "active" // Default value as per schema
+        let delivery_address: String
+        let delivery_type: String
+        let breakfast_included: Bool
+        let lunch_included: Bool
+        let snacks_included: Bool
+        let dinner_included: Bool
+        let daily_meal_limit: Int
+        let created_at: String? // Optional since it's auto-generated
+        let updated_at: String? // Optional since it's auto-generated
+    }
+
+    // New struct specifically for insertion
+    struct SubscriptionPlanInsert: Encodable {
         let user_id: String
         let kitchen_id: String
         let plan_name: String
@@ -1006,24 +1029,88 @@ class SupabaseController {
         let snacks_included: Bool
         let dinner_included: Bool
         let daily_meal_limit: Int
+
+        enum CodingKeys: String, CodingKey {
+            case user_id
+            case kitchen_id
+            case plan_name
+            case start_date
+            case end_date
+            case total_days
+            case meals_per_day
+            case total_amount
+            case delivery_address
+            case delivery_type
+            case breakfast_included
+            case lunch_included
+            case snacks_included
+            case dinner_included
+            case daily_meal_limit
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(user_id, forKey: .user_id)
+            try container.encode(kitchen_id, forKey: .kitchen_id)
+            try container.encode(plan_name, forKey: .plan_name)
+            try container.encode(start_date, forKey: .start_date)
+            try container.encode(end_date, forKey: .end_date)
+            try container.encode(total_days, forKey: .total_days)
+            try container.encode(meals_per_day, forKey: .meals_per_day)
+            try container.encode(total_amount, forKey: .total_amount)
+            try container.encode(delivery_address, forKey: .delivery_address)
+            try container.encode(delivery_type, forKey: .delivery_type)
+            try container.encode(breakfast_included, forKey: .breakfast_included)
+            try container.encode(lunch_included, forKey: .lunch_included)
+            try container.encode(snacks_included, forKey: .snacks_included)
+            try container.encode(dinner_included, forKey: .dinner_included)
+            try container.encode(daily_meal_limit, forKey: .daily_meal_limit)
+        }
     }
 
     func insertSubscriptionPlanOrder(order: DBSubscriptionPlanOrder) async throws {
         print("\n🔄 Starting subscription plan order insertion process...")
         print("📊 Subscription Plan Order details:")
         print(order)
-        // Check if user_id and kitchen_id are valid UUIDs
-        if UUID(uuidString: order.user_id) == nil {
-            print("❌ user_id is not a valid UUID: \(order.user_id)")
+        
+        // Validate UUIDs
+        guard UUID(uuidString: order.user_id) != nil else {
+            let msg = "❌ user_id is not a valid UUID: \(order.user_id)"
+            print(msg)
+            throw NSError(domain: "SubscriptionPlan", code: -2, userInfo: [NSLocalizedDescriptionKey: msg])
         }
-        if UUID(uuidString: order.kitchen_id) == nil {
-            print("❌ kitchen_id is not a valid UUID: \(order.kitchen_id)")
+        
+        guard UUID(uuidString: order.kitchen_id) != nil else {
+            let msg = "❌ kitchen_id is not a valid UUID: \(order.kitchen_id)"
+            print(msg)
+            throw NSError(domain: "SubscriptionPlan", code: -3, userInfo: [NSLocalizedDescriptionKey: msg])
         }
+        
         do {
+            // Create an insert object with only the fields we want to insert
+            let insertOrder = SubscriptionPlanInsert(
+                user_id: order.user_id,
+                kitchen_id: order.kitchen_id,
+                plan_name: order.plan_name,
+                start_date: order.start_date,
+                end_date: order.end_date,
+                total_days: order.total_days,
+                meals_per_day: order.meals_per_day,
+                total_amount: order.total_amount,
+                delivery_address: order.delivery_address,
+                delivery_type: order.delivery_type,
+                breakfast_included: order.breakfast_included,
+                lunch_included: order.lunch_included,
+                snacks_included: order.snacks_included,
+                dinner_included: order.dinner_included,
+                daily_meal_limit: order.daily_meal_limit
+            )
+            
             let response = try await client.database
                 .from("subscription_plans_order")
-                .insert(order)
+                .insert(insertOrder)
                 .execute()
+            
             print("✅ Subscription plan order insertion completed successfully")
             print("Supabase response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
         } catch {

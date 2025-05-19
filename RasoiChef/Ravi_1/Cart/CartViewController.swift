@@ -830,56 +830,109 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     private func insertSubscriptionPlan(_ plan: SubscriptionPlan, userID: String) async throws {
-        // Map SubscriptionPlan to DBSubscriptionPlanOrder
-        guard let kitchenID = plan.kitchenID,
-              let planName = plan.planName,
-              let startDate = plan.startDate,
-              let endDate = plan.endDate,
-              let totalPrice = plan.totalPrice,
-              let deliveryAddress = selectedAddress else {
-            let msg = "❌ Missing required fields for subscription plan order"
+        // Debug logging for all required fields
+        print("\n🔍 Checking required fields for subscription plan:")
+        print("kitchenID: \(plan.kitchenID ?? "nil")")
+        print("planName: \(plan.planName ?? "nil")")
+        print("startDate: \(plan.startDate ?? "nil")")
+        print("endDate: \(plan.endDate ?? "nil")")
+        print("totalPrice: \(plan.totalPrice ?? 0.0)")
+        print("selectedAddress: \(selectedAddress ?? "nil")")
+        print("userID: \(userID)")
+        print("PlanIntakeLimit: \(plan.PlanIntakeLimit)")
+
+        // Validate kitchen ID first
+        guard let kitchenID = plan.kitchenID, !kitchenID.isEmpty else {
+            let msg = "❌ Kitchen ID is required for subscription plan"
             print(msg)
             DispatchQueue.main.async {
-                self.showAlert(title: "Error", message: msg)
+                self.showAlert(title: "Error", message: "Please select a valid kitchen for your subscription plan.")
             }
             throw NSError(domain: "SubscriptionPlan", code: -1, userInfo: [NSLocalizedDescriptionKey: msg])
         }
-        // Check UUIDs
-        if UUID(uuidString: userID) == nil {
-            let msg = "❌ user_id is not a valid UUID: \(userID)"
+
+        // Validate UUID format for kitchen ID
+        guard UUID(uuidString: kitchenID) != nil else {
+            let msg = "❌ Invalid kitchen ID format: \(kitchenID)"
             print(msg)
             DispatchQueue.main.async {
-                self.showAlert(title: "Error", message: msg)
+                self.showAlert(title: "Error", message: "Invalid kitchen selection. Please try again.")
             }
-            throw NSError(domain: "SubscriptionPlan", code: -2, userInfo: [NSLocalizedDescriptionKey: msg])
+            throw NSError(domain: "SubscriptionPlan", code: -1, userInfo: [NSLocalizedDescriptionKey: msg])
         }
-        if UUID(uuidString: kitchenID) == nil {
-            let msg = "❌ kitchen_id is not a valid UUID: \(kitchenID)"
+
+        // Map SubscriptionPlan to DBSubscriptionPlanOrder
+        guard let planName = plan.planName,
+              let startDateStr = plan.startDate,
+              let endDateStr = plan.endDate,
+              let totalPrice = plan.totalPrice,
+              let deliveryAddress = selectedAddress else {
+            let msg = """
+            ❌ Missing required fields for subscription plan order:
+            - planName: \(plan.planName ?? "nil")
+            - startDate: \(plan.startDate ?? "nil")
+            - endDate: \(plan.endDate ?? "nil")
+            - totalPrice: \(plan.totalPrice ?? 0.0)
+            - deliveryAddress: \(selectedAddress ?? "nil")
+            """
             print(msg)
             DispatchQueue.main.async {
-                self.showAlert(title: "Error", message: msg)
+                self.showAlert(title: "Error", message: "Please ensure all subscription plan details are complete.")
             }
-            throw NSError(domain: "SubscriptionPlan", code: -3, userInfo: [NSLocalizedDescriptionKey: msg])
+            throw NSError(domain: "SubscriptionPlan", code: -1, userInfo: [NSLocalizedDescriptionKey: msg])
         }
+
+        // Convert dates to proper format
+        let inputDateFormatter = DateFormatter()
+        inputDateFormatter.dateFormat = "dd MMM yyyy"
+        
+        let outputDateFormatter = DateFormatter()
+        outputDateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let startDate = inputDateFormatter.date(from: startDateStr),
+              let endDate = inputDateFormatter.date(from: endDateStr) else {
+            let msg = "❌ Invalid date format. Expected format: dd MMM yyyy (e.g., 19 May 2025)"
+            print(msg)
+            DispatchQueue.main.async {
+                self.showAlert(title: "Error", message: "Invalid date format. Please try again.")
+            }
+            throw NSError(domain: "SubscriptionPlan", code: -1, userInfo: [NSLocalizedDescriptionKey: msg])
+        }
+        
+        let formattedStartDate = outputDateFormatter.string(from: startDate)
+        let formattedEndDate = outputDateFormatter.string(from: endDate)
+
         // Calculate total days
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let start = dateFormatter.date(from: startDate)
-        let end = dateFormatter.date(from: endDate)
-        let totalDays = (start != nil && end != nil) ? Calendar.current.dateComponents([.day], from: start!, to: end!).day ?? 1 : 1
-        // Meals per day (for now, just mark all as true if intake limit > 0)
+        let totalDays = Calendar.current.dateComponents([.day], from: startDate, to: endDate).day ?? 1
+
+        // Create meals_per_day JSONB object
         let mealsPerDay: [String: Bool] = [
             "breakfast": plan.PlanIntakeLimit > 0,
             "lunch": plan.PlanIntakeLimit > 0,
             "snacks": plan.PlanIntakeLimit > 0,
             "dinner": plan.PlanIntakeLimit > 0
         ]
+
+        print("\n📦 Creating subscription plan order with values:")
+        print("user_id: \(userID)")
+        print("kitchen_id: \(kitchenID)")
+        print("plan_name: \(planName)")
+        print("start_date: \(formattedStartDate)")
+        print("end_date: \(formattedEndDate)")
+        print("total_days: \(totalDays + 1)")
+        print("total_amount: \(totalPrice)")
+        print("delivery_address: \(deliveryAddress)")
+        print("delivery_type: \(isDeliverySelected ? "Delivery" : "Self-Pickup")")
+        print("daily_meal_limit: \(plan.PlanIntakeLimit)")
+
+        // Create the subscription plan order
         let dbOrder = SupabaseController.DBSubscriptionPlanOrder(
+            subscription_id: nil, // Will be auto-generated by database
             user_id: userID,
             kitchen_id: kitchenID,
             plan_name: planName,
-            start_date: startDate,
-            end_date: endDate,
+            start_date: formattedStartDate,
+            end_date: formattedEndDate,
             total_days: totalDays + 1, // inclusive
             meals_per_day: mealsPerDay,
             total_amount: totalPrice,
@@ -889,17 +942,22 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             lunch_included: mealsPerDay["lunch"] ?? false,
             snacks_included: mealsPerDay["snacks"] ?? false,
             dinner_included: mealsPerDay["dinner"] ?? false,
-            daily_meal_limit: plan.PlanIntakeLimit
+            daily_meal_limit: plan.PlanIntakeLimit,
+            created_at: nil, // Will be auto-generated by database
+            updated_at: nil  // Will be auto-generated by database
         )
-        print("[DEBUG] Attempting to insert subscription plan order:")
+
+        print("\n[DEBUG] Attempting to insert subscription plan order:")
         print(dbOrder)
+
         do {
             try await SupabaseController.shared.insertSubscriptionPlanOrder(order: dbOrder)
+            print("✅ Successfully inserted subscription plan order")
         } catch {
             let msg = "❌ Failed to insert subscription plan order: \(error.localizedDescription)"
             print(msg)
             DispatchQueue.main.async {
-                self.showAlert(title: "Error", message: msg)
+                self.showAlert(title: "Error", message: "Failed to process subscription plan. Please try again.")
             }
             throw error
         }

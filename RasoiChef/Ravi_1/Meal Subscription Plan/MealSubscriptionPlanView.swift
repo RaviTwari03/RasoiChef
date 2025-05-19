@@ -41,10 +41,31 @@ struct MealSubscriptionPlanView: View {
     }
     
     private func addToCart() {
+        // Get the current kitchen from filtered kitchens
+        guard let currentKitchen = KitchenDataController.filteredKitchens.first else {
+            // Show error if no kitchen is selected
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                let alert = UIAlertController(
+                    title: "Error",
+                    message: "Please select a kitchen before subscribing to a plan",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                rootViewController.present(alert, animated: true)
+            }
+            return
+        }
+        
+        let kitchenID = currentKitchen.kitchenID
+        let kitchenName = currentKitchen.name
+        
         let subscriptionPlan = SubscriptionPlan(
             planID: UUID().uuidString,
-            kitchenName: "RasoiChef Kitchen",
+            kitchenName: kitchenName,
             userID: UUID().uuidString,
+            kitchenID: kitchenID,  // Set the kitchen ID
             location: "Default Location",
             startDate: dateFormatter.string(from: startDate),
             endDate: dateFormatter.string(from: endDate),
