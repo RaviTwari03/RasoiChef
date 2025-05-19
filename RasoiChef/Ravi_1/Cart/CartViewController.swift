@@ -213,13 +213,14 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func createOrderFromCart(cartItems: [CartItem], subscriptionPlan: [SubscriptionPlan]) -> Order? {
         var orderItems: [OrderItem] = []
+        var totalAmount: Double = 0.0
+        var kitchenName = ""
+        var kitchenID = ""
 
         // Process regular cart items
         for cartItem in cartItems {
             var menuItemID = ""
             var price: Double = 0.0
-            var kitchenName = "Unknown Kitchen"
-            var kitchenID = ""
 
             switch (cartItem.menuItem, cartItem.chefSpecial) {
             case let (menuItem?, nil):
@@ -241,157 +242,34 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 continue
             }
 
+            let itemTotal = price * Double(cartItem.quantity)
+            totalAmount += itemTotal
+
             orderItems.append(OrderItem(
                 menuItemID: menuItemID,
                 quantity: cartItem.quantity,
-                price: price * Double(cartItem.quantity)
+                price: itemTotal
             ))
         }
 
-        // If no cart items and no subscription plans, return nil
-        if orderItems.isEmpty && subscriptionPlan.isEmpty {
-            return nil
-        }
+        // Generate 8-digit order number
+        let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))
 
-        // Calculate total amount for the order
-        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price }
-
-        // Get kitchen details from first cart item or subscription plan
-        var kitchenName = "Unknown Kitchen"
-        var kitchenID = ""
-
-        if let firstCartItem = cartItems.first {
-            if let menuItem = firstCartItem.menuItem {
-                kitchenName = menuItem.kitchenName
-                kitchenID = menuItem.kitchenID
-            } else if let chefSpecial = firstCartItem.chefSpecial {
-                kitchenName = chefSpecial.kitchenName
-                kitchenID = chefSpecial.kitchenID
-            }
-        } else if let firstSubscription = subscriptionPlan.first {
-            kitchenName = firstSubscription.kitchenName ?? "Unknown Kitchen"
-            kitchenID = firstSubscription.kitchenID ?? ""
-        }
-
+        // Create the order
         return Order(
             orderID: UUID().uuidString,
-            userID: UUID().uuidString,  // This should be replaced with actual user ID
+            orderNumber: orderNumber,
+            userID: UserDefaults.standard.string(forKey: "userID") ?? "",
             kitchenName: kitchenName,
             kitchenID: kitchenID,
             items: orderItems,
-            item: subscriptionPlan.first,  // Include first subscription plan if exists
+            item: nil,
             status: .placed,
             totalAmount: totalAmount,
-            deliveryAddress: selectedAddress ?? "No address selected",
+            deliveryAddress: cartItems.first?.userAdress ?? "",
             deliveryDate: Date(),
-            deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
+            deliveryType: "Delivery"
         )
-    }
-
-    // Update the insertSubscriptionPlan function
-    private func insertSubscriptionPlan(_ plan: SubscriptionPlan, userID: String) async throws {
-        // First, verify the kitchen exists and get its UUID
-        guard let kitchenName = plan.kitchenName else {
-            throw NSError(domain: "Missing kitchen name", code: -1)
-        }
-        
-        // Query the kitchens table to get the kitchen_id
-        let response = try await SupabaseController.shared.client.database
-            .from("kitchens")
-            .select("kitchen_id")
-            .eq("name", value: kitchenName)
-            .execute()
-        
-        // Handle the response data properly
-        struct KitchenResponse: Codable {
-            let kitchen_id: String
-        }
-        
-        // Parse the response data
-        do {
-            if let jsonString = String(data: response.data, encoding: .utf8),
-               let jsonData = jsonString.data(using: .utf8) {
-                let kitchens = try JSONDecoder().decode([KitchenResponse].self, from: jsonData)
-                guard let kitchen = kitchens.first else {
-                    throw NSError(domain: "Kitchen not found", code: -1)
-                }
-                
-                // Use the kitchen ID for the subscription
-                let kitchenID = kitchen.kitchen_id
-                
-                // Validate other required fields
-                guard let startDate = plan.startDate else {
-                    throw NSError(domain: "Missing start date", code: -1)
-                }
-                
-                guard let endDate = plan.endDate else {
-                    throw NSError(domain: "Missing end date", code: -1)
-                }
-                
-                guard let totalPrice = plan.totalPrice else {
-                    throw NSError(domain: "Missing total price", code: -1)
-                }
-
-                // Parse dates
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "dd MMM yyyy"
-                
-                guard let startDateTime = dateFormatter.date(from: startDate) else {
-                    throw NSError(domain: "Invalid start date format", code: -2)
-                }
-                
-                guard let endDateTime = dateFormatter.date(from: endDate) else {
-                    throw NSError(domain: "Invalid end date format", code: -2)
-                }
-
-                // Calculate total days
-                let calendar = Calendar.current
-                let totalDays = calendar.dateComponents([.day], from: startDateTime, to: endDateTime).day ?? 0
-
-                // Check for meal types
-                let hasBreakfast = plan.meals?.contains { $0.mealType == .breakfast } ?? false
-                let hasLunch = plan.meals?.contains { $0.mealType == .lunch } ?? false
-                let hasSnacks = plan.meals?.contains { $0.mealType == .snacks } ?? false
-                let hasDinner = plan.meals?.contains { $0.mealType == .dinner } ?? false
-
-                // Create meals per day JSON
-                let mealsPerDay: [String: Bool] = [
-                    "breakfast": hasBreakfast,
-                    "lunch": hasLunch,
-                    "snacks": hasSnacks,
-                    "dinner": hasDinner
-                ]
-
-                // Create subscription plan order with verified kitchen_id
-                let subscriptionPlanOrder = SubscriptionPlanOrder(
-                    user_id: userID,
-                    kitchen_id: kitchenID,
-                    plan_name: plan.planName ?? "Custom Plan",
-                    start_date: startDate,
-                    end_date: endDate,
-                    total_days: totalDays + 1,
-                    meals_per_day: mealsPerDay,
-                    total_amount: totalPrice,
-                    delivery_address: selectedAddress ?? "No address selected",
-                    delivery_type: isDeliverySelected ? "Delivery" : "Self-Pickup",
-                    breakfast_included: hasBreakfast,
-                    lunch_included: hasLunch,
-                    snacks_included: hasSnacks,
-                    dinner_included: hasDinner,
-                    daily_meal_limit: plan.PlanIntakeLimit
-                )
-
-                // Insert into Supabase
-                try await SupabaseController.shared.client.database
-                    .from("subscription_plans_order")
-                    .insert(subscriptionPlanOrder)
-                    .execute()
-            } else {
-                throw NSError(domain: "Failed to parse kitchen data", code: -1)
-            }
-        } catch {
-            throw NSError(domain: "Failed to process kitchen data: \(error.localizedDescription)", code: -1)
-        }
     }
        func numberOfSections(in tableView: UITableView) -> Int {
            return 6
@@ -843,11 +721,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     // MARK: - CartPayCellDelegate
     func didTapPlaceOrder() {
-        // Check if cart is empty
-        let hasCartItems = !CartViewController.cartItems.isEmpty
-        let hasSubscriptions = !CartViewController.subscriptionPlan1.isEmpty
-        
-        guard hasCartItems || hasSubscriptions else {
+        guard !CartViewController.cartItems.isEmpty || !CartViewController.subscriptionPlan1.isEmpty else {
             showAlert(title: "Empty Cart", message: "Please add items to your cart before placing an order.")
             return
         }
@@ -857,31 +731,127 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             return
         }
         
+        // Get kitchen details from first cart item
+        guard let firstItem = CartViewController.cartItems.first else {
+            showAlert(title: "Error", message: "No items in cart")
+            return
+        }
+        
+        // Get kitchen ID and name from either menu item or chef special
+        let kitchenID: String
+        let kitchenName: String
+        
+        if let menuItem = firstItem.menuItem {
+            kitchenID = menuItem.kitchenID
+            kitchenName = menuItem.kitchenName
+        } else if let chefSpecial = firstItem.chefSpecial {
+            kitchenID = chefSpecial.kitchenID
+            kitchenName = chefSpecial.kitchenName
+        } else {
+            showAlert(title: "Error", message: "Invalid item in cart")
+            return
+        }
+        
+        // Validate kitchen ID
+        guard !kitchenID.isEmpty else {
+            showAlert(title: "Error", message: "Invalid kitchen ID")
+            return
+        }
+        
+        // Get current user ID from UserDefaults or session
         Task {
             do {
-                // Get user ID
-                let userID = try await getUserID()
+                // Try to get user ID from UserDefaults first
+                var userID = UserDefaults.standard.string(forKey: "userID")
                 
-                // Handle regular cart items
-                if hasCartItems {
-                    try await processRegularOrder(userID: userID)
+                // If not in UserDefaults, try to get from current session
+                if userID == nil {
+                    if let session = try await SupabaseController.shared.getCurrentSession() {
+                        userID = session.user.id.uuidString
+                        // Save for future use
+                        UserDefaults.standard.set(userID, forKey: "userID")
+                    }
                 }
                 
-                // Handle subscription plans
-                if hasSubscriptions {
-                    try await processSubscriptionPlans(userID: userID)
+                // Verify user ID exists
+                guard let finalUserID = userID else {
+                    showAlert(title: "Error", message: "Please log in to place an order")
+                    return
                 }
                 
-                // Clear cart and update UI on success
-                DispatchQueue.main.async {
-                    self.clearCartAndUpdateUI()
-                    self.showAlert(title: "Success", message: "Your order has been placed successfully!")
+                // Verify user exists in users table
+                let response = try await SupabaseController.shared.client.database
+                    .from("users")
+                    .select()
+                    .eq("user_id", value: finalUserID)
+                    .execute()
+                
+                let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+                
+                guard let users = json, !users.isEmpty else {
+                    showAlert(title: "Error", message: "User account not found. Please log out and sign in again.")
+                    return
                 }
+                
+                // Create an order from cart items
+                let orderID = UUID().uuidString
+                let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))  // Generate 8-digit order number
+                let totalAmount = calculateGrandTotal()
+                let deliveryType = isDeliverySelected ? "Delivery" : "Self-Pickup"
+                
+                let order = Order(
+                    orderID: orderID,
+                    orderNumber: orderNumber,  // Add the order number
+                    userID: finalUserID,  // Use the verified user ID
+                    kitchenName: kitchenName,
+                    kitchenID: kitchenID,
+                    items: CartViewController.cartItems.map { cartItem in
+                        let itemID: String
+                        let price: Double
+                        
+                        if let menuItem = cartItem.menuItem {
+                            itemID = menuItem.itemID
+                            price = menuItem.price
+                        } else if let chefSpecial = cartItem.chefSpecial {
+                            itemID = chefSpecial.dishID
+                            price = chefSpecial.price
+                        } else {
+                            itemID = ""
+                            price = 0.0
+                        }
+                        
+                        return OrderItem(
+                            menuItemID: itemID,
+                            quantity: cartItem.quantity,
+                            price: price * Double(cartItem.quantity)
+                        )
+                    },
+                    item: nil,
+                    status: .placed,
+                    totalAmount: totalAmount,
+                    deliveryAddress: selectedAddress,
+                    deliveryDate: Date(),
+                    deliveryType: deliveryType
+                )
+                
+                // Save order to Supabase
+                try await SupabaseController.shared.insertOrder(order: order)
+                
+                // Add order to OrderDataController
+                OrderDataController.shared.addOrder(order: order)
+                
+                // Clear cart and update UI
+                CartViewController.cartItems.removeAll()
+                CartViewController.subscriptionPlan1.removeAll()
+                updateTabBarBadge()
+                updateMyOrdersBadge()
+                CartItem.reloadData()
+                
+                showAlert(title: "Success", message: "Your order has been placed successfully!")
+                
             } catch {
-                DispatchQueue.main.async {
-                    self.showAlert(title: "Error", message: "Failed to place order: \(error.localizedDescription)")
-                    print("Error placing order: \(error)")
-                }
+                showAlert(title: "Error", message: "Failed to place order: \(error.localizedDescription)")
+                print("Error placing order: \(error)")
             }
         }
     }

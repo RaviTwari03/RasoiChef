@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 // Extension to make Order conform to Identifiable and Equatable
 extension Order: Identifiable, Equatable {
@@ -73,12 +74,48 @@ struct PastOrdersSection: View {
 
 struct OrdersView: View {
     @StateObject private var viewModel = OrdersViewModel()
-    @State private var showingPricePopup = false
+    @State private var showingFullScreenPaymentAlert = false
     @State private var selectedOrder: Order?
     @State private var showingTrackOrder = false
     @Namespace private var animation
 
     var body: some View {
+        ZStack {
+            if showingFullScreenPaymentAlert, let order = selectedOrder {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .zIndex(10)
+                VStack(spacing: 0) {
+                    ZStack(alignment: .topTrailing) {
+                        VStack(spacing: 16) {
+                            Text("Payment Details")
+                                .font(.title2).bold()
+                                .padding(.top, 8)
+                            paymentDetailRow(label: "Subtotal", value: String(format: "₹%.2f", order.totalAmount))
+                            paymentDetailRow(label: "GST (18%)", value: String(format: "₹%.2f", order.totalAmount * 0.18))
+                            paymentDetailRow(label: "Discount", value: String(format: "-₹%.2f", 20.00), valueColor: .green)
+                            Divider().padding(.vertical, 4)
+                            paymentDetailRow(label: "Grand Total", value: String(format: "₹%.2f", order.totalAmount + (order.totalAmount * 0.18) - 20.00), valueColor: .blue)
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 20)
+                        Button(action: { withAnimation { showingFullScreenPaymentAlert = false } }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                                .foregroundColor(.gray)
+                                .background(Color.white.opacity(0.001))
+                        }
+                        .padding(12)
+                    }
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .shadow(radius: 20)
+                }
+                .frame(maxWidth: 340)
+                .zIndex(11)
+            }
             NavigationView {
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [Color(.systemGroupedBackground), Color(.systemGray6)]), startPoint: .top, endPoint: .bottom)
@@ -90,7 +127,7 @@ struct OrdersView: View {
                                 ForEach(viewModel.currentOrders) { order in
                                     OrderCard(order: order, isCurrent: true, menuItems: viewModel.menuItems, onInfo: { order in
                                         selectedOrder = order
-                                        withAnimation { showingPricePopup = true }
+                                        withAnimation { showingFullScreenPaymentAlert = true }
                                     }, onTrack: { order in
                                         selectedOrder = order
                                         showingTrackOrder = true
@@ -105,7 +142,7 @@ struct OrdersView: View {
                                 ForEach(viewModel.pastOrders) { order in
                                     OrderCard(order: order, isCurrent: false, menuItems: viewModel.menuItems, onInfo: { order in
                                         selectedOrder = order
-                                        withAnimation { showingPricePopup = true }
+                                        withAnimation { showingFullScreenPaymentAlert = true }
                                     }, onTrack: { _ in })
                                     .matchedGeometryEffect(id: order.orderID, in: animation)
                                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -153,8 +190,23 @@ struct OrdersView: View {
                 .sheet(isPresented: $showingTrackOrder) {
                     if let order = selectedOrder {
                         TrackOrderView(order: order)
+                    }
                 }
             }
+        }
+    }
+
+    // Helper for bold payment detail rows
+    @ViewBuilder
+    private func paymentDetailRow(label: String, value: String, valueColor: Color = .primary) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.primary)
+            Spacer()
+            Text(value)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(valueColor)
         }
     }
 }
@@ -177,87 +229,29 @@ struct SectionHeader: View {
     }
 }
 
-class OrderItemsListViewModel: ObservableObject {
-    @Published var itemDetails: [(name: String, quantity: Int)] = []
-    private let items: [OrderItem]
-
-    init(items: [OrderItem]) {
-        self.items = items
-        fetchItemNames()
-    }
-
-    private func fetchItemNames() {
-        Task {
-            var details: [(String, Int)] = []
-            for item in items {
-                if let name = await fetchMenuItemName(for: item.menuItemID) {
-                    details.append((name, item.quantity))
-                } else if let name = await fetchChefSpecialName(for: item.menuItemID) {
-                    details.append((name, item.quantity))
-                } else {
-                    details.append(("Item #\(item.menuItemID)", item.quantity))
-                }
-            }
-            await MainActor.run {
-                self.itemDetails = details
-            }
-        }
-    }
-
-    private func fetchMenuItemName(for menuItemID: String) async -> String? {
-        do {
-            let response = try await SupabaseController.shared.client.database
-                .from("menu_items")
-                .select("name")
-                .eq("item_id", value: menuItemID)
-                .single()
-                .execute()
-            if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
-               let name = json["name"] as? String {
-                return name
-            }
-        } catch {}
-        return nil
-    }
-
-    private func fetchChefSpecialName(for dishID: String) async -> String? {
-        do {
-            let response = try await SupabaseController.shared.client.database
-                .from("chef_specialty_dishes")
-                .select("name")
-                .eq("dish_id", value: dishID)
-                .single()
-                .execute()
-            if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
-               let name = json["name"] as? String {
-                return name
-            }
-        } catch {}
-        return nil
-    }
-}
-
 struct OrderItemsList: View {
     let orderID: String
     let menuItems: [MenuItem]
-    @State private var itemDetails: [(name: String, quantity: Int)] = []
-    @State private var isLoading = true
+    @StateObject private var viewModel: OrderItemsListViewModel
+
+    init(orderID: String, menuItems: [MenuItem]) {
+        self.orderID = orderID
+        self.menuItems = menuItems
+        self._viewModel = StateObject(wrappedValue: OrderItemsListViewModel(orderID: orderID))
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if isLoading {
+            if viewModel.isLoading {
                 Text("Loading...")
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                    .onAppear {
-                        fetchOrderItems()
-                    }
-            } else if itemDetails.isEmpty {
+            } else if viewModel.itemDetails.isEmpty {
                 Text("No items found")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             } else {
-                ForEach(Array(itemDetails.enumerated()), id: \.offset) { _, detail in
+                ForEach(Array(viewModel.itemDetails.enumerated()), id: \.offset) { _, detail in
                     HStack {
                         Text(detail.name)
                             .font(.system(size: 16))
@@ -271,43 +265,98 @@ struct OrderItemsList: View {
             }
         }
     }
+}
+
+class OrderItemsListViewModel: ObservableObject {
+    @Published var itemDetails: [(name: String, quantity: Int)] = []
+    @Published var isLoading = true
+    private let orderID: String
+
+    init(orderID: String) {
+        self.orderID = orderID
+        fetchOrderItems()
+    }
 
     private func fetchOrderItems() {
         Task {
             do {
+                // First fetch the order items
                 let response = try await SupabaseController.shared.client.database
                     .from("orders")
                     .select("order_items")
                     .eq("order_id", value: orderID)
                     .single()
                     .execute()
-                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] else {
+
+                print("Raw response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
+
+                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
+                      let orderItemsData = json["order_items"] as? [[String: Any]] else {
+                    print("Failed to parse order items data")
                     await MainActor.run {
                         self.isLoading = false
                     }
                     return
                 }
-                var orderItems: [[String: Any]] = []
-                if let orderItemsString = json["order_items"] as? String {
-                    if let data = orderItemsString.data(using: .utf8),
-                       let parsedItems = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-                        orderItems = parsedItems
-                    }
-                } else if let itemsArray = json["order_items"] as? [[String: Any]] {
-                    orderItems = itemsArray
-                }
+
                 var details: [(String, Int)] = []
-                for item in orderItems {
+                
+                // Process each order item
+                for item in orderItemsData {
                     guard let menuItemID = item["menu_item_id"] as? String,
-                          let quantity = item["quantity"] as? Int else { continue }
-                    let name = menuItems.first(where: { $0.itemID == menuItemID })?.name ?? "Item #\(menuItemID)"
-                    details.append((name, quantity))
+                          let quantity = item["quantity"] as? Int else {
+                        print("Missing required fields in order item: \(item)")
+                        continue
+                    }
+
+                    // Try to fetch the item name from menu_items
+                    do {
+                        let menuItemResponse = try await SupabaseController.shared.client.database
+                            .from("menu_items")
+                            .select("name")
+                            .eq("item_id", value: menuItemID)
+                            .single()
+                            .execute()
+
+                        if let menuJson = try? JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [String: Any],
+                           let name = menuJson["name"] as? String {
+                            print("Found menu item: \(name) with quantity: \(quantity)")
+                            details.append((name, quantity))
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching menu item: \(error)")
+                    }
+
+                    // If not found in menu_items, try chef_specialty_dishes
+                    do {
+                        let specialtyResponse = try await SupabaseController.shared.client.database
+                            .from("chef_specialty_dishes")
+                            .select("name")
+                            .eq("dish_id", value: menuItemID)
+                            .single()
+                            .execute()
+
+                        if let specialtyJson = try? JSONSerialization.jsonObject(with: specialtyResponse.data, options: []) as? [String: Any],
+                           let name = specialtyJson["name"] as? String {
+                            print("Found specialty item: \(name) with quantity: \(quantity)")
+                            details.append((name, quantity))
+                            continue
+                        }
+                    } catch {
+                        print("Error fetching specialty item: \(error)")
+                    }
+
+                    // If item name not found in either table, use a generic name
+                    details.append(("Item #\(menuItemID)", quantity))
                 }
+
                 await MainActor.run {
                     self.itemDetails = details
                     self.isLoading = false
                 }
             } catch {
+                print("Error fetching order items: \(error)")
                 await MainActor.run {
                     self.isLoading = false
                 }
@@ -324,145 +373,93 @@ struct OrderCard: View {
     let onTrack: (Order) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Order header
-            HStack {
-                Text("Order #\(order.orderID)")
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("#"+order.orderNumber)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.primary)
+                    HStack(spacing: 6) {
+                        Image(systemName: "fork.knife")
+                            .foregroundColor(.gray)
+                        Text(order.kitchenName)
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.primary)
+                    }
+                    if !order.deliveryAddress.isEmpty {
+                        HStack(spacing: 6) {
+                            Image(systemName: "mappin.and.ellipse")
+                                .foregroundColor(.gray)
+                            Text(order.deliveryAddress)
+                                .font(.system(size: 15))
+                                .foregroundColor(.gray)
+                                .frame(width:160, alignment: .leading)
+                                .lineLimit(2)
+                        }
+                    }
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 6) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock")
+                            .foregroundColor(.gray)
+                        Text(order.deliveryDate, style: .date)
+                            .font(.system(size: 15))
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            Divider().padding(.vertical, 2)
+            OrderItemsList(orderID: order.orderID, menuItems: menuItems)
+                .padding(.top, 2)
+            Divider().padding(.vertical, 2)
+            HStack(spacing: 12) {
+                HStack(spacing: 4) {
+                    Button(action: { onInfo(order) }) {
+                        Text("Payment Details")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color.blue)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    Button(action: { onInfo(order) }) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 20, weight: .regular))
+                            .foregroundColor(Color.blue)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
                 Spacer()
                 if isCurrent {
                     Button(action: { onTrack(order) }) {
-                        Text("Track")
-                            .foregroundColor(.blue)
+                        Text("Track Order")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 8)
+                            .background(Color.blue.opacity(0.7))
+                            .cornerRadius(12)
                     }
-                }
-            }
-            
-            // Order details
-            Text(order.kitchenName)
-                .font(.subheadline)
-            Text(order.deliveryAddress)
-                .font(.caption)
-                .foregroundColor(.gray)
-            
-            // Items list
-            VStack(alignment: .leading) {
-                Text("Items:")
-                    .font(.subheadline)
-                    .padding(.top, 4)
-                ForEach(order.items, id: \.menuItemID) { item in
-                    if let menuItem = menuItems.first(where: { $0.itemID == item.menuItemID }) {
-                        Text("\(menuItem.name) x\(item.quantity)")
-                            .font(.caption)
-                    }
-                }
-            }
-            
-            // Order status and total
-            HStack {
-                Text(order.status.rawValue)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(order.status == .delivered ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
-                    .cornerRadius(4)
-                Spacer()
-                Text("₹\(order.totalAmount, specifier: "%.2f")")
-                    .fontWeight(.semibold)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 2)
-        .padding(.horizontal)
-    }
-}
-
-struct OrderPriceRow: View {
-    let title: String
-    let value: String
-    var fontWeight: Font.Weight = .regular
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .fontWeight(fontWeight)
-            Spacer()
-            Text(value)
-                .fontWeight(fontWeight)
-        }
-    }
-}
-
-struct OrderPricePopupView: View {
-    let price: String
-    let gst: String
-    let discount: String
-    let grandTotal: String
-    var onClose: (() -> Void)? = nil
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 16) {
-                // Icon and title
-                Image(systemName: "creditcard.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 44, height: 44)
-                    .foregroundColor(.blue)
-                    .padding(.top, 24)
-                Text("Payment Details")
-                    .font(.title2).bold()
-                    .padding(.bottom, 8)
-                VStack(spacing: 10) {
-                    OrderPriceRow(title: "Subtotal", value: "₹\(price)")
-                    OrderPriceRow(title: "GST (18%)", value: "₹\(gst)")
-                    OrderPriceRow(title: "Discount", value: "-₹\(discount)")
-                        .foregroundColor(.green)
-                }
-                .padding(.horizontal, 16)
-                Divider().padding(.vertical, 8)
-                HStack {
-                    Text("Grand Total")
-                        .font(.title3).bold()
-                    Spacer()
-                    Text("₹\(grandTotal)")
-                        .font(.title3).bold()
-                        .foregroundColor(.blue)
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-                Button {
-                    if let onClose = onClose {
-                        onClose()
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                } label: {
-                    Text("Close")
-                        .fontWeight(.bold)
+                    .buttonStyle(PlainButtonStyle())
+                } else {
+                    Text("Delivered")
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
-                        .padding(.horizontal, 32)
-                        .padding(.vertical, 12)
-                        .background(
-                            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), 
-                                         startPoint: .leading, 
-                                         endPoint: .trailing)
-                        )
-                        .cornerRadius(20)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
+                        .background(Color.green)
+                        .cornerRadius(12)
                 }
-                .padding(.bottom, 20)
             }
+            .padding(.top, 4)
         }
-        .frame(width: 320)
+        .padding(.all, 20)
         .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(.systemBackground))
-                .shadow(color: Color(.black).opacity(0.15), radius: 18, x: 0, y: 8)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color.white)
+                .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
         )
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 0)
     }
 }
 
@@ -470,22 +467,98 @@ struct TrackOrderView: View {
     let order: Order
     @StateObject private var viewModel = TrackOrderViewModel()
     @Environment(\.presentationMode) var presentationMode
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 28.6139, longitude: 77.2090),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    )
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.statusData.indices, id: \.self) { index in
-                    let (status, description, time, isCompleted) = viewModel.statusData[index]
-                    OrderTrackingCell(
-                        status: status,
-                        description: description,
-                        time: time,
-                        isCompleted: isCompleted,
-                        hideLastLine: index == viewModel.statusData.count - 1 && isCompleted
-                    )
+            VStack(spacing: 0) {
+                // Map or delivery icon
+                Map(coordinateRegion: $region)
+                    .frame(height: 180)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+
+                // Order number and address
+                VStack(spacing: 4) {
+                    Text("Order No: \(order.orderNumber)")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .foregroundColor(.gray)
+                        Text(order.deliveryAddress)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
                 }
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+
+                // Status and ETA
+                VStack(spacing: 8) {
+                    Text(viewModel.currentStatus)
+                        .font(.title2).bold()
+                        .padding(.top, 8)
+                    Text("Estimated delivery: \(viewModel.eta)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.bottom, 8)
+
+                // Progress bar
+                ProgressView(value: viewModel.progress)
+                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 12)
+
+                // Timeline
+                ScrollView {
+                    VStack(spacing: 18) {
+                        ForEach(viewModel.statusData.indices, id: \.self) { idx in
+                            let (status, description, time, isCompleted) = viewModel.statusData[idx]
+                            HStack(alignment: .top, spacing: 16) {
+                                VStack {
+                                    Image(systemName: viewModel.icon(for: status))
+                                        .foregroundColor(isCompleted ? .green : .gray)
+                                        .font(.system(size: 22, weight: .bold))
+                                    if idx < viewModel.statusData.count - 1 {
+                                        Rectangle()
+                                            .fill(isCompleted ? Color.green : Color.gray.opacity(0.3))
+                                            .frame(width: 3, height: 36)
+                                    }
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(status)
+                                        .font(.headline)
+                                        .foregroundColor(isCompleted ? .green : .primary)
+                                    if !description.isEmpty {
+                                        Text(description)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                    if !time.isEmpty {
+                                        Text(time)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                }
+                Spacer()
             }
-            .listStyle(PlainListStyle())
             .navigationTitle("Track Order")
             .navigationBarItems(trailing: Button("Done") {
                 presentationMode.wrappedValue.dismiss()
@@ -497,40 +570,25 @@ struct TrackOrderView: View {
     }
 }
 
-struct OrderTrackingCell: View {
-    let status: String
-    let description: String
-    let time: String
-    let isCompleted: Bool
-    let hideLastLine: Bool
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 16) {
-            // Status indicator
-            VStack(spacing: 0) {
-                Circle()
-                    .fill(isCompleted ? Color.green : Color.gray)
-                    .frame(width: 12, height: 12)
-                if !hideLastLine {
-                    Rectangle()
-                        .fill(isCompleted ? Color.green : Color.gray)
-                        .frame(width: 2)
-                }
-            }
-
-            // Status details
-            VStack(alignment: .leading, spacing: 4) {
-                    Text(status)
-                        .font(.headline)
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                Text(time)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
+// Extend your TrackOrderViewModel for icons and ETA
+extension TrackOrderViewModel {
+    var currentStatus: String {
+        statusData.last(where: { $0.3 })?.0 ?? "Order Placed"
+    }
+    var eta: String {
+        // Dummy ETA logic, replace with real calculation if available
+        if let delivered = statusData.last, delivered.3 { return "Delivered" }
+        return "20-30 min"
+    }
+    func icon(for status: String) -> String {
+        switch status {
+        case "Order Placed": return "cart.fill"
+        case "Order Confirmed": return "checkmark.seal.fill"
+        case "Order Prepared": return "takeoutbag.and.cup.and.straw.fill"
+        case "Out for Delivery": return "bicycle"
+        case "Delivered": return "house.fill"
+        default: return "circle.fill"
         }
-        .padding(.vertical, 8)
     }
 }
 
@@ -623,11 +681,20 @@ class TrackOrderViewModel: ObservableObject {
         ("Out for Delivery", "", "", false),
         ("Delivered", "", "", false)
     ]
+    @Published var progress: Double = 0.0
 
     private var timer: Timer?
     private var startTime: Date?
 
     func initializeTracking(for order: Order) {
+        // Always reset statusData to initial state for a new order
+        statusData = [
+            ("Order Placed", "You have successfully placed your order.", "", true),
+            ("Order Confirmed", "", "", false),
+            ("Order Prepared", "", "", false),
+            ("Out for Delivery", "", "", false),
+            ("Delivered", "", "", false)
+        ]
         let formatter = DateFormatter()
         formatter.dateFormat = "hh:mm a"
 
@@ -733,6 +800,12 @@ class TrackOrderViewModel: ObservableObject {
         }
 
         defaults.set(statusTimes, forKey: orderKey)
+        updateProgress()
+    }
+
+    private func updateProgress() {
+        let completedSteps = statusData.filter { $0.3 }.count
+        progress = Double(completedSteps) / Double(statusData.count)
     }
 
     deinit {
@@ -749,4 +822,87 @@ struct VisualEffectBlur: UIViewRepresentable {
     }
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
 }
-#endif 
+#endif
+
+struct OrderPricePopupView: View {
+    let price: String
+    let gst: String
+    let discount: String
+    let grandTotal: String
+    var onClose: (() -> Void)? = nil
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 16) {
+                // Icon and title
+                Image(systemName: "creditcard.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 44, height: 44)
+                    .foregroundColor(.blue)
+                    .padding(.top, 24)
+                Text("Payment Details")
+                    .font(.title2).bold()
+                    .padding(.bottom, 8)
+                VStack(spacing: 10) {
+                    PriceRow(title: "Subtotal", value: "₹\(price)")
+                    PriceRow(title: "GST (18%)", value: "₹\(gst)")
+                    PriceRow(title: "Discount", value: "-₹\(discount)")
+                        .foregroundColor(.green)
+                }
+                .padding(.horizontal, 16)
+                Divider().padding(.vertical, 8)
+                HStack {
+                    Text("Grand Total")
+                        .font(.title3).bold()
+                    Spacer()
+                    Text("₹\(grandTotal)")
+                        .font(.title3).bold()
+                        .foregroundColor(.blue)
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
+                Button(action: {
+                    if let onClose = onClose {
+                        onClose()
+                    } else {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }) {
+                    Text("Close")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 32)
+                        .padding(.vertical, 12)
+                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                        .cornerRadius(20)
+                }
+                .padding(.bottom, 20)
+            }
+        }
+        .frame(width: 320)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color(.systemBackground))
+                .shadow(color: Color(.black).opacity(0.15), radius: 18, x: 0, y: 8)
+        )
+        .padding(.horizontal, 24)
+    }
+}
+
+struct PriceRow: View {
+    let title: String
+    let value: String
+    var fontWeight: Font.Weight = .regular
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .fontWeight(fontWeight)
+            Spacer()
+            Text(value)
+                .fontWeight(fontWeight)
+        }
+    }
+} 

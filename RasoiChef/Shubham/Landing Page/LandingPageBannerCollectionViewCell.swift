@@ -39,18 +39,16 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
             BannerImage.image = UIImage(named: "placeholderImage") // Set placeholder while loading
             
             imageLoadTask = URLSession.shared.dataTask(with: imageUrl) { [weak self] data, response, error in
+                guard let self = self else { return }
                 DispatchQueue.main.async {
                     if let error = error {
-                      //  print("Error loading image: \(error)")
-                        self?.BannerImage.image = UIImage(named: bannerData.icon) // Fallback to local image
+                        self.BannerImage.image = UIImage(named: bannerData.icon)
                         return
                     }
-                    
                     if let data = data, let image = UIImage(data: data) {
-                        self?.BannerImage.image = image
+                        self.BannerImage.image = image
                     } else {
-                        // If failed to load from URL, try loading from local assets
-                        self?.BannerImage.image = UIImage(named: bannerData.icon)
+                        self.BannerImage.image = UIImage(named: bannerData.icon)
                     }
                 }
             }
@@ -65,7 +63,7 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         
         // If current time is past 9 PM, adjust the date to the next day
         let calendar = Calendar.current
-        let ninePM = calendar.date(bySettingHour: 21, minute: 0, second: 0, of: currentDate)!
+        guard let ninePM = calendar.date(bySettingHour: 21, minute: 0, second: 0, of: currentDate) else { return }
         var effectiveDate = currentDate
         
         if currentDate > ninePM {
@@ -170,9 +168,9 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: BannerView.layer.cornerRadius).cgPath
-        
-        
+        if !isHidden && window != nil {
+            layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: BannerView.layer.cornerRadius).cgPath
+        }
     }
     
     
@@ -181,9 +179,8 @@ class LandingPageBannerCollectionViewCell: UICollectionViewCell {
         let currentYear = calendar.component(.year, from: date)
         let currentMonth = calendar.component(.month, from: date)
         let currentDay = calendar.component(.day, from: date)
-
-        // Create a date for the deadline for the specified time of the day
         let deadlineComponents = DateComponents(year: currentYear, month: currentMonth, day: currentDay, hour: hour, minute: minute)
-        return calendar.date(from: deadlineComponents)!
+        guard let deadlineDate = calendar.date(from: deadlineComponents) else { return Date() }
+        return deadlineDate
     }
 }

@@ -35,12 +35,12 @@ class ProfileViewController: UIViewController {
               loadProfileData()
           }
     
-    @IBAction func yourOrdersButtonTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Priyanshu", bundle: nil)
-        if let ordersVC = storyboard.instantiateViewController(withIdentifier: "OrdersHostingController") as? OrdersHostingController {
-            self.navigationController?.pushViewController(ordersVC, animated: true)
-            }
-    }
+//    @IBAction func yourOrdersButtonTapped(_ sender: Any) {
+//        let storyboard = UIStoryboard(name: "Priyanshu", bundle: nil)
+//            if let myOrdersVC = storyboard.instantiateViewController(withIdentifier: "MyOrdersViewController") as? MyOrdersViewController {
+//                self.navigationController?.pushViewController(myOrdersVC, animated: true)
+//            }
+//    }
     @IBAction func favouriteButtonTapped(_ sender: Any) {
         let favouriteSwiftUIView = favouritesView()
             let hostingController = UIHostingController(rootView: favouriteSwiftUIView)
