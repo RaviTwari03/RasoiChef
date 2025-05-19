@@ -195,7 +195,23 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 1:
             return 1
         case 2:
-            return kitchenData != nil ? KitchenDataController.filteredMenuItems.count : KitchenDataController.menuItems.count
+            // Get current day
+            let currentDay = Calendar.current.component(.weekday, from: Date())
+            let weekdayMap: [Int: WeekDay] = [
+                1: .sunday,
+                2: .monday,
+                3: .tuesday,
+                4: .wednesday,
+                5: .thursday,
+                6: .friday,
+                7: .saturday
+            ]
+            let today = weekdayMap[currentDay] ?? .monday
+            
+            // Filter menu items for current day
+            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+            let todaysMenuItems = menuItems.filter { $0.availableDays == today }
+            return todaysMenuItems.count
         case 3:
             return 1
         case 4:
@@ -232,6 +248,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 cell.configure(with: kitchen)
             }
             return cell
+            
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeader", for: indexPath) as! MenuListHeaderCollectionViewCell
             cell.delegate = self
@@ -241,16 +258,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
             
-            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
-            let menuItem = menuItems[indexPath.row]
-            
-            cell.updateMenuDetails(with: indexPath, menuItem: menuItem)
-            
-            // Get the menu item and current time information
-            let currentHour = Calendar.current.component(.hour, from: Date())
+            // Get current day
             let currentDay = Calendar.current.component(.weekday, from: Date())
-            
-            // Convert weekday number to WeekDay enum (1 = Sunday, 2 = Monday, etc.)
             let weekdayMap: [Int: WeekDay] = [
                 1: .sunday,
                 2: .monday,
@@ -260,70 +269,68 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 6: .friday,
                 7: .saturday
             ]
-            
             let today = weekdayMap[currentDay] ?? .monday
             
+            // Filter menu items for current day
+            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+            let todaysMenuItems = menuItems.filter { $0.availableDays == today }
+            let menuItem = todaysMenuItems[indexPath.row]
+            
+            cell.updateMenuDetails(with: indexPath, menuItem: menuItem)
+            
+            // Get current time information
+            let currentHour = Calendar.current.component(.hour, from: Date())
+            
+            // Check if item is available based on time
             let isAvailable: Bool = {
-                // First check if the item is marked as available in Supabase
-                guard menuItem.availability.contains(.Available) else {
+                guard let mealType = menuItem.availableMealTypes else {
                     return false
                 }
-                
-                // Check if the item is available on the current day
-                guard menuItem.availableDays == today else {
-                    return false
+                switch mealType {
+                case .breakfast where currentHour >= 6 && currentHour < 11:  return true
+                case .lunch where currentHour >= 11 && currentHour < 15:     return true
+                case .snacks where currentHour >= 15 && currentHour < 19:    return true
+                case .dinner where currentHour >= 19 || currentHour < 6:     return true
+                default: return false
                 }
-                
-                // Check if current time is within the meal type's time window
-                if let mealType = menuItem.availableMealTypes {
-                    switch mealType {
-                    case .breakfast where currentHour >= 6 && currentHour < 11:  return true
-                    case .lunch where currentHour >= 11 && currentHour < 15:     return true
-                    case .snacks where currentHour >= 15 && currentHour < 19:    return true
-                    case .dinner where currentHour >= 19 || currentHour < 6:     return true
-                    default: return false
-                    }
-                }
-                
-                return false
             }()
             
             // Apply blur effect and disable interaction if item is not available
-//            if !isAvailable {
-//                // Add blur effect
-//                let blurEffect = UIBlurEffect(style: .light)
-//                let blurView = UIVisualEffectView(effect: blurEffect)
-//                blurView.frame = cell.contentView.bounds
-//                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//                blurView.tag = 100 // Tag for identification
-//                
-//                // Remove existing blur if any
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                cell.contentView.addSubview(blurView)
-//                cell.contentView.sendSubviewToBack(blurView)
-//                
-//                // Disable interaction
-//                cell.isUserInteractionEnabled = false
-//                cell.addButton.isEnabled = false
-//                cell.contentView.alpha = 0.7
-//            } else {
-//                // Remove blur effect if exists
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                // Enable interaction
-//                cell.isUserInteractionEnabled = true
-//                cell.addButton.isEnabled = true
-//                cell.contentView.alpha = 1.0
-//            }
+            if !isAvailable {
+                // Add blur effect
+                let blurEffect = UIBlurEffect(style: .light)
+                let blurView = UIVisualEffectView(effect: blurEffect)
+                blurView.frame = cell.contentView.bounds
+                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                blurView.tag = 100 // Tag for identification
+                
+                // Remove existing blur if any
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                cell.contentView.addSubview(blurView)
+                cell.contentView.sendSubviewToBack(blurView)
+                
+                // Disable interaction
+                cell.isUserInteractionEnabled = false
+                cell.addButton.isEnabled = false
+                cell.contentView.alpha = 0.7
+            } else {
+                // Remove blur effect if exists
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                // Enable interaction
+                cell.isUserInteractionEnabled = true
+                cell.addButton.isEnabled = true
+                cell.contentView.alpha = 1.0
+            }
             
             return cell
             
@@ -331,6 +338,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialityDishesHeader", for: indexPath) as! ChefSpecialityDishesHeaderCell
             cell.delegate = self
             return cell
+            
         case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             let dishes = kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes : KitchenDataController.chefSpecialtyDishes
@@ -338,6 +346,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.delegate = self
             
             return cell
+            
         case 5:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
             cell.delegate = self
@@ -550,12 +559,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     func didTapSeeMore1() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenChefSpecialViewController") as? KitchenChefSpecialViewController {
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "LandingPageChefSpecialitySeeMoreViewController") as? LandingPageChefSpecialitySeeMoreViewController {
+            // Pass the current kitchen's data
+            firstScreenVC.kitchenData = kitchenData
             self.navigationController?.pushViewController(firstScreenVC, animated: true)
         }
-        
-        
-        
     }
     
     func didTapSeeMorePlansMenu() {
