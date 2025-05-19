@@ -837,8 +837,29 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
               let endDate = plan.endDate,
               let totalPrice = plan.totalPrice,
               let deliveryAddress = selectedAddress else {
-            print("❌ Missing required fields for subscription plan order")
-            return
+            let msg = "❌ Missing required fields for subscription plan order"
+            print(msg)
+            DispatchQueue.main.async {
+                self.showAlert(title: "Error", message: msg)
+            }
+            throw NSError(domain: "SubscriptionPlan", code: -1, userInfo: [NSLocalizedDescriptionKey: msg])
+        }
+        // Check UUIDs
+        if UUID(uuidString: userID) == nil {
+            let msg = "❌ user_id is not a valid UUID: \(userID)"
+            print(msg)
+            DispatchQueue.main.async {
+                self.showAlert(title: "Error", message: msg)
+            }
+            throw NSError(domain: "SubscriptionPlan", code: -2, userInfo: [NSLocalizedDescriptionKey: msg])
+        }
+        if UUID(uuidString: kitchenID) == nil {
+            let msg = "❌ kitchen_id is not a valid UUID: \(kitchenID)"
+            print(msg)
+            DispatchQueue.main.async {
+                self.showAlert(title: "Error", message: msg)
+            }
+            throw NSError(domain: "SubscriptionPlan", code: -3, userInfo: [NSLocalizedDescriptionKey: msg])
         }
         // Calculate total days
         let dateFormatter = DateFormatter()
@@ -870,13 +891,30 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             dinner_included: mealsPerDay["dinner"] ?? false,
             daily_meal_limit: plan.PlanIntakeLimit
         )
-        try await SupabaseController.shared.insertSubscriptionPlanOrder(order: dbOrder)
+        print("[DEBUG] Attempting to insert subscription plan order:")
+        print(dbOrder)
+        do {
+            try await SupabaseController.shared.insertSubscriptionPlanOrder(order: dbOrder)
+        } catch {
+            let msg = "❌ Failed to insert subscription plan order: \(error.localizedDescription)"
+            print(msg)
+            DispatchQueue.main.async {
+                self.showAlert(title: "Error", message: msg)
+            }
+            throw error
+        }
     }
 
     private func processSubscriptionPlans(userID: String) async throws {
         for plan in CartViewController.subscriptionPlan1 {
-            try await insertSubscriptionPlan(plan, userID: userID)
-            
+            do {
+                try await insertSubscriptionPlan(plan, userID: userID)
+            } catch {
+                print("❌ Error processing subscription plan: \(error)")
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: "Failed to process subscription plan: \(error.localizedDescription)")
+                }
+            }
             // Schedule notification for subscription plan
             if let kitchenName = plan.kitchenName, let planName = plan.planName {
                 DispatchQueue.main.async { [weak self] in

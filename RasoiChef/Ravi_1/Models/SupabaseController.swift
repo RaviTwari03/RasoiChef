@@ -1011,21 +1011,21 @@ class SupabaseController {
     func insertSubscriptionPlanOrder(order: DBSubscriptionPlanOrder) async throws {
         print("\n🔄 Starting subscription plan order insertion process...")
         print("📊 Subscription Plan Order details:")
-        print("- User ID: \(order.user_id)")
-        print("- Kitchen ID: \(order.kitchen_id)")
-        print("- Plan Name: \(order.plan_name)")
-        print("- Start Date: \(order.start_date)")
-        print("- End Date: \(order.end_date)")
-        print("- Total Days: \(order.total_days)")
-        print("- Total Amount: ₹\(order.total_amount)")
-        print("- Delivery Address: \(order.delivery_address)")
-        print("- Delivery Type: \(order.delivery_type)")
+        print(order)
+        // Check if user_id and kitchen_id are valid UUIDs
+        if UUID(uuidString: order.user_id) == nil {
+            print("❌ user_id is not a valid UUID: \(order.user_id)")
+        }
+        if UUID(uuidString: order.kitchen_id) == nil {
+            print("❌ kitchen_id is not a valid UUID: \(order.kitchen_id)")
+        }
         do {
             let response = try await client.database
                 .from("subscription_plans_order")
                 .insert(order)
                 .execute()
             print("✅ Subscription plan order insertion completed successfully")
+            print("Supabase response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
         } catch {
             print("\n❌ Error inserting subscription plan order:")
             print("- Type: \(type(of: error))")
