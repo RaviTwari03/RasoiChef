@@ -988,6 +988,56 @@ class SupabaseController {
             throw error
         }
     }
+
+    // MARK: - Subscription Plan Order Insertion
+    struct DBSubscriptionPlanOrder: Encodable {
+        let user_id: String
+        let kitchen_id: String
+        let plan_name: String
+        let start_date: String
+        let end_date: String
+        let total_days: Int
+        let meals_per_day: [String: Bool]
+        let total_amount: Double
+        let delivery_address: String
+        let delivery_type: String
+        let breakfast_included: Bool
+        let lunch_included: Bool
+        let snacks_included: Bool
+        let dinner_included: Bool
+        let daily_meal_limit: Int
+    }
+
+    func insertSubscriptionPlanOrder(order: DBSubscriptionPlanOrder) async throws {
+        print("\n🔄 Starting subscription plan order insertion process...")
+        print("📊 Subscription Plan Order details:")
+        print("- User ID: \(order.user_id)")
+        print("- Kitchen ID: \(order.kitchen_id)")
+        print("- Plan Name: \(order.plan_name)")
+        print("- Start Date: \(order.start_date)")
+        print("- End Date: \(order.end_date)")
+        print("- Total Days: \(order.total_days)")
+        print("- Total Amount: ₹\(order.total_amount)")
+        print("- Delivery Address: \(order.delivery_address)")
+        print("- Delivery Type: \(order.delivery_type)")
+        do {
+            let response = try await client.database
+                .from("subscription_plans_order")
+                .insert(order)
+                .execute()
+            print("✅ Subscription plan order insertion completed successfully")
+        } catch {
+            print("\n❌ Error inserting subscription plan order:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
+            throw error
+        }
+    }
 }
 
 // Helper extension for async mapping
