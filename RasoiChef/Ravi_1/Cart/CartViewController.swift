@@ -900,8 +900,10 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         let orderID = UUID().uuidString
+        let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))
         let order = Order(
             orderID: orderID,
+            orderNumber: orderNumber,
             userID: userID,
             kitchenName: kitchenName,
             kitchenID: kitchenID,
@@ -921,6 +923,11 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         DispatchQueue.main.async { [weak self] in
             self?.scheduleOrderNotification(orderID: orderID, kitchenName: kitchenName)
         }
+    }
+
+    private func insertSubscriptionPlan(_ plan: SubscriptionPlan, userID: String) async throws {
+        // TODO: Implement actual Supabase insertion logic for subscription plans
+        print("[Stub] insertSubscriptionPlan called for plan: \(plan.planName ?? "N/A") and user: \(userID)")
     }
 
     private func processSubscriptionPlans(userID: String) async throws {
