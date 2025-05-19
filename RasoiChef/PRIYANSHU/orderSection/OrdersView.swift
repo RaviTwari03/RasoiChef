@@ -1,6 +1,65 @@
 import SwiftUI
 import MapKit
 
+// Add StatusBadge view
+struct StatusBadge: View {
+    let status: String
+    
+    var body: some View {
+        Text(status)
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundColor(statusColor)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(statusColor.opacity(0.1))
+            .cornerRadius(8)
+    }
+    
+    private var statusColor: Color {
+        switch status.lowercased() {
+        case "active", "delivered":
+            return .green
+        case "pending", "confirmed", "preparing", "ready":
+            return .blue
+        case "out for delivery":
+            return .orange
+        case "cancelled":
+            return .red
+        case "paused":
+            return .orange
+        case "completed":
+            return .gray
+        default:
+            return .gray
+        }
+    }
+}
+
+// Add Subscription and SubscriptionStatus models
+struct Subscription: Identifiable {
+    let id: String
+    let orderID: String
+    let userID: String
+    let kitchenID: String
+    let kitchenName: String
+    let planName: String
+    let startDate: Date
+    let endDate: Date
+    let status: SubscriptionStatus
+    let deliveryDays: [Int] // 1-7 representing days of week
+    let deliveryTime: String
+    let totalAmount: Double
+    let items: [OrderItem]
+    let deliveryAddress: String
+}
+
+enum SubscriptionStatus: String {
+    case active = "Active"
+    case paused = "Paused"
+    case cancelled = "Cancelled"
+    case completed = "Completed"
+}
+
 // Extension to make Order conform to Identifiable and Equatable
 extension Order: Identifiable, Equatable {
     var id: String { orderID }
@@ -72,12 +131,146 @@ struct PastOrdersSection: View {
     }
 }
 
+struct SubscriptionCard: View {
+    let subscription: Subscription
+    @StateObject private var viewModel = OrdersViewModel()
+    @State private var showingActionSheet = false
+    @State private var showingConfirmation = false
+    @State private var actionToConfirm: (() -> Void)?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(subscription.planName)
+                        .font(.headline)
+                    Text(subscription.kitchenName)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                StatusBadge(status: subscription.status.rawValue)
+            }
+            
+            // Delivery Info
+            VStack(alignment: .leading, spacing: 8) {
+                Label(subscription.deliveryAddress, systemImage: "location.fill")
+                    .font(.subheadline)
+                
+                // Delivery Schedule
+                HStack {
+                    Image(systemName: "calendar")
+                        .foregroundColor(.gray)
+                    Text("Delivery Schedule:")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Spacer()
+                }
+                
+                // Days of week
+                HStack(spacing: 4) {
+                    ForEach(1...7, id: \.self) { day in
+                        Text(dayToShortName(day))
+                            .font(.caption)
+                            .padding(4)
+                            .background(subscription.deliveryDays.contains(day) ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
+                            .foregroundColor(subscription.deliveryDays.contains(day) ? .blue : .gray)
+                            .cornerRadius(4)
+                    }
+                }
+                
+                // Delivery Time
+                Label(subscription.deliveryTime, systemImage: "clock")
+                    .font(.subheadline)
+            }
+            
+            // Subscription Period
+            HStack {
+                Label("Start: \(subscription.startDate.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
+                Spacer()
+                Label("End: \(subscription.endDate.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
+            }
+            .font(.caption)
+            .foregroundColor(.gray)
+            
+            // Action Buttons
+            HStack {
+                Button(action: {
+                    // View details action
+                }) {
+                    Text("View Details")
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                }
+                
+                Spacer()
+                
+                if subscription.status == .active {
+                    Button(action: {
+                        showingActionSheet = true
+                    }) {
+                        Text("Manage")
+                            .font(.subheadline)
+                            .foregroundColor(.orange)
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 2)
+        .actionSheet(isPresented: $showingActionSheet) {
+            ActionSheet(
+                title: Text("Manage Subscription"),
+                message: Text("Choose an action for your subscription"),
+                buttons: [
+                    .default(Text("Pause Subscription")) {
+                        actionToConfirm = {
+                            Task {
+                                await viewModel.pauseSubscription(subscription)
+                            }
+                        }
+                        showingConfirmation = true
+                    },
+                    .destructive(Text("Cancel Subscription")) {
+                        actionToConfirm = {
+                            Task {
+                                await viewModel.cancelSubscription(subscription)
+                            }
+                        }
+                        showingConfirmation = true
+                    },
+                    .cancel()
+                ]
+            )
+        }
+        .alert(isPresented: $showingConfirmation) {
+            Alert(
+                title: Text("Confirm Action"),
+                message: Text("Are you sure you want to proceed with this action?"),
+                primaryButton: .destructive(Text("Confirm")) {
+                    actionToConfirm?()
+                },
+                secondaryButton: .cancel()
+            )
+        }
+    }
+    
+    private func dayToShortName(_ day: Int) -> String {
+        let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        return days[day - 1]
+    }
+}
+
 struct OrdersView: View {
     @StateObject private var viewModel = OrdersViewModel()
     @State private var showingFullScreenPaymentAlert = false
     @State private var selectedOrder: Order?
     @State private var showingTrackOrder = false
     @Namespace private var animation
+    @State private var selectedSegment = 0
 
     var body: some View {
         ZStack {
@@ -120,77 +313,145 @@ struct OrdersView: View {
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [Color(.systemGroupedBackground), Color(.systemGray6)]), startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 36) {
-                            if !viewModel.currentOrders.isEmpty {
-                                SectionHeader(title: "Current Orders", color: .blue)
-                                ForEach(viewModel.currentOrders) { order in
-                                    OrderCard(order: order, isCurrent: true, menuItems: viewModel.menuItems, onInfo: { order in
-                                        selectedOrder = order
-                                        withAnimation { showingFullScreenPaymentAlert = true }
-                                    }, onTrack: { order in
-                                        selectedOrder = order
-                                        showingTrackOrder = true
-                                    })
-                                    .matchedGeometryEffect(id: order.orderID, in: animation)
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.currentOrders)
-                                }
-                            }
-                            if !viewModel.pastOrders.isEmpty {
-                                SectionHeader(title: "Past Orders", color: .green)
-                                ForEach(viewModel.pastOrders) { order in
-                                    OrderCard(order: order, isCurrent: false, menuItems: viewModel.menuItems, onInfo: { order in
-                                        selectedOrder = order
-                                        withAnimation { showingFullScreenPaymentAlert = true }
-                                    }, onTrack: { _ in })
-                                    .matchedGeometryEffect(id: order.orderID, in: animation)
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.pastOrders)
-                                }
-                            }
-                            if viewModel.currentOrders.isEmpty && viewModel.pastOrders.isEmpty && !viewModel.isLoading {
-                                VStack(spacing: 16) {
-                                    Image(systemName: "cart.badge.plus")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 80, height: 80)
-                                        .foregroundColor(.blue.opacity(0.7))
-                                    Text("No orders yet!")
-                                        .font(.title2).bold()
-                                        .foregroundColor(.primary)
-                                    Text("Start exploring delicious meals and place your first order.")
-                                        .font(.body)
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                    Button(action: {
-                                        // Add navigation to explore menu if needed
-                                    }) {
-                                        Text("Explore Menu")
-                                            .font(.headline)
-                                            .foregroundColor(.white)
-                                            .padding(.horizontal, 32)
-                                            .padding(.vertical, 12)
-                                            .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
-                                            .cornerRadius(20)
-                                    }
-                                    .padding(.top, 8)
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .padding(.top, 40)
-                            }
+                    VStack(spacing: 0) {
+                        // Add My Orders heading
+                        Text("My Orders")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                            .padding(.top, 16)
+                            .padding(.bottom, 8)
+                        
+                        Picker("View", selection: $selectedSegment) {
+                            Text("Orders").tag(0)
+                            Text("Subscriptions").tag(1)
                         }
-                        .padding(.vertical, 24)
+                        .pickerStyle(SegmentedPickerStyle())
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+                        
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 36) {
+                                if selectedSegment == 0 {
+                                    if !viewModel.currentOrders.isEmpty {
+                                        SectionHeader(title: "Current Orders", color: .blue)
+                                        ForEach(viewModel.currentOrders) { order in
+                                            OrderCard(order: order, isCurrent: true, menuItems: viewModel.menuItems, onInfo: { order in
+                                                selectedOrder = order
+                                                withAnimation { showingFullScreenPaymentAlert = true }
+                                            }, onTrack: { order in
+                                                selectedOrder = order
+                                            })
+                                            .matchedGeometryEffect(id: order.orderID, in: animation)
+                                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                                            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.currentOrders)
+                                        }
+                                    }
+                                    if !viewModel.pastOrders.isEmpty {
+                                        SectionHeader(title: "Past Orders", color: .green)
+                                        ForEach(viewModel.pastOrders) { order in
+                                            OrderCard(order: order, isCurrent: false, menuItems: viewModel.menuItems, onInfo: { order in
+                                                selectedOrder = order
+                                                withAnimation { showingFullScreenPaymentAlert = true }
+                                            }, onTrack: { _ in })
+                                            .matchedGeometryEffect(id: order.orderID, in: animation)
+                                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                                            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.pastOrders)
+                                        }
+                                    }
+                                    if viewModel.currentOrders.isEmpty && viewModel.pastOrders.isEmpty && !viewModel.isLoading {
+                                        VStack(spacing: 16) {
+                                            Image(systemName: "cart.badge.plus")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 80, height: 80)
+                                                .foregroundColor(.blue.opacity(0.7))
+                                            Text("No orders yet!")
+                                                .font(.title2).bold()
+                                                .foregroundColor(.primary)
+                                            Text("Start exploring delicious meals and place your first order.")
+                                                .font(.body)
+                                                .foregroundColor(.secondary)
+                                                .multilineTextAlignment(.center)
+                                            Button(action: {
+                                                // Add navigation to explore menu if needed
+                                            }) {
+                                                Text("Explore Menu")
+                                                    .font(.headline)
+                                                    .foregroundColor(.white)
+                                                    .padding(.horizontal, 32)
+                                                    .padding(.vertical, 12)
+                                                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                                                    .cornerRadius(20)
+                                            }
+                                            .padding(.top, 8)
+                                        }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .padding(.top, 40)
+                                    }
+                                } else {
+                                    // Subscription view
+                                    if !viewModel.activeSubscriptions.isEmpty {
+                                        SectionHeader(title: "Active Subscriptions", color: .blue)
+                                        ForEach(viewModel.activeSubscriptions) { subscription in
+                                            SubscriptionCard(subscription: subscription)
+                                        }
+                                    }
+                                    
+                                    if !viewModel.otherSubscriptions.isEmpty {
+                                        SectionHeader(title: "Other Subscriptions", color: .green)
+                                        ForEach(viewModel.otherSubscriptions) { subscription in
+                                            SubscriptionCard(subscription: subscription)
+                                        }
+                                    }
+                                    
+                                    if viewModel.subscriptions.isEmpty && !viewModel.isLoading {
+                                        VStack(spacing: 16) {
+                                            Image(systemName: "calendar.badge.clock")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 80, height: 80)
+                                                .foregroundColor(.blue.opacity(0.7))
+                                            Text("No Active Subscriptions")
+                                                .font(.title2).bold()
+                                                .foregroundColor(.primary)
+                                            Text("Subscribe to your favorite meals and get them delivered regularly.")
+                                                .font(.body)
+                                                .foregroundColor(.secondary)
+                                                .multilineTextAlignment(.center)
+                                            Button(action: {
+                                                // Add navigation to subscription plans if needed
+                                            }) {
+                                                Text("View Plans")
+                                                    .font(.headline)
+                                                    .foregroundColor(.white)
+                                                    .padding(.horizontal, 32)
+                                                    .padding(.vertical, 12)
+                                                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                                                    .cornerRadius(20)
+                                            }
+                                            .padding(.top, 8)
+                                        }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .padding(.top, 40)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 24)
+                        }
                     }
                 }
-                .navigationBarTitleDisplayMode(.large)
-                .onAppear {
-                    viewModel.loadData()
-                }
-                .sheet(isPresented: $showingTrackOrder) {
-                    if let order = selectedOrder {
-                        TrackOrderView(order: order)
-                    }
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .navigationBarHidden(true)
+            .onAppear {
+                viewModel.loadData()
+            }
+            .sheet(isPresented: $showingTrackOrder) {
+                if let order = selectedOrder {
+                    TrackOrderView(order: order)
                 }
             }
         }
@@ -365,101 +626,355 @@ class OrderItemsListViewModel: ObservableObject {
     }
 }
 
+struct OrderItemRow: View {
+    let item: OrderItem
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            // Item image (placeholder)
+            Rectangle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(width: 48, height: 48)
+                .cornerRadius(8)
+                .overlay(
+                    Image(systemName: "photo")
+                        .foregroundColor(.gray)
+                )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.menuItemID) // Replace with actual name if available
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                Text("Quantity: \(item.quantity)")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                // Uncomment if you have a note property
+                // if let note = item.note, !note.isEmpty {
+                //     Text("Note: \(note)")
+                //         .font(.caption2)
+                //         .foregroundColor(.gray)
+                // }
+            }
+            Spacer()
+            Text("₹\(String(format: "%.2f", item.price))")
+                .font(.subheadline)
+        }
+    }
+}
+
+struct OrderDetailView: View {
+    let order: Order
+    let menuItems: [MenuItem]
+    @Environment(\.presentationMode) var presentationMode
+    @State private var showingPaymentDetails = false
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // Custom Navigation Bar
+            HStack {
+                Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(.primary)
+                }
+                Spacer()
+                Text("Order Details")
+                    .font(.headline)
+                Spacer()
+                Button(action: { /* Share action */ }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.title2)
+                        .foregroundColor(.primary)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Order Status
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                            .font(.system(size: 32))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Order Confirmed")
+                                .font(.headline)
+                            Text("Order #\(order.orderNumber)")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            Text("Today, 12:30 PM - 1:00 PM") // Replace with actual time window
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Order Items
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Order Items")
+                            .font(.headline)
+                        ForEach(order.items, id: \.menuItemID) { item in
+                            OrderItemRow(item: item)
+                        }
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2)))
+                    .padding(.horizontal)
+                    
+                    // Kitchen Info
+                    HStack(spacing: 12) {
+                        Circle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 40, height: 40)
+                            .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(order.kitchenName)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            HStack(spacing: 4) {
+                                Image(systemName: "star.fill").foregroundColor(.yellow).font(.caption)
+                                Text("4.8") // Replace with actual rating
+                                    .font(.caption)
+                                Image(systemName: "checkmark.seal.fill").foregroundColor(.blue).font(.caption)
+                            }
+                        }
+                        Spacer()
+                        Button(action: { /* Message action */ }) {
+                            Text("Message")
+                                .font(.subheadline)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 6)
+                                .background(RoundedRectangle(cornerRadius: 16).stroke(Color.blue))
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Delivery Details
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Delivery Details")
+                            .font(.headline)
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "mappin.and.ellipse").foregroundColor(.gray)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(order.deliveryAddress)
+                                    .font(.subheadline)
+                                Text("New York, NY 10001") // Replace with actual city/zip if available
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.08))
+                            .frame(height: 36)
+                            .overlay(
+                                Text("Delivery Instructions: Please leave at the door")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            )
+                    }
+                    .padding(.horizontal)
+                    
+                    // Payment Summary
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Payment Summary")
+                            .font(.headline)
+                        HStack {
+                            Text("Subtotal")
+                            Spacer()
+                            Text("₹45.99") // Replace with actual subtotal
+                        }
+                        HStack {
+                            Text("Delivery Fee")
+                            Spacer()
+                            Text("₹4.99")
+                        }
+                        HStack {
+                            Text("Service Fee")
+                            Spacer()
+                            Text("₹2.99")
+                        }
+                        HStack {
+                            Text("Taxes")
+                            Spacer()
+                            Text("₹3.99")
+                        }
+                        Divider()
+                        HStack {
+                            Text("Total").fontWeight(.bold)
+                            Spacer()
+                            Text("₹57.96").fontWeight(.bold)
+                        }
+                        HStack(spacing: 8) {
+                            Image(systemName: "creditcard")
+                                .foregroundColor(.gray)
+                            Text("•••• 4582")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Action Buttons
+                    VStack(spacing: 8) {
+                        Button(action: { /* Track order */ }) {
+                            Text("Track Order")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        Button(action: { /* Cancel order */ }) {
+                            Text("Cancel Order")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Order Meta Info
+                    HStack {
+                        Text("Ordered at 11:45 AM")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        Spacer()
+                        Text("Order ID: #ORD-2024-0123")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.horizontal)
+                    Button(action: { /* Get help */ }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "questionmark.circle")
+                                .foregroundColor(.blue)
+                            Text("Get Help")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 24)
+                }
+                .padding(.top, 8)
+            }
+        }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .navigationBarHidden(true)
+    }
+}
+
+// Update OrderCard to use navigation
 struct OrderCard: View {
     let order: Order
     let isCurrent: Bool
     let menuItems: [MenuItem]
     let onInfo: (Order) -> Void
     let onTrack: (Order) -> Void
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("#"+order.orderNumber)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.primary)
-                    HStack(spacing: 6) {
-                        Image(systemName: "fork.knife")
-                            .foregroundColor(.gray)
-                        Text(order.kitchenName)
-                            .font(.system(size: 18, weight: .semibold))
+        NavigationLink(destination: 
+            OrderDetailView(order: order, menuItems: menuItems)
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
+        ) {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("#"+order.orderNumber)
+                            .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.primary)
-                    }
-                    if !order.deliveryAddress.isEmpty {
                         HStack(spacing: 6) {
-                            Image(systemName: "mappin.and.ellipse")
+                            Image(systemName: "fork.knife")
                                 .foregroundColor(.gray)
-                            Text(order.deliveryAddress)
+                            Text(order.kitchenName)
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.primary)
+                        }
+                        if !order.deliveryAddress.isEmpty {
+                            HStack(spacing: 6) {
+                                Image(systemName: "mappin.and.ellipse")
+                                    .foregroundColor(.gray)
+                                Text(order.deliveryAddress)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.gray)
+                                    .frame(width:160, alignment: .leading)
+                                    .lineLimit(2)
+                            }
+                        }
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 6) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "clock")
+                                .foregroundColor(.gray)
+                            Text(order.deliveryDate, style: .date)
                                 .font(.system(size: 15))
                                 .foregroundColor(.gray)
-                                .frame(width:160, alignment: .leading)
-                                .lineLimit(2)
                         }
                     }
                 }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
+                Divider().padding(.vertical, 2)
+                OrderItemsList(orderID: order.orderID, menuItems: menuItems)
+                    .padding(.top, 2)
+                Divider().padding(.vertical, 2)
+                HStack(spacing: 12) {
                     HStack(spacing: 4) {
-                        Image(systemName: "clock")
-                            .foregroundColor(.gray)
-                        Text(order.deliveryDate, style: .date)
-                            .font(.system(size: 15))
-                            .foregroundColor(.gray)
+                        Button(action: { onInfo(order) }) {
+                            Text("Payment Details")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(Color.blue)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        Button(action: { onInfo(order) }) {
+                            Image(systemName: "info.circle")
+                                .font(.system(size: 20, weight: .regular))
+                                .foregroundColor(Color.blue)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                }
-            }
-            Divider().padding(.vertical, 2)
-            OrderItemsList(orderID: order.orderID, menuItems: menuItems)
-                .padding(.top, 2)
-            Divider().padding(.vertical, 2)
-            HStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Button(action: { onInfo(order) }) {
-                        Text("Payment Details")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(Color.blue)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    Button(action: { onInfo(order) }) {
-                        Image(systemName: "info.circle")
-                            .font(.system(size: 20, weight: .regular))
-                            .foregroundColor(Color.blue)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                Spacer()
-                if isCurrent {
-                    Button(action: { onTrack(order) }) {
-                        Text("Track Order")
+                    Spacer()
+                    if isCurrent {
+                        NavigationLink(destination: 
+                            TrackOrderView(order: order)
+                                .navigationBarHidden(true)
+                                .navigationBarBackButtonHidden(true)
+                        ) {
+                            Text("Track Order")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 8)
+                                .background(Color.blue.opacity(0.7))
+                                .cornerRadius(12)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        Text("Delivered")
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.white)
                             .padding(.horizontal, 18)
                             .padding(.vertical, 8)
-                            .background(Color.blue.opacity(0.7))
+                            .background(Color.green)
                             .cornerRadius(12)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                } else {
-                    Text("Delivered")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 18)
-                        .padding(.vertical, 8)
-                        .background(Color.green)
-                        .cornerRadius(12)
                 }
+                .padding(.top, 4)
             }
-            .padding(.top, 4)
+            .padding(.all, 20)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color.white)
+                    .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
+            )
+            .padding(.horizontal, 16)
+            .padding(.vertical, 0)
         }
-        .padding(.all, 20)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.white)
-                .shadow(color: Color(.black).opacity(0.06), radius: 8, x: 0, y: 2)
-        )
-        .padding(.horizontal, 16)
-        .padding(.vertical, 0)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -473,99 +988,112 @@ struct TrackOrderView: View {
     )
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                // Map or delivery icon
-                Map(coordinateRegion: $region)
-                    .frame(height: 180)
-                    .cornerRadius(20)
-                    .padding(.horizontal)
-                    .padding(.top, 12)
-
-                // Order number and address
-                VStack(spacing: 4) {
-                    Text("Order No: \(order.orderNumber)")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    HStack(alignment: .top, spacing: 6) {
-                        Image(systemName: "mappin.and.ellipse")
-                            .foregroundColor(.gray)
-                        Text(order.deliveryAddress)
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                }
-                .padding(.top, 8)
-                .padding(.bottom, 4)
-
-                // Status and ETA
-                VStack(spacing: 8) {
-                    Text(viewModel.currentStatus)
-                        .font(.title2).bold()
-                        .padding(.top, 8)
-                    Text("Estimated delivery: \(viewModel.eta)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.bottom, 8)
-
-                // Progress bar
-                ProgressView(value: viewModel.progress)
-                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                    .padding(.horizontal, 32)
-                    .padding(.bottom, 12)
-
-                // Timeline
-                ScrollView {
-                    VStack(spacing: 18) {
-                        ForEach(viewModel.statusData.indices, id: \.self) { idx in
-                            let (status, description, time, isCompleted) = viewModel.statusData[idx]
-                            HStack(alignment: .top, spacing: 16) {
-                                VStack {
-                                    Image(systemName: viewModel.icon(for: status))
-                                        .foregroundColor(isCompleted ? .green : .gray)
-                                        .font(.system(size: 22, weight: .bold))
-                                    if idx < viewModel.statusData.count - 1 {
-                                        Rectangle()
-                                            .fill(isCompleted ? Color.green : Color.gray.opacity(0.3))
-                                            .frame(width: 3, height: 36)
-                                    }
-                                }
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(status)
-                                        .font(.headline)
-                                        .foregroundColor(isCompleted ? .green : .primary)
-                                    if !description.isEmpty {
-                                        Text(description)
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                    }
-                                    if !time.isEmpty {
-                                        Text(time)
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                                Spacer()
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
+        VStack(spacing: 0) {
+            // Custom Header with Back Button
+            HStack {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(.primary)
                 }
                 Spacer()
+                Text("Track Order")
+                    .font(.title2)
+                    .bold()
+                Spacer()
             }
-            .navigationTitle("Track Order")
-            .navigationBarItems(trailing: Button("Done") {
-                presentationMode.wrappedValue.dismiss()
-            })
-            .onAppear {
-                viewModel.initializeTracking(for: order)
+            .padding(.horizontal)
+            .padding(.top)
+            
+            // Map or delivery icon
+            Map(coordinateRegion: $region)
+                .frame(height: 180)
+                .cornerRadius(20)
+                .padding(.horizontal)
+                .padding(.top, 12)
+
+            // Order number and address
+            VStack(spacing: 4) {
+                Text("Order No: \(order.orderNumber)")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "mappin.and.ellipse")
+                        .foregroundColor(.gray)
+                    Text(order.deliveryAddress)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
             }
+            .padding(.top, 8)
+            .padding(.bottom, 4)
+
+            // Status and ETA
+            VStack(spacing: 8) {
+                Text(viewModel.currentStatus)
+                    .font(.title2).bold()
+                    .padding(.top, 8)
+                Text("Estimated delivery: \(viewModel.eta)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.bottom, 8)
+
+            // Progress bar
+            ProgressView(value: viewModel.progress)
+                .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                .padding(.horizontal, 32)
+                .padding(.bottom, 12)
+
+            // Timeline
+            ScrollView {
+                VStack(spacing: 18) {
+                    ForEach(viewModel.statusData.indices, id: \.self) { idx in
+                        let (status, description, time, isCompleted) = viewModel.statusData[idx]
+                        HStack(alignment: .top, spacing: 16) {
+                            VStack {
+                                Image(systemName: viewModel.icon(for: status))
+                                    .foregroundColor(isCompleted ? .green : .gray)
+                                    .font(.system(size: 22, weight: .bold))
+                                if idx < viewModel.statusData.count - 1 {
+                                    Rectangle()
+                                        .fill(isCompleted ? Color.green : Color.gray.opacity(0.3))
+                                        .frame(width: 3, height: 36)
+                                }
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(status)
+                                    .font(.headline)
+                                    .foregroundColor(isCompleted ? .green : .primary)
+                                if !description.isEmpty {
+                                    Text(description)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                if !time.isEmpty {
+                                    Text(time)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
+            }
+            Spacer()
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            viewModel.initializeTracking(for: order)
         }
     }
 }
@@ -599,76 +1127,196 @@ enum OrderType {
 
 class OrdersViewModel: ObservableObject {
     @Published var orders: [Order] = []
+    @Published var subscriptions: [Subscription] = []
     @Published var isLoading = false
-    @Published var selectedOrderType: OrderType = .current
+    @Published var error: Error?
     @Published var menuItems: [MenuItem] = []
-
+    
     var currentOrders: [Order] {
-        orders.filter { $0.status != .delivered }
-    }
-    var pastOrders: [Order] {
-        orders.filter { $0.status == .delivered }
-    }
-
-    init() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleOrdersUpdate),
-            name: .ordersDidUpdate,
-            object: nil
-        )
-        loadMenuItems()
-    }
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    @objc private func handleOrdersUpdate(_ notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let currentOrders = userInfo["currentOrders"] as? [Order],
-           let pastOrders = userInfo["pastOrders"] as? [Order] {
-            DispatchQueue.main.async {
-                self.orders = currentOrders + pastOrders
+        orders.filter { order in
+            switch order.status {
+            case .placed, .confirmed, .prepared, .outForDelivery:
+                return true
+            default:
+                return false
             }
         }
     }
+    
+    var pastOrders: [Order] {
+        orders.filter { order in
+            switch order.status {
+            case .delivered:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+    
+    var activeSubscriptions: [Subscription] {
+        subscriptions.filter { $0.status == .active }
+    }
+    
+    var otherSubscriptions: [Subscription] {
+        subscriptions.filter { $0.status != .active }
+    }
+    
+    init() {
+        setupNotificationObserver()
+        loadData()
+    }
+    
+    private func setupNotificationObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleOrderUpdate), name: NSNotification.Name("OrderUpdated"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleSubscriptionUpdate), name: NSNotification.Name("SubscriptionUpdated"), object: nil)
+    }
+    
+    @objc private func handleOrderUpdate(_ notification: Notification) {
+        if let order = notification.object as? Order {
+            if let index = orders.firstIndex(where: { $0.orderID == order.orderID }) {
+                orders[index] = order
+            } else {
+                orders.append(order)
+            }
+        }
+    }
+    
+    @objc private func handleSubscriptionUpdate(_ notification: Notification) {
+        if let subscription = notification.object as? Subscription {
+            if let index = subscriptions.firstIndex(where: { $0.id == subscription.id }) {
+                subscriptions[index] = subscription
+            } else {
+                subscriptions.append(subscription)
+            }
+        }
+    }
+    
     func loadData() {
+        print("🔄 Starting to load data...")
         isLoading = true
+        error = nil
+        
+        // Create a dispatch group to handle multiple async operations
+        let group = DispatchGroup()
+        
+        // Fetch orders
+        group.enter()
         Task {
             do {
+                print("📥 Fetching orders...")
                 guard let session = try await SupabaseController.shared.getCurrentSession() else {
                     print("❌ No authenticated user found")
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         self.isLoading = false
                         self.orders = []
+                        self.subscriptions = []
                     }
                     return
                 }
                 let userID = session.user.id.uuidString
-                print("🔄 Fetching orders for authenticated user: \(userID)")
+                print("👤 Fetching orders for user: \(userID)")
+                
                 let fetchedOrders = try await SupabaseController.shared.fetchOrders(for: userID)
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    OrderDataController.shared.setOrders(fetchedOrders)
+                print("✅ Successfully fetched \(fetchedOrders.count) orders")
+                
+                await MainActor.run {
+                    self.orders = fetchedOrders
+                    print("📊 Current orders count: \(self.currentOrders.count)")
+                    print("📊 Past orders count: \(self.pastOrders.count)")
                 }
             } catch {
                 print("❌ Error fetching orders: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.orders = []
+                await MainActor.run {
+                    self.error = error
                 }
             }
+            group.leave()
         }
-    }
-    func loadMenuItems() {
+        
+        // Fetch subscriptions
+        group.enter()
         Task {
             do {
+                print("📥 Fetching subscriptions...")
+                guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                    print("❌ No authenticated user found for subscriptions")
+                    return
+                }
+                let userID = session.user.id.uuidString
+                print("👤 Fetching subscriptions for user: \(userID)")
+                
+                let fetchedSubscriptions = try await SupabaseController.shared.fetchSubscriptions(for: userID)
+                print("✅ Successfully fetched \(fetchedSubscriptions.count) subscriptions")
+                
+                await MainActor.run {
+                    self.subscriptions = fetchedSubscriptions
+                    print("📊 Active subscriptions count: \(self.activeSubscriptions.count)")
+                    print("📊 Other subscriptions count: \(self.otherSubscriptions.count)")
+                }
+            } catch {
+                print("❌ Error fetching subscriptions: \(error.localizedDescription)")
+                await MainActor.run {
+                    self.error = error
+                }
+            }
+            group.leave()
+        }
+        
+        // Fetch menu items
+        group.enter()
+        Task {
+            do {
+                print("📥 Fetching menu items...")
                 let items = try await SupabaseController.shared.fetchMenuItems()
+                print("✅ Successfully fetched \(items.count) menu items")
+                
                 await MainActor.run {
                     self.menuItems = items
                 }
             } catch {
                 print("❌ Error fetching menu items: \(error.localizedDescription)")
+                await MainActor.run {
+                    self.error = error
+                }
             }
+            group.leave()
+        }
+        
+        // When all operations are complete
+        group.notify(queue: .main) {
+            print("✅ All data loading completed")
+            print("📊 Final orders count: \(self.orders.count)")
+            print("📊 Final current orders count: \(self.currentOrders.count)")
+            print("📊 Final past orders count: \(self.pastOrders.count)")
+            print("📊 Final active subscriptions count: \(self.activeSubscriptions.count)")
+            print("📊 Final other subscriptions count: \(self.otherSubscriptions.count)")
+            self.isLoading = false
+        }
+    }
+    
+    func loadMenuItems(for order: Order) async {
+        // Implementation for loading menu items
+    }
+    
+    // Add function to handle subscription actions
+    func pauseSubscription(_ subscription: Subscription) async {
+        do {
+            try await SupabaseController.shared.updateSubscriptionStatus(subscription.id, status: SubscriptionStatus.paused)
+            // Refresh subscriptions after update
+            await loadData()
+        } catch {
+            print("❌ Error pausing subscription: \(error.localizedDescription)")
+        }
+    }
+    
+    func cancelSubscription(_ subscription: Subscription) async {
+        do {
+            try await SupabaseController.shared.updateSubscriptionStatus(subscription.id, status: SubscriptionStatus.cancelled)
+            // Refresh subscriptions after update
+            await loadData()
+        } catch {
+            print("❌ Error cancelling subscription: \(error.localizedDescription)")
         }
     }
 }

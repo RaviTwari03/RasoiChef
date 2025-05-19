@@ -1038,6 +1038,174 @@ class SupabaseController {
             throw error
         }
     }
+
+    // MARK: - Subscription Methods
+    
+    func fetchSubscriptions(for userID: String) async throws -> [Subscription] {
+        print("\n🔄 Starting subscriptions fetch process...")
+        print("📊 Query details:")
+        print("- Table: subscriptions")
+        print("- User ID: \(userID)")
+        
+        do {
+            let response = try await client.database
+                .from("subscriptions")
+                .select("""
+                    id,
+                    order_id,
+                    user_id,
+                    kitchen_id,
+                    kitchen_name,
+                    plan_name,
+                    start_date,
+                    end_date,
+                    status,
+                    delivery_days,
+                    delivery_time,
+                    total_amount,
+                    delivery_address,
+                    items
+                """)
+                .eq("user_id", value: userID)
+                .execute()
+            
+            print("\n📥 Raw Subscriptions Response:")
+            
+            // Convert Data to JSON
+            let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
+            guard let subscriptionData = json else {
+                print("❌ Failed to decode JSON data")
+                print("Raw data size: \(response.data.count) bytes")
+                throw NSError(domain: "SupabaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode JSON data"])
+            }
+            
+            print("✅ Successfully decoded JSON data")
+            print("Found \(subscriptionData.count) subscription records")
+            
+            var subscriptions: [Subscription] = []
+            
+            for subscriptionJson in subscriptionData {
+                do {
+                    // Required fields
+                    guard let id = subscriptionJson["id"] as? String,
+                          let orderID = subscriptionJson["order_id"] as? String,
+                          let userID = subscriptionJson["user_id"] as? String,
+                          let kitchenID = subscriptionJson["kitchen_id"] as? String,
+                          let kitchenName = subscriptionJson["kitchen_name"] as? String,
+                          let planName = subscriptionJson["plan_name"] as? String,
+                          let startDateString = subscriptionJson["start_date"] as? String,
+                          let endDateString = subscriptionJson["end_date"] as? String,
+                          let statusString = subscriptionJson["status"] as? String,
+                          let deliveryDays = subscriptionJson["delivery_days"] as? [Int],
+                          let deliveryTime = subscriptionJson["delivery_time"] as? String,
+                          let totalAmount = (subscriptionJson["total_amount"] as? NSNumber)?.doubleValue ?? subscriptionJson["total_amount"] as? Double,
+                          let deliveryAddress = subscriptionJson["delivery_address"] as? String
+                    else {
+                        print("\n❌ Missing required fields for subscription")
+                        print("Available fields and types:")
+                        subscriptionJson.forEach { key, value in
+                            print("- \(key): \(type(of: value))")
+                        }
+                        continue
+                    }
+                    
+                    // Parse dates
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                    guard let startDate = dateFormatter.date(from: startDateString),
+                          let endDate = dateFormatter.date(from: endDateString) else {
+                        print("❌ Failed to parse dates")
+                        continue
+                    }
+                    
+                    // Parse status
+                    guard let status = SubscriptionStatus(rawValue: statusString) else {
+                        print("❌ Invalid status: \(statusString)")
+                        continue
+                    }
+                    
+                    // Parse items
+                    var items: [OrderItem] = []
+                    if let itemsData = subscriptionJson["items"] as? [[String: Any]] {
+                        for itemJson in itemsData {
+                            if let menuItemID = itemJson["menu_item_id"] as? String,
+                               let quantity = itemJson["quantity"] as? Int,
+                               let price = (itemJson["price"] as? NSNumber)?.doubleValue ?? itemJson["price"] as? Double {
+                                items.append(OrderItem(menuItemID: menuItemID, quantity: quantity, price: price))
+                            }
+                        }
+                    }
+                    
+                    let subscription = Subscription(
+                        id: id,
+                        orderID: orderID,
+                        userID: userID,
+                        kitchenID: kitchenID,
+                        kitchenName: kitchenName,
+                        planName: planName,
+                        startDate: startDate,
+                        endDate: endDate,
+                        status: status,
+                        deliveryDays: deliveryDays,
+                        deliveryTime: deliveryTime,
+                        totalAmount: totalAmount,
+                        items: items,
+                        deliveryAddress: deliveryAddress
+                    )
+                    
+                    print("✅ Successfully processed subscription: \(planName)")
+                    subscriptions.append(subscription)
+                } catch {
+                    print("❌ Error processing subscription: \(error.localizedDescription)")
+                    continue
+                }
+            }
+            
+            print("\n✅ Successfully processed all subscriptions")
+            return subscriptions
+            
+        } catch {
+            print("\n❌ Error fetching subscriptions:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
+            throw error
+        }
+    }
+
+    func updateSubscriptionStatus(_ subscriptionId: String, status: SubscriptionStatus) async throws {
+        print("\n🔄 Updating subscription status...")
+        print("📊 Query details:")
+        print("- Table: subscriptions")
+        print("- Subscription ID: \(subscriptionId)")
+        print("- New Status: \(status.rawValue)")
+        
+        do {
+            let response = try await client.database
+                .from("subscriptions")
+                .update(["status": status.rawValue])
+                .eq("id", value: subscriptionId)
+                .execute()
+            
+            print("✅ Successfully updated subscription status")
+            
+            // Post notification for UI update
+            NotificationCenter.default.post(
+                name: NSNotification.Name("SubscriptionUpdated"),
+                object: nil
+            )
+            
+        } catch {
+            print("❌ Error updating subscription status:")
+            print("- Type: \(type(of: error))")
+            print("- Description: \(error.localizedDescription)")
+            throw error
+        }
+    }
 }
 
 // Helper extension for async mapping
