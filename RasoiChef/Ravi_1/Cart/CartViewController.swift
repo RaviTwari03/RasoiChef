@@ -8,17 +8,39 @@
 import UIKit
 import MapKit
 import CoreLocation
+import UserNotifications
 
 protocol SubscriptionPlanDelegate: AnyObject {
     func didAddSubscriptionPlan(_ plan: SubscriptionPlan)
 }
 
-class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate {
+// Add this struct before the CartViewController class
+struct SubscriptionPlanOrder: Encodable {
+    let user_id: String
+    let kitchen_id: String
+    let plan_name: String
+    let start_date: String
+    let end_date: String
+    let total_days: Int
+    let meals_per_day: [String: Bool]
+    let total_amount: Double
+    let delivery_address: String
+    let delivery_type: String
+    let breakfast_included: Bool
+    let lunch_included: Bool
+    let snacks_included: Bool
+    let dinner_included: Bool
+    let daily_meal_limit: Int
+}
+
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemDelegate, CartPayCellDelegate, CartItemTableViewCellDelegate, SubscribeYourPlanButtonDelegate, SubscriptionCartItemTableViewCellDelegate, CartDeliveryDelegate, CLLocationManagerDelegate, MKMapViewDelegate, MapViewControllerDelegate, UserCartAddressDelegate, UNUserNotificationCenterDelegate {
     
     private let locationManager = CLLocationManager()
     private var currentLocation: CLLocation?
     private var selectedAddress: String? = nil
     private var geocoder = CLGeocoder()
+    
+    private let notificationCenter = UNUserNotificationCenter.current()
     
     weak var delegate: SubscriptionPlanDelegate?
     @IBOutlet var CartItem: UITableView!
@@ -180,112 +202,74 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
            
            // Request location authorization
            locationManager.requestWhenInUseAuthorization()
+           
+           // Request notification permissions
+           requestNotificationPermissions()
+
+           // Set notification delegate
+           notificationCenter.delegate = self
        }
     
     
     func createOrderFromCart(cartItems: [CartItem], subscriptionPlan: [SubscriptionPlan]) -> Order? {
         var orderItems: [OrderItem] = []
+        var totalAmount: Double = 0.0
+        var kitchenName = ""
+        var kitchenID = ""
 
         // Process regular cart items
         for cartItem in cartItems {
             var menuItemID = ""
             var price: Double = 0.0
-            var kitchenName = "Unknown Kitchen"
-            var kitchenID = ""
 
             switch (cartItem.menuItem, cartItem.chefSpecial) {
             case let (menuItem?, nil):
-                menuItemID = menuItem.itemID  // Use itemID instead of name
+                menuItemID = menuItem.itemID
                 price = menuItem.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             case let (nil, chefSpecial?):
-                menuItemID = chefSpecial.dishID  // Use dishID instead of name
+                menuItemID = chefSpecial.dishID
                 price = chefSpecial.price
                 kitchenName = chefSpecial.kitchenName
                 kitchenID = chefSpecial.kitchenID
             case let (menuItem?, chefSpecial?):
-                menuItemID = menuItem.itemID  // Use primary item's ID
+                menuItemID = menuItem.itemID
                 price = menuItem.price + chefSpecial.price
                 kitchenName = menuItem.kitchenName
                 kitchenID = menuItem.kitchenID
             default:
-                continue  // Skip if no valid item
+                continue
             }
+
+            let itemTotal = price * Double(cartItem.quantity)
+            totalAmount += itemTotal
 
             orderItems.append(OrderItem(
                 menuItemID: menuItemID,
                 quantity: cartItem.quantity,
-                price: price * Double(cartItem.quantity)
+                price: itemTotal
             ))
         }
 
-        // Process subscription plans separately
-        for subscription in subscriptionPlan {
-            let subscriptionOrder = SubscriptionPlan(
-                //subscriptionID: UUID().uuidString,
-                planID: subscription.planID,
-                kitchenName: subscription.kitchenName,
-                userID: UUID().uuidString, // Replace with actual user ID
-                location: subscription.location ?? "Unknown Location",
-                //                location : selectedAddress ?? "No address selected",
-                startDate: subscription.startDate,
-                endDate: subscription.endDate,
-                totalPrice: subscription.totalPrice,
-              
-               
-                planName: subscription.planName ?? "Unknown Plan",
-                PlanIntakeLimit: 4
-                
-                
-            )
+        // Generate 8-digit order number
+        let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))
 
-            // Add subscription to OrderDataController
-            OrderDataController.shared.addSubscription(SubscriptionPlan: subscriptionOrder)
-        }
-
-        // If no cart items, return nil (only subscriptions were added)
-        if orderItems.isEmpty {
-            return nil
-        }
-
-        // Calculate total amount for the order
-        let totalAmount = orderItems.reduce(0.0) { $0 + $1.price }
-
-        // Get kitchen details from first cart item
-        let firstCartItem = cartItems.first
-        var kitchenName = firstCartItem?.menuItem?.kitchenName ?? "Unknown Kitchen"
-        var kitchenID = firstCartItem?.menuItem?.kitchenID ?? ""
-        switch (firstCartItem?.menuItem, firstCartItem?.chefSpecial) {
-               case let (menuItem?, nil):
-                   kitchenName = menuItem.kitchenName
-                   kitchenID = menuItem.kitchenID
-               case let (nil, chefSpecial?):
-                   kitchenName = chefSpecial.kitchenName
-                   kitchenID = chefSpecial.kitchenID
-               case let (menuItem?, chefSpecial?):
-                   kitchenName = menuItem.kitchenName
-                   kitchenID = menuItem.kitchenID
-               default:
-                   break
-               }
-
-        // Create and return order with selected delivery type
-        let order = Order(
+        // Create the order
+        return Order(
             orderID: UUID().uuidString,
-            userID: UUID().uuidString,  // This should be the actual user ID
+            orderNumber: orderNumber,
+            userID: UserDefaults.standard.string(forKey: "userID") ?? "",
             kitchenName: kitchenName,
             kitchenID: kitchenID,
             items: orderItems,
             item: nil,
             status: .placed,
             totalAmount: totalAmount,
-            deliveryAddress: selectedAddress ?? "No address selected",
+            deliveryAddress: cartItems.first?.userAdress ?? "",
             deliveryDate: Date(),
-            deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
+            deliveryType: "Delivery"
         )
-
-        return order
     }
        func numberOfSections(in tableView: UITableView) -> Int {
            return 6
@@ -811,11 +795,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 // Create an order from cart items
                 let orderID = UUID().uuidString
+                let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))  // Generate 8-digit order number
                 let totalAmount = calculateGrandTotal()
                 let deliveryType = isDeliverySelected ? "Delivery" : "Self-Pickup"
                 
                 let order = Order(
                     orderID: orderID,
+                    orderNumber: orderNumber,  // Add the order number
                     userID: finalUserID,  // Use the verified user ID
                     kitchenName: kitchenName,
                     kitchenID: kitchenID,
@@ -870,12 +856,230 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 
+    private func getUserID() async throws -> String {
+        // Try to get user ID from UserDefaults first
+        if let userID = UserDefaults.standard.string(forKey: "userID") {
+            return userID
+        }
+        
+        // Try to get from current session
+        if let session = try await SupabaseController.shared.getCurrentSession() {
+            let userID = session.user.id.uuidString
+            UserDefaults.standard.set(userID, forKey: "userID")
+            return userID
+        }
+        
+        throw NSError(domain: "User not logged in", code: -1)
+    }
+
+    private func processRegularOrder(userID: String) async throws {
+        let firstItem = CartViewController.cartItems[0]
+        let kitchenName = firstItem.menuItem?.kitchenName ?? firstItem.chefSpecial?.kitchenName ?? "Unknown Kitchen"
+        let kitchenID = firstItem.menuItem?.kitchenID ?? firstItem.chefSpecial?.kitchenID ?? ""
+        
+        let orderItems = CartViewController.cartItems.map { cartItem -> OrderItem in
+            let itemID: String
+            let price: Double
+            
+            if let menuItem = cartItem.menuItem {
+                itemID = menuItem.itemID
+                price = menuItem.price
+            } else if let chefSpecial = cartItem.chefSpecial {
+                itemID = chefSpecial.dishID
+                price = chefSpecial.price
+            } else {
+                itemID = ""
+                price = 0.0
+            }
+            
+            return OrderItem(
+                menuItemID: itemID,
+                quantity: cartItem.quantity,
+                price: price * Double(cartItem.quantity)
+            )
+        }
+        
+        let orderID = UUID().uuidString
+        let orderNumber = String(format: "%08d", Int.random(in: 0...99999999))
+        let order = Order(
+            orderID: orderID,
+            orderNumber: orderNumber,
+            userID: userID,
+            kitchenName: kitchenName,
+            kitchenID: kitchenID,
+            items: orderItems,
+            item: nil,
+            status: .placed,
+            totalAmount: calculateGrandTotal(),
+            deliveryAddress: selectedAddress ?? "No address selected",
+            deliveryDate: Date(),
+            deliveryType: isDeliverySelected ? "Delivery" : "Self-Pickup"
+        )
+        
+        try await SupabaseController.shared.insertOrder(order: order)
+        OrderDataController.shared.addOrder(order: order)
+        
+        // Schedule notification for regular order
+        DispatchQueue.main.async { [weak self] in
+            self?.scheduleOrderNotification(orderID: orderID, kitchenName: kitchenName)
+        }
+    }
+
+    private func insertSubscriptionPlan(_ plan: SubscriptionPlan, userID: String) async throws {
+        // TODO: Implement actual Supabase insertion logic for subscription plans
+        print("[Stub] insertSubscriptionPlan called for plan: \(plan.planName ?? "N/A") and user: \(userID)")
+    }
+
+    private func processSubscriptionPlans(userID: String) async throws {
+        for plan in CartViewController.subscriptionPlan1 {
+            try await insertSubscriptionPlan(plan, userID: userID)
+            
+            // Schedule notification for subscription plan
+            if let kitchenName = plan.kitchenName, let planName = plan.planName {
+                DispatchQueue.main.async { [weak self] in
+                    self?.scheduleSubscriptionNotification(planName: planName, kitchenName: kitchenName)
+                }
+            }
+        }
+    }
+
+    private func clearCartAndUpdateUI() {
+        CartViewController.cartItems.removeAll()
+        CartViewController.subscriptionPlan1.removeAll()
+        updateTabBarBadge()
+        updateMyOrdersBadge()
+        CartItem.reloadData()
+    }
+
     // MARK: - Helper Methods
     func updateTotalAmount() {
         let grandTotal = calculateGrandTotal()
         if let paySection = CartItem.numberOfSections > 5 ? 5 : nil,
            let cell = CartItem.cellForRow(at: IndexPath(row: 0, section: paySection)) as? CartPayTableViewCell {
             cell.TotalAmountLabel.text = String(format: "₹%.2f", grandTotal)
+        }
+    }
+
+    private func requestNotificationPermissions() {
+        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("✅ Notification permission granted")
+            } else if let error = error {
+                print("❌ Notification permission error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - UNUserNotificationCenterDelegate Methods
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Show notification even when app is in foreground
+        completionHandler([.banner, .sound, .badge])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Handle notification tap
+        completionHandler()
+    }
+
+    private func scheduleOrderNotification(orderID: String, kitchenName: String) {
+        // Check notification authorization status first
+        notificationCenter.getNotificationSettings { [weak self] settings in
+            guard settings.authorizationStatus == .authorized else {
+                print("❌ Notifications not authorized")
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            
+            // Get current time to customize message
+            let hour = Calendar.current.component(.hour, from: Date())
+            let title: String
+            let body: String
+            
+            switch hour {
+            case 6..<12: // Morning
+                title = "Breakfast is on the way! 🌅"
+                body = "Your delicious morning feast from \(kitchenName) is being prepared with love and care."
+            case 12..<16: // Afternoon
+                title = "Lunch is coming! 🍱"
+                body = "Get ready for a delightful lunch from \(kitchenName). Your taste buds are in for a treat!"
+            case 16..<19: // Evening
+                title = "Evening delights incoming! 🌆"
+                body = "Time for some evening indulgence! \(kitchenName) is preparing your special treats."
+            case 19..<23: // Night
+                title = "Dinner is being prepared! 🌙"
+                body = "Your perfect dinner from \(kitchenName) will be ready soon. Get your table set!"
+            default: // Late night
+                title = "Your food is on the way! 🌟"
+                body = "\(kitchenName) is preparing your special order with the finest ingredients."
+            }
+            
+            content.title = title
+            content.body = body
+            content.sound = .default
+            content.badge = 1
+            
+            // Show notification after 1 second
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: "order-\(orderID)",
+                content: content,
+                trigger: trigger
+            )
+            
+            self?.notificationCenter.add(request) { error in
+                if let error = error {
+                    print("❌ Notification Error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Order notification scheduled successfully")
+                }
+            }
+        }
+    }
+
+    private func scheduleSubscriptionNotification(planName: String, kitchenName: String) {
+        // Check notification authorization status first
+        notificationCenter.getNotificationSettings { [weak self] settings in
+            guard settings.authorizationStatus == .authorized else {
+                print("❌ Notifications not authorized")
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            
+            // Array of engaging messages
+            let messages = [
+                (title: "Welcome to the Family! 🎉", body: "Your \(planName) journey with \(kitchenName) begins now. Get ready for a delightful culinary experience!"),
+                (title: "Your Food Journey Begins! 🌟", body: "Exciting times ahead with your new \(planName) subscription from \(kitchenName)!"),
+                (title: "You're All Set! 🍽️", body: "Your \(planName) subscription is active. Get ready for amazing meals from \(kitchenName)!"),
+                (title: "Welcome Aboard! 🚀", body: "Your culinary adventure with \(kitchenName)'s \(planName) starts now!")
+            ]
+            
+            // Randomly select a message
+            let message = messages.randomElement()!
+            
+            content.title = message.title
+            content.body = message.body
+            content.sound = .default
+            content.badge = 1
+            
+            // Show notification after 1 second
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: "subscription-\(UUID().uuidString)",
+                content: content,
+                trigger: trigger
+            )
+            
+            self?.notificationCenter.add(request) { error in
+                if let error = error {
+                    print("❌ Notification Error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Subscription notification scheduled successfully")
+                }
+            }
         }
     }
 }

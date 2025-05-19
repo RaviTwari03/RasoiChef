@@ -60,8 +60,8 @@ class LandingPageKitchenCollectionViewCell: UICollectionViewCell {
         // Add shadow to the cell
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.1
+        layer.shadowRadius = 2.5
+        layer.shadowOpacity = 0.5
         layer.masksToBounds = false
         
         // Make sure the shadow path matches the corner radius

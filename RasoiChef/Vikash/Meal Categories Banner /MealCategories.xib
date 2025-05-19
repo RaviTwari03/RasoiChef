@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -56,8 +56,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dot.square" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ZNv-a3-OBz">
-                                <rect key="frame" x="10" y="11.666666666666663" width="20" height="17"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZNv-a3-OBz">
+                                <rect key="frame" x="10" y="10" width="20" height="20"/>
                                 <color key="tintColor" red="0.25264382839999999" green="0.5" blue="0.25766681920000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="1fc-mU-VP1"/>
@@ -159,12 +159,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="tcZ-JT-hrD" secondAttribute="trailing" constant="6" id="1yw-rs-qkK"/>
+                            <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IcH-Kp-7ce" secondAttribute="trailing" id="3ZT-7O-g9a"/>
                             <constraint firstItem="g2G-NL-bRc" firstAttribute="leading" secondItem="9uo-tp-ueP" secondAttribute="trailing" constant="3.3333333333333712" id="95C-dY-txz"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="leading" secondItem="IcH-Kp-7ce" secondAttribute="leading" id="9sR-fD-Z0W"/>
                             <constraint firstItem="TQX-SV-13y" firstAttribute="top" secondItem="dC9-61-viy" secondAttribute="bottom" constant="5" id="CW4-BB-s0v"/>
                             <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TQX-SV-13y" secondAttribute="trailing" constant="30" id="CjL-bL-y8R"/>
                             <constraint firstItem="dC9-61-viy" firstAttribute="top" secondItem="U1X-P8-j1b" secondAttribute="bottom" constant="5" id="Epq-JC-aqb"/>
                             <constraint firstItem="J1I-9Q-j62" firstAttribute="top" secondItem="ZNv-a3-OBz" secondAttribute="bottom" constant="4" id="FfV-Ru-yvt"/>
+                            <constraint firstItem="bqk-kA-EkK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="J1I-9Q-j62" secondAttribute="trailing" constant="20" id="KPk-pg-PJh"/>
                             <constraint firstItem="J1I-9Q-j62" firstAttribute="leading" secondItem="ZNv-a3-OBz" secondAttribute="leading" id="LnR-J6-Xyr"/>
                             <constraint firstItem="Vb3-ha-qEP" firstAttribute="top" secondItem="U1X-P8-j1b" secondAttribute="bottom" constant="5.3333333333333286" id="Mrn-dy-fEx"/>
                             <constraint firstItem="yma-fl-V7r" firstAttribute="top" secondItem="IcH-Kp-7ce" secondAttribute="bottom" constant="4" id="Pik-9t-J9e"/>
@@ -222,7 +224,6 @@
     </objects>
     <resources>
         <image name="StarRatings" width="128" height="128"/>
-        <image name="dot.square" catalog="system" width="128" height="114"/>
         <image name="location.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -87,6 +87,13 @@
                             <constraint firstItem="hp6-kZ-faF" firstAttribute="leading" secondItem="Uql-3O-o0P" secondAttribute="leading" id="vhk-jh-NFl"/>
                             <constraint firstItem="Tfp-4F-McM" firstAttribute="leading" secondItem="d8w-u4-Qst" secondAttribute="trailing" constant="12" id="x2F-aD-i54"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="2TD-Cm-mB2"/>
+                                <exclude reference="Tfp-4F-McM"/>
+                                <exclude reference="d8w-u4-Qst"/>
+                            </mask>
+                        </variation>
                     </view>
                 </subviews>
                 <constraints>

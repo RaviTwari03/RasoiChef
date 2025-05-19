@@ -11,7 +11,7 @@ import UIKit
         func didUpdateProfile(name: String, email: String)
     }
 
-    class ProfileEditViewController: UIViewController {
+    class ProfileEditViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         
         @IBOutlet weak var nameTextField: UITextField!
         
@@ -28,10 +28,12 @@ import UIKit
                 // Populate the text fields with existing data
                 nameTextField.text = name
                 emailTextField.text = email
+                
             }
         
         
 
+        
             @IBAction func updateButtonTapped(_ sender: UIButton) {
                 // Validate and pass back updated values
                 if let updatedName = nameTextField.text, !updatedName.isEmpty,

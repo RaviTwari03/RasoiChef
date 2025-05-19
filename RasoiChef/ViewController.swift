@@ -21,6 +21,49 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     var selectedItem: MenuItem?
     var selectedChefSpecialtyDish: ChefSpecialtyDish?
     
+    // Add refresh control
+    private let refreshControl = UIRefreshControl()
+    
+    // Custom loading view
+    private let loadingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
+        return view
+    }()
+    
+    private let symbolImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemOrange
+        if let image = UIImage(systemName: "fork.knife")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 30, weight: .medium)) {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    
+    private let quoteLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Preparing your delicious meal..."
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .systemOrange
+        return label
+    }()
+    
+    private var symbolRotationTimer: Timer?
+    private let symbols = [
+        ("fork.knife", "Preparing your delicious meal..."),
+        ("flame.fill", "Cooking with passion..."),
+        ("leaf.fill", "Fresh ingredients for you..."),
+        ("heart.fill", "Made with love..."),
+        ("star.fill", "Quality you can taste...")
+    ]
+    private var currentSymbolIndex = 0
+    
     //    var selectedItem: MenuItem?
     //  var menuItems: [MenuItem] = []
     
@@ -29,11 +72,41 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         self.title = "Kanha Ji Rasoi"
         self.navigationItem.largeTitleDisplayMode = .never
         
+        // Setup loading view
+        setupLoadingView()
+        
+        // Setup refresh control
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        collectionView1.refreshControl = refreshControl
+        
+        // Load kitchens if not already loaded
+        print("🔍 Checking kitchen data...")
+        if KitchenDataController.kitchens.isEmpty {
+            print("🔄 Loading kitchens...")
+            Task {
+                do {
+                    try await KitchenDataController.loadData()
+                    print("✅ Successfully loaded \(KitchenDataController.kitchens.count) kitchens")
+                    await MainActor.run {
+                        self.collectionView1.reloadData()
+                    }
+                } catch {
+                    print("❌ Error loading kitchens: \(error)")
+                }
+            }
+        } else {
+            print("✅ Kitchens already loaded: \(KitchenDataController.kitchens.count) kitchens")
+        }
+        
         // Load kitchen-specific data if a kitchen is selected
         if let kitchen = kitchenData {
             KitchenDataController.loadKitchenSpecificData(forKitchenID: kitchen.kitchenID)
             self.title = kitchen.name
         }
+        
+        // Load favorite kitchens
+        KitchenDataController.loadFavorites()
         
         // Registering Nibs for Cells
         let kitchenDetailsNib = UINib(nibName: "KitchenDetails", bundle: nil)
@@ -63,13 +136,17 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // Define standard meal type order
+        let mealTypeOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+        
         // Get current meal type index
         let targetIndex = getCurrentMealTypeIndex()
+        let targetMealType = mealTypeOrder[targetIndex]
         
-        // Find the first menu item of the current meal type
-        let targetMealType: MealType = [.breakfast, .lunch, .snacks, .dinner][targetIndex]
+        // Get sorted items
         let items = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
         
+        // Find the first menu item of the current meal type
         if let firstIndex = items.firstIndex(where: { item in
             item.availableMealTypes == targetMealType
         }), firstIndex < items.count {
@@ -118,15 +195,31 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         case 1:
             return 1
         case 2:
-            return kitchenData != nil ? KitchenDataController.filteredMenuItems.count : KitchenDataController.menuItems.count
+            // Get current day
+            let currentDay = Calendar.current.component(.weekday, from: Date())
+            let weekdayMap: [Int: WeekDay] = [
+                1: .sunday,
+                2: .monday,
+                3: .tuesday,
+                4: .wednesday,
+                5: .thursday,
+                6: .friday,
+                7: .saturday
+            ]
+            let today = weekdayMap[currentDay] ?? .monday
+            
+            // Filter menu items for current day
+            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+            let todaysMenuItems = menuItems.filter { $0.availableDays == today }
+            return todaysMenuItems.count
         case 3:
             return 1
         case 4:
             return kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes.count : KitchenDataController.chefSpecialtyDishes.count
-//        case 5:
-//            return 1
-//        case 6:
-//            return kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan.count : KitchenDataController.subscriptionPlan.count
+        case 5:
+            return 1
+        case 6:
+            return kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan.count : KitchenDataController.subscriptionPlan.count
         default:
             return 0
         }
@@ -142,11 +235,20 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KitchenDetails", for: indexPath) as! KitchenDetailsCollectionViewCell
             cell.layer.cornerRadius = 8.0
             if let selectedKitchen = kitchenData {
+                print("✅ Configuring cell with selected kitchen: \(selectedKitchen.name)")
                 cell.configure(with: selectedKitchen)
             } else {
-                cell.configure(for: indexPath)
+                print("✅ Configuring cell with kitchen at index: \(indexPath.row)")
+                // Make sure we have kitchens data
+                guard !KitchenDataController.kitchens.isEmpty else {
+                    print("❌ No kitchens data available")
+                    return cell
+                }
+                let kitchen = KitchenDataController.kitchens[indexPath.row]
+                cell.configure(with: kitchen)
             }
             return cell
+            
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuListHeader", for: indexPath) as! MenuListHeaderCollectionViewCell
             cell.delegate = self
@@ -156,16 +258,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuDetails", for: indexPath) as! MenuDetailsCollectionViewCell
             cell.delegate = self
             
-            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
-            let menuItem = menuItems[indexPath.row]
-            
-            cell.updateMenuDetails(with: indexPath)
-            
-            // Get the menu item and current time information
-            let currentHour = Calendar.current.component(.hour, from: Date())
+            // Get current day
             let currentDay = Calendar.current.component(.weekday, from: Date())
-            
-            // Convert weekday number to WeekDay enum (1 = Sunday, 2 = Monday, etc.)
             let weekdayMap: [Int: WeekDay] = [
                 1: .sunday,
                 2: .monday,
@@ -175,70 +269,68 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 6: .friday,
                 7: .saturday
             ]
-            
             let today = weekdayMap[currentDay] ?? .monday
             
+            // Filter menu items for current day
+            let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+            let todaysMenuItems = menuItems.filter { $0.availableDays == today }
+            let menuItem = todaysMenuItems[indexPath.row]
+            
+            cell.updateMenuDetails(with: indexPath, menuItem: menuItem)
+            
+            // Get current time information
+            let currentHour = Calendar.current.component(.hour, from: Date())
+            
+            // Check if item is available based on time
             let isAvailable: Bool = {
-                // First check if the item is marked as available in Supabase
-                guard menuItem.availability.contains(.Available) else {
+                guard let mealType = menuItem.availableMealTypes else {
                     return false
                 }
-                
-                // Check if the item is available on the current day
-                guard menuItem.availableDays.contains(today) else {
-                    return false
+                switch mealType {
+                case .breakfast where currentHour >= 6 && currentHour < 11:  return true
+                case .lunch where currentHour >= 11 && currentHour < 15:     return true
+                case .snacks where currentHour >= 15 && currentHour < 19:    return true
+                case .dinner where currentHour >= 19 || currentHour < 6:     return true
+                default: return false
                 }
-                
-                // Check if current time is within the meal type's time window
-                if let mealType = menuItem.availableMealTypes {
-                    switch mealType {
-                    case .breakfast where currentHour >= 6 && currentHour < 11:  return true
-                    case .lunch where currentHour >= 11 && currentHour < 15:     return true
-                    case .snacks where currentHour >= 15 && currentHour < 19:    return true
-                    case .dinner where currentHour >= 19 || currentHour < 6:     return true
-                    default: return false
-                    }
-                }
-                
-                return false
             }()
             
             // Apply blur effect and disable interaction if item is not available
-//            if !isAvailable {
-//                // Add blur effect
-//                let blurEffect = UIBlurEffect(style: .light)
-//                let blurView = UIVisualEffectView(effect: blurEffect)
-//                blurView.frame = cell.contentView.bounds
-//                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//                blurView.tag = 100 // Tag for identification
-//                
-//                // Remove existing blur if any
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                cell.contentView.addSubview(blurView)
-//                cell.contentView.sendSubviewToBack(blurView)
-//                
-//                // Disable interaction
-//                cell.isUserInteractionEnabled = false
-//                cell.addButton.isEnabled = false
-//                cell.contentView.alpha = 0.7
-//            } else {
-//                // Remove blur effect if exists
-//                cell.contentView.subviews.forEach { view in
-//                    if view.tag == 100 {
-//                        view.removeFromSuperview()
-//                    }
-//                }
-//                
-//                // Enable interaction
-//                cell.isUserInteractionEnabled = true
-//                cell.addButton.isEnabled = true
-//                cell.contentView.alpha = 1.0
-//            }
+            if !isAvailable {
+                // Add blur effect
+                let blurEffect = UIBlurEffect(style: .light)
+                let blurView = UIVisualEffectView(effect: blurEffect)
+                blurView.frame = cell.contentView.bounds
+                blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                blurView.tag = 100 // Tag for identification
+                
+                // Remove existing blur if any
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                cell.contentView.addSubview(blurView)
+                cell.contentView.sendSubviewToBack(blurView)
+                
+                // Disable interaction
+                cell.isUserInteractionEnabled = false
+                cell.addButton.isEnabled = false
+                cell.contentView.alpha = 0.7
+            } else {
+                // Remove blur effect if exists
+                cell.contentView.subviews.forEach { view in
+                    if view.tag == 100 {
+                        view.removeFromSuperview()
+                    }
+                }
+                
+                // Enable interaction
+                cell.isUserInteractionEnabled = true
+                cell.addButton.isEnabled = true
+                cell.contentView.alpha = 1.0
+            }
             
             return cell
             
@@ -246,6 +338,7 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialityDishesHeader", for: indexPath) as! ChefSpecialityDishesHeaderCell
             cell.delegate = self
             return cell
+            
         case 4:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChefSpecialDishes", for: indexPath) as! ChefSpecialCollectionViewCell
             let dishes = kitchenData != nil ? KitchenDataController.filteredChefSpecialtyDishes : KitchenDataController.chefSpecialtyDishes
@@ -253,19 +346,20 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             cell.delegate = self
             
             return cell
-//        case 5:
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
-//            cell.delegate = self
-//            return cell
-//            
-//        case 6:
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
-//            let plans = kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan : KitchenDataController.subscriptionPlan
-//            cell.updateSubscriptionPlanData(for: indexPath)
-//            cell.layer.cornerRadius = 15.0
-//            cell.delegate = self
-//            return cell
-//            
+            
+        case 5:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealSubscriptionPlanHeader", for: indexPath) as! MealSubscriptionPlanHeaderCollectionViewCell
+            cell.delegate = self
+            return cell
+            
+        case 6:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionDetails", for: indexPath) as! SubscriptionDetailsCollectionViewCell
+            let plans = kitchenData != nil ? KitchenDataController.filteredSubscriptionPlan : KitchenDataController.subscriptionPlan
+            cell.updateSubscriptionPlanData(for: indexPath)
+            cell.layer.cornerRadius = 15.0
+            cell.delegate = self
+            return cell
+            
         default:
             return UICollectionViewCell()
         }
@@ -399,7 +493,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     //    MARK: - For ADD button in the menu items cell
     func MenuListaddButtonTapped(in cell: MenuDetailsCollectionViewCell) {
         guard let indexPath = collectionView1.indexPath(for: cell) else { return }
-        let selectedItem = KitchenDataController.menuItems[indexPath.row]
+        let menuItems = kitchenData != nil ? KitchenDataController.filteredMenuItems : KitchenDataController.menuItems
+        let selectedItem = menuItems[indexPath.row]
         print("Add button tapped for meal: \(selectedItem.name)")
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -417,7 +512,6 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
         } else {
             print("Error: Could not instantiate AddItemModallyViewController")
         }
-        
     }
     
     
@@ -442,12 +536,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                 print("Error: Could not instantiate KitchenChefSpecialViewController")
             }
         case 3:
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let thirdScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(thirdScreenVC, animated: true)
-            } else {
-                print("Error: Could not instantiate KitchenChefSpecialViewController")
-            }
+            let subscriptionVC = MealSubscriptionPlanHostingController(rootView: MealSubscriptionPlanView())
+            self.navigationController?.pushViewController(subscriptionVC, animated: true)
         default:
             break
         }
@@ -469,12 +559,11 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
     
     func didTapSeeMore1() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "KitchenChefSpecialViewController") as? KitchenChefSpecialViewController {
+        if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "LandingPageChefSpecialitySeeMoreViewController") as? LandingPageChefSpecialitySeeMoreViewController {
+            // Pass the current kitchen's data
+            firstScreenVC.kitchenData = kitchenData
             self.navigationController?.pushViewController(firstScreenVC, animated: true)
         }
-        
-        
-        
     }
     
     func didTapSeeMorePlansMenu() {
@@ -496,10 +585,8 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
                                       preferredStyle: .alert)
         
         let acceptAction = UIAlertAction(title: "Accept", style: .default) { _ in
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let firstScreenVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionViewController") as? SubscriptionViewController {
-                self.navigationController?.pushViewController(firstScreenVC, animated: true)
-            }
+            let subscriptionVC = MealSubscriptionPlanHostingController(rootView: MealSubscriptionPlanView())
+            self.navigationController?.pushViewController(subscriptionVC, animated: true)
         }
         
         let declineAction = UIAlertAction(title: "Decline", style: .cancel, handler: nil)
@@ -538,6 +625,138 @@ class ViewController: UIViewController,UICollectionViewDelegate, UICollectionVie
             print("Error: Could not instantiate AddItemModallyViewController")
         }
     }
+    @objc func dismissView() {
+        self.dismiss(animated: true, completion: nil)
     }
+    
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.addSubview(symbolImageView)
+        loadingView.addSubview(quoteLabel)
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingView.widthAnchor.constraint(equalToConstant: 200),
+            loadingView.heightAnchor.constraint(equalToConstant: 100),
+            
+            symbolImageView.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor),
+            symbolImageView.topAnchor.constraint(equalTo: loadingView.topAnchor),
+            symbolImageView.widthAnchor.constraint(equalToConstant: 40),
+            symbolImageView.heightAnchor.constraint(equalToConstant: 40),
+            
+            quoteLabel.topAnchor.constraint(equalTo: symbolImageView.bottomAnchor, constant: 10),
+            quoteLabel.leadingAnchor.constraint(equalTo: loadingView.leadingAnchor, constant: 10),
+            quoteLabel.trailingAnchor.constraint(equalTo: loadingView.trailingAnchor, constant: -10),
+            quoteLabel.bottomAnchor.constraint(lessThanOrEqualTo: loadingView.bottomAnchor)
+        ])
+        
+        loadingView.isHidden = true
+    }
+    
+    private func showLoadingIndicator() {
+        loadingView.isHidden = false
+        collectionView1.isHidden = true
+        startSymbolRotation()
+    }
+    
+    private func hideLoadingIndicator() {
+        loadingView.isHidden = true
+        collectionView1.isHidden = false
+        stopSymbolRotation()
+    }
+    
+    private func startSymbolRotation() {
+        // Initial rotation animation
+        startRotationAnimation()
+        
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // Update symbol and quote with fade
+            UIView.transition(with: self.symbolImageView,
+                            duration: 0.5,
+                            options: [.transitionCrossDissolve, .allowUserInteraction],
+                            animations: {
+                self.currentSymbolIndex = (self.currentSymbolIndex + 1) % self.symbols.count
+                let (symbolName, quote) = self.symbols[self.currentSymbolIndex]
+                if let image = UIImage(systemName: symbolName)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 30, weight: .medium)) {
+                    self.symbolImageView.image = image
+                }
+                
+                UIView.transition(with: self.quoteLabel,
+                                duration: 0.5,
+                                options: [.transitionCrossDissolve, .allowUserInteraction],
+                                animations: {
+                    self.quoteLabel.text = quote
+                }, completion: nil)
+            }, completion: { _ in
+                // Restart rotation animation after symbol change
+                self.startRotationAnimation()
+            })
+        }
+        symbolRotationTimer?.fire()
+    }
+    
+    private func startRotationAnimation() {
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.toValue = NSNumber(value: Double.pi * 2)
+        rotationAnimation.duration = 2.0
+        rotationAnimation.isCumulative = true
+        rotationAnimation.repeatCount = Float.infinity
+        symbolImageView.layer.add(rotationAnimation, forKey: "rotationAnimation")
+    }
+    
+    private func stopSymbolRotation() {
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = nil
+        symbolImageView.layer.removeAnimation(forKey: "rotationAnimation")
+    }
+    
+    @objc private func refreshData() {
+        print("\n🔄 Refreshing data...")
+        showLoadingIndicator()
+        Task {
+            do {
+                try await KitchenDataController.loadData()
+                
+                // Reload kitchen-specific data if a kitchen is selected
+                if let kitchen = kitchenData {
+                    KitchenDataController.loadKitchenSpecificData(forKitchenID: kitchen.kitchenID)
+                }
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    // Check if data was loaded successfully
+                    if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
+                        self.collectionView1.reloadData()
+                    }
+                    
+                    self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
+                }
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    // Show an error alert to the user
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to update content. Please try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                    
+                    self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
+    }
+}
     
 

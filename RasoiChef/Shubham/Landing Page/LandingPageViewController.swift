@@ -6,21 +6,66 @@
 //
 
 import UIKit
+import UserNotifications
 
-class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate{
+class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource,UISearchResultsUpdating,LandingPageChefSpecialDetailsCellDelegate {
 
     @IBOutlet var LandingPage: UICollectionView!
     @IBOutlet weak var kitchenCollectionView: UICollectionView?
     
+    // Add UNUserNotificationCenter property
+    private let notificationCenter = UNUserNotificationCenter.current()
     
-        private var placeholderTimer: Timer?
-        private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
-        private var currentIndex = 0
-        private var animatedPlaceholderLabel: UILabel?
-
+    // Custom loading view
+    private let loadingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
+        return view
+    }()
+    
+    private let symbolImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemOrange
+        if let image = UIImage(systemName: "heart.fill")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)) {
+            imageView.image = image
+        }
+        return imageView
+    }()
+    
+    private let quoteLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Made with love\nServed with care"
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .systemOrange
+        return label
+    }()
+    
+    private var symbolRotationTimer: Timer?
+    private let symbols = [
+        ("heart.fill", "Made with love\nServed with care"),
+        ("sparkles", "Creating magical\nmoments with food"),
+        ("clock", "Fresh food,\nRight on time"),
+        ("leaf.fill", "Fresh ingredients\nHealthy meals"),
+        ("hands.sparkles.fill", "Crafted with care\nJust for you")
+    ]
+    private var currentSymbolIndex = 0
+    
+    private var foodRotationTimer: Timer?
+    private let foodImages = ["PaneerButterMasala", "IdliSambar", "CholeBhature", "DalMakhani", "MasalaDosa"]
+    private var currentFoodIndex = 0
+    
+    private var placeholderTimer: Timer?
+    private var dishNames = ["Search for dishes...", "Find your favorite meal...", "Discover tasty food...", "Explore new flavors..."]
+    private var currentIndex = 0
+    private var animatedPlaceholderLabel: UILabel?
     
     let searchController = UISearchController(searchResultsController: nil)
-
     private let refreshControl = UIRefreshControl()
 
     
@@ -28,6 +73,15 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         super.viewDidLoad()
         self.title = "Home"
         self.navigationItem.largeTitleDisplayMode = .always
+        
+        // Request notification permissions
+        requestNotificationPermissions()
+        
+        // Setup loading view
+        setupLoadingView()
+        
+        // Start loading animation
+        showLoadingIndicator()
         
         // Add refresh control
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -75,17 +129,34 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         // Load initial data if needed
         Task {
             do {
+                showLoadingIndicator() // Show loading indicator before starting data load
                 try await KitchenDataController.loadData()
                 
                 // Check if data was loaded successfully
                 if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.LandingPage.reloadData()
+                        self.hideLoadingIndicator() // Hide loading indicator after successful load
+                    }
+                } else {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        // Show an error alert to the user
+                        let alert = UIAlertController(
+                            title: "Data Loading Error",
+                            message: "Failed to load data. Please check your internet connection and try again.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                        self.hideLoadingIndicator() // Hide loading indicator after error
                     }
                 }
             } catch {
                 print("❌ Error: \(error.localizedDescription)")
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     // Show an error alert to the user
                     let alert = UIAlertController(
                         title: "Data Loading Error",
@@ -94,6 +165,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
+                    self.hideLoadingIndicator() // Hide loading indicator after error
                 }
             }
         }
@@ -153,7 +225,7 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                case 1:
                    return KitchenDataController.chefSpecialtyDishes.count
                case 2:
-                   return KitchenDataController.kitchens.count
+                   return min(5, KitchenDataController.kitchens.count)
                default:
                    return 0
                }
@@ -219,6 +291,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                 return cell
                 
             case 1:
+                // Add safety check for chef special dishes
+                guard indexPath.item < KitchenDataController.chefSpecialtyDishes.count else {
+                    return UICollectionViewCell()
+                }
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LandingPageChefSpecial", for: indexPath) as! LandingPageChefSpecialCollectionViewCell
                 cell.updateSpecialDishDetails(for: indexPath)
                 cell.delegate = self
@@ -311,12 +387,12 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Define group size and layout
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(140))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(150))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         // Add content insets to the group
         group.interItemSpacing = .fixed(10)
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 0, trailing: 10.0)
+           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10.0, bottom: 10.0, trailing: 10.0)
         
         // Create the section
         let section = NSCollectionLayoutSection(group: group)
@@ -512,8 +588,94 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
            // Handle search logic
        }
     
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.addSubview(symbolImageView)
+        loadingView.addSubview(quoteLabel)
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingView.widthAnchor.constraint(equalToConstant: 200),
+            loadingView.heightAnchor.constraint(equalToConstant: 150),
+            
+            symbolImageView.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor),
+            symbolImageView.topAnchor.constraint(equalTo: loadingView.topAnchor),
+            symbolImageView.widthAnchor.constraint(equalToConstant: 60),
+            symbolImageView.heightAnchor.constraint(equalToConstant: 60),
+            
+            quoteLabel.topAnchor.constraint(equalTo: symbolImageView.bottomAnchor, constant: 15),
+            quoteLabel.leadingAnchor.constraint(equalTo: loadingView.leadingAnchor, constant: 10),
+            quoteLabel.trailingAnchor.constraint(equalTo: loadingView.trailingAnchor, constant: -10),
+            quoteLabel.bottomAnchor.constraint(lessThanOrEqualTo: loadingView.bottomAnchor)
+        ])
+        
+        loadingView.isHidden = true
+    }
+    
+    private func showLoadingIndicator() {
+        loadingView.isHidden = false
+        LandingPage.isHidden = true
+        startSymbolRotation()
+    }
+    
+    private func hideLoadingIndicator() {
+        loadingView.isHidden = true
+        LandingPage.isHidden = false
+        stopSymbolRotation()
+    }
+    
+    private func startSymbolRotation() {
+        // Initial rotation animation
+        startRotationAnimation()
+        
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // Update symbol and quote with fade
+            UIView.transition(with: self.symbolImageView,
+                            duration: 0.5,
+                            options: [.transitionCrossDissolve, .allowUserInteraction],
+                            animations: {
+                self.currentSymbolIndex = (self.currentSymbolIndex + 1) % self.symbols.count
+                let (symbolName, quote) = self.symbols[self.currentSymbolIndex]
+                if let image = UIImage(systemName: symbolName)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)) {
+                    self.symbolImageView.image = image
+                }
+                
+                UIView.transition(with: self.quoteLabel,
+                                duration: 0.5,
+                                options: [.transitionCrossDissolve, .allowUserInteraction],
+                                animations: {
+                    self.quoteLabel.text = quote
+                }, completion: nil)
+            }, completion: { _ in
+                // Restart rotation animation after symbol change
+                self.startRotationAnimation()
+            })
+        }
+        symbolRotationTimer?.fire()
+    }
+    
+    private func startRotationAnimation() {
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.toValue = NSNumber(value: Double.pi * 2)
+        rotationAnimation.duration = 2.0
+        rotationAnimation.isCumulative = true
+        rotationAnimation.repeatCount = Float.infinity
+        symbolImageView.layer.add(rotationAnimation, forKey: "rotationAnimation")
+    }
+    
+    private func stopSymbolRotation() {
+        symbolRotationTimer?.invalidate()
+        symbolRotationTimer = nil
+        symbolImageView.layer.removeAnimation(forKey: "rotationAnimation")
+    }
+    
     @objc private func refreshData() {
         print("\n🔄 Refreshing data...")
+        showLoadingIndicator()
         Task {
             do {
                 try await KitchenDataController.loadData()
@@ -525,19 +687,10 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     if !KitchenDataController.kitchens.isEmpty || !KitchenDataController.menuItems.isEmpty {
                         self.LandingPage.reloadData()
                         self.kitchenCollectionView?.reloadData()
-                        
-                        // Show success message
-                        let banner = UILabel()
-                        banner.text = "✅ Content updated"
-                        banner.textAlignment = .center
-                    } else {
-                        // Show error message
-                        let banner = UILabel()
-                        banner.text = "❌ Failed to update content"
-                        banner.textAlignment = .center
                     }
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
                 }
             } catch {
                 print("❌ Error: \(error.localizedDescription)")
@@ -545,11 +698,85 @@ class LandingPageViewController: UIViewController,UICollectionViewDelegate, UICo
                     guard let self = self else { return }
                     
                     // Show error message
-                    let banner = UILabel()
-                    banner.text = "❌ Failed to update content: \(error.localizedDescription)"
-                    banner.textAlignment = .center
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to update content. Please try again.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
                     
                     self.refreshControl.endRefreshing()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
+    }
+
+    private func requestNotificationPermissions() {
+        // First check current authorization status
+        notificationCenter.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                // Request permission with custom alert
+                DispatchQueue.main.async {
+                    self.showCustomNotificationPermissionAlert()
+                }
+            case .denied:
+                // Show alert to go to settings if previously denied
+                DispatchQueue.main.async {
+                    self.showGoToSettingsAlert()
+                }
+            case .authorized, .provisional, .ephemeral:
+                print("✅ Notifications already authorized")
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    private func showCustomNotificationPermissionAlert() {
+        let alert = UIAlertController(
+            title: "Stay Updated! 📱",
+            message: "Enable notifications to get real-time updates about your orders and exclusive offers from RasoiChef!",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Enable", style: .default) { [weak self] _ in
+            self?.requestSystemNotificationPermission()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Not Now", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func showGoToSettingsAlert() {
+        let alert = UIAlertController(
+            title: "Enable Notifications",
+            message: "To receive order updates and offers, please enable notifications in Settings.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL)
+            }
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func requestSystemNotificationPermission() {
+        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("✅ Notification permission granted")
+            } else if let error = error {
+                print("❌ Notification permission error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.showGoToSettingsAlert()
                 }
             }
         }

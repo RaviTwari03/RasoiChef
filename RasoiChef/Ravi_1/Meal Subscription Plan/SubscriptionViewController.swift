@@ -94,6 +94,17 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         
         MealSubscriptionPlan.dataSource = self
         MealSubscriptionPlan.delegate = self
+        
+        // Initialize with no dates selected
+        isDateSelected = false
+        selectedDayCount = 0
+        finalPrice = 0
+        
+        // Setup initial state
+        selectedButtons = [:]
+        buttonClickCountPerSection = [:]
+        totalPricePerSection = [:]
+        
         MealSubscriptionPlan.reloadData()
     }
     
@@ -105,14 +116,15 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
         switch section {
         case 0:
             return 1
         case 1:
-            return min(selectedDayCount, weeklyMeals.count)
+            // Only show customization rows if date is selected
+            return isDateSelected ? min(selectedDayCount, weeklyMeals.count) : 0
         case 2:
-            return selectedDayCount > 1 ? 1 : 0
+            // Only show footer if date is selected and at least one day is selected
+            return isDateSelected ? 1 : 0
         default:
             return 0
         }
@@ -184,7 +196,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 1 {
-            return 60
+            return isDateSelected ? 60 : 0  // Only show footer space if date is selected
         }
         return 0
     }
@@ -193,9 +205,9 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
         case 0:
             return 300
         case 1:
-            return 65
+            return 80  // Increased height for better spacing
         case 2:
-            return 65
+            return 80  // Increased height for better spacing
         default:
             return 0
         }
@@ -308,7 +320,7 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
                         imageURL: "",
                         orderDeadline: "10:00 AM",
                         availability: [],
-                        availableDays: [day],
+                        availableDays: day,
                         mealCategory: []
                     )
 
@@ -412,11 +424,20 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
 
         // Toggle button selection for that section only
         if selectedButtons[section]!.contains(tag) {
-            print("Button \(tag) deselected in section \(section). Not adding value back.")
+            print("Button \(tag) deselected in section \(section)")
             selectedButtons[section]!.remove(tag)
             buttonClickCountPerSection[section]! -= 1
+            
+            // Add back the price when deselecting
+            switch tag {
+            case 30: totalPricePerSection[section]! -= 30
+            case 40: totalPricePerSection[section]! -= 40
+            case 50: totalPricePerSection[section]! -= 50
+            case 60: totalPricePerSection[section]! -= 60
+            default: break
+            }
         } else {
-            print("Button \(tag) selected in section \(section). Deducting its value.")
+            print("Button \(tag) selected in section \(section)")
 
             if buttonClickCountPerSection[section]! >= 4 {
                 print("Limit exceeded in section \(section). Showing alert.")
@@ -425,15 +446,17 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             }
 
             selectedButtons[section]!.insert(tag)
-            totalPrice -= tag  // ✅ Deduct only once per section
-            totalPricePerSection[section]! += tag
             buttonClickCountPerSection[section]! += 1
+            
+            // Deduct price when selecting
+            switch tag {
+            case 30: totalPricePerSection[section]! += 30
+            case 40: totalPricePerSection[section]! += 40
+            case 50: totalPricePerSection[section]! += 50
+            case 60: totalPricePerSection[section]! += 60
+            default: break
+            }
         }
-
-        // 🔥 Debugging Info
-        print("Total Price: \(totalPrice)")
-        print("Section \(section) Total: \(totalPricePerSection[section]!)")
-        print("Selected buttons in section \(section): \(selectedButtons[section]!)")
 
         // Update footer price dynamically
         updateFooterPrice()
@@ -443,20 +466,18 @@ class SubscriptionViewController: UIViewController,UITableViewDelegate, UITableV
             hiddenButtons[selectedIndexPath] = selectedButtons[section]!.contains(tag)
             print("Reloading row at index path: \(selectedIndexPath)")
             MealSubscriptionPlan.reloadRows(at: [selectedIndexPath], with: .none)
-        } else {
-            print("No selected row found in MealSubscriptionPlan.")
         }
     }
 
 
     func updateFooterPrice() {
-        let baseDayPrice = 180
+        let baseDayPrice = 180  // Base price per day (30 + 40 + 50 + 60)
         let baseTotalPrice = selectedDayCount * baseDayPrice
         let totalDeductions = totalPricePerSection.values.reduce(0, +)
-        finalPrice = Double(Int(baseTotalPrice - totalDeductions))  // Store final price
+        finalPrice = Double(baseTotalPrice - totalDeductions)
 
         DispatchQueue.main.async {
-            self.footerCell?.PaymentLabel.text = "₹\(self.finalPrice)"
+            self.footerCell?.PaymentLabel.text = "₹\(Int(self.finalPrice))"
         }
         print("Final Price before passing: \(finalPrice)")
     }

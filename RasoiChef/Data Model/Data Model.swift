@@ -90,6 +90,7 @@ struct Kitchen {
     var distance: Double
     var kitchenImage: String
     var isPureVeg: Bool
+    var isFavorite: Bool = false
 }
 
 // Menu Item
@@ -103,14 +104,14 @@ struct MenuItem {
     var description: String
     var price: Double
     var rating: Float
-    var availableMealTypes: MealType?  // Changed from array to optional single value
+    var availableMealTypes: MealType?
     var portionSize: String
     var intakeLimit: Int
     var imageURL: String
     var orderDeadline: String
     var recievingDeadline: String?
     var availability: [Availabiltiy]
-    var availableDays: [WeekDay]
+    var availableDays: WeekDay
     var mealCategory: [MealCategory]
 }
 struct GlobalMenuItem{
@@ -159,6 +160,7 @@ struct CartItem {
 // Order
 struct Order {
     let orderID: String
+    let orderNumber: String  // Added order number field
     let userID: String
     let kitchenName: String
     let kitchenID: String

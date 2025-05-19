@@ -26,18 +26,29 @@ class KitchenSeeMoreCollectionViewCell: UICollectionViewCell {
         DistanceLabel.text = "\(restaurant.distance) km"
         Cuisine_Label.text = restaurant.cuisine?.rawValue.capitalized ?? "Not specified"
         Ratings_Label.text = "\(restaurant.rating)"
-        Kichen_Image.image = UIImage(named: restaurant.kitchenImage)
+        if let imageUrl = URL(string: restaurant.kitchenImage) {
+            URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, _ in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.Kichen_Image.image = image
+                    }
+                }
+            }.resume()
+        } else {
+            Kichen_Image.image = UIImage(named: "defaultKitchenImage")
+        }
         
         if restaurant.isOnline {
-            availability_Label.text = "Online"
-            availability_Label.textColor = UIColor.systemGreen
-            onlineOrOfflineIcon.tintColor = UIColor.systemGreen
-        } else {
-            availability_Label.text = "Offline"
-            availability_Label.textColor = UIColor.systemGray
-            onlineOrOfflineIcon.tintColor = UIColor.systemGray
-            container_View.alpha = 0.8
-        }
+                    availability_Label.text = "Online"
+                    availability_Label.textColor = UIColor.systemGreen
+                    onlineOrOfflineIcon.tintColor = UIColor.systemGreen
+                    container_View.alpha = 1.0 // Full opacity for online kitchens
+                } else {
+                    availability_Label.text = "Offline"
+                    availability_Label.textColor = UIColor.systemGray
+                    onlineOrOfflineIcon.tintColor = UIColor.systemGray
+                    container_View.alpha = 0.8 // Reduced opacity only for offline kitchens
+                }
     }
 
     

@@ -37,14 +37,33 @@ class SubscriptionDetailsCollectionViewCell: UICollectionViewCell {
         // Update the subscription name label
         SubscriptionNameLabel.text = subscriptionPlan.planName
         
-        // Update the meal intake limit (assuming meals count for intake)
-//        let remainingMeals = subscriptionPlan.meals?.count
-        orderIntakeLimit.text = "\(subscriptionPlan.PlanIntakeLimit)" //"\(remainingMeals ?? 0)"
-        planImage.image = UIImage(named: subscriptionPlan.planImage ?? "nil")
-        planYourMealButton.layer.cornerRadius = 10
+        // Update the meal intake limit
+        orderIntakeLimit.text = "\(subscriptionPlan.PlanIntakeLimit)"
         
-        // Update meal types for the plan
-    
+        // Load plan image from URL
+        if let imageUrlString = subscriptionPlan.planImage,
+           let imageUrl = URL(string: imageUrlString) {
+            URLSession.shared.dataTask(with: imageUrl) { [weak self] data, response, error in
+                if let error = error {
+                    print("Error loading image: \(error)")
+                    return
+                }
+                
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.planImage.image = image
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.planImage.image = UIImage(named: "PlanImage") // Using existing PlanImage asset
+                    }
+                }
+            }.resume()
+        } else {
+            planImage.image = UIImage(named: "PlanImage") // Using existing PlanImage asset
+        }
+        
+        planYourMealButton.layer.cornerRadius = 10
     }
     override func awakeFromNib() {
         super.awakeFromNib()

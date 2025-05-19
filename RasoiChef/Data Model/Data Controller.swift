@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Supabase
 
 class KitchenDataController {
     static let shared = KitchenDataController()
@@ -16,6 +17,7 @@ class KitchenDataController {
     // MARK: - Data Storage
     static var users: [User] = []
     static var kitchens: [Kitchen] = []
+    static var filteredKitchens: [Kitchen] = [] // For kitchen-specific view
     static var menuItems: [MenuItem] = []
     static var filteredMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var subscriptionMenuItems: [MenuItem] = []
@@ -34,9 +36,151 @@ class KitchenDataController {
     static var filteredDinnerMenuItems: [MenuItem] = [] // For kitchen-specific view
     static var cartItems: [CartItem] = []
     static var orders: [Order] = []
-    static var subscriptionPlans: [SubscriptionPlan] = []
-    static var feedbacks: [Feedback] = []
-    static var coupons: [Coupon] = []
+    static var favoriteKitchens: Set<String> = [] // Store favorite kitchen IDs
+    
+    // MARK: - Favorites Management
+     static func toggleFavorite(for kitchen: Kitchen) -> Bool {
+         print("🔍 Starting toggleFavorite for kitchen: \(kitchen.name)")
+         print("🔍 Searching for kitchen with ID: \(kitchen.kitchenID)")
+         if let index = kitchens.firstIndex(where: { $0.kitchenID == kitchen.kitchenID }) {
+             print("✅ Found kitchen at index: \(index)")
+             let newState = !kitchens[index].isFavorite
+             print("🔄 Toggling favorite state to: \(newState)")
+             kitchens[index].isFavorite = newState
+             
+             print("🔍 Starting async task to update database")
+             Task<Void, Never> { @MainActor in
+                 do {
+                     print("🔍 Attempting to get current session...")
+                     guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                         print("❌ No active session found")
+                         print("No active session")
+                         return
+                     }
+                     
+                     let userID = session.user.id
+                     print("✅ Got user ID: \(userID.uuidString)")
+                     
+                     if kitchens[index].isFavorite {
+                         print("🔍 Kitchen is now favorite, adding to database...")
+                         print("🔍 Adding kitchen to favorites - Kitchen ID: \(kitchen.kitchenID), User ID: \(userID.uuidString)")
+                         favoriteKitchens.insert(kitchen.kitchenID)
+                         // Add to database
+                         print("🔄 Attempting to insert favorite - User ID: \(userID.uuidString), Kitchen ID: \(kitchen.kitchenID)")
+                         let response = try await SupabaseController.shared.client
+                             .from("kitchen_favorites")
+                             .insert([
+                                 "user_id": userID.uuidString,
+                                 "kitchen_id": kitchen.kitchenID
+                             ])
+                             .execute()
+                         print("✅ Successfully inserted favorite: \(response)")
+                     } else {
+                         print("🔍 Kitchen is no longer favorite, removing from database...")
+                         favoriteKitchens.remove(kitchen.kitchenID)
+                         // Remove from database
+                         try await SupabaseController.shared.client
+                             .from("kitchen_favorites")
+                             .delete()
+                             .eq("user_id", value: userID.uuidString)
+                             .eq("kitchen_id", value: kitchen.kitchenID)
+                             .execute()
+                         print("✅ Successfully removed kitchen from favorites")
+                     }
+                     
+                     // Save favorites to UserDefaults for quick local access
+                     UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                     print("✅ Successfully saved favorites to UserDefaults")
+                     
+                     // Post notification that favorites have been updated
+                     NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
+                     
+                 } catch {
+                     print("❌ Error updating favorites:")
+                     print("   Error type: \(type(of: error))")
+                     print("   Description: \(error.localizedDescription)")
+                     if let nsError = error as NSError? {
+                         print("   Domain: \(nsError.domain)")
+                         print("   Code: \(nsError.code)")
+                         print("   User Info: \(nsError.userInfo)")
+                     }
+                 }
+             }
+             return kitchens[index].isFavorite
+         }
+         return false
+     }
+     
+     static func loadFavorites() {
+         print("\n🔄 Loading favorites...")
+         
+         // First load from UserDefaults for quick access
+         if let savedFavorites = UserDefaults.standard.array(forKey: "FavoriteKitchens") as? [String] {
+             print("📱 Loaded \(savedFavorites.count) favorites from UserDefaults")
+             favoriteKitchens = Set(savedFavorites)
+         } else {
+             print("📱 No favorites found in UserDefaults")
+         }
+         
+         // Then sync with database
+         Task<Void, Never> { @MainActor in
+             do {
+                 print("🔍 Attempting to get current session...")
+                 guard let session = try await SupabaseController.shared.getCurrentSession() else {
+                     print("❌ No active session found")
+                     return
+                 }
+                 
+                 let userID = session.user.id
+                 print("✅ Got user ID: \(userID.uuidString)")
+                 
+                 print("📥 Fetching favorites from database...")
+                 let response = try await SupabaseController.shared.client
+                     .from("kitchen_favorites")
+                     .select("kitchen_id")
+                     .eq("user_id", value: userID.uuidString)
+                     .execute()
+                 
+                 print("📦 Raw response data: \(String(data: response.data, encoding: .utf8) ?? "none")")
+                 
+                 if let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]] {
+                     let dbFavorites = Set(json.compactMap { $0["kitchen_id"] as? String })
+                     print("✅ Found \(dbFavorites.count) favorites in database")
+                     print("📋 Database favorites: \(dbFavorites)")
+                     
+                     favoriteKitchens = dbFavorites
+                     
+                     // Update UserDefaults
+                     UserDefaults.standard.set(Array(favoriteKitchens), forKey: "FavoriteKitchens")
+                     print("✅ Updated UserDefaults with \(favoriteKitchens.count) favorites")
+                     
+                     // Update isFavorite status for all kitchens
+                     for (index, kitchen) in kitchens.enumerated() {
+                         let isFavorite = favoriteKitchens.contains(kitchen.kitchenID)
+                         kitchens[index].isFavorite = isFavorite
+                         print("🔍 Updated kitchen \(kitchen.name) favorite status to: \(isFavorite)")
+                     }
+                     
+                     // Post notification that favorites have been updated
+                     print("📢 Posting FavoritesUpdated notification")
+                     NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
+                 } else {
+                     print("❌ Failed to parse favorites from database response")
+                 }
+             } catch {
+                 print("❌ Error loading favorites from database:")
+                 print("   Error type: \(type(of: error))")
+                 print("   Description: \(error.localizedDescription)")
+                 if let nsError = error as NSError? {
+                     print("   Domain: \(nsError.domain)")
+                     print("   Code: \(nsError.code)")
+                     print("   User Info: \(nsError.userInfo)")
+                 }
+             }
+         }
+     }
+    
+    
 
     // MARK: - Data Loading
     
@@ -266,10 +410,27 @@ class KitchenDataController {
     }
     
     static func loadKitchenSpecificData(forKitchenID kitchenID: String) {
+        // Filter kitchens for this specific kitchen
+        filteredKitchens = kitchens.filter { $0.kitchenID == kitchenID }
+        
         // Filter menu items for this kitchen
         filteredMenuItems = getKitchenMenuItems(forKitchenID: kitchenID)
         
-        // Filter and update meal type specific arrays
+        // Define standard meal type order
+        let mealTypeOrder: [MealType] = [.breakfast, .lunch, .snacks, .dinner]
+        
+        // Sort filtered menu items by meal type order
+        filteredMenuItems.sort { item1, item2 in
+            guard let type1 = item1.availableMealTypes,
+                  let type2 = item2.availableMealTypes,
+                  let index1 = mealTypeOrder.firstIndex(of: type1),
+                  let index2 = mealTypeOrder.firstIndex(of: type2) else {
+                return false
+            }
+            return index1 < index2
+        }
+        
+        // Filter and update meal type specific arrays in order
         filteredBreakfastMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .breakfast }
         filteredLunchMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .lunch }
         filteredSnacksMenuItems = filteredMenuItems.filter { $0.availableMealTypes == .snacks }

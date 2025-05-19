@@ -226,13 +226,17 @@ class SupabaseController {
                     }
                     
                     // Process available days
-                    var availableDays: [WeekDay] = []
-                    if let dayArray = menuItemJson["available_days"] as? [String] {
-                        for dayString in dayArray {
-                            if let day = WeekDay(rawValue: dayString.lowercased()) {
-                                availableDays.append(day)
-                            }
+                    var availableDay: WeekDay = .monday // Default to Monday
+                    if let dayString = menuItemJson["available_days"] as? String {
+                        print("\nProcessing available day for \(name):")
+                        print("Raw day from DB: \(dayString)")
+                        if let day = WeekDay(rawValue: dayString.lowercased()) {
+                            print("✅ Successfully parsed day: \(day)")
+                            availableDay = day
+                        } else {
+                            print("❌ Failed to parse day: \(dayString)")
                         }
+                        print("Final available day: \(availableDay.rawValue)")
                     }
                     
                     // Process meal categories
@@ -278,7 +282,7 @@ class SupabaseController {
                         orderDeadline: orderDeadline,
                         recievingDeadline: menuItemJson["receiving_deadline"] as? String,
                         availability: availability.isEmpty ? [.Available] : availability,
-                        availableDays: availableDays,
+                        availableDays: availableDay,
                         mealCategory: mealCategories
                     )
                     
@@ -408,7 +412,7 @@ class SupabaseController {
                                     orderDeadline: "",
                                     recievingDeadline: nil,
                                     availability: [.Available],
-                                    availableDays: [weekDay],
+                                    availableDays: weekDay,  // Use single weekDay instead of array
                                     mealCategory: []
                                 )
                                 
@@ -607,6 +611,7 @@ class SupabaseController {
         let delivery_date: String
         let delivery_type: String
         let order_items: [OrderItemJSON]
+        let Order_No: Int64
     }
 
     private struct OrderItemJSON: Encodable {
@@ -620,6 +625,12 @@ class SupabaseController {
         let item_id: String
         let quantity: Int
         let price: Double
+    }
+
+    // Function to generate a unique order number
+    private func generateOrderNumber() -> Int64 {
+        // Generate a random 8-digit number
+        return Int64.random(in: 10000000...99999999)
     }
 
     func insertOrder(order: Order) async throws {
@@ -641,8 +652,11 @@ class SupabaseController {
                 throw NSError(domain: "OrderError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid kitchen ID format"])
             }
             
+            // Generate a unique order number
+            let orderNo = generateOrderNumber()
             print("\n📤 Inserting order into database...")
             print("- Order ID: \(order.orderID)")
+            print("- Order Number: \(orderNo)")
             print("- User ID: \(order.userID)")
             print("- Kitchen ID: \(order.kitchenID)")
             
@@ -665,17 +679,34 @@ class SupabaseController {
                 delivery_address: order.deliveryAddress,
                 delivery_date: formattedDate,
                 delivery_type: order.deliveryType,
-                order_items: orderItemsJSON
+                order_items: orderItemsJSON,
+                Order_No: orderNo
             )
             
             // Insert order with items
-            try await client.database
+            let response = try await client.database
                 .from("orders")
                 .insert(dbOrder)
                 .execute()
             
             print("✅ Order insertion completed successfully")
             print("📦 Saved order items: \(orderItemsJSON)")
+            print("🔢 Order number: \(orderNo)")
+            
+            // Verify the order was inserted with the correct order number
+            let verifyResponse = try await client.database
+                .from("orders")
+                .select("Order_No")
+                .eq("order_id", value: order.orderID)
+                .execute()
+            
+            if let json = try JSONSerialization.jsonObject(with: verifyResponse.data, options: []) as? [[String: Any]],
+               let firstOrder = json.first,
+               let storedOrderNo = firstOrder["Order_No"] as? Int64 {
+                print("✅ Verified order number in database: \(storedOrderNo)")
+            } else {
+                print("⚠️ Could not verify order number in database")
+            }
             
             // Update intake limits for each item
             print("\n🔄 Updating intake limits...")
@@ -804,6 +835,21 @@ class SupabaseController {
         print("\n🔄 Fetching orders for user: \(userID)")
         
         do {
+            // First verify the user exists
+            let userResponse = try await client.database
+                .from("users")
+                .select()
+                .eq("user_id", value: userID)
+                .execute()
+            
+            let userJson = try JSONSerialization.jsonObject(with: userResponse.data, options: []) as? [[String: Any]]
+            guard let users = userJson, !users.isEmpty else {
+                print("❌ User not found in database")
+                throw NSError(domain: "OrderError", code: -1, userInfo: [NSLocalizedDescriptionKey: "User not found"])
+            }
+            
+            print("✅ User verified, fetching orders...")
+            
             let response = try await client.database
                 .from("orders")
                 .select("""
@@ -815,6 +861,17 @@ class SupabaseController {
                     delivery_address,
                     delivery_date,
                     delivery_type,
+                    "Order_No",
+                    order_items (
+                        menu_item_id,
+                        quantity,
+                        price,
+                        menu_items (
+                            name,
+                            description,
+                            price
+                        )
+                    ),
                     kitchens (
                         name
                     )
@@ -824,7 +881,9 @@ class SupabaseController {
                 .execute()
             
             print("📥 Raw Orders Response:")
-            print(String(data: response.data, encoding: .utf8) ?? "No data")
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print(jsonString)
+            }
             
             let json = try JSONSerialization.jsonObject(with: response.data, options: []) as? [[String: Any]]
             guard let ordersData = json else {
@@ -838,6 +897,8 @@ class SupabaseController {
             var orders: [Order] = []
             
             for orderJson in ordersData {
+                print("\nProcessing order: \(orderJson["order_id"] ?? "Unknown")")
+                
                 guard let orderID = orderJson["order_id"] as? String,
                       let kitchenID = orderJson["kitchen_id"] as? String,
                       let kitchenData = orderJson["kitchens"] as? [String: Any],
@@ -846,7 +907,8 @@ class SupabaseController {
                       let totalAmount = orderJson["total_amount"] as? Double,
                       let deliveryAddress = orderJson["delivery_address"] as? String,
                       let deliveryDateString = orderJson["delivery_date"] as? String,
-                      let deliveryType = orderJson["delivery_type"] as? String else {
+                      let deliveryType = orderJson["delivery_type"] as? String,
+                      let orderItemsData = orderJson["order_items"] as? [[String: Any]] else {
                     print("❌ Missing required fields for order:")
                     print(orderJson)
                     continue
@@ -860,44 +922,42 @@ class SupabaseController {
                     continue
                 }
                 
-                // Fetch order items
-                let itemsResponse = try await client.database
-                    .from("order_items")
-                    .select("""
-                        menu_item_id,
-                        quantity,
-                        price
-                    """)
-                    .eq("order_id", value: orderID)
-                    .execute()
-                
-                print("📥 Raw Order Items Response for order \(orderID):")
-                print(String(data: itemsResponse.data, encoding: .utf8) ?? "No data")
-                
-                let itemsJson = try JSONSerialization.jsonObject(with: itemsResponse.data, options: []) as? [[String: Any]]
+                // Process order items
                 var orderItems: [OrderItem] = []
-                
-                if let itemsData = itemsJson {
-                    for itemJson in itemsData {
-                        guard let menuItemID = itemJson["menu_item_id"] as? String,
-                              let quantity = itemJson["quantity"] as? Int,
-                              let price = itemJson["price"] as? Double else {
-                            print("❌ Missing required fields for order item:")
-                            print(itemJson)
-                            continue
-                        }
-                        
-                        let orderItem = OrderItem(
-                            menuItemID: menuItemID,
-                            quantity: quantity,
-                            price: price
-                        )
-                        orderItems.append(orderItem)
+                for itemJson in orderItemsData {
+                    guard let menuItemID = itemJson["menu_item_id"] as? String,
+                          let quantity = itemJson["quantity"] as? Int,
+                          let price = itemJson["price"] as? Double,
+                          let menuItemData = itemJson["menu_items"] as? [String: Any],
+                          let menuItemName = menuItemData["name"] as? String else {
+                        print("❌ Missing required fields for order item:")
+                        print(itemJson)
+                        continue
                     }
+                    
+                    print("✅ Processing menu item: \(menuItemName)")
+                    
+                    let orderItem = OrderItem(
+                        menuItemID: menuItemID,
+                        quantity: quantity,
+                        price: price
+                    )
+                    orderItems.append(orderItem)
                 }
                 
+                // Get the order number from the database
+                let orderNumber: String
+                if let orderNo = orderJson["Order_No"] as? Int64 {
+                    orderNumber = String(format: "%08d", orderNo)
+                } else {
+                    // Fallback to generating from order ID if Order_No is not available
+                    orderNumber = String(format: "# %08d", abs(orderID.hashValue % 100000000))
+                }
+                
+                // Create Order object
                 let order = Order(
                     orderID: orderID,
+                    orderNumber: orderNumber,
                     userID: userID,
                     kitchenName: kitchenName,
                     kitchenID: kitchenID,
@@ -913,13 +973,18 @@ class SupabaseController {
                 orders.append(order)
             }
             
-            print("✅ Successfully processed \(orders.count) orders")
+            print("\n✅ Successfully processed \(orders.count) orders")
             return orders
             
         } catch {
             print("\n❌ Error fetching orders:")
             print("- Type: \(type(of: error))")
             print("- Description: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("- Domain: \(nsError.domain)")
+                print("- Code: \(nsError.code)")
+                print("- User Info: \(nsError.userInfo)")
+            }
             throw error
         }
     }

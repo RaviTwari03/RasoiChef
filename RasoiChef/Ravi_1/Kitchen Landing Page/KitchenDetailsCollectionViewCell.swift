@@ -14,11 +14,15 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var kitchenCuisine: UILabel!
     @IBOutlet var kitchenRatings: UILabel!
     @IBOutlet var kitchenName: UILabel!
+    @IBOutlet weak var favoritesbutton: UIButton!
     
     var selectedKitchen: Kitchen?
     
     func configure(with kitchen: Kitchen?) {
-        guard let kitchen = kitchen ?? selectedKitchen else { return }
+        guard let kitchen = kitchen else { return }
+        // Store the kitchen for later use
+        self.selectedKitchen = kitchen
+        print("✅ Configured cell with kitchen: \(kitchen.name)")
         
         // Update kitchen details
         kitchenName.text = kitchen.name
@@ -32,6 +36,19 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         }
         
         kitchenRatings.text = String(format: "%.1f", kitchen.rating)
+        
+        // Configure favorite button to match design
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
+        favoritesbutton.setImage(UIImage(systemName: "heart", withConfiguration: config), for: .normal)
+        favoritesbutton.setImage(UIImage(systemName: "heart.fill", withConfiguration: config), for: .selected)
+        favoritesbutton.tintColor = .systemRed
+        favoritesbutton.backgroundColor = .white.withAlphaComponent(0.9)
+        favoritesbutton.layer.cornerRadius = 16 // Half of the button's height/width
+        favoritesbutton.layer.shadowColor = UIColor.black.cgColor
+        favoritesbutton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        favoritesbutton.layer.shadowRadius = 2
+        favoritesbutton.layer.shadowOpacity = 0.1
+        favoritesbutton.isSelected = kitchen.isFavorite
         
         // Load kitchen image
         if let imageUrl = URL(string: kitchen.kitchenImage) {
@@ -51,11 +68,47 @@ class KitchenDetailsCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
     // Keep the existing configure(for:) method for backward compatibility
     func configure(for indexPath: IndexPath) {
         guard indexPath.row < KitchenDataController.kitchens.count else { return }
         let kitchen = KitchenDataController.kitchens[indexPath.row]
         selectedKitchen = kitchen
         configure(with: kitchen)
+    }
+    
+    @IBAction func favoriteButtonTapped(_ sender: Any) {
+        print("🔍 Favorite button tapped")
+        guard let kitchen = selectedKitchen else {
+            print("❌ No kitchen selected")
+            return
+        }
+        print("✅ Found selected kitchen: \(kitchen.name)")
+        
+        // Toggle button state immediately for better UX
+        favoritesbutton.isSelected.toggle()
+        
+        // Animate button
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            self?.favoritesbutton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { [weak self] _ in
+            UIView.animate(withDuration: 0.1) {
+                self?.favoritesbutton.transform = .identity
+            }
+        }
+        
+        // Show feedback
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+        feedbackGenerator.prepare()
+        
+        // Toggle favorite state in data controller
+        let isFavorite = KitchenDataController.toggleFavorite(for: kitchen)
+        
+        // Update button state if it differs from data controller
+        if favoritesbutton.isSelected != isFavorite {
+            favoritesbutton.isSelected = isFavorite
+        }
+        
+        feedbackGenerator.impactOccurred()
     }
 }

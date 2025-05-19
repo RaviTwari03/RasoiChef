@@ -78,11 +78,20 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
     
     @IBAction func addButtonTapped(_ sender: Any) {
         delegate?.MenuListaddButtonTapped(in: self)
+        
+        // Hide Add Button and Show Stepper
+        addButton.isHidden = true
+        stepperStackView.isHidden = false
+
+        // Set initial quantity to 1
+        stepper.value = 1
+        quantityLabel.text = "1"
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         guard let indexPath = self.indexPath else { return }
-        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        let menuItems = KitchenDataController.filteredMenuItems.isEmpty ? KitchenDataController.menuItems : KitchenDataController.filteredMenuItems
+        let menuItem = menuItems[indexPath.row]
         
         let newQuantity = Int(sender.value)
         
@@ -115,10 +124,7 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
         )
     }
     
-    func updateMenuDetails(with indexPath: IndexPath) {
-        let items = KitchenDataController.filteredMenuItems.isEmpty ? KitchenDataController.menuItems : KitchenDataController.filteredMenuItems
-        let menuItem = items[indexPath.row]
-        
+    func updateMenuDetails(with indexPath: IndexPath, menuItem: MenuItem) {
         self.indexPath = indexPath
         
         // Update meal type and timing details
@@ -212,7 +218,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
             return
         }
         
-        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        let menuItems = KitchenDataController.filteredMenuItems.isEmpty ? KitchenDataController.menuItems : KitchenDataController.filteredMenuItems
+        let menuItem = menuItems[indexPath.row]
         if menuItem.itemID == menuItemID {
             // Animate the update
             UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve) {
@@ -241,7 +248,8 @@ class MenuDetailsCollectionViewCell: UICollectionViewCell {
 
     func updateIntakeLimit(for indexPath: IndexPath) {
         self.indexPath = indexPath
-        let menuItem = KitchenDataController.menuItems[indexPath.row]
+        let menuItems = KitchenDataController.filteredMenuItems.isEmpty ? KitchenDataController.menuItems : KitchenDataController.filteredMenuItems
+        let menuItem = menuItems[indexPath.row]
         
         // Calculate total ordered quantity
         let cartQuantity = CartViewController.cartItems

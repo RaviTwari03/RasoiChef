@@ -27,7 +27,6 @@ weak var delegate: SubscriptionCartItemTableViewCellDelegate?
        override func awakeFromNib() {
            super.awakeFromNib()
            
-           
            setupCellAppearance()
            
            

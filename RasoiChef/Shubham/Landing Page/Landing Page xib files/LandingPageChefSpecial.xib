@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -55,7 +55,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RQk-N1-kET">
-                                <rect key="frame" x="133" y="77.333333333333329" width="37.333333333333343" height="18"/>
+                                <rect key="frame" x="133" y="77.333333333333329" width="38.333333333333343" height="18"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -106,6 +106,28 @@
                                     <constraint firstAttribute="height" constant="18" id="li6-WU-Sbb"/>
                                 </constraints>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="DKm-Js-DbQ">
+                                <rect key="frame" x="155" y="103" width="127" height="32"/>
+                                <subviews>
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="L25-uN-1DL">
+                                        <rect key="frame" x="0.0" y="0.0" width="94" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="32" id="6Au-nr-HBy"/>
+                                            <constraint firstAttribute="width" constant="94" id="p8b-Wl-5Cv"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.96470588450000005" green="0.76470589639999997" blue="0.26666668059999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    </stepper>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aYT-7y-Q6C">
+                                        <rect key="frame" x="101" y="0.0" width="26" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="26" id="FgQ-Q7-hhq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -117,6 +139,7 @@
                             <constraint firstItem="Qrk-DI-RUB" firstAttribute="leading" secondItem="QTp-yw-7P0" secondAttribute="leading" id="CC1-Ww-B0n"/>
                             <constraint firstItem="QTp-yw-7P0" firstAttribute="top" secondItem="Tik-QF-MYS" secondAttribute="bottom" constant="7.9999999999999893" id="F7Z-lU-aaj"/>
                             <constraint firstItem="Vr4-EO-43S" firstAttribute="leading" secondItem="Tik-QF-MYS" secondAttribute="trailing" constant="6" id="L19-QV-LPB"/>
+                            <constraint firstItem="DKm-Js-DbQ" firstAttribute="leading" secondItem="bZB-fA-Ybm" secondAttribute="trailing" constant="30" id="MTq-sA-vNQ"/>
                             <constraint firstItem="rNt-QS-WUL" firstAttribute="leading" secondItem="vZe-7U-6zA" secondAttribute="trailing" constant="3" id="N1z-Ai-oKt"/>
                             <constraint firstItem="rNt-QS-WUL" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="7" id="N4B-M3-6Ll"/>
                             <constraint firstItem="bZB-fA-Ybm" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="5" id="Roj-yf-LH4"/>
@@ -124,6 +147,7 @@
                             <constraint firstAttribute="bottom" secondItem="Z6n-BO-h3n" secondAttribute="bottom" constant="6" id="SYg-0n-zif"/>
                             <constraint firstItem="Vr4-EO-43S" firstAttribute="top" secondItem="Tik-QF-MYS" secondAttribute="top" id="Ttt-ES-UaB"/>
                             <constraint firstItem="vZe-7U-6zA" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="6" id="Ug0-vA-TZh"/>
+                            <constraint firstAttribute="bottom" secondItem="DKm-Js-DbQ" secondAttribute="bottom" constant="6" id="VOr-SJ-rXr"/>
                             <constraint firstItem="Tik-QF-MYS" firstAttribute="top" secondItem="wzG-Ih-JEm" secondAttribute="top" constant="5" id="k7M-NY-bgf"/>
                             <constraint firstItem="RQk-N1-kET" firstAttribute="leading" secondItem="Qrk-DI-RUB" secondAttribute="leading" id="mrD-AB-ocX"/>
                             <constraint firstItem="Qrk-DI-RUB" firstAttribute="top" secondItem="QTp-yw-7P0" secondAttribute="bottom" constant="5" id="qHh-rv-z9F"/>
@@ -145,8 +169,12 @@
                 <outlet property="SpecialKitchenNameLabel" destination="Qrk-DI-RUB" id="2lm-tu-ug8"/>
                 <outlet property="SpecialPriceLabel" destination="RQk-N1-kET" id="nkn-QC-rye"/>
                 <outlet property="SpecialRating" destination="rNt-QS-WUL" id="hpL-Bc-Z4n"/>
+                <outlet property="addButton" destination="Z6n-BO-h3n" id="kF2-18-Sl9"/>
                 <outlet property="cardView" destination="wzG-Ih-JEm" id="cqv-cq-L4Y"/>
+                <outlet property="quantityLabel" destination="aYT-7y-Q6C" id="olR-tT-rVP"/>
                 <outlet property="specialDishImage" destination="bZB-fA-Ybm" id="VRm-CC-aeF"/>
+                <outlet property="stepper" destination="L25-uN-1DL" id="tCn-x3-iPh"/>
+                <outlet property="stepperStackView" destination="DKm-Js-DbQ" id="0M0-SZ-Iyo"/>
                 <outlet property="timeIcon" destination="Vr4-EO-43S" id="u3D-Er-L3B"/>
                 <outlet property="vegicon" destination="Tik-QF-MYS" id="5kd-LY-Wx7"/>
             </connections>
