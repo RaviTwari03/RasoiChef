@@ -6,8 +6,8 @@ import SwiftSMTP
 class EmailService {
     static let shared = EmailService()
     private let smtp: SMTP
-    private let senderEmail = "rt9593878@gmail.com"
-    private let appPassword = "ibda bytr uomg scxw"
+    private let senderEmail = "rasoichefios@gmail.com"
+    private let appPassword = "oejs xdrt vlku twex"
     
     private init() {
         smtp = SMTP(
