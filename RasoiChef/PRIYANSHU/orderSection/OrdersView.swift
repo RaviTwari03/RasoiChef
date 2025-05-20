@@ -493,34 +493,66 @@ struct SectionHeader: View {
 struct OrderItemsList: View {
     let orderID: String
     let menuItems: [MenuItem]
+    let showPrices: Bool
+    let showDividers: Bool
     @StateObject private var viewModel: OrderItemsListViewModel
 
-    init(orderID: String, menuItems: [MenuItem]) {
+    init(orderID: String, menuItems: [MenuItem], showPrices: Bool = false, showDividers: Bool = true) {
         self.orderID = orderID
         self.menuItems = menuItems
+        self.showPrices = showPrices
+        self.showDividers = showDividers
         self._viewModel = StateObject(wrappedValue: OrderItemsListViewModel(orderID: orderID))
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 12) {
             if viewModel.isLoading {
-                Text("Loading...")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                    Spacer()
+                }
+                .padding(.vertical, 8)
             } else if viewModel.itemDetails.isEmpty {
                 Text("No items found")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             } else {
-                ForEach(Array(viewModel.itemDetails.enumerated()), id: \.offset) { _, detail in
-                    HStack {
-                        Text(detail.name)
-                            .font(.system(size: 16))
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text("x\(detail.quantity)")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.gray)
+                ForEach(Array(viewModel.itemDetails.enumerated()), id: \.offset) { index, detail in
+                    VStack(spacing: 8) {
+                        if showPrices {
+                            // Detailed view with prices
+                            HStack(alignment: .center) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(detail.name)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.primary)
+                                    Text("Quantity: \(detail.quantity)")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.gray)
+                                }
+                                Spacer()
+                                Text("₹\(String(format: "%.2f", detail.price))")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.primary)
+                            }
+                        } else {
+                            // Simple view without prices
+                            HStack {
+                                Text(detail.name)
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Text("x\(detail.quantity)")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        if showDividers && index < viewModel.itemDetails.count - 1 {
+                            Divider()
+                        }
                     }
                 }
             }
@@ -529,7 +561,7 @@ struct OrderItemsList: View {
 }
 
 class OrderItemsListViewModel: ObservableObject {
-    @Published var itemDetails: [(name: String, quantity: Int)] = []
+    @Published var itemDetails: [(name: String, quantity: Int, price: Double)] = []
     @Published var isLoading = true
     private let orderID: String
 
@@ -541,6 +573,7 @@ class OrderItemsListViewModel: ObservableObject {
     private func fetchOrderItems() {
         Task {
             do {
+                print("🔄 Starting to fetch order items for orderID: \(orderID)")
                 // First fetch the order items
                 let response = try await SupabaseController.shared.client.database
                     .from("orders")
@@ -549,26 +582,40 @@ class OrderItemsListViewModel: ObservableObject {
                     .single()
                     .execute()
 
-                print("Raw response: \(String(data: response.data, encoding: .utf8) ?? "No data")")
+                print("📦 Raw response data: \(String(data: response.data, encoding: .utf8) ?? "No data")")
 
-                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any],
-                      let orderItemsData = json["order_items"] as? [[String: Any]] else {
-                    print("Failed to parse order items data")
+                guard let json = try? JSONSerialization.jsonObject(with: response.data, options: []) as? [String: Any] else {
+                    print("❌ Failed to parse JSON response")
                     await MainActor.run {
                         self.isLoading = false
                     }
                     return
                 }
 
-                var details: [(String, Int)] = []
+                guard let orderItemsData = json["order_items"] as? [[String: Any]] else {
+                    print("❌ Failed to parse order_items array. JSON structure: \(json)")
+                    await MainActor.run {
+                        self.isLoading = false
+                    }
+                    return
+                }
+
+                print("📝 Found \(orderItemsData.count) order items to process")
+                
+                var details: [(String, Int, Double)] = []
                 
                 // Process each order item
-                for item in orderItemsData {
+                for (index, item) in orderItemsData.enumerated() {
+                    print("🔄 Processing item \(index + 1) of \(orderItemsData.count): \(item)")
+                    
                     guard let menuItemID = item["menu_item_id"] as? String,
-                          let quantity = item["quantity"] as? Int else {
-                        print("Missing required fields in order item: \(item)")
+                          let quantity = item["quantity"] as? Int,
+                          let price = item["price"] as? Double else {
+                        print("⚠️ Missing required fields in order item: \(item)")
                         continue
                     }
+
+                    print("🍽️ Looking up menu item with ID: \(menuItemID)")
 
                     // Try to fetch the item name from menu_items
                     do {
@@ -581,12 +628,12 @@ class OrderItemsListViewModel: ObservableObject {
 
                         if let menuJson = try? JSONSerialization.jsonObject(with: menuItemResponse.data, options: []) as? [String: Any],
                            let name = menuJson["name"] as? String {
-                            print("Found menu item: \(name) with quantity: \(quantity)")
-                            details.append((name, quantity))
+                            print("✅ Found menu item: \(name) with quantity: \(quantity) and price: ₹\(price)")
+                            details.append((name, quantity, price))
                             continue
                         }
                     } catch {
-                        print("Error fetching menu item: \(error)")
+                        print("❌ Error fetching menu item: \(error.localizedDescription)")
                     }
 
                     // If not found in menu_items, try chef_specialty_dishes
@@ -600,24 +647,27 @@ class OrderItemsListViewModel: ObservableObject {
 
                         if let specialtyJson = try? JSONSerialization.jsonObject(with: specialtyResponse.data, options: []) as? [String: Any],
                            let name = specialtyJson["name"] as? String {
-                            print("Found specialty item: \(name) with quantity: \(quantity)")
-                            details.append((name, quantity))
+                            print("✅ Found specialty item: \(name) with quantity: \(quantity) and price: ₹\(price)")
+                            details.append((name, quantity, price))
                             continue
                         }
                     } catch {
-                        print("Error fetching specialty item: \(error)")
+                        print("❌ Error fetching specialty item: \(error.localizedDescription)")
                     }
 
-                    // If item name not found in either table, use a generic name
-                    details.append(("Item #\(menuItemID)", quantity))
+                    print("⚠️ Item not found in either table, using generic name")
+                    details.append(("Item #\(menuItemID)", quantity, price))
                 }
+
+                print("✅ Finished processing items. Found \(details.count) items")
 
                 await MainActor.run {
                     self.itemDetails = details
                     self.isLoading = false
+                    print("📱 Updated UI with \(self.itemDetails.count) items")
                 }
             } catch {
-                print("Error fetching order items: \(error)")
+                print("❌ Error fetching order items: \(error.localizedDescription)")
                 await MainActor.run {
                     self.isLoading = false
                 }
@@ -702,20 +752,21 @@ struct OrderDetailView: View {
                             Text("Order #\(order.orderNumber)")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
-                            Text("Today, 12:30 PM - 1:00 PM") // Replace with actual time window
+                            Text("Today, 12:30 PM - 1:00 PM")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
                     }
                     .padding(.horizontal)
                     
-                    // Order Items
+                    // Order Items Section with prices
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Order Items")
                             .font(.headline)
-                        ForEach(order.items, id: \.menuItemID) { item in
-                            OrderItemRow(item: item)
-                        }
+                            .padding(.bottom, 4)
+                        
+                        OrderItemsList(orderID: order.orderID, menuItems: menuItems, showPrices: true, showDividers: false)
+                            .padding(.vertical, 8)
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2)))
@@ -733,7 +784,7 @@ struct OrderDetailView: View {
                                 .fontWeight(.semibold)
                             HStack(spacing: 4) {
                                 Image(systemName: "star.fill").foregroundColor(.yellow).font(.caption)
-                                Text("4.8") // Replace with actual rating
+                                Text("4.8")
                                     .font(.caption)
                                 Image(systemName: "checkmark.seal.fill").foregroundColor(.blue).font(.caption)
                             }
@@ -758,7 +809,7 @@ struct OrderDetailView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(order.deliveryAddress)
                                     .font(.subheadline)
-                                Text("New York, NY 10001") // Replace with actual city/zip if available
+                                Text("New York, NY 10001")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
@@ -783,7 +834,7 @@ struct OrderDetailView: View {
                         HStack {
                             Text("Subtotal")
                             Spacer()
-                            Text("₹45.99") // Replace with actual subtotal
+                            Text("₹\(String(format: "%.2f", order.totalAmount))")
                         }
                         HStack {
                             Text("Delivery Fee")
@@ -798,13 +849,13 @@ struct OrderDetailView: View {
                         HStack {
                             Text("Taxes")
                             Spacer()
-                            Text("₹3.99")
+                            Text("₹\(String(format: "%.2f", order.totalAmount * 0.18))")
                         }
                         Divider()
                         HStack {
                             Text("Total").fontWeight(.bold)
                             Spacer()
-                            Text("₹57.96").fontWeight(.bold)
+                            Text("₹\(String(format: "%.2f", order.totalAmount + 4.99 + 2.99 + (order.totalAmount * 0.18)))").fontWeight(.bold)
                         }
                         HStack(spacing: 8) {
                             Image(systemName: "creditcard")
@@ -818,7 +869,7 @@ struct OrderDetailView: View {
                     
                     // Action Buttons
                     VStack(spacing: 8) {
-                        Button(action: { /* Track order */ }) {
+                        NavigationLink(destination: TrackOrderView(order: order)) {
                             Text("Track Order")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -843,7 +894,7 @@ struct OrderDetailView: View {
                             .font(.caption)
                             .foregroundColor(.gray)
                         Spacer()
-                        Text("Order ID: #ORD-2024-0123")
+                        Text("Order ID: \(order.orderID)")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
@@ -868,7 +919,7 @@ struct OrderDetailView: View {
     }
 }
 
-// Update OrderCard to use navigation
+// Update OrderCard to use simple view
 struct OrderCard: View {
     let order: Order
     let isCurrent: Bool
@@ -918,10 +969,16 @@ struct OrderCard: View {
                         }
                     }
                 }
-                Divider().padding(.vertical, 2)
-                OrderItemsList(orderID: order.orderID, menuItems: menuItems)
-                    .padding(.top, 2)
-                Divider().padding(.vertical, 2)
+
+                Divider()
+                    .padding(.vertical, 2)
+
+                OrderItemsList(orderID: order.orderID, menuItems: menuItems, showPrices: false, showDividers: false)
+                    .padding(.vertical, 2)
+
+                Divider()
+                    .padding(.vertical, 2)
+
                 HStack(spacing: 12) {
                     HStack(spacing: 4) {
                         Button(action: { onInfo(order) }) {
