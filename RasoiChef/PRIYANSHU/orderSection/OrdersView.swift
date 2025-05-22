@@ -809,16 +809,16 @@ struct OrderDetailView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(order.deliveryAddress)
                                     .font(.subheadline)
-                                Text("New York, NY 10001")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+//                                Text("New York, NY 10001")
+//                                    .font(.caption)
+//                                    .foregroundColor(.gray)
                             }
                         }
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.gray.opacity(0.08))
                             .frame(height: 36)
                             .overlay(
-                                Text("Delivery Instructions: Please leave at the door")
+                                Text("Delivery Instructions:  ")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                                     .padding(.horizontal)
@@ -858,11 +858,11 @@ struct OrderDetailView: View {
                             Text("₹\(String(format: "%.2f", order.totalAmount + 4.99 + 2.99 + (order.totalAmount * 0.18)))").fontWeight(.bold)
                         }
                         HStack(spacing: 8) {
-                            Image(systemName: "creditcard")
-                                .foregroundColor(.gray)
-                            Text("•••• 4582")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+//                            Image(systemName: "creditcard")
+//                                .foregroundColor(.gray)
+//                            Text("•••• 4582")
+//                                .font(.subheadline)
+//                                .foregroundColor(.gray)
                         }
                     }
                     .padding(.horizontal)
