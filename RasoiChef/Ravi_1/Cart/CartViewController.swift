@@ -48,7 +48,47 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                return
            }
            
-           // Save order to Supabase
+           // Get user ID
+           Task {
+               do {
+                   var userID = UserDefaults.standard.string(forKey: "userID")
+                   if userID == nil {
+                       if let session = try await SupabaseController.shared.getCurrentSession() {
+                           userID = session.user.id.uuidString
+                           UserDefaults.standard.set(userID, forKey: "userID")
+                       }
+                   }
+                   
+                   guard let finalUserID = userID else {
+                       showAlert(title: "Error", message: "Please log in to place an order")
+                       return
+                   }
+                   
+                   // Show payment form
+                   DispatchQueue.main.async {
+                       RazorpayManager.shared.showPaymentForm(
+                           amount: order.totalAmount,
+                           userId: UUID(uuidString: finalUserID) ?? UUID(),
+                           onSuccess: { [weak self] paymentId in
+                               // Payment successful, proceed with order placement
+                               self?.completeOrderPlacement(order: order)
+                           },
+                           onFailure: { [weak self] error in
+                               // Payment failed
+                               self?.showAlert(
+                                   title: "Payment Failed",
+                                   message: "Failed to process payment: \(error). Please try again."
+                               )
+                           }
+                       )
+                   }
+               } catch {
+                   showAlert(title: "Error", message: "Failed to get user information: \(error.localizedDescription)")
+               }
+           }
+       }
+       
+       private func completeOrderPlacement(order: Order) {
            Task {
                do {
                    print("\n📤 Saving order to Supabase...")
@@ -564,7 +604,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
        func updateTabBarBadge() {
            if let tabItems = self.tabBarController?.tabBar.items {
-               let cartTabItem = tabItems[2] 
+               let cartTabItem = tabItems[2]
                let itemCount = CartViewController.cartItems.count
                cartTabItem.badgeValue = itemCount > 0 ? "\(itemCount)" : nil
            }
@@ -848,24 +888,46 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                     deliveryType: deliveryType
                 )
                 
-                // Save order to Supabase
-                try await SupabaseController.shared.insertOrder(order: order)
-                
-                // Add order to OrderDataController
-                OrderDataController.shared.addOrder(order: order)
-                
-                // Clear cart and update UI
-                CartViewController.cartItems.removeAll()
-                CartViewController.subscriptionPlan1.removeAll()
-                updateTabBarBadge()
-                updateMyOrdersBadge()
-                CartItem.reloadData()
-                
-                showAlert(title: "Success", message: "Your order has been placed successfully!")
+                // Show payment form
+                DispatchQueue.main.async {
+                    RazorpayManager.shared.showPaymentForm(
+                        amount: totalAmount,
+                        userId: UUID(uuidString: finalUserID) ?? UUID(),
+                        onSuccess: { [weak self] paymentId in
+                            // Payment successful, proceed with order placement
+                            Task {
+                                do {
+                                    // Save order to Supabase
+                                    try await SupabaseController.shared.insertOrder(order: order)
+                                    
+                                    // Add order to OrderDataController
+                                    OrderDataController.shared.addOrder(order: order)
+                                    
+                                    // Clear cart and update UI
+                                    CartViewController.cartItems.removeAll()
+                                    CartViewController.subscriptionPlan1.removeAll()
+                                    self?.updateTabBarBadge()
+                                    self?.updateMyOrdersBadge()
+                                    self?.CartItem.reloadData()
+                                    
+                                    self?.showAlert(title: "Success", message: "Your order has been placed successfully!")
+                                } catch {
+                                    self?.showAlert(title: "Error", message: "Failed to place order: \(error.localizedDescription)")
+                                }
+                            }
+                        },
+                        onFailure: { [weak self] error in
+                            // Payment failed
+                            self?.showAlert(
+                                title: "Payment Failed",
+                                message: "Failed to process payment: \(error). Please try again."
+                            )
+                        }
+                    )
+                }
                 
             } catch {
-                showAlert(title: "Error", message: "Failed to place order: \(error.localizedDescription)")
-                print("Error placing order: \(error)")
+                showAlert(title: "Error", message: "Failed to get user information: \(error.localizedDescription)")
             }
         }
     }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "0ec0aa8dc8dd318d57bf12f301109d2612b3833ccaeb5b33d4ae069dc616c280",
+  "originHash" : "68ed86515edfb8a27eed902b42221c809729fbcc16492d21bc93f4da61d9e4fc",
   "pins" : [
     {
       "identity" : "bluecryptor",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "e82d34eab3f0b05391082b11ea07d3b70d2f65bb",
         "version" : "1.9.200"
+      }
+    },
+    {
+      "identity" : "razorpay-pod",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/razorpay/razorpay-pod",
+      "state" : {
+        "revision" : "7cc84246737e12abcbeb6fe5da9e4654375c8bf0",
+        "version" : "1.4.0"
       }
     },
     {

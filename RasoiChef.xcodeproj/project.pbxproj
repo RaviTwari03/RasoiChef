@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		515D72C52DDF42E100F14D1B /* RazorpayCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 515D72C42DDF42E100F14D1B /* RazorpayCheckout */; };
 		E306F8D92D6D79D00021398C /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8D82D6D79D00021398C /* Auth */; };
 		E306F8DB2D6D79D00021398C /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DA2D6D79D00021398C /* Functions */; };
 		E306F8DD2D6D79D00021398C /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = E306F8DC2D6D79D00021398C /* PostgREST */; };
@@ -52,6 +53,7 @@
 				E306F8D92D6D79D00021398C /* Auth in Frameworks */,
 				E306F8E12D6D79D00021398C /* Storage in Frameworks */,
 				F50A4E082DCDD91C00490146 /* SwiftSMTP in Frameworks */,
+				515D72C52DDF42E100F14D1B /* RazorpayCheckout in Frameworks */,
 				E306F8DF2D6D79D00021398C /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +104,7 @@
 				E306F8E02D6D79D00021398C /* Storage */,
 				E306F8E22D6D79D00021398C /* Supabase */,
 				F50A4E072DCDD91C00490146 /* SwiftSMTP */,
+				515D72C42DDF42E100F14D1B /* RazorpayCheckout */,
 			);
 			productName = RasoiChef;
 			productReference = 0599B1462D35112A00F8CEE0 /* RasoiChef.app */;
@@ -134,6 +137,7 @@
 			packageReferences = (
 				E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				F50A4E062DCDD91C00490146 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+				515D72C32DDF42E100F14D1B /* XCRemoteSwiftPackageReference "razorpay-pod" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0599B1472D35112A00F8CEE0 /* Products */;
@@ -367,6 +371,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		515D72C32DDF42E100F14D1B /* XCRemoteSwiftPackageReference "razorpay-pod" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/razorpay/razorpay-pod";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
 		E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
@@ -386,6 +398,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		515D72C42DDF42E100F14D1B /* RazorpayCheckout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 515D72C32DDF42E100F14D1B /* XCRemoteSwiftPackageReference "razorpay-pod" */;
+			productName = RazorpayCheckout;
+		};
 		E306F8D82D6D79D00021398C /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E306F8D72D6D79D00021398C /* XCRemoteSwiftPackageReference "supabase-swift" */;
